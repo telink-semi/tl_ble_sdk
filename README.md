@@ -18,11 +18,11 @@
 
 ### Hardware
 * TLSR951X
-  - BOARD_B91_EVK_C1T213A20
+  - C1T213A20
 * TL721X
-  - BOARD_TL721X_EVK_C1T314A20
+  - C1T314A20
 * TL321X
-  - BOARD_TL321X_EVK_C1T331A20
+  - C1T331A20
   
 ### Note
 * The system clock must be at least 32M.

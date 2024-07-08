@@ -18,11 +18,11 @@
 
 ### Hardware
 * TLSR951X
-  - BOARD_B91_EVK_C1T213A20
+  - C1T213A20
 * TL721X
-  - BOARD_TL721X_EVK_C1T314A20
+  - C1T314A20
 * TL321X
-  - BOARD_TL321X_EVK_C1T331A20
+  - C1T331A20
   
 ### Note
 * The system clock must be at least 32M.
@@ -106,39 +106,39 @@
 ### CodeSize
 * TLSR951X
   - Compiling acl_central_demo
-   - Flash bin size: 103.0KB
-   - IRAM size: 53.0KB
-   - DRAM size: 0.4KB
+    - Flash bin size: 103.0KB
+    - IRAM size: 53.0KB
+    - DRAM size: 0.4KB
   - Compiling acl_connection_demo
-   - Flash bin size:128.0KB 
-   - IRAM size: 62.5KB
-   - DRAM size: 4.4KB
+    - Flash bin size:128.0KB 
+    - IRAM size: 62.5KB
+    - DRAM size: 4.4KB
   - Compiling acl_peripheral_demo
-   - Flash bin size: 108.0KB
-   - IRAM size: 50.4KB
-   - DRAM size: 0.3KB 
+    - Flash bin size: 108.0KB
+    - IRAM size: 50.4KB
+    - DRAM size: 0.3KB 
 
 * TL721X
   - Compiling acl_central_demo
-   - Flash bin size: 99.2KB
-   - IRAM size: 53.0KB
+    - Flash bin size: 99.2KB
+    - IRAM size: 53.0KB
   - Compiling acl_connection_demo
-   - Flash bin size:121.0KB 
-   - IRAM size: 65.4KB
+    - Flash bin size:121.0KB 
+    - IRAM size: 65.4KB
   - Compiling acl_peripheral_demo
-   - Flash bin size: 105.0KB
-   - IRAM size: 58.8KB
+    - Flash bin size: 105.0KB
+    - IRAM size: 58.8KB
 
 * TL321X
   - Compiling acl_central_demo
-   - Flash bin size: 94.4KB
-   - IRAM size: 47.8KB
-   - DRAM size: 0.3KB
+    - Flash bin size: 94.4KB
+    - IRAM size: 47.8KB
+    - DRAM size: 0.3KB
   - Compiling acl_connection_demo
-   - Flash bin size:115.0KB 
-   - IRAM size: 53.3KB
-   - DRAM size: 4.5KB
+    - Flash bin size:115.0KB 
+    - IRAM size: 53.3KB
+    - DRAM size: 4.5KB
   - Compiling acl_peripheral_demo
-   - Flash bin size: 99.8KB
-   - IRAM size: 50.3KB
-   - DRAM size: 3.0KB 
+    - Flash bin size: 99.8KB
+    - IRAM size: 50.3KB
+    - DRAM size: 3.0KB 
