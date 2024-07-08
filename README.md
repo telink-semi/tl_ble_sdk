@@ -7,7 +7,10 @@
   - TLSR951X		A3/A4
   - TL721X			A1
   - TL321X			A0
-* Driver Version: tl_platform_sdk V3.0.0
+* Driver Version: 
+  - TLSR951X		tl_platform_sdk V2.3.0
+  - TL721X			tl_platform_sdk V3.0.0
+  - TL321X			tl_platform_sdk V3.0.0
 * Toolchain Version:
   - TLSR951X		GCC 7
   - TL721X			GCC 12
@@ -15,11 +18,11 @@
 
 ### Hardware
 * TLSR951X
-  - BOARD_B91_EVK_C1T213A20
+  - C1T213A20
 * TL721X
-  - BOARD_TL721X_EVK_C1T314A20
+  - C1T314A20
 * TL321X
-  - BOARD_TL321X_EVK_C1T331A20
+  - C1T331A20
   
 ### Note
 * The system clock must be at least 32M.
