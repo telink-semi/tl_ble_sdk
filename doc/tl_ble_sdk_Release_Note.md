@@ -37,6 +37,7 @@
 * USB debug log for TL721X/TL321X will be supported in the next version.
 * Power Management for TL721X/TL321X will be supported in the next version.
 * SMP secure connection for TL321X will be supported in the next version.
+* PHY test for TL321X will be supported in the next version.
 
 ### Bug Fixes
    * N/A
