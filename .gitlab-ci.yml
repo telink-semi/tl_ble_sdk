@@ -1,4 +1,5 @@
 stages:
+  - checktab
   - scc
   - checkLicense
   - build_TelinkIoTStudio
@@ -7,6 +8,27 @@ stages:
   - plainPW_check
   - misspellChecking
   - sensitive_word_check
+
+
+checktab:
+  stage: checktab
+  tags:
+    - LINUX
+  script: 
+  - find ./ -path "./chip/B91" -prune -o -path "./chip/B92" -prune -o -path "./.git" -prune -o  -type f \( -name "*.c" -o -name "*.h" -o -name "*.s" -o -name "*.S" -o -name "*.link" \) -exec grep -l $'\t' {} + > checktabresult || true
+  - >
+    if [ -s checktabresult ]; then
+        echo "Files containing tabs:"
+        cat checktabresult
+        exit 1
+    else
+        echo "No files with tabs found."
+    fi
+  artifacts:
+    when: always
+    paths:
+    - checktabresult
+
 
 scc:
   stage: scc 
