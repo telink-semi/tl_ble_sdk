@@ -2,27 +2,28 @@
 
 ### Version
 
-* SDK Version: tl_ble_sdk_v4.0.4.0
+* SDK Version: tl_ble_sdk_v4.0.4.1
 * Chip Version: 
-  - TLSR951X		A3/A4
+  - TLSR921X		A3/A4
   - TL721X			A1
   - TL321X			A0
 * Driver Version: 
-  - TLSR951X		tl_platform_sdk V2.3.0
-  - TL721X			tl_platform_sdk V3.0.0
-  - TL321X			tl_platform_sdk V3.0.0
+  - TLSR921X		tl_platform_sdk V2.3.0
+  - TL721X			tl_platform_sdk V3.1.0
+  - TL321X			tl_platform_sdk V3.1.0
 * Toolchain Version:
-  - TLSR951X		GCC 7
-  - TL721X			GCC 12
-  - TL321X			GCC 12
+  - TLSR921X		GCC 7 (IDE: Telink RDS)
+  - TL721X			GCC 12(IDE: Telink IoT Studio)
+  - TL321X			GCC 12(IDE: Telink IoT Studio)
 
 ### Hardware
-* TLSR951X
+* TLSR921X
   - C1T213A20
 * TL721X
   - C1T314A20
 * TL321X
   - C1T331A20
+  - C1T335A20
   
 ### Note
 * The system clock must be at least 32M.
@@ -34,6 +35,7 @@
 	for example, the user's final firmware size is bigger, or the user has a different OTA design, or the user needs to store more data in some other area of Flash, 
 	all these differences imply that Flash protection reference design in SDK can not be directly used on user's mass production application without any change. 
 	User should refer to sample code, understand the principles and methods, and then change and implement a more appropriate mechanism according to their application if needed.
+* When the bin size is larger than 256K, please change the OTA startup address using API "blc_ota_setFirmwareSizeAndBootAddress". The API needs to be placed before sys_init().
 
 ### Features
 * **Chip**
@@ -56,11 +58,12 @@
 
 
 ### Flash
-* TLSR951X
+* TLSR921X
   - P25Q80U
   - P25Q16SU
 * TL721X
   - P25Q16SU
 * TL321X
   - P25Q80U
+  - P25Q16SU
 
