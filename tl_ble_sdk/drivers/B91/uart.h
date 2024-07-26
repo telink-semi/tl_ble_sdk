@@ -21,21 +21,21 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-/**    @page UART
+/** @page UART
  *
- *    Introduction
- *    ===============
- *    supports two uart: uart0~ uart1.
- *     -# support nodma/dma
- *    -# support cts/rts
- *    -# support s7816
+ *  Introduction
+ *  ===============
+ *  supports two uart: uart0~ uart1.
+ *  -# support nodma/dma
+ *  -# support cts/rts
+ *  -# support s7816
  *
- *    API Reference
- *    ===============
- *    Header File: uart.h
+ *  API Reference
+ *  ===============
+ *  Header File: uart.h
  *
- *    How to use this driver
- *    ==============
+ *  How to use this driver
+ *  ==============
  - The uart two working modes nodma/dma,can be used as follows:
     -# UART Initialization and Configuration
          -# dma/nodma:
@@ -283,19 +283,19 @@ typedef enum{
  *  -# UART_RX_ERR:when the UART receives data incorrectly(such as a parity error or a stop bit error), the interrupt is generated,the interrupt flag bit needs to be manually cleared;
  */
 typedef enum{
-    UART_RX_ERR                = BIT(7),
-    UART_TXDONE                = BIT(0),
-    UART_TXBUF_IRQ_STATUS     = BIT(1),
-    UART_RXDONE                = BIT(2),
-    UART_RXBUF_IRQ_STATUS     = BIT(3),
+    UART_RX_ERR             = BIT(7),
+    UART_TXDONE             = BIT(0),
+    UART_TXBUF_IRQ_STATUS   = BIT(1),
+    UART_RXDONE             = BIT(2),
+    UART_RXBUF_IRQ_STATUS   = BIT(3),
 }uart_irq_status_get_e;
 
 /**
  *  @brief  Define UART IRQ BIT STATUS FOR CLR
  */
 typedef enum{
-    UART_CLR_RX                = BIT(6),
-    UART_CLR_TX                = BIT(7),
+    UART_CLR_RX             = BIT(6),
+    UART_CLR_TX             = BIT(7),
 }uart_irq_status_clr_e;
 
 /**********************************************************************************************************************
@@ -429,7 +429,7 @@ void uart_init(uart_num_e uart_num,unsigned short div, unsigned char bwpc, uart_
 void uart_cal_div_and_bwpc(unsigned int baudrate, unsigned int pclk, unsigned short* div, unsigned char *bwpc);
 
 /**
- * @brief       Set rx_timeout.
+ * @brief    Set rx_timeout.
    @verbatim
        The effect:
          - When no data is received within the rx_timeout period, that is rx timeout, the UART_RXDONE interrupt is generated.
@@ -444,8 +444,8 @@ void uart_cal_div_and_bwpc(unsigned int baudrate, unsigned int pclk, unsigned sh
  * @param[in] bit_cnt  - bit number,conditions that need to be met:
  *                         - for example, if transferring one bytes (1start bit+8bits data+1 priority bit+2stop bits) total 12 bits,then set it to at least 12;
  *                         - ((bwpc+1) * bit_cnt)<=0xff;
- * @param[in] mul       - mul.
- * @return       none
+ * @param[in] mul      - mul.
+ * @return    none
  */
 void uart_set_rx_timeout(uart_num_e uart_num,unsigned char bwpc, unsigned char bit_cnt, uart_timeout_mul_e mul);
 
@@ -521,16 +521,16 @@ void uart_send_word(uart_num_e uart_num, unsigned int data);
 void uart_set_rts_level(uart_num_e uart_num, unsigned char polarity);
 
 /**
- *    @brief        Set pin for UART cts function,the pin connection mode:CTS<->RTS.
- *    @param[in]  cts_pin -To set cts pin.
- *    @return        none
+ *  @brief      Set pin for UART cts function,the pin connection mode:CTS<->RTS.
+ *  @param[in]  cts_pin -To set cts pin.
+ *  @return     none
  */
 void uart_set_cts_pin(uart_cts_pin_e cts_pin);
 
 /**
- *    @brief        Set pin for UART rts function,the pin connection mode:RTS<->CTS.
- *    @param[in]  rts_pin - To set rts pin.
- *    @return        none
+ *  @brief      Set pin for UART rts function,the pin connection mode:RTS<->CTS.
+ *  @param[in]  rts_pin - To set rts pin.
+ *  @return     none
  */
 void uart_set_rts_pin(uart_rts_pin_e rts_pin);
 
@@ -552,10 +552,10 @@ void uart_set_rtx_pin(uart_rx_pin_e rtx_pin);
 
 
 /**
- * @brief         Send an amount of data in DMA mode
- * @param[in]      uart_num - uart channel
- * @param[in]     addr     - Pointer to data buffer. It must be 4-bytes aligned address
- * @param[in]     len      - Amount of data to be sent in bytes, range from 1 to 0xFFFFFC
+ * @brief       Send an amount of data in DMA mode
+ * @param[in]   uart_num - uart channel
+ * @param[in]   addr     - Pointer to data buffer. It must be 4-bytes aligned address
+ * @param[in]   len      - Amount of data to be sent in bytes, range from 1 to 0xFFFFFC
  * @return      1  DMA start send.
  *              0  the length is error.       
  */
@@ -576,7 +576,7 @@ unsigned char uart_send(uart_num_e uart_num, unsigned char * addr, unsigned char
  * @param[in]  addr     - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception.
  *                        and the actual buffer size defined by the user needs to be not smaller than the rev_size, otherwise there may be an out-of-bounds problem.
  * @param[in]  rev_size - This parameter is used to set the size of the received dma and must be set to a multiple of 4. The maximum value that can be set is 0xFFFFFC.
- * @return        none
+ * @return     none
  */
 void uart_receive_dma(uart_num_e uart_num, unsigned char * addr,unsigned int rev_size);
 
@@ -651,8 +651,8 @@ static inline void uart_clr_irq_mask(uart_num_e uart_num,uart_irq_mask_e mask)
  * @brief     Get the irq status of uart.
  * @param[in] uart_num - UART0 or UART1.
  * @param[in] status   - uart irq status.
- * @retval      non-zero   -  the interrupt occurred.
- * @retval      zero  -  the interrupt did not occur.
+ * @retval    non-zero   -  the interrupt occurred.
+ * @retval    zero  -  the interrupt did not occur.
  */
 static inline unsigned int  uart_get_irq_status(uart_num_e uart_num,uart_irq_status_get_e status)
 {
@@ -675,9 +675,9 @@ static inline unsigned int  uart_get_irq_status(uart_num_e uart_num,uart_irq_sta
 static inline void uart_clr_irq_status(uart_num_e uart_num,uart_irq_status_clr_e status)
 {
     /**
-          [2:0]: rbcnt   --read only
+        [2:0]: rbcnt   --read only
         [3]  : irq_o   --read only
-          [6:4]: wbcnt   -- R: wbcnt,   W:[6] write 1 to clear rx
+        [6:4]: wbcnt   -- R: wbcnt,   W:[6] write 1 to clear rx
         [7]  : rx_err  -- R: rx_err,  W:[7] write 1 to clear tx
         The status flag bit is write 1 clear 0 and all other bits in this register except the status flag bit are read-only,
         so the correct way to write "=" instead of "|=" can be used here.
@@ -837,13 +837,13 @@ static inline void uart_clr_tx_done(uart_num_e uart_num)
 }
 
 /**
- * @brief          Enable the rtx .
- * @param[in]      chn - UART0 or UART1.
- * @return         none.
+ * @brief       Enable the rtx .
+ * @param[in]   chn - UART0 or UART1.
+ * @return      none.
  */
 static inline void uart_rtx_en(uart_num_e chn)
 {
     reg_uart_rx_timeout1(chn)|=FLD_UART_P7816_EN;
 }
 
-#endif    /* UART_H_ */
+#endif  /* UART_H_ */

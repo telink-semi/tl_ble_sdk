@@ -33,7 +33,7 @@
 
 #if (FEATURE_TEST_MODE == TEST_GATT_API)
 
-int    central_pairing_enable = 0;
+int central_pairing_enable = 0;
 u16 central_unpair_enable = 0;
 
 u16 central_disconnect_connhandle;   //mark the central connection which is in un_pair disconnection flow
@@ -44,14 +44,14 @@ u16 central_disconnect_connhandle;   //mark the central connection which is in u
 
 #if (UI_KEYBOARD_ENABLE)
 
-_attribute_ble_data_retention_    int     key_not_released;
+_attribute_ble_data_retention_  int     key_not_released;
 
 
-#define CONSUMER_KEY                      1
-#define KEYBOARD_KEY                      2
-#define PAIR_UNPAIR_KEY                  3
+#define CONSUMER_KEY                1
+#define KEYBOARD_KEY                2
+#define PAIR_UNPAIR_KEY             3
 
-_attribute_ble_data_retention_    u8         key_type;
+_attribute_ble_data_retention_  u8      key_type;
 
 /**
  * @brief   Check changed key value.
@@ -62,7 +62,7 @@ void key_change_proc(void)
 {
 
     u8 key0 = kb_event.keycode[0];
-//    u8 key_buf[8] = {0,0,0,0,0,0,0,0};
+//  u8 key_buf[8] = {0,0,0,0,0,0,0,0};
 
     key_not_released = 1;
     if (kb_event.cnt == 2)   //two key press
@@ -77,13 +77,13 @@ void key_change_proc(void)
             u16 consumer_key;
             if(key0 == CR_VOL_UP){      //volume up
                 consumer_key = MKEY_VOL_UP;
-            //    tlkapi_send_string_data(APP_KEY_LOG_EN, "[UI][KEY] send Vol +", 0, 0);
+            //  tlkapi_send_string_data(APP_KEY_LOG_EN, "[UI][KEY] send Vol +", 0, 0);
                 extern void feature_gatt_api_test_Next(void);
                 feature_gatt_api_test_Next();
             }
             else if(key0 == CR_VOL_DN){ //volume down
                 consumer_key = MKEY_VOL_DN;
-//                tlkapi_send_string_data(APP_KEY_LOG_EN, "[UI][KEY] send Vol -", 0, 0);
+//              tlkapi_send_string_data(APP_KEY_LOG_EN, "[UI][KEY] send Vol -", 0, 0);
                 extern void feature_gatt_api_test_Last(void);
                 feature_gatt_api_test_Last();
             }
@@ -166,7 +166,7 @@ void key_change_proc(void)
 
 
 
-_attribute_ble_data_retention_        static u32 keyScanTick = 0;
+_attribute_ble_data_retention_      static u32 keyScanTick = 0;
 
 /**
  * @brief      keyboard task handler

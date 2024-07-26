@@ -23,28 +23,11 @@
  *******************************************************************************************************/
 #include "ext_flash.h"
 
-/**
- * @brief         This function is used to enable the four-wire function of flash.
- * @param[in]      flash_mid    - the mid of flash.
- * @return         1: success, 0: error, 2: parameter error, 3: mid is not supported.
- */
-unsigned char flash_4line_en(unsigned int flash_mid)
-{
-    switch(flash_mid)
-    {
-    case MID146085:
-        return flash_write_status_mid146085(FLASH_QE_ENABLE_MID146085, FLASH_WRITE_STATUS_QE_MID146085);
-        break;
-    default:
-        return 3;
-        break;
-    }
-}
 
 /**
- * @brief         This function is used to set the use of quad IO mode when reading and writing flash.
+ * @brief       This function is used to set the use of quad IO mode when reading and writing flash.
  * @param       None
- * @return         1: success, 0: error, 2: parameter error, 3: mid is not supported.
+ * @return      1: success, 0: error, 2: parameter error, 3: mid is not supported.
  */
 unsigned char ble_flash_4line_enable(void)
 {

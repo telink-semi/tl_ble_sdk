@@ -36,20 +36,20 @@ _attribute_ble_data_retention_ u8 ota_is_working = 0;
 
 
 /**
- * @brief    BLE Advertising data
+ * @brief   BLE Advertising data
  */
 const u8    tbl_advData[] = {
-     13, DT_COMPLETE_LOCAL_NAME,                 'p', 'e', 'r', 'i', 'p', 'h', 'r', '_', 'd', 'e', 'm', 'o',
-     2,     DT_FLAGS,                                 0x05,                     // BLE limited discoverable mode and BR/EDR not supported
+     13, DT_COMPLETE_LOCAL_NAME,                'p', 'e', 'r', 'i', 'p', 'h', 'r', '_', 'd', 'e', 'm', 'o',
+     2,  DT_FLAGS,                              0x05,                   // BLE limited discoverable mode and BR/EDR not supported
      3,  DT_APPEARANCE,                         0x80, 0x01,             // 384, Generic Remote Control, Generic category
-     5,  DT_INCOMPLETE_LIST_16BIT_SERVICE_UUID,    0x12, 0x18, 0x0F, 0x18,    // incomplete list of service class UUIDs (0x1812, 0x180F)
+     5,  DT_INCOMPLETE_LIST_16BIT_SERVICE_UUID, 0x12, 0x18, 0x0F, 0x18, // incomplete list of service class UUIDs (0x1812, 0x180F)
 };
 
 /**
- * @brief    BLE Scan Response Packet data
+ * @brief   BLE Scan Response Packet data
  */
 const u8    tbl_scanRsp [] = {
-     13, DT_COMPLETE_LOCAL_NAME,                 'p', 'e', 'r', 'i', 'p', 'h', 'r', '_', 'd', 'e', 'm', 'o',
+     13, DT_COMPLETE_LOCAL_NAME,                'p', 'e', 'r', 'i', 'p', 'h', 'r', '_', 'd', 'e', 'm', 'o',
 };
 
 
@@ -75,7 +75,7 @@ int app_le_connection_complete_event_handle(u8 *p)
         dev_char_info_insert_by_conn_event(pConnEvt);
 
         if (pConnEvt->role == ACL_ROLE_PERIPHERAL) {
-            //bls_l2cap_requestConnParamUpdate(pConnEvt->connHandle, CONN_INTERVAL_20MS, CONN_INTERVAL_20MS, 49, CONN_TIMEOUT_4S);    // 1 second
+            //bls_l2cap_requestConnParamUpdate(pConnEvt->connHandle, CONN_INTERVAL_20MS, CONN_INTERVAL_20MS, 49, CONN_TIMEOUT_4S);  // 1 second
         }
     }
 
@@ -99,10 +99,10 @@ int app_disconnect_event_handle(u8 *p)
     #endif
 
     //terminate reason
-    if (pDisConn->reason == HCI_ERR_CONN_TIMEOUT) {      //connection timeout
+    if (pDisConn->reason == HCI_ERR_CONN_TIMEOUT) {     //connection timeout
 
     }
-    else if (pDisConn->reason == HCI_ERR_REMOTE_USER_TERM_CONN) {      //peer device send terminate command on link layer
+    else if (pDisConn->reason == HCI_ERR_REMOTE_USER_TERM_CONN) {   //peer device send terminate command on link layer
 
     }
     //central host disconnect( blm_ll_disconnect(current_connHandle, HCI_ERR_REMOTE_USER_TERM_CONN) )
@@ -148,7 +148,7 @@ int app_le_connection_update_complete_event_handle(u8 *p)
 int app_controller_event_callback(u32 h, u8 *p, int n)
 {
     (void)n;
-    if (h & HCI_FLAG_EVENT_BT_STD)        //Controller HCI event
+    if (h & HCI_FLAG_EVENT_BT_STD)      //Controller HCI event
     {
         u8 evtCode = h & 0xff;
 
@@ -162,17 +162,17 @@ int app_controller_event_callback(u32 h, u8 *p, int n)
             u8 subEvt_code = p[0];
 
             //------hci le event: le connection complete event---------------------------------
-            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE)    // connection complete
+            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE)  // connection complete
             {
                 app_le_connection_complete_event_handle(p);
             }
             //--------hci le event: le adv report event ----------------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT)    // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT)  // ADV packet
             {
 
             }
             //------hci le event: le connection update complete event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE)    // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE)  // connection update
             {
                 app_le_connection_update_complete_event_handle(p);
             }
@@ -287,7 +287,7 @@ int app_gatt_data_handler(u16 connHandle, u8 *pkt)
 
         dev_char_info_t *dev_info = dev_char_info_search_by_connhandle(connHandle);
         if (dev_info) {
-            //-------    user process ------------------------------------------------
+            //-------   user process ------------------------------------------------
             if (pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI)
             {
 
@@ -351,15 +351,15 @@ _attribute_ram_code_ void user_set_flag_suspend_exit(u8 e, u8 *p, int n)
 
 #if (BATT_CHECK_ENABLE)  //battery check must do before OTA relative operation
 
-_attribute_data_retention_    u32    lowBattDet_tick   = 0;
+_attribute_data_retention_  u32 lowBattDet_tick   = 0;
 
 /**
- * @brief        this function is used to process battery power.
- *                 The low voltage protection threshold 2.0V is an example and reference value. Customers should
- *                 evaluate and modify these thresholds according to the actual situation. If users have unreasonable designs
- *                 in the hardware circuit, which leads to a decrease in the stability of the power supply network, the
- *                 safety thresholds must be increased as appropriate.
- * @param[in]    none
+ * @brief       this function is used to process battery power.
+ *              The low voltage protection threshold 2.0V is an example and reference value. Customers should
+ *              evaluate and modify these thresholds according to the actual situation. If users have unreasonable designs
+ *              in the hardware circuit, which leads to a decrease in the stability of the power supply network, the
+ *              safety thresholds must be increased as appropriate.
+ * @param[in]   none
  * @return      none
  */
 _attribute_ram_code_ void user_battery_power_check(u16 alarm_vol_mv)
@@ -411,16 +411,16 @@ _attribute_ram_code_ void user_battery_power_check(u16 alarm_vol_mv)
 
 /**
  * @brief      flash protection operation, including all locking & unlocking for application
- *                handle all flash write & erase action for this demo code. use should add more more if they have more flash operation.
+ *             handle all flash write & erase action for this demo code. use should add more more if they have more flash operation.
  * @param[in]  flash_op_evt - flash operation event, including application layer action and stack layer action event(OTA write & erase)
- *                attention 1: if you have more flash write or erase action, you should should add more type and process them
- *                attention 2: for "end" event, no need to pay attention on op_addr_begin & op_addr_end, we set them to 0 for
- *                                stack event, such as stack OTA write new firmware end event
+ *             attention 1: if you have more flash write or erase action, you should should add more type and process them
+ *             attention 2: for "end" event, no need to pay attention on op_addr_begin & op_addr_end, we set them to 0 for
+ *                          stack event, such as stack OTA write new firmware end event
  * @param[in]  op_addr_begin - operating flash address range begin value
  * @param[in]  op_addr_end - operating flash address range end value
- *                attention that, we use: [op_addr_begin, op_addr_end)
- *                e.g. if we write flash sector from 0x10000 to 0x20000, actual operating flash address is 0x10000 ~ 0x1FFFF
- *                        but we use [0x10000, 0x20000):  op_addr_begin = 0x10000, op_addr_end = 0x20000
+ *             attention that, we use: [op_addr_begin, op_addr_end)
+ *             e.g. if we write flash sector from 0x10000 to 0x20000, actual operating flash address is 0x10000 ~ 0x1FFFF
+ *                  but we use [0x10000, 0x20000):  op_addr_begin = 0x10000, op_addr_end = 0x20000
  * @return     none
  */
 _attribute_data_retention_ u16  flash_lockBlock_cmd;
@@ -511,8 +511,8 @@ void app_flash_protection_operation(u8 flash_op_evt, u32 op_addr_begin, u32 op_a
 
 
 /**
- * @brief        user initialization when MCU power on or wake_up from deepSleep mode
- * @param[in]    none
+ * @brief       user initialization when MCU power on or wake_up from deepSleep mode
+ * @param[in]   none
  * @return      none
  */
 _attribute_no_inline_ void user_init_normal(void)
@@ -600,7 +600,7 @@ _attribute_no_inline_ void user_init_normal(void)
 
     //bluetooth low energy(LE) event
     blc_hci_le_setEventMask_cmd(        HCI_LE_EVT_MASK_CONNECTION_COMPLETE  \
-                                    |    HCI_LE_EVT_MASK_ADVERTISING_REPORT \
+                                    |   HCI_LE_EVT_MASK_ADVERTISING_REPORT \
                                     |   HCI_LE_EVT_MASK_CONNECTION_UPDATE_COMPLETE);
     //////////// HCI Initialization  End /////////////////////////
 
@@ -636,9 +636,9 @@ _attribute_no_inline_ void user_init_normal(void)
 
     //host(GAP/SMP/GATT/ATT) event process: register host event callback and set event mask
     blc_gap_registerHostEventHandler( app_host_event_callback );
-    blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN             |  \
-                          GAP_EVT_MASK_SMP_PAIRING_SUCCESS           |  \
-                          GAP_EVT_MASK_SMP_PAIRING_FAIL                |  \
+    blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN            |  \
+                          GAP_EVT_MASK_SMP_PAIRING_SUCCESS          |  \
+                          GAP_EVT_MASK_SMP_PAIRING_FAIL             |  \
                           GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE);
     //////////// Host Initialization  End /////////////////////////
 
@@ -684,6 +684,10 @@ _attribute_no_inline_ void user_init_normal(void)
 
             #if(MCU_CORE_TYPE == MCU_CORE_B91)
                 blc_pm_setDeepsleepRetentionEarlyWakeupTiming(450);
+            #elif(MCU_CORE_TYPE == MCU_CORE_TL321X)
+                blc_pm_setDeepsleepRetentionEarlyWakeupTiming(580);//96M--550us, 32M--578us
+            #elif(MCU_CORE_TYPE == MCU_CORE_TL721X)
+                blc_pm_setDeepsleepRetentionEarlyWakeupTiming(890);
             #endif
         #else
             blc_pm_setDeepsleepRetentionEnable(PM_DeepRetn_Disable);
@@ -711,8 +715,8 @@ _attribute_no_inline_ void user_init_normal(void)
 }
 
 /**
- * @brief        user initialization when MCU wake_up from deepSleep_retention mode
- * @param[in]    none
+ * @brief       user initialization when MCU wake_up from deepSleep_retention mode
+ * @param[in]   none
  * @return      none
  */
 _attribute_ram_code_ void user_init_deepRetn(void) {

@@ -30,9 +30,9 @@
  *  @brief  Definition for ADV maximum random delay time
  */
 typedef enum{
-      MAX_DELAY_10MS     = 512,
-      MAX_DELAY_5MS        = 256,
-      MAX_DELAY_2P5MS    = 128,
+      MAX_DELAY_10MS    = 512,
+      MAX_DELAY_5MS     = 256,
+      MAX_DELAY_2P5MS   = 128,
       MAX_DELAY_0MS     = 0,
 }adv_max_delay_t;
 

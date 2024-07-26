@@ -28,20 +28,20 @@
 #include "flash_prot.h"
 
 
-_attribute_ble_data_retention_    _attribute_aligned_(4)    flash_prot_t    blc_flashProt;
+_attribute_ble_data_retention_  _attribute_aligned_(4)  flash_prot_t    blc_flashProt;
 
 /* this pointer is used only by stack, when OTA write or erase flash, will give a callback to application layer */
-_attribute_ble_data_retention_    _attribute_aligned_(4)    flash_prot_op_callback_t         flash_prot_op_cb = NULL;
+_attribute_ble_data_retention_  _attribute_aligned_(4)  flash_prot_op_callback_t        flash_prot_op_cb = NULL;
 
 
 #if (APP_FLASH_PROTECTION_ENABLE)
 
-_attribute_ble_data_retention_    _attribute_aligned_(4)    flash_lock_t                 flash_lock_mid = NULL;
-_attribute_ble_data_retention_    _attribute_aligned_(4)    flash_unlock_t                 flash_unlock_mid = NULL;
-_attribute_ble_data_retention_    _attribute_aligned_(4)    flash_get_lock_status_t     flash_get_lock_status_mid = NULL;
+_attribute_ble_data_retention_  _attribute_aligned_(4)  flash_lock_t                flash_lock_mid = NULL;
+_attribute_ble_data_retention_  _attribute_aligned_(4)  flash_unlock_t              flash_unlock_mid = NULL;
+_attribute_ble_data_retention_  _attribute_aligned_(4)  flash_get_lock_status_t     flash_get_lock_status_mid = NULL;
 
 
-_attribute_ble_data_retention_    u16    flash_unlock_status; //record flash unlock status for different flash type
+_attribute_ble_data_retention_  u16 flash_unlock_status; //record flash unlock status for different flash type
 
 
 /**
@@ -58,7 +58,7 @@ void blc_appRegisterStackFlashOperationCallback(flash_prot_op_callback_t cb)
 
 /**
  * @brief      this function is used to initialize flash protection.Block size of lock is a sample, user can change it according to bin size.
- *                  This function only shows the flash supported by TELINK testing. If user use other flash, please follow the code below.
+ *               This function only shows the flash supported by TELINK testing. If user use other flash, please follow the code below.
  * @param[in]  none
  * @return     none
  */
@@ -140,8 +140,8 @@ void flash_protection_init(void)
 
 /**
  * @brief      this function is used to change application lock block definition to flash lock block definition according to flash type used
- *                attention: only processed a few lock block size for SDK demo, if you have more lock block size, please
- *                           add more code by yourself
+ *             attention: only processed a few lock block size for SDK demo, if you have more lock block size, please
+ *                        add more code by yourself
  * @param[in]  app_lock_block - application lock block definition
  * @return     flash_lock_block_size - The size of the lock block size of flash.
  */
@@ -320,10 +320,10 @@ u16 flash_change_app_lock_block_to_flash_lock_block(flash_app_lock_e app_lock_bl
 
 
 /**
- * @brief         This function serves to set the protection of the flash.
+ * @brief       This function serves to set the protection of the flash.
  * @param[in]   flash_lock_cmd - flash lock block command for different flash type
- *                 e.g. for P25Q16SU, command is selected from "mid156085_lock_block_e"
- * @return         1: Flash lock succeed; 0: Flash lock fail
+ *              e.g. for P25Q16SU, command is selected from "mid156085_lock_block_e"
+ * @return      1: Flash lock succeed; 0: Flash lock fail
  */
 bool flash_lock(unsigned int flash_lock_cmd)
 {
@@ -363,9 +363,9 @@ bool flash_lock(unsigned int flash_lock_cmd)
 }
 
 /**
- * @brief         This function serves to release flash protection.
+ * @brief       This function serves to release flash protection.
  * @param[in]   none.
- * @return         1: Flash unlock succeed; 0: Flash unlock fail
+ * @return      1: Flash unlock succeed; 0: Flash unlock fail
  */
 bool flash_unlock(void)
 {

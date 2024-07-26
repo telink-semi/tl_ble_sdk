@@ -31,7 +31,7 @@
 
 #if (APP_DEFAULT_HID_BATTERY_OTA_ATTRIBUTE_TABLE)
 
-_attribute_ble_data_retention_    spp_write_callback_t spp_write_cb = NULL;
+_attribute_ble_data_retention_  spp_write_callback_t spp_write_cb = NULL;
 
 
 void blc_spp_registerWriteCallback(spp_write_callback_t cb)
@@ -58,7 +58,7 @@ static const u16 extReportRefUUID = GATT_UUID_EXT_REPORT_REF;
 
 static const u16 reportRefUUID = GATT_UUID_REPORT_REF;
 
-static const u16 userdesc_UUID    = GATT_UUID_CHAR_USER_DESC;
+static const u16 userdesc_UUID  = GATT_UUID_CHAR_USER_DESC;
 
 static const u16 serviceChangeUUID = GATT_UUID_SERVICE_CHANGE;
 
@@ -84,9 +84,9 @@ static const u16 my_gattServiceUUID = SERVICE_UUID_GENERIC_ATTRIBUTE;
 
 static const gap_periConnectParams_t my_periConnParameters = {20, 40, 0, 1000};
 
-_attribute_ble_data_retention_    static u16 serviceChangeVal[2] = {0};
+_attribute_ble_data_retention_  static u16 serviceChangeVal[2] = {0};
 
-_attribute_ble_data_retention_    static u8 serviceChangeCCC[2] = {0,0};
+_attribute_ble_data_retention_  static u8 serviceChangeCCC[2] = {0,0};
 
 static const u8 my_devName[] = {'f','e','a','t','u','r','e'};
 
@@ -94,9 +94,9 @@ static const u8 my_PnPtrs [] = {0x02, 0x8a, 0x24, 0x66, 0x82, 0x01, 0x00};
 
 //////////////////////// Battery /////////////////////////////////////////////////
 static const u16 my_batServiceUUID        = SERVICE_UUID_BATTERY;
-static const u16 my_batCharUUID             = CHARACTERISTIC_UUID_BATTERY_LEVEL;
-_attribute_ble_data_retention_    static u8 batteryValueInCCC[2] = {0,0};
-_attribute_ble_data_retention_    static u8 my_batVal[1]     = {99};
+static const u16 my_batCharUUID           = CHARACTERISTIC_UUID_BATTERY_LEVEL;
+_attribute_ble_data_retention_  static u8 batteryValueInCCC[2] = {0,0};
+_attribute_ble_data_retention_  static u8 my_batVal[1]  = {99};
 
 //////////////////////// HID /////////////////////////////////////////////////////
 
@@ -111,32 +111,32 @@ static const u16 hidInformationUUID       = CHARACTERISTIC_UUID_HID_INFORMATION;
 static const u16 hidCtrlPointUUID         = CHARACTERISTIC_UUID_HID_CONTROL_POINT;
 static const u16 hidIncludeUUID           = GATT_UUID_INCLUDE;
 
-_attribute_ble_data_retention_    static u8 protocolMode               = DFLT_HID_PROTOCOL_MODE;
+_attribute_ble_data_retention_  static u8 protocolMode            = DFLT_HID_PROTOCOL_MODE;
 
 // Key in Report characteristic variables
-_attribute_ble_data_retention_    static u8 reportKeyIn[8];
-_attribute_ble_data_retention_    static u8 reportKeyInCCC[2] = {0,0};
+_attribute_ble_data_retention_  static u8 reportKeyIn[8];
+_attribute_ble_data_retention_  static u8 reportKeyInCCC[2] = {0,0};
 // HID Report Reference characteristic descriptor, key input
-_attribute_ble_data_retention_    static u8 reportRefKeyIn[2] =
+_attribute_ble_data_retention_  static u8 reportRefKeyIn[2] =
              { HID_REPORT_ID_KEYBOARD_INPUT, HID_REPORT_TYPE_INPUT };
 
 // Key out Report characteristic variables
-_attribute_ble_data_retention_    static u8 reportKeyOut[1];
-_attribute_ble_data_retention_    static u8 reportRefKeyOut[2] =
+_attribute_ble_data_retention_  static u8 reportKeyOut[1];
+_attribute_ble_data_retention_  static u8 reportRefKeyOut[2] =
              { HID_REPORT_ID_KEYBOARD_INPUT, HID_REPORT_TYPE_OUTPUT };
 
 // Consumer Control input Report
-_attribute_ble_data_retention_    static u8 reportConsumerControlIn[2];
-_attribute_ble_data_retention_    static u8 reportConsumerControlInCCC[2] = {0,0};
-_attribute_ble_data_retention_    static u8 reportRefConsumerControlIn[2] =
+_attribute_ble_data_retention_  static u8 reportConsumerControlIn[2];
+_attribute_ble_data_retention_  static u8 reportConsumerControlInCCC[2] = {0,0};
+_attribute_ble_data_retention_  static u8 reportRefConsumerControlIn[2] =
              { HID_REPORT_ID_CONSUME_CONTROL_INPUT, HID_REPORT_TYPE_INPUT };
 
 // Boot Keyboard Input Report
-_attribute_ble_data_retention_    static u8 bootKeyInReport;
-_attribute_ble_data_retention_    static u8 bootKeyInReportCCC[2] = {0,0};
+_attribute_ble_data_retention_  static u8 bootKeyInReport;
+_attribute_ble_data_retention_  static u8 bootKeyInReportCCC[2] = {0,0};
 
 // Boot Keyboard Output Report
-_attribute_ble_data_retention_    static u8 bootKeyOutReport;
+_attribute_ble_data_retention_  static u8 bootKeyOutReport;
 
 // HID Information characteristic
 static const u8 hidInformation[] =
@@ -147,15 +147,15 @@ static const u8 hidInformation[] =
 };
 
 // HID Control Point characteristic
-_attribute_ble_data_retention_    static u8 controlPoint;
+_attribute_ble_data_retention_  static u8 controlPoint;
 
 
 
 typedef struct{
-    u8    type;
+    u8  type;
     u8  rf_len;
-    u16    l2capLen;
-    u16    chanId;
+    u16 l2capLen;
+    u16 chanId;
     u8  opcode;
     u16 handle;
     u8 value;
@@ -230,14 +230,14 @@ static const u8 reportMap[] =
 };
 
 // HID External Report Reference Descriptor for report map
-_attribute_ble_data_retention_    static u16 extServiceUUID;
+_attribute_ble_data_retention_  static u16 extServiceUUID;
 
 
 //////////////////////// OTA //////////////////////////////////
-static const  u8 my_OtaServiceUUID[16]                = WRAPPING_BRACES(TELINK_OTA_UUID_SERVICE);
-static const  u8 my_OtaUUID[16]                        = WRAPPING_BRACES(TELINK_SPP_DATA_OTA);
-_attribute_ble_data_retention_    static           u8 my_OtaData                         = 0x00;
-_attribute_ble_data_retention_    static           u8 my_OtaDataCCC[2] = {0,0};
+static const  u8 my_OtaServiceUUID[16]              = WRAPPING_BRACES(TELINK_OTA_UUID_SERVICE);
+static const  u8 my_OtaUUID[16]                     = WRAPPING_BRACES(TELINK_SPP_DATA_OTA);
+_attribute_ble_data_retention_  static        u8 my_OtaData                         = 0x00;
+_attribute_ble_data_retention_  static        u8 my_OtaDataCCC[2] = {0,0};
 static const u8  my_OtaName[] = {'O', 'T', 'A'};
 
 
@@ -247,22 +247,22 @@ static const u16 include[3] = {BATT_PS_H, BATT_LEVEL_INPUT_CCB_H, SERVICE_UUID_B
 
 
 ////////////////////// SPP ////////////////////////////////////
-static const u8 TelinkSppServiceUUID[16]                  = WRAPPING_BRACES(TELINK_SPP_UUID_SERVICE);
+static const u8 TelinkSppServiceUUID[16]                = WRAPPING_BRACES(TELINK_SPP_UUID_SERVICE);
 static const u8 TelinkSppDataServer2ClientUUID[16]      = WRAPPING_BRACES(TELINK_SPP_DATA_SERVER2CLIENT);
 static const u8 TelinkSppDataClient2ServerUUID[16]      = WRAPPING_BRACES(TELINK_SPP_DATA_CLIENT2SERVER);
 
 
 // Spp data from Server to Client characteristic variables
-_attribute_ble_data_retention_    static u8 SppDataServer2ClientDataCCC[2]                  = {0};
+_attribute_ble_data_retention_  static u8 SppDataServer2ClientDataCCC[2]                = {0};
 //this array will not used for sending data(directly calling HandleValueNotify API), so cut array length from 20 to 1, saving some SRAM
-_attribute_ble_data_retention_    static u8 SppDataServer2ClientData[251]                     = {0};  //SppDataServer2ClientData[20]
+_attribute_ble_data_retention_  static u8 SppDataServer2ClientData[251]                     = {0};  //SppDataServer2ClientData[20]
 // Spp data from Client to Server characteristic variables
 //this array will not used for receiving data(data processed by Attribute Write CallBack function), so cut array length from 20 to 1, saving some SRAM
-_attribute_ble_data_retention_    static u8 SppDataClient2ServerData[251]                     = {0};  //SppDataClient2ServerData[20]
+_attribute_ble_data_retention_  static u8 SppDataClient2ServerData[251]                     = {0};  //SppDataClient2ServerData[20]
 
 
 //SPP data descriptor
-static const u8 TelinkSPPS2CDescriptor[]                  = "Telink SPP: Module->Phone";
+static const u8 TelinkSPPS2CDescriptor[]                = "Telink SPP: Module->Phone";
 static const u8 TelinkSPPC2SDescriptor[]                = "Telink SPP: Phone->Module";
 
 
@@ -387,109 +387,109 @@ int spp_onReceiveData(u16 connHandle, ble_rf_packet_att_write_t *p)
 // TM : to modify
 static const attribute_t my_Attributes[] = {
 
-    {ATT_END_H - 1, 0 , 0, 0, NULL, NULL, NULL, NULL},    // total num of attribute
+    {ATT_END_H - 1, 0 , 0, 0, NULL, NULL, NULL, NULL},  // total num of attribute
 
 
     // 0001 - 0007  gap
-    {7,ATT_PERMISSIONS_READ,2,2,(u8*)(size_t)(&my_primaryServiceUUID),     (u8*)(size_t)(&my_gapServiceUUID), 0, 0},
+    {7,ATT_PERMISSIONS_READ,2,2,(u8*)(size_t)(&my_primaryServiceUUID),  (u8*)(size_t)(&my_gapServiceUUID), 0, 0},
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_devNameCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_devNameCharVal), 0, 0},
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_devName), (u8*)(size_t)(&my_devNameUUID), (u8*)(size_t)(my_devName), 0, 0},
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_appearanceCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_appearanceCharVal), 0, 0},
-    {0,ATT_PERMISSIONS_READ,2,sizeof (my_appearance), (u8*)(size_t)(&my_appearanceUUID),     (u8*)(size_t)(&my_appearance), 0, 0},
+    {0,ATT_PERMISSIONS_READ,2,sizeof (my_appearance), (u8*)(size_t)(&my_appearanceUUID),    (u8*)(size_t)(&my_appearance), 0, 0},
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_periConnParamCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_periConnParamCharVal), 0, 0},
-    {0,ATT_PERMISSIONS_READ,2,sizeof (my_periConnParameters),(u8*)(size_t)(&my_periConnParamUUID),     (u8*)(size_t)(&my_periConnParameters), 0, 0},
+    {0,ATT_PERMISSIONS_READ,2,sizeof (my_periConnParameters),(u8*)(size_t)(&my_periConnParamUUID),  (u8*)(size_t)(&my_periConnParameters), 0, 0},
 
 
     // 0008 - 000b gatt
-    {4,ATT_PERMISSIONS_READ,2,2,(u8*)(size_t)(&my_primaryServiceUUID),     (u8*)(size_t)(&my_gattServiceUUID), 0, 0},
+    {4,ATT_PERMISSIONS_READ,2,2,(u8*)(size_t)(&my_primaryServiceUUID),  (u8*)(size_t)(&my_gattServiceUUID), 0, 0},
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_serviceChangeCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_serviceChangeCharVal), 0, 0},
     {0,ATT_PERMISSIONS_READ,2,sizeof (serviceChangeVal), (u8*)(size_t)(&serviceChangeUUID), (u8*)(&serviceChangeVal), 0, 0},
     {0,ATT_PERMISSIONS_RDWR,2,sizeof (serviceChangeCCC),(u8*)(size_t)(&clientCharacterCfgUUID), (u8*)(serviceChangeCCC), 0, 0},
 
 
     // 000c - 000e  device Information Service
-    {3,ATT_PERMISSIONS_READ,2,2,(u8*)(size_t)(&my_primaryServiceUUID),     (u8*)(size_t)(&my_devServiceUUID), 0, 0},
+    {3,ATT_PERMISSIONS_READ,2,2,(u8*)(size_t)(&my_primaryServiceUUID),  (u8*)(size_t)(&my_devServiceUUID), 0, 0},
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_PnCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_PnCharVal), 0, 0},
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_PnPtrs),(u8*)(size_t)(&my_PnPUUID), (u8*)(size_t)(my_PnPtrs), 0, 0},
 
 
     /////////////////////////////////// 4. HID Service /////////////////////////////////////////////////////////
     // 000f
-    //{27, ATT_PERMISSIONS_READ,2,2,(u8*)(size_t)(&my_primaryServiceUUID),     (u8*)(size_t)(&my_hidServiceUUID), 0, 0},
+    //{27, ATT_PERMISSIONS_READ,2,2,(u8*)(size_t)(&my_primaryServiceUUID),  (u8*)(size_t)(&my_hidServiceUUID), 0, 0},
     {HID_CONTROL_POINT_DP_H - HID_PS_H + 1, ATT_PERMISSIONS_READ,2,2,(u8*)(size_t)(&my_primaryServiceUUID),     (u8*)(size_t)(&my_hidServiceUUID), 0, 0},
 
     // 0010  include battery service
     {0,ATT_PERMISSIONS_READ,2,sizeof(include),(u8*)(size_t)(&hidIncludeUUID), (u8*)(size_t)(include), 0, 0},
 
     // 0011 - 0012  protocol mode
-    {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidProtocolModeCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidProtocolModeCharVal), 0, 0},                //prop
-    {0,ATT_PERMISSIONS_RDWR,2, sizeof(protocolMode),(u8*)(size_t)(&hidProtocolModeUUID),     (u8*)(&protocolMode), 0, 0},    //value
+    {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidProtocolModeCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidProtocolModeCharVal), 0, 0},              //prop
+    {0,ATT_PERMISSIONS_RDWR,2, sizeof(protocolMode),(u8*)(size_t)(&hidProtocolModeUUID),    (u8*)(&protocolMode), 0, 0},    //value
 
     // 0013 - 0015  boot keyboard input report (char-val-client)
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidBootKeyInReportCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidBootKeyInReportCharVal), 0, 0},                //prop
-    {0,ATT_PERMISSIONS_READ,2,sizeof(bootKeyInReport),(u8*)(size_t)(&hidBootKeyInReportUUID),     (u8*)(&bootKeyInReport), 0, 0},    //value
-    {0,ATT_PERMISSIONS_RDWR,2,sizeof(bootKeyInReportCCC),(u8*)(size_t)(&clientCharacterCfgUUID),     (u8*)(bootKeyInReportCCC), 0, 0},    //value
+    {0,ATT_PERMISSIONS_READ,2,sizeof(bootKeyInReport),(u8*)(size_t)(&hidBootKeyInReportUUID),   (u8*)(&bootKeyInReport), 0, 0}, //value
+    {0,ATT_PERMISSIONS_RDWR,2,sizeof(bootKeyInReportCCC),(u8*)(size_t)(&clientCharacterCfgUUID),    (u8*)(bootKeyInReportCCC), 0, 0},   //value
 
     // 0016 - 0017   boot keyboard output report (char-val)
-    {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidBootKeyOutReportCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidBootKeyOutReportCharVal), 0, 0},                //prop
-    {0,ATT_PERMISSIONS_RDWR,2, sizeof(bootKeyOutReport), (u8*)(size_t)(&hidBootKeyOutReportUUID),     (u8*)(&bootKeyOutReport), 0, 0},    //value
+    {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidBootKeyOutReportCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidBootKeyOutReportCharVal), 0, 0},              //prop
+    {0,ATT_PERMISSIONS_RDWR,2, sizeof(bootKeyOutReport), (u8*)(size_t)(&hidBootKeyOutReportUUID),   (u8*)(&bootKeyOutReport), 0, 0},    //value
 
 
     // 0018 - 001b. consume report in: 4 (char-val-client-ref)
-    {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidReportCCinCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidReportCCinCharVal), 0, 0},                //prop
-    {0,ATT_PERMISSIONS_READ,2, sizeof(reportConsumerControlIn),(u8*)(size_t)(&hidReportUUID),     (u8*)(reportConsumerControlIn), 0, 0},    //value
-    {0,ATT_PERMISSIONS_RDWR,2,sizeof(reportConsumerControlInCCC),(u8*)(size_t)(&clientCharacterCfgUUID),     (u8*)(reportConsumerControlInCCC), 0, 0},    //value
-    {0,ATT_PERMISSIONS_RDWR,2,sizeof(reportRefConsumerControlIn),(u8*)(size_t)(&reportRefUUID),     (u8*)(reportRefConsumerControlIn), 0, 0},    //value
+    {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidReportCCinCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidReportCCinCharVal), 0, 0},              //prop
+    {0,ATT_PERMISSIONS_READ,2, sizeof(reportConsumerControlIn),(u8*)(size_t)(&hidReportUUID),   (u8*)(reportConsumerControlIn), 0, 0},  //value
+    {0,ATT_PERMISSIONS_RDWR,2,sizeof(reportConsumerControlInCCC),(u8*)(size_t)(&clientCharacterCfgUUID),    (u8*)(reportConsumerControlInCCC), 0, 0},   //value
+    {0,ATT_PERMISSIONS_RDWR,2,sizeof(reportRefConsumerControlIn),(u8*)(size_t)(&reportRefUUID),     (u8*)(reportRefConsumerControlIn), 0, 0},   //value
 
     // 001c - 001f . keyboard report in : 4 (char-val-client-ref)
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidReportKEYinCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidReportKEYinCharVal), 0, 0},                //prop
-    {0,ATT_PERMISSIONS_READ,2, sizeof(reportKeyIn),(u8*)(size_t)(&hidReportUUID),     (u8*)(reportKeyIn), 0, 0},    //value
-    {0,ATT_PERMISSIONS_RDWR,2,sizeof(reportKeyInCCC),(u8*)(size_t)(&clientCharacterCfgUUID),     (u8*)(reportKeyInCCC), 0, 0},    //value
-    {0,ATT_PERMISSIONS_RDWR,2,sizeof(reportRefKeyIn),(u8*)(size_t)(&reportRefUUID),     (u8*)(reportRefKeyIn), 0, 0},    //value
+    {0,ATT_PERMISSIONS_READ,2, sizeof(reportKeyIn),(u8*)(size_t)(&hidReportUUID),   (u8*)(reportKeyIn), 0, 0},  //value
+    {0,ATT_PERMISSIONS_RDWR,2,sizeof(reportKeyInCCC),(u8*)(size_t)(&clientCharacterCfgUUID),    (u8*)(reportKeyInCCC), 0, 0},   //value
+    {0,ATT_PERMISSIONS_RDWR,2,sizeof(reportRefKeyIn),(u8*)(size_t)(&reportRefUUID),     (u8*)(reportRefKeyIn), 0, 0},   //value
 
     // 0020 - 0022 . keyboard report out: 3 (char-val-ref)
-    {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidReportKEYoutCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidReportKEYoutCharVal), 0, 0},                //prop
-    {0,ATT_PERMISSIONS_RDWR,2,sizeof(reportKeyOut),(u8*)(size_t)(&hidReportUUID),     (u8*)(reportKeyOut), 0, 0},    //value
-    {0,ATT_PERMISSIONS_RDWR,2,sizeof(reportRefKeyOut),(u8*)(size_t)(&reportRefUUID),     (u8*)(reportRefKeyOut), 0, 0},    //value
+    {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidReportKEYoutCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidReportKEYoutCharVal), 0, 0},              //prop
+    {0,ATT_PERMISSIONS_RDWR,2,sizeof(reportKeyOut),(u8*)(size_t)(&hidReportUUID),   (u8*)(reportKeyOut), 0, 0}, //value
+    {0,ATT_PERMISSIONS_RDWR,2,sizeof(reportRefKeyOut),(u8*)(size_t)(&reportRefUUID),    (u8*)(reportRefKeyOut), 0, 0},  //value
 
 
     // 0023 - 0025 . report map: 3
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidReportMapCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidReportMapCharVal), 0, 0},                //prop
-    {0,ATT_PERMISSIONS_READ,2,sizeof(reportMap),(u8*)(size_t)(&hidReportMapUUID),     (u8*)(size_t)(reportMap), 0, 0},    //value
-    {0,ATT_PERMISSIONS_RDWR,2,sizeof(extServiceUUID),(u8*)(size_t)(&extReportRefUUID),     (u8*)(&extServiceUUID), 0, 0},    //value
+    {0,ATT_PERMISSIONS_READ,2,sizeof(reportMap),(u8*)(size_t)(&hidReportMapUUID),   (u8*)(size_t)(reportMap), 0, 0},    //value
+    {0,ATT_PERMISSIONS_RDWR,2,sizeof(extServiceUUID),(u8*)(size_t)(&extReportRefUUID),  (u8*)(&extServiceUUID), 0, 0},  //value
 
     // 0026 - 0027 . hid information: 2
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidInformationCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidInformationCharVal), 0, 0},                //prop
-    {0,ATT_PERMISSIONS_READ,2, sizeof(hidInformation),(u8*)(size_t)(&hidInformationUUID),     (u8*)(size_t)(hidInformation), 0, 0},    //value
+    {0,ATT_PERMISSIONS_READ,2, sizeof(hidInformation),(u8*)(size_t)(&hidInformationUUID),   (u8*)(size_t)(hidInformation), 0, 0},   //value
 
     // 0028 - 0029 . control point: 2
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_hidCtrlPointCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_hidCtrlPointCharVal), 0, 0},                //prop
-    {0,ATT_PERMISSIONS_WRITE,2, sizeof(controlPoint),(u8*)(size_t)(&hidCtrlPointUUID),     (u8*)(&controlPoint), 0, 0},    //value
+    {0,ATT_PERMISSIONS_WRITE,2, sizeof(controlPoint),(u8*)(size_t)(&hidCtrlPointUUID),  (u8*)(&controlPoint), 0, 0},    //value
 
     ////////////////////////////////////// Battery Service /////////////////////////////////////////////////////
     // 002a - 002d
-    {4,ATT_PERMISSIONS_READ,2,2,(u8*)(size_t)(&my_primaryServiceUUID),     (u8*)(size_t)(&my_batServiceUUID), 0, 0},
-    {0,ATT_PERMISSIONS_READ,2,sizeof(my_batCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_batCharVal), 0, 0},                //prop
+    {4,ATT_PERMISSIONS_READ,2,2,(u8*)(size_t)(&my_primaryServiceUUID),  (u8*)(size_t)(&my_batServiceUUID), 0, 0},
+    {0,ATT_PERMISSIONS_READ,2,sizeof(my_batCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_batCharVal), 0, 0},              //prop
     {0,ATT_PERMISSIONS_READ,2,sizeof(my_batVal),(u8*)(size_t)(&my_batCharUUID),     (u8*)(my_batVal), 0, 0},    //value
     {0,ATT_PERMISSIONS_RDWR,2,sizeof(batteryValueInCCC),(u8*)(size_t)(&clientCharacterCfgUUID),     (u8*)(batteryValueInCCC), 0, 0},    //value
 
 
     // 002e - 0035 SPP for data test
     {8,ATT_PERMISSIONS_READ,2,16,(u8*)(size_t)(&my_primaryServiceUUID),     (u8*)(size_t)(&TelinkSppServiceUUID), 0, 0},
-    {0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSppDataServer2ClientCharVal),(u8*)(size_t)(&my_characterUUID),         (u8*)(size_t)(TelinkSppDataServer2ClientCharVal), 0, 0},                //prop
-    {0,ATT_PERMISSIONS_READ,16,sizeof(SppDataServer2ClientData),(u8*)(size_t)(&TelinkSppDataServer2ClientUUID), (u8*)(SppDataServer2ClientData), 0, 0},    //value
+    {0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSppDataServer2ClientCharVal),(u8*)(size_t)(&my_characterUUID),       (u8*)(size_t)(TelinkSppDataServer2ClientCharVal), 0, 0},                //prop
+    {0,ATT_PERMISSIONS_READ,16,sizeof(SppDataServer2ClientData),(u8*)(size_t)(&TelinkSppDataServer2ClientUUID), (u8*)(SppDataServer2ClientData), 0, 0}, //value
     {0,ATT_PERMISSIONS_RDWR,2,2,(u8*)(size_t)&clientCharacterCfgUUID,(u8*)(&SppDataServer2ClientDataCCC), 0, 0},
     {0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSPPS2CDescriptor),(u8*)(size_t)&userdesc_UUID,(u8*)(size_t)(&TelinkSPPS2CDescriptor), 0, 0},
-    {0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSppDataClient2ServerCharVal),(u8*)(size_t)(&my_characterUUID),         (u8*)(size_t)(TelinkSppDataClient2ServerCharVal), 0, 0},                //prop
-    {0,ATT_PERMISSIONS_RDWR,16,sizeof(SppDataClient2ServerData),(u8*)(size_t)(&TelinkSppDataClient2ServerUUID), (u8*)(SppDataClient2ServerData), (att_readwrite_callback_t)&spp_onReceiveData, 0},    //value
+    {0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSppDataClient2ServerCharVal),(u8*)(size_t)(&my_characterUUID),       (u8*)(size_t)(TelinkSppDataClient2ServerCharVal), 0, 0},                //prop
+    {0,ATT_PERMISSIONS_RDWR,16,sizeof(SppDataClient2ServerData),(u8*)(size_t)(&TelinkSppDataClient2ServerUUID), (u8*)(SppDataClient2ServerData), (att_readwrite_callback_t)&spp_onReceiveData, 0},  //value
     {0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSPPC2SDescriptor),(u8*)(size_t)&userdesc_UUID,(u8*)(size_t)(&TelinkSPPC2SDescriptor), 0, 0},
 
 
     ////////////////////////////////////// OTA /////////////////////////////////////////////////////
     // 0036 - 0039
-    {5,ATT_PERMISSIONS_READ, 2,16,(u8*)(size_t)(&my_primaryServiceUUID),     (u8*)(size_t)(&my_OtaServiceUUID), 0, 0},
+    {5,ATT_PERMISSIONS_READ, 2,16,(u8*)(size_t)(&my_primaryServiceUUID),    (u8*)(size_t)(&my_OtaServiceUUID), 0, 0},
     {0,ATT_PERMISSIONS_READ, 2, sizeof(my_OtaCharVal),(u8*)(size_t)(&my_characterUUID), (u8*)(size_t)(my_OtaCharVal), 0, 0},                //prop
-    {0,ATT_PERMISSIONS_RDWR,16,sizeof(my_OtaData),(u8*)(size_t)(&my_OtaUUID),    (&my_OtaData), &otaWrite, NULL},            //value
+    {0,ATT_PERMISSIONS_RDWR,16,sizeof(my_OtaData),(u8*)(size_t)(&my_OtaUUID),   (&my_OtaData), &otaWrite, NULL},            //value
     {0,ATT_PERMISSIONS_RDWR,2,sizeof(my_OtaDataCCC),(u8*)(size_t)(&clientCharacterCfgUUID),     (u8*)(my_OtaDataCCC), 0, 0},    //value
     {0,ATT_PERMISSIONS_READ, 2,sizeof (my_OtaName),(u8*)(size_t)(&userdesc_UUID), (u8*)(size_t)(my_OtaName), 0, 0},
 

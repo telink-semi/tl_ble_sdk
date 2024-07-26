@@ -421,6 +421,7 @@ void gpio_set_src_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_type)
  * @param[in] up_down_res - the type of the pull-up/down resistor.
  * @return    none.
  */
+_attribute_ram_code_  //BLE SDK use
 void gpio_set_up_down_res(gpio_pin_e pin, gpio_pull_type_e up_down_res)
 {
     ///////////////////////////////////////////////////////////

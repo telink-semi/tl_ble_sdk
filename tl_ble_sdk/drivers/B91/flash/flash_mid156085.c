@@ -25,8 +25,8 @@
 
 
 /**
- * @brief         This function reads the status of flash.
- * @return         the value of status.
+ * @brief       This function reads the status of flash.
+ * @return      the value of status.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -45,10 +45,10 @@ unsigned short flash_read_status_mid156085(void)
 }
 
 /**
- * @brief         This function write the status of flash.
- * @param[in]      data    - the status value of the flash after the mask.
- * @param[in]      mask        - the range of masks to be modified when writing status.
- * @return         1: success, 0: error, 2: parameter error.
+ * @brief       This function write the status of flash.
+ * @param[in]   data    - the status value of the flash after the mask.
+ * @param[in]   mask        - the range of masks to be modified when writing status.
+ * @return      1: success, 0: error, 2: parameter error.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -67,7 +67,7 @@ unsigned char flash_write_status_mid156085(unsigned short data, mid156085_write_
     }
 
     unsigned short status = flash_read_status_mid156085();
-    if(data != (status & mask))    //To reduce the operation of the status register.
+    if(data != (status & mask)) //To reduce the operation of the status register.
     {
         status = data | (status & ~(mask));
         flash_write_status(FLASH_TYPE_16BIT_STATUS_ONE_CMD, status);
@@ -81,9 +81,9 @@ unsigned char flash_write_status_mid156085(unsigned short data, mid156085_write_
 }
 
 /**
- * @brief         This function serves to set the protection area of the flash.
+ * @brief       This function serves to set the protection area of the flash.
  * @param[in]   data    - refer to the protection area definition in the .h file.
- * @return         1: success, 0: error, 2: parameter error.
+ * @return      1: success, 0: error, 2: parameter error.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -101,8 +101,8 @@ unsigned char flash_lock_mid156085(mid156085_lock_block_e data)
 }
 
 /**
- * @brief         This function serves to flash release protection.
- * @return         1: success, 0: error, 2: parameter error.
+ * @brief       This function serves to flash release protection.
+ * @return      1: success, 0: error, 2: parameter error.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -120,8 +120,8 @@ unsigned char flash_unlock_mid156085(void)
 }
 
 /**
- * @brief         This function serves to get the protection area of the flash.
- * @return         the protection area of the flash.
+ * @brief       This function serves to get the protection area of the flash.
+ * @return      the protection area of the flash.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -138,14 +138,14 @@ mid156085_lock_block_e flash_get_lock_block_mid156085(void)
 }
 
 /**
- * @brief         This function serves to read data from the Security Registers of the flash.
+ * @brief       This function serves to read data from the Security Registers of the flash.
  * @param[in]   addr    - the start address of the Security Registers.
- *                        the address of the  Security Registers #1 0x001000-0x0013ff
- *                        the address of the  Security Registers #2 0x002000-0x0023ff
- *                        the address of the  Security Registers #3 0x003000-0x0033ff
- * @param[in]   len        - the length(in byte, must be above 0) of the content to be read.
- * @param[out]  buf        - the starting address of the content to be read.
- * @return         none.
+ *                      the address of the  Security Registers #1 0x001000-0x0013ff
+ *                      the address of the  Security Registers #2 0x002000-0x0023ff
+ *                      the address of the  Security Registers #3 0x003000-0x0033ff
+ * @param[in]   len     - the length(in byte, must be above 0) of the content to be read.
+ * @param[out]  buf     - the starting address of the content to be read.
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -162,14 +162,14 @@ void flash_read_otp_mid156085(unsigned long addr, unsigned long len, unsigned ch
 }
 
 /**
- * @brief         This function serves to write data to the Security Registers of the flash you choose.
+ * @brief       This function serves to write data to the Security Registers of the flash you choose.
  * @param[in]   addr    - the start address of the Security Registers.
- *                        the address of the  Security Registers #1 0x001000-0x0013ff
- *                        the address of the  Security Registers #2 0x002000-0x0023ff
- *                        the address of the  Security Registers #3 0x003000-0x0033ff
- * @param[in]   len        - the length(in byte, must be above 0) of content to be written.
- * @param[in]   buf        - the starting address of the content to be written.
- * @return         none.
+ *                      the address of the  Security Registers #1 0x001000-0x0013ff
+ *                      the address of the  Security Registers #2 0x002000-0x0023ff
+ *                      the address of the  Security Registers #3 0x003000-0x0033ff
+ * @param[in]   len     - the length(in byte, must be above 0) of content to be written.
+ * @param[in]   buf     - the starting address of the content to be written.
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -186,13 +186,13 @@ void flash_write_otp_mid156085(unsigned long addr, unsigned long len, unsigned c
 }
 
 /**
- * @brief         This function serves to erase the data of the Security Registers that you choose.
- *                 You can erase 1024-byte one time.
+ * @brief       This function serves to erase the data of the Security Registers that you choose.
+ *              You can erase 1024-byte one time.
  * @param[in]   addr    - the address that you want to erase.
- *                        the address of the  Security Registers #1 0x001000-0x0013ff
- *                        the address of the  Security Registers #2 0x002000-0x0023ff
- *                        the address of the  Security Registers #3 0x003000-0x0033ff
- * @return         none.
+ *                      the address of the  Security Registers #1 0x001000-0x0013ff
+ *                      the address of the  Security Registers #2 0x002000-0x0023ff
+ *                      the address of the  Security Registers #3 0x003000-0x0033ff
+ * @return      none.
  * @note        Even you choose the middle area of the Security Registers,it will erase the whole area.
  *
  *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
@@ -211,11 +211,11 @@ void flash_erase_otp_mid156085(mid156085_otp_block_e addr)
 }
 
 /**
- * @brief         This function serves to provide the write protect control to the Security Registers.
+ * @brief       This function serves to provide the write protect control to the Security Registers.
  * @param[in]   data    - the lock area of the Security Registers.
- * @return         none.
+ * @return      none.
  * @note        once they are set to 1, the Security Registers will become read-only permanently,
- *                 you can't write or erase the area anymore.
+ *              you can't write or erase the area anymore.
  *
  *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
@@ -233,10 +233,10 @@ void flash_lock_otp_mid156085(mid156085_lock_otp_e data)
 }
 
 /**
- * @brief         This function write the configure of flash.
- * @param[in]      data    - the value of configure.
- * @param[in]      bit        - the range of bits to be modified when writing configure.
- * @return         none.
+ * @brief       This function write the configure of flash.
+ * @param[in]   data    - the value of configure.
+ * @param[in]   bit     - the range of bits to be modified when writing configure.
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater

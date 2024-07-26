@@ -102,61 +102,61 @@ typedef void *(*KDF_FUNC)(const void *input, unsigned int byteLen, unsigned char
 //API
 
 /**
- * @brief        get rand.
- * @param[in]     rand    - the buffer rand.
- * @param[in]     byteLen    - the length of rand.
- * @return        0:TRNG_SUCCESS,   1:TRNG_ERROR.
+ * @brief       get rand.
+ * @param[in]   rand    - the buffer rand.
+ * @param[in]   byteLen - the length of rand.
+ * @return      0:TRNG_SUCCESS,   1:TRNG_ERROR.
  */
 unsigned char rand_get(unsigned char *rand, unsigned int byteLen);
 
 /**
  * @brief       get real bit length of big number a of wordLen words.
- * @param[in]   a            - the buffer a.
- * @param[in]   wordLen        - the length of a.
+ * @param[in]   a           - the buffer a.
+ * @param[in]   wordLen     - the length of a.
  * @return      the real bit length of big number a of wordLen words.
  */
 unsigned int valid_bits_get(const unsigned int *a, unsigned int wordLen);
 
 /**
- * @brief        get real word length of big number a of max_words words.
- * @param[in]   a            - the buffer a.
- * @param[in]   max_words    - the length of a.
- * @return        get real word length of big number a.
+ * @brief       get real word length of big number a of max_words words.
+ * @param[in]   a           - the buffer a.
+ * @param[in]   max_words   - the length of a.
+ * @return      get real word length of big number a.
  */
 unsigned int valid_words_get(unsigned int *a, unsigned int max_words);
 
 /**
- * @brief        reverse byte array.
- * @param[in]   in            - need to reverse the array.
- * @param[in]   out            - inverted array.
- * @param[in]   byteLen        - the length of array.
- * @return        none.
+ * @brief       reverse byte array.
+ * @param[in]   in          - need to reverse the array.
+ * @param[in]   out         - inverted array.
+ * @param[in]   byteLen     - the length of array.
+ * @return      none.
  */
 void reverse_byte_array(const unsigned char *in, unsigned char *out, unsigned int byteLen);
 
 /**
- * @brief        compare big integer a and b.
- * @param[in]     a             - value.
- * @param[in]     aWordLen      - the length of a.
- * @param[in]     b            - value.
- * @param[in]     bWordLen    - the length of b.
- * @return        0:a=b,   1:a>b,   -1: a<b.
+ * @brief       compare big integer a and b.
+ * @param[in]   a           - value.
+ * @param[in]   aWordLen    - the length of a.
+ * @param[in]   b           - value.
+ * @param[in]   bWordLen    - the length of b.
+ * @return      0:a=b,   1:a>b,   -1: a<b.
  */
 int big_integer_compare(unsigned int *a, unsigned int aWordLen, unsigned int *b, unsigned int bWordLen);
 
 /**
- * @brief        This function is used to determine whether the array is all 0s.
- * @param[in]    data    - the buffer data.
- * @param[in]    len        - the length of data.
- * @return        1: all 0, 0: not all 0.
+ * @brief       This function is used to determine whether the array is all 0s.
+ * @param[in]   data    - the buffer data.
+ * @param[in]   len     - the length of data.
+ * @return      1: all 0, 0: not all 0.
  */
 int ismemzero4(unsigned int a[], unsigned int wordLen);
 
 /**
  * @brief       out = (a+b) mod modulus.
  * @param[in]   modulus - modulus.
- * @param[in]   a         - integer a.
- * @param[in]   b         - integer b.
+ * @param[in]   a       - integer a.
+ * @param[in]   b       - integer b.
  * @param[in]   wordLen - word length of modulus, a, b.
  * @param[out]  out     - out = a+b mod modulus.
  * @return      PKE_SUCCESS(success), other(error).
@@ -166,33 +166,33 @@ unsigned char pke_mod_add(const unsigned int *modulus, const unsigned int *a, co
 
 /**
  * @brief       out = (a-b) mod modulus.
- * @param[in]   modulus    - input, modulus.
- * @param[in]      a        - input, integer a.
- * @param[in]   b        - input, integer b.
+ * @param[in]   modulus - input, modulus.
+ * @param[in]   a       - input, integer a.
+ * @param[in]   b       - input, integer b.
  * @param[in]   wordLen - input, word length of modulus, a, b.
- * @param[out]  out        - output, out = a-b mod modulus.
+ * @param[out]  out     - output, out = a-b mod modulus.
  * @return      PKE_SUCCESS(success), other(error).
  */
 unsigned char pke_mod_sub(const unsigned int *modulus, const unsigned int *a, const unsigned int *b,
                    unsigned int *out, unsigned int wordLen);
 
 /**
- * @brief        load the pre-calculated mont parameters H(R^2 mod modulus) and
- *                 n1( - modulus ^(-1) mod 2^w ).
- * @param[in]     H           - R^2 mod modulus.
- * @param[in]     n1           - modulus ^(-1) mod 2^w, here w is 32 actually.
- * @param[in]     wordLen - word length of modulus or H.
+ * @brief       load the pre-calculated mont parameters H(R^2 mod modulus) and
+ *              n1( - modulus ^(-1) mod 2^w ).
+ * @param[in]   H       - R^2 mod modulus.
+ * @param[in]   n1      - modulus ^(-1) mod 2^w, here w is 32 actually.
+ * @param[in]   wordLen - word length of modulus or H.
  * @return:     none.
  */
 void pke_load_pre_calc_mont(unsigned int *H, unsigned int *n1, unsigned int wordLen);
 
 /**
- * @brief        out = a*b mod modulus.
- * @param[in]     modulus - input, modulus.
- * @param[in]     a           - input, integer a.
- * @param[in]     b           - input, integer b.
- * @param[in]     wordLen - input, word length of modulus, a, b.
- * @param[out]     out     - output, out = a*b mod modulus.
+ * @brief       out = a*b mod modulus.
+ * @param[in]   modulus - input, modulus.
+ * @param[in]   a       - input, integer a.
+ * @param[in]   b       - input, integer b.
+ * @param[in]   wordLen - input, word length of modulus, a, b.
+ * @param[out]  out     - output, out = a*b mod modulus.
  * @return      PKE_SUCCESS(success), other(error).
  */
 unsigned char pke_modmul_internal(const unsigned int *modulus, const unsigned int *a, const unsigned int *b,
@@ -200,11 +200,11 @@ unsigned char pke_modmul_internal(const unsigned int *modulus, const unsigned in
 
 /**
  * @brief       out = a*b mod modulus.
- * @param[in]   modulus    - modulus.
- * @param[in]   a         - integer a.
- * @param[in]   b         - integer b.
- * @param[in]   wordLen    - word length of modulus, a, b.
- * @param[out]  out        - out = a*b mod modulus.
+ * @param[in]   modulus - modulus.
+ * @param[in]   a       - integer a.
+ * @param[in]   b       - integer b.
+ * @param[in]   wordLen - word length of modulus, a, b.
+ * @param[out]  out     - out = a*b mod modulus.
  * @return      PKE_SUCCESS(success), other(error).
  */
 unsigned char pke_mod_mul(const unsigned int *modulus, const unsigned int *a, const unsigned int *b,
@@ -212,60 +212,60 @@ unsigned char pke_mod_mul(const unsigned int *modulus, const unsigned int *a, co
 
 /**
  * @brief       ainv = a^(-1) mod modulus.
- * @param[in]   modulus        - modulus.
- * @param[in]   a             - integer a.
- * @param[in]   modWordLen    - word length of modulus, ainv.
- * @param[in]   aWordLen     - word length of integer a.
- * @param[out]    ainv         - ainv = a^(-1) mod modulus.
+ * @param[in]   modulus     - modulus.
+ * @param[in]   a           - integer a.
+ * @param[in]   modWordLen  - word length of modulus, ainv.
+ * @param[in]   aWordLen    - word length of integer a.
+ * @param[out]  ainv        - ainv = a^(-1) mod modulus.
  * @return:     PKE_SUCCESS(success), other(inverse not exists or error).
  */
 unsigned char pke_mod_inv(const unsigned int *modulus, const unsigned int *a, unsigned int *ainv, unsigned int modWordLen,
                    unsigned int aWordLen);
 
 /**
- * @brief        a = a/(2^n).
- * @param[in]   a            - big integer a.
+ * @brief       a = a/(2^n).
+ * @param[in]   a           - big integer a.
  * @param[in]   aWordLen    - word length of a.
- * @param[in]   n            - exponent of 2^n.
- * @return        word length of a = a/(2^n).
- * @attention:    1. make sure aWordLen is real word length of a.
- *                 2. a may be 0, then aWordLen is 0, to make sure aWordLen-1 is available, so data
- *                   type of aWordLen is int32_t, not uint32_t.
+ * @param[in]   n           - exponent of 2^n.
+ * @return      word length of a = a/(2^n).
+ * @attention:  1. make sure aWordLen is real word length of a.
+ *              2. a may be 0, then aWordLen is 0, to make sure aWordLen-1 is available, so data
+ *                 type of aWordLen is int32_t, not uint32_t.
  */
 unsigned int div2n_u32(unsigned int a[], int aWordLen, unsigned int n);
 
 /**
- * @brief        c = a - b.
- * @param[in]   a         - integer a.
- * @param[in]   b         - integer b.
- * @param[in]   wordLen    - the length of a and b.
- * @param[out]  c         - integer c = a - b.
- * @return        none.
+ * @brief       c = a - b.
+ * @param[in]   a       - integer a.
+ * @param[in]   b       - integer b.
+ * @param[in]   wordLen - the length of a and b.
+ * @param[out]  c       - integer c = a - b.
+ * @return      none.
  */
 void sub_u32(unsigned int *a, unsigned int *b, unsigned int *c, unsigned int wordLen);
 
 /**
- * @brief        c = a mod b.
- * @param[in]   a              - integer a.
- * @param[in]   b              - integer b.
+ * @brief       c = a mod b.
+ * @param[in]   a           - integer a.
+ * @param[in]   b           - integer b.
  * @param[in]   aWordLen    - word length of a.
  * @param[in]   bWordLen    - word length of b.
- * @param[in]   b_h            - parameter b_h.
+ * @param[in]   b_h         - parameter b_h.
  * @param[in]   b_n1        - parameter b_n1.
- * @param[out]  c            - c = a mod b.
- * @return        PKE_SUCCESS(success), other(error).
+ * @param[out]  c           - c = a mod b.
+ * @return      PKE_SUCCESS(success), other(error).
  */
 unsigned char pke_mod(unsigned int *a, unsigned int aWordLen, unsigned int *b, unsigned int *b_h, unsigned int *b_n1,
                 unsigned int bWordLen, unsigned int *c);
 
 /**
  * @brief       ECCP curve point mul(random point), Q=[k]P.
- * @param[in]   curve    - ECCP_CURVE struct pointer.
- * @param[in]   k         - scalar.
- * @param[in]   Px         - x coordinate of point P.
- * @param[in]   Py         - y coordinate of point P.
- * @param[out]  Qx         - x coordinate of point Q=[k]P.
- * @param[out]  Qy         - y coordinate of point Q=[k]P.
+ * @param[in]   curve   - ECCP_CURVE struct pointer.
+ * @param[in]   k       - scalar.
+ * @param[in]   Px      - x coordinate of point P.
+ * @param[in]   Py      - y coordinate of point P.
+ * @param[out]  Qx      - x coordinate of point Q=[k]P.
+ * @param[out]  Qy      - y coordinate of point Q=[k]P.
  * @return      PKE_SUCCESS(success), other(error).
  */
 unsigned char pke_eccp_point_mul(eccp_curve_t *curve, unsigned int *k, unsigned int *Px, unsigned int *Py,
@@ -273,11 +273,11 @@ unsigned char pke_eccp_point_mul(eccp_curve_t *curve, unsigned int *k, unsigned 
 
 /**
  * @brief       ECCP curve point del point, Q=2P.
- * @param[in]   curve    - ECCP_CURVE struct pointer.
- * @param[in]   Px         - x coordinate of point P.
- * @param[in]   Py         - y coordinate of point P.
- * @param[out]  Qx         - x coordinate of point Q=2P.
- * @param[out]  Qy         - y coordinate of point Q=2P.
+ * @param[in]   curve   - ECCP_CURVE struct pointer.
+ * @param[in]   Px      - x coordinate of point P.
+ * @param[in]   Py      - y coordinate of point P.
+ * @param[out]  Qx      - x coordinate of point Q=2P.
+ * @param[out]  Qy      - y coordinate of point Q=2P.
  * @return      PKE_SUCCESS(success), other(error).
  */
 unsigned char pke_eccp_point_del(eccp_curve_t *curve, unsigned int *Px, unsigned int *Py,
@@ -285,13 +285,13 @@ unsigned char pke_eccp_point_del(eccp_curve_t *curve, unsigned int *Px, unsigned
 
 /**
  * @brief       ECCP curve point add, Q=P1+P2.
- * @param[in]   curve    - eccp curve struct pointer.
+ * @param[in]   curve   - eccp curve struct pointer.
  * @param[in]   P1x     - x coordinate of point P1.
  * @param[in]   P1y     - y coordinate of point P1.
  * @param[in]   P2x     - x coordinate of point P2.
  * @param[in]   P2y     - y coordinate of point P2.
- * @param[out]  Qx         - x coordinate of point Q=P1+P2.
- * @param[out]  Qy         - y coordinate of point Q=P1+P2.
+ * @param[out]  Qx      - x coordinate of point Q=P1+P2.
+ * @param[out]  Qy      - y coordinate of point Q=P1+P2.
  * @return      PKE_SUCCESS(success), other(error).
  */
 unsigned char pke_eccp_point_add(eccp_curve_t *curve, unsigned int *P1x, unsigned int *P1y, unsigned int *P2x, unsigned int *P2y,
@@ -304,40 +304,40 @@ unsigned char eccp_pointDouble(eccp_curve_t *curve, unsigned int *Px, unsigned i
 
 /**
  * @brief       check whether the input point P is on ECCP curve or not.
- * @param[in]   curve    - ECCP_CURVE struct pointer.
- * @param[in]   Px        - x coordinate of point P.
- * @param[in]   Py        - y coordinate of point P.
+ * @param[in]   curve   - ECCP_CURVE struct pointer.
+ * @param[in]   Px      - x coordinate of point P.
+ * @param[in]   Py      - y coordinate of point P.
  * @return      PKE_SUCCESS(success, on the curve), other(error or not on the curve).
  */
 unsigned char pke_eccp_point_verify(eccp_curve_t *curve, unsigned int *Px, unsigned int *Py);
 
 /**
- * @brief        get ECCP key pair(the key pair could be used in ECDSA/ECDH).
- * @param[in]    curve    - eccp curve struct pointer.
- * @param[out]    priKey    - private key, big-endian.
- * @param[out]    pubKey    - public key, big-endian.
- * @return        PKE_SUCCESS(success), other(error).
+ * @brief       get ECCP key pair(the key pair could be used in ECDSA/ECDH).
+ * @param[in]   curve   - eccp curve struct pointer.
+ * @param[out]  priKey  - private key, big-endian.
+ * @param[out]  pubKey  - public key, big-endian.
+ * @return      PKE_SUCCESS(success), other(error).
  */
 unsigned char eccp_getkey(eccp_curve_t *curve, unsigned char *priKey, unsigned char *pubKey);
 
 /**
  * @brief       c25519 point mul(random point), Q=[k]P.
- * @param[in]   curve    - c25519 curve struct pointer.
- * @param[in]      k        - scalar.
- * @param[in]   Pu        - u coordinate of point P.
- * @param[out]  Qu        - u coordinate of point Q=[k]P.
+ * @param[in]   curve   - c25519 curve struct pointer.
+ * @param[in]   k       - scalar.
+ * @param[in]   Pu      - u coordinate of point P.
+ * @param[out]  Qu      - u coordinate of point Q=[k]P.
  * @return      PKE_SUCCESS(success), other(error).
  */
 unsigned char pke_x25519_point_mul(mont_curve_t *curve, unsigned int *k, unsigned int *Pu, unsigned int *Qu);
 
 /**
  * @brief       edwards25519 curve point mul(random point), Q=[k]P.
- * @param[in]   curve    - edwards25519 curve struct pointer.
- * @param[in]      k        - scalar.
- * @param[in]   Px         - x coordinate of point P.
- * @param[in]   Py         - y coordinate of point P.
- * @param[out]  Qx         - x coordinate of point Q=[k]P.
- * @param[out]  Qy         - y coordinate of point Q=[k]P.
+ * @param[in]   curve   - edwards25519 curve struct pointer.
+ * @param[in]   k       - scalar.
+ * @param[in]   Px      - x coordinate of point P.
+ * @param[in]   Py      - y coordinate of point P.
+ * @param[out]  Qx      - x coordinate of point Q=[k]P.
+ * @param[out]  Qy      - y coordinate of point Q=[k]P.
  * @return      PKE_SUCCESS(success), other(error).
  */
 unsigned char pke_ed25519_point_mul(edward_curve_t *curve, unsigned int *k, unsigned int *Px, unsigned int *Py,
@@ -345,13 +345,13 @@ unsigned char pke_ed25519_point_mul(edward_curve_t *curve, unsigned int *k, unsi
 
 /**
  * @brief       edwards25519 point add, Q=P1+P2.
- * @param[in]   curve    - edwards25519 curve struct pointer.
+ * @param[in]   curve   - edwards25519 curve struct pointer.
  * @param[in]   P1x     - x coordinate of point P1.
  * @param[in]   P1y     - y coordinate of point P1.
  * @param[in]   P2x     - x coordinate of point P2.
  * @param[in]   P2y     - y coordinate of point P2.
- * @param[out]  Qx         - x coordinate of point Qx=P1x+P2x.
- * @param[out]  Qy         - y coordinate of point Qy=P1y+P2y.
+ * @param[out]  Qx      - x coordinate of point Qx=P1x+P2x.
+ * @param[out]  Qy      - y coordinate of point Qy=P1y+P2y.
  * @return      PKE_SUCCESS(success), other(error).
  */
 unsigned char pke_ed25519_point_add(edward_curve_t *curve, unsigned int *P1x, unsigned int *P1y, unsigned int *P2x, unsigned int *P2y,

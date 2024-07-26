@@ -21,18 +21,18 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-/**    @page I2C
+/** @page I2C
  *
- *    Introduction
- *    ===============
- *    i2c support master mode or slave mode.
+ *  Introduction
+ *  ===============
+ *  i2c support master mode or slave mode.
  *
- *    API Reference
- *    ===============
- *    Header File: i2c.h
- *    
- *    How to use this driver
- *    ==============
+ *  API Reference
+ *  ===============
+ *  Header File: i2c.h
+ *  
+ *  How to use this driver
+ *  ==============
  -# I2C Master
   -# Initialization and Configuration
      -# nodma/dma:
@@ -122,18 +122,18 @@ extern unsigned char i2c_slave_rx_index;
  *  @brief  select pin as SDA and SCL of i2c
  */
 typedef enum{
-    I2C_GPIO_SDA_B3        = GPIO_PB3,
-    I2C_GPIO_SDA_C2        = GPIO_PC2,
-    I2C_GPIO_SDA_E2        = GPIO_PE2,
-    I2C_GPIO_SDA_E3        = GPIO_PE3,
+    I2C_GPIO_SDA_B3     = GPIO_PB3,
+    I2C_GPIO_SDA_C2     = GPIO_PC2,
+    I2C_GPIO_SDA_E2     = GPIO_PE2,
+    I2C_GPIO_SDA_E3     = GPIO_PE3,
 }i2c_sda_pin_e;
 
 
 typedef enum{
-    I2C_GPIO_SCL_B2        = GPIO_PB2,
-    I2C_GPIO_SCL_C1        = GPIO_PC1,
-    I2C_GPIO_SCL_E0        = GPIO_PE0,
-    I2C_GPIO_SCL_E1        = GPIO_PE1,
+    I2C_GPIO_SCL_B2     = GPIO_PB2,
+    I2C_GPIO_SCL_C1     = GPIO_PC1,
+    I2C_GPIO_SCL_E0     = GPIO_PE0,
+    I2C_GPIO_SCL_E1     = GPIO_PE1,
 }i2c_scl_pin_e;
 
 
@@ -148,7 +148,7 @@ typedef enum{
 
 
 typedef enum{
-    I2C_RX_BUFF_CLR          = BIT(6),
+    I2C_RX_BUFF_CLR         = BIT(6),
     I2C_TX_BUFF_CLR         = BIT(7),
 }i2c_buff_clr_e;
 
@@ -170,7 +170,7 @@ typedef enum{
 
 
 typedef enum{
-I2C_TX_DONE_CLR          = BIT(4),
+I2C_TX_DONE_CLR         = BIT(4),
 }i2c_irq_clr_e;
 
 /**
@@ -221,7 +221,7 @@ static inline void i2c_rx_irq_trig_cnt(unsigned char cnt)
 
 /**
  * @brief      The function of this interface is equivalent to that after the user finishes calling the write or read interface, the stop signal is not sent,
- *                and then the write or read command is executed again. The driver defaults that every write or read API will send a stop command at the end
+ *             and then the write or read command is executed again. The driver defaults that every write or read API will send a stop command at the end
  * @param[in]  en - Input parameters.Decide whether to disable the stop function after each write or read interface
  * @return     none
  */
@@ -267,8 +267,8 @@ static inline void i2c_clr_irq_mask(i2c_irq_mask_e mask)
 /**
  * @brief      This function serves to get i2c interrupt status.
  * @param[in] status     i2c interrupt status.
- * @retval      non-zero   -  the interrupt occurred.
- * @retval      zero  -  the interrupt did not occur.
+ * @retval    non-zero   -  the interrupt occurred.
+ * @retval    zero  -  the interrupt did not occur.
  */
 static inline unsigned char i2c_get_irq_status(i2c_irq_status_e status)
 {
@@ -472,7 +472,7 @@ void i2c_slave_set_tx_dma( unsigned char *data, unsigned char len);
  * @param[in]  data - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception.
  *                    and the actual buffer size defined by the user needs to be not smaller than the len, otherwise there may be an out-of-bounds problem.
  * @param[in]  len  - This parameter is used to set the size of the received dma and must be set to a multiple of 4. The maximum value that can be set is 0xFFFFFC.
- * @return        none
+ * @return     none
  */
 void i2c_slave_set_rx_dma(unsigned char *data, unsigned char len);
 

@@ -29,29 +29,43 @@ extern "C" {
 #endif
 
 
-// #include "../crypto_hal/pke_common.h"
 #include "lib/include/pke/pke_common.h"
 
 
 
-
-//sample ecc curve
+//sample ecc GF(p) curve
 #define SUPPORT_BRAINPOOLP160R1
+#define SUPPORT_BRAINPOOLP192R1
+#define SUPPORT_BRAINPOOLP224R1
+#define SUPPORT_BRAINPOOLP256R1
+#define SUPPORT_BRAINPOOLP320R1
+#define SUPPORT_BRAINPOOLP384R1
+#define SUPPORT_BRAINPOOLP512R1
+#define SUPPORT_SECP160R1
+#define SUPPORT_SECP160R2
 #define SUPPORT_SECP192R1
 #define SUPPORT_SECP224R1
 #define SUPPORT_SECP256R1
 #define SUPPORT_SECP384R1
-#define SUPPORT_BRAINPOOLP512R1
+#if (ECCP_MAX_BIT_LEN >= 521)
 #define SUPPORT_SECP521R1
-
-
-
-
+#endif
+#define SUPPORT_SECP160K1
+#define SUPPORT_SECP192K1
+#define SUPPORT_SECP224K1
+#define SUPPORT_SECP256K1
+#define SUPPORT_BN256
+#if (ECCP_MAX_BIT_LEN >= 638)
+#define SUPPORT_BN638
+#endif
+#if (ECCP_MAX_BIT_LEN >= 1024)
+#define SUPPORT_ANDERS_1024_1
+#endif
 
 
 
 // eccp curve struct
-#ifdef PKE_HP
+#if (defined(PKE_HP) || defined(PKE_UHP))
 typedef struct
 {
     unsigned int eccp_p_bitLen;        //bit length of prime p
@@ -70,59 +84,116 @@ typedef struct
 #else
 typedef struct
 {
-    unsigned int        eccp_p_bitLen;        //bit length of prime p
-    unsigned int        eccp_n_bitLen;        //bit length of order n
-    const unsigned int *eccp_p;              //prime p
-    const unsigned int *eccp_p_h;
-    const unsigned int *eccp_p_n0;
-    const unsigned int *eccp_a;
-    const unsigned int *eccp_b;
-    const unsigned int *eccp_Gx;
-    const unsigned int *eccp_Gy;
-    const unsigned int *eccp_n;              //order of curve or point(Gx,Gy)
-    const unsigned int *eccp_n_h;
-    const unsigned int *eccp_n_n0;
-} eccp_curve_t;
+    unsigned int eccp_p_bitLen;        //bit length of prime p
+    unsigned int eccp_n_bitLen;        //bit length of order n
+    unsigned int *eccp_p;              //prime p
+    unsigned int *eccp_p_h;
+    unsigned int *eccp_p_n0;
+    unsigned int *eccp_a;
+    unsigned int *eccp_b;
+    unsigned int *eccp_Gx;
+    unsigned int *eccp_Gy;
+    unsigned int *eccp_n;              //order of curve or point(Gx,Gy)
+    unsigned int *eccp_n_h;
+    unsigned int *eccp_n_n0;
 #endif
+} eccp_curve_t;
+
 
 
 #ifdef SUPPORT_BRAINPOOLP160R1
-extern const eccp_curve_t brainpoolp160r1[1];
+extern eccp_curve_t brainpoolp160r1[1];
 #endif
 
-#ifdef SUPPORT_SECP192R1
-extern const eccp_curve_t secp192r1[1];
+#ifdef SUPPORT_BRAINPOOLP192R1
+extern eccp_curve_t brainpoolp192r1[1];
 #endif
 
-#ifdef SUPPORT_SECP224R1
-extern const eccp_curve_t secp224r1[1];
+#ifdef SUPPORT_BRAINPOOLP224R1
+extern eccp_curve_t brainpoolp224r1[1];
 #endif
 
-#ifdef SUPPORT_SECP256R1
-extern const eccp_curve_t secp256r1[1];
+#ifdef SUPPORT_BRAINPOOLP256R1
+extern eccp_curve_t brainpoolp256r1[1];
 #endif
 
-#ifdef SUPPORT_SECP384R1
-extern const eccp_curve_t secp384r1[1];
+#ifdef SUPPORT_BRAINPOOLP320R1
+extern eccp_curve_t brainpoolp320r1[1];
+#endif
+
+#ifdef SUPPORT_BRAINPOOLP384R1
+extern eccp_curve_t brainpoolp384r1[1];
 #endif
 
 #ifdef SUPPORT_BRAINPOOLP512R1
-extern const eccp_curve_t brainpoolp512r1[1];
+extern eccp_curve_t brainpoolp512r1[1];
+#endif
+
+#ifdef SUPPORT_SECP160R1
+extern eccp_curve_t secp160r1[1];
+#endif
+
+#ifdef SUPPORT_SECP160R2
+extern eccp_curve_t secp160r2[1];
+#endif
+
+#ifdef SUPPORT_SECP192R1
+extern eccp_curve_t secp192r1[1];
+#endif
+
+#ifdef SUPPORT_SECP224R1
+extern eccp_curve_t secp224r1[1];
+#endif
+
+#ifdef SUPPORT_SECP256R1
+extern eccp_curve_t secp256r1[1];
+#endif
+
+#ifdef SUPPORT_SECP384R1
+extern eccp_curve_t secp384r1[1];
 #endif
 
 #ifdef SUPPORT_SECP521R1
-extern const eccp_curve_t secp521r1[1];
+extern eccp_curve_t secp521r1[1];
 #endif
 
+#ifdef SUPPORT_SECP160K1
+extern eccp_curve_t secp160k1[1];
+#endif
+
+#ifdef SUPPORT_SECP192K1
+extern eccp_curve_t secp192k1[1];
+#endif
+
+#ifdef SUPPORT_SECP224K1
+extern eccp_curve_t secp224k1[1];
+#endif
+
+#ifdef SUPPORT_SECP256K1
+extern eccp_curve_t secp256k1[1];
+#endif
+
+#ifdef SUPPORT_BN256
+extern eccp_curve_t bn256[1];
+#endif
+
+#ifdef SUPPORT_BN638
+extern eccp_curve_t bn638[1];
+#endif
+
+#ifdef SUPPORT_ANDERS_1024_1
+extern eccp_curve_t anders_1024_1[1];
+#endif
 
 
 /********* Curve25519 struct *********/
 typedef struct
 {
     unsigned int p_bitLen;        //bit length of prime p
+    unsigned int n_bitLen;        //bit length of order n
     unsigned int *p;
     unsigned int *p_h;
-#ifndef PKE_HP
+#if (defined(PKE_LP) || defined(PKE_SECURE))
     unsigned int *p_n0;
 #endif
     unsigned int *a24;            //(A-2)/4
@@ -130,7 +201,7 @@ typedef struct
     unsigned int *v;
     unsigned int *n;              //order of curve or point(Gx,Gy)
     unsigned int *n_h;
-#ifndef PKE_HP
+#if (defined(PKE_LP) || defined(PKE_SECURE))
     unsigned int *n_n0;
 #endif
     unsigned int *h;
@@ -141,9 +212,10 @@ typedef struct
 typedef struct
 {
     unsigned int p_bitLen;        //bit length of prime p
+    unsigned int n_bitLen;        //bit length of order n
     unsigned int *p;
     unsigned int *p_h;
-#ifndef PKE_HP
+#if (defined(PKE_LP) || defined(PKE_SECURE))
     unsigned int *p_n0;
 #endif
     unsigned int *d;
@@ -151,7 +223,7 @@ typedef struct
     unsigned int *Gy;
     unsigned int *n;              //order of curve or point(Gx,Gy)
     unsigned int *n_h;
-#ifndef PKE_HP
+#if (defined(PKE_LP) || defined(PKE_SECURE))
     unsigned int *n_n0;
 #endif
     unsigned int *h;
@@ -165,3 +237,4 @@ typedef struct
 #endif
 
 #endif
+

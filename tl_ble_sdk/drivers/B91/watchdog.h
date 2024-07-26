@@ -81,7 +81,7 @@ static inline void wd_clear(void)
 
 /**
  * @brief     This function set the watchdog trigger time.
- *               Because the lower 8bit of the wd timer register will always be 0, there will be an error ,
+ *            Because the lower 8bit of the wd timer register will always be 0, there will be an error ,
               The time error = (0x00~0xff)/(APB clock frequency)
  * @param[in] period_ms - The watchdog trigger time. Unit is  millisecond
  * @return    none

@@ -62,16 +62,16 @@
         exception_mstatus = read_csr(NDS_MSTATUS);
         exception_mcause = read_csr(NDS_MCAUSE);
         exception_mdcause = read_csr(NDS_MDCAUSE);
-     while(1){
-         /* Unhandled Trap */
-         for(volatile unsigned int i = 0; i < 0xffff; i++)
-         {
-             __asm__("nop");
-         }
-     }
+    while(1){
+        /* Unhandled Trap */
+        for(volatile unsigned int i = 0; i < 0xffff; i++)
+        {
+            __asm__("nop");
+        }
+    }
  }
  _attribute_ram_code_sec_noinline_  __attribute__((weak)) void trap_entry(void) __attribute__ ((interrupt ("machine") , aligned(4)));
  void trap_entry(void)
  {
-     except_handler();
+    except_handler();
  }

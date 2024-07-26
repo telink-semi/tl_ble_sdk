@@ -35,15 +35,15 @@ dma_chain_config_t g_audio_rx_dma_list_cfg;
 
 audio_i2s_codec_config_t audio_i2s_codec_config=
 {
-   .audio_in_mode             =BIT_16_MONO,
-   .audio_out_mode            =BIT_16_MONO_FIFO0,
-   .i2s_data_select            =I2S_BIT_16_DATA,
-   .codec_data_select        =CODEC_BIT_16_DATA,
-   .i2s_codec_m_s_mode        =I2S_M_CODEC_S,
-   .in_digital_gain            =CODEC_IN_D_GAIN_0_DB,
-   .in_analog_gain             =CODEC_IN_A_GAIN_16_DB,    //BLE SDK use: default 16dB
-   .out_digital_gain           =CODEC_OUT_D_GAIN_0_DB,
-   .out_analog_gain            =CODEC_OUT_A_GAIN_0_DB,
+   .audio_in_mode           =BIT_16_MONO,
+   .audio_out_mode          =BIT_16_MONO_FIFO0,
+   .i2s_data_select         =I2S_BIT_16_DATA,
+   .codec_data_select       =CODEC_BIT_16_DATA,
+   .i2s_codec_m_s_mode      =I2S_M_CODEC_S,
+   .in_digital_gain         =CODEC_IN_D_GAIN_0_DB,
+   .in_analog_gain          =CODEC_IN_A_GAIN_16_DB, //BLE SDK use: default 16dB
+   .out_digital_gain        =CODEC_OUT_D_GAIN_0_DB,
+   .out_analog_gain         =CODEC_OUT_A_GAIN_0_DB,
    .mic_input_mode_select   =DIFF_ENDED_INPUT,//0 single-ended input, 1 differential input
    .dac_output_chn_select   =DAC_OUTPUT_L_R_CHN,//0 right and left channel both active ,1 only left channel active
 };
@@ -127,10 +127,10 @@ void audio_set_codec_mic_input_mode (audio_input_mode_select_e input_mode)
 }
 
 /**
- *     @brief      This function serves to set in path digital and analog gain  .
- *     @param[in]  d_gain - digital gain value
- *     @param[in]  a_gain - analog  gain value
- *     @return     none
+ *  @brief      This function serves to set in path digital and analog gain  .
+ *  @param[in]  d_gain - digital gain value
+ *  @param[in]  a_gain - analog  gain value
+ *  @return     none
  */
 void audio_set_codec_in_path_a_d_gain (codec_in_path_digital_gain_e d_gain,codec_in_path_analog_gain_e a_gain )
 {
@@ -139,10 +139,10 @@ void audio_set_codec_in_path_a_d_gain (codec_in_path_digital_gain_e d_gain,codec
 }
 
 /**
- *     @brief      This function serves to set out path digital and analog gain  .
- *     @param[in]  d_gain - digital gain value
- *     @param[in]  a_gain - analog  gain value
- *     @return     none
+ *  @brief      This function serves to set out path digital and analog gain  .
+ *  @param[in]  d_gain - digital gain value
+ *  @param[in]  a_gain - analog  gain value
+ *  @return     none
  */
  void audio_set_codec_out_path_a_d_gain (codec_out_path_digital_gain_e d_gain,codec_out_path_analog_gain_e a_gain)
 {
@@ -178,9 +178,9 @@ void audio_set_output_chn(audio_output_chn_e chn)
 }
 
 /**
- *     @brief      This function serves to choose which is master to provide clock.
- *     @param[in]  chn_wl: select word  length and audio channel number
- *     @return     none
+ *  @brief      This function serves to choose which is master to provide clock.
+ *  @param[in]  chn_wl: select word  length and audio channel number
+ *  @return     none
  */
 void audio_set_chn_wl(audio_channel_wl_mode_e chn_wl)
 {
@@ -307,9 +307,9 @@ void audio_codec_set_micbias(power_switch_e en, micbias_work_mode_e micbias_mode
 }
 
 /**
- *     @brief      This function serves to set codec supply voltage
- *     @param[in]  volt - the voltage of codec supply.A1 2.8V default,A0 1.8V default.
- *     @return     none
+ *  @brief      This function serves to set codec supply voltage
+ *  @param[in]  volt - the voltage of codec supply.A1 2.8V default,A0 1.8V default.
+ *  @return     none
  *
  */
 void audio_set_codec_supply (codec_volt_supply_e volt)
@@ -405,7 +405,7 @@ void audio_set_dmic_pin(dmic_pin_group_e pin_gp)
   */
   void audio_rx_dma_dis(void)
  {
-      dma_chn_dis(audio_rx_dma_chn);
+     dma_chn_dis(audio_rx_dma_chn);
  }
 
 
@@ -458,7 +458,7 @@ void audio_rx_dma_config(dma_chn_e chn,unsigned short *dst_addr,unsigned int dat
  * @param[in] dst_addr    - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception.
  *                          and the actual buffer size defined by the user needs to be not smaller than the data_len, otherwise there may be an out-of-bounds problem.
  * @param[in] data_len    - This parameter is used to set the size of the received dma and must be set to a multiple of 4. The maximum value that can be set is 0xFFFFFC.
- * @return       none
+ * @return    none
  */
 void audio_rx_dma_add_list_element(dma_chain_config_t *config_addr,dma_chain_config_t *llpointer ,unsigned short * dst_addr,unsigned int data_len)
 {
@@ -620,7 +620,7 @@ void audio_init_i2c(audio_flow_mode_e flow_mode,audio_sample_rate_e rate,audio_c
 /**
  * @brief     This function serves to config codec for dac.
  * @param[in] mode        - select i2s as master or slave
- * @param[in] rate          - audio sampling rate
+ * @param[in] rate        - audio sampling rate
  * @param[in] data_select - codec dac word length
  * @param[in] wreg_mode   - mcu or i2c config codec
  * @return    none
@@ -637,8 +637,8 @@ void audio_codec_dac_config(i2s_codec_m_s_mode_e mode,audio_sample_rate_e rate,c
 
         if(audio_i2s_codec_config.dac_output_chn_select)
         {
-            BM_CLR(reg_audio_codec_dac_ctr,FLD_AUDIO_CODEC_DAC_SB);            //active DAC power
-            BM_SET(reg_audio_codec_dac_ctr,FLD_AUDIO_CODEC_DAC_LEFT_ONLY);    //active left channel only
+            BM_CLR(reg_audio_codec_dac_ctr,FLD_AUDIO_CODEC_DAC_SB);         //active DAC power
+            BM_SET(reg_audio_codec_dac_ctr,FLD_AUDIO_CODEC_DAC_LEFT_ONLY);  //active left channel only
         }
         else
         {
@@ -887,7 +887,7 @@ void audio_mux_config(audio_flow_e audio_flow, audio_in_mode_e ain0_mode , audio
 /**
  * @brief     This function serves to config interface, word length, and m/s .
  * @param[in] i2s_format - interface protocol
- * @param[in] wl            - audio data word length
+ * @param[in] wl         - audio data word length
  * @param[in] m_s        - select i2s as master or slave
  * @param[in] i2s_config_t - the prt of i2s_config_t that configure i2s lr_clk phase and lr_clk swap.
  *  i2s_config_t->i2s_lr_clk_invert_select-lr_clk phase control(in RJ,LJ or i2s modes),in i2s mode(opposite phasing in  RJ,LJ mode), 0=right channel data when lr_clk high ,1=right channel data when lr_clk low.
@@ -911,7 +911,7 @@ audio_i2s_clk_config_t   audio_i2s_8k_config=
 {
     .i2s_clk_step=1,        //set i2s clk step
     .i2s_clk_mode=8,        //set i2s clk mode,set i2s clk=192M*(1/8)= 24M
-    .i2s_bclk_div=12,        //24M/(2*12) = 1M bclk
+    .i2s_bclk_div=12,       //24M/(2*12) = 1M bclk
     .i2s_lrclk_adc_div=125, //adc sample rate =1M/125 = 8k
     .i2s_lrclk_dac_div=125, //dac sample rate =1M/125 = 8k
 };
@@ -1050,7 +1050,7 @@ audio_i2s_clk_config_t   audio_i2s_44k1_config [AUDIO_MATCH_SIZE]=
 /**
  * @brief     This function serves to set i2s clock and audio sampling rate when i2s as master.
  * @param[in] audio_rate - audio sampling rate
- * @param[in] match         - the match of audio rate.
+ * @param[in] match      - the match of audio rate.
  * @param[in] match_en   - initial must 0, then change rate must 1
  * @return    none
  * @attention i2s clock  divider from pll,sampling rate calculation is based on pll=192M,so pll must be 192M
@@ -1121,7 +1121,7 @@ _attribute_ram_code_sec_noinline_ void  audio_set_i2s_clock (audio_sample_rate_e
  * @param[in] in_buff     - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception.
  *                          and the actual buffer size defined by the user needs to be not smaller than the buff_size, otherwise there may be an out-of-bounds problem.
  * @param[in] buff_size   - This parameter is used to set the size of the received dma and must be set to a multiple of 4. The maximum value that can be set is 0xFFFFFC.
- * @return       none
+ * @return    none
  */
  void audio_rx_dma_chain_init (dma_chn_e chn,unsigned short * in_buff,unsigned int buff_size )
 {
@@ -1148,17 +1148,17 @@ void audio_tx_dma_chain_init (dma_chn_e chn,unsigned short * out_buff,unsigned i
 
 
 
-#define        WM8731_ANA_AUDIO_PATH_CTRL            0x08        //Analogue Audio Path Control
-#define        WM8731_DIG_AUDIO_PATH_CTRL            0x0a        //Digital Audio Path Control
-#define        WM8731_POWER_DOWN_CTRL                0x0c        //Power Down Control
-#define        WM8731_ST_LINE_VOL                  0x00        //Set linmute volume
-#define        WM8731_ST_RINE_VOL                  0x02        //Set rinmute volume
-#define        WM8731_DIG_AUDIO_INTERFACE_FORMAT    0x0e        //Digital Audio Interface Format
-#define        WM8731_SAMPLING_CTRL                 0x10        //Sampling Control
-#define        WM8731_ACTIVE_CTRL                     0x12        //Active Control
-#define        WM8731_RESET_CTRL                     0x1e        //Reset Register
+#define     WM8731_ANA_AUDIO_PATH_CTRL          0x08        //Analogue Audio Path Control
+#define     WM8731_DIG_AUDIO_PATH_CTRL          0x0a        //Digital Audio Path Control
+#define     WM8731_POWER_DOWN_CTRL              0x0c        //Power Down Control
+#define     WM8731_ST_LINE_VOL                  0x00        //Set linmute volume
+#define     WM8731_ST_RINE_VOL                  0x02        //Set rinmute volume
+#define     WM8731_DIG_AUDIO_INTERFACE_FORMAT   0x0e        //Digital Audio Interface Format
+#define     WM8731_SAMPLING_CTRL                0x10        //Sampling Control
+#define     WM8731_ACTIVE_CTRL                  0x12        //Active Control
+#define     WM8731_RESET_CTRL                   0x1e        //Reset Register
 
-unsigned char LineIn_To_I2S_CMD_TAB[9][2]={             {WM8731_RESET_CTRL,                 0x00},
+unsigned char LineIn_To_I2S_CMD_TAB[9][2]={         {WM8731_RESET_CTRL,                 0x00},
                                             {WM8731_ST_LINE_VOL,                0x10},
                                             {WM8731_ST_RINE_VOL,                0x10},
                                             {WM8731_ANA_AUDIO_PATH_CTRL,        0x13},

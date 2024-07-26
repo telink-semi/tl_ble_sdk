@@ -34,7 +34,7 @@
 
 #if (FEATURE_TEST_MODE == TEST_LL_DLE)
 
-int    central_pairing_enable = 0;
+int central_pairing_enable = 0;
 u16 central_unpair_enable = 0;
 
 u16 central_disconnect_connhandle;   //mark the central connection which is in un_pair disconnection flow
@@ -45,14 +45,14 @@ u16 central_disconnect_connhandle;   //mark the central connection which is in u
 
 #if (UI_KEYBOARD_ENABLE)
 
-_attribute_ble_data_retention_    int     key_not_released;
+_attribute_ble_data_retention_  int     key_not_released;
 
 
-#define CONSUMER_KEY                      1
-#define KEYBOARD_KEY                      2
-#define PAIR_UNPAIR_KEY                  3
+#define CONSUMER_KEY                1
+#define KEYBOARD_KEY                2
+#define PAIR_UNPAIR_KEY             3
 
-_attribute_ble_data_retention_    u8         key_type;
+_attribute_ble_data_retention_  u8      key_type;
 
 /**
  * @brief   Check changed key value.
@@ -63,7 +63,7 @@ void key_change_proc(void)
 {
 
     u8 key0 = kb_event.keycode[0];
-//    u8 key_buf[8] = {0,0,0,0,0,0,0,0};
+//  u8 key_buf[8] = {0,0,0,0,0,0,0,0};
 
     key_not_released = 1;
     if (kb_event.cnt == 2)   //two key press
@@ -92,11 +92,11 @@ void key_change_proc(void)
             For users, you should known that this is not a good method, you should manage your device and GATT data transfer
             according to  conn_dev_list[]
              * */
-//            for(int i=ACL_CENTRAL_MAX_NUM; i < (ACL_CENTRAL_MAX_NUM + ACL_PERIPHR_MAX_NUM); i++){ //peripheral index is from "ACL_CENTRAL_MAX_NUM" to "ACL_CENTRAL_MAX_NUM + ACL_PERIPHR_MAX_NUM - 1"
-//                if(conn_dev_list[i].conn_state){
-//                    blc_gatt_pushHandleValueNotify (conn_dev_list[i].conn_handle, HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
-//                }
-//            }
+//          for(int i=ACL_CENTRAL_MAX_NUM; i < (ACL_CENTRAL_MAX_NUM + ACL_PERIPHR_MAX_NUM); i++){ //peripheral index is from "ACL_CENTRAL_MAX_NUM" to "ACL_CENTRAL_MAX_NUM + ACL_PERIPHR_MAX_NUM - 1"
+//              if(conn_dev_list[i].conn_state){
+//                  blc_gatt_pushHandleValueNotify (conn_dev_list[i].conn_handle, HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+//              }
+//          }
         }
         else{
             key_type = PAIR_UNPAIR_KEY;
@@ -163,7 +163,7 @@ void key_change_proc(void)
 
 
 
-_attribute_ble_data_retention_        static u32 keyScanTick = 0;
+_attribute_ble_data_retention_      static u32 keyScanTick = 0;
 
 /**
  * @brief      keyboard task handler

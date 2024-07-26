@@ -56,7 +56,7 @@
  * @brief     This function set the pin's output level.
  * @param[in] pin - the pin needs to set its output level
  * @param[in] value - value of the output level(1: high 0: low)
- * @author      BLE group .
+ * @author    BLE group .
  * @return    none
  */
 #define gpio_write(pin,value)       gpio_set_level(pin,value)
@@ -65,7 +65,7 @@
 /**
  * @brief      This function enable the output function of a pin.
  * @param[in]  pin - the pin needs to set the output function(1: enable,0: disable)
- * @author       BLE group .
+ * @author     BLE group .
  * @return     none
  */
 #define gpio_set_output_en(pin,value)  gpio_set_output(pin,value)
@@ -74,7 +74,7 @@
 /**
  * @brief     This function read the pin's input/output level.
  * @param[in] pin - the pin needs to read its level
- * @author      BLE group .
+ * @author    BLE group .
  * @return    the pin's level(1: high 0: low)
  */
 #define  gpio_read(pin)   gpio_get_level(pin)
@@ -83,7 +83,7 @@
 /**
  * @brief      This function servers to enable gpio function.
  * @param[in]  pin - the selected pin.
- * @author       BLE group .
+ * @author     BLE group .
  * @return     none
  */
 #define  gpio_set_gpio_en(pin)   gpio_function_en(pin)
@@ -92,20 +92,20 @@
  * @brief      This function set the input function of a pin.
  * @param[in]  pin - the pin needs to set the input function
  * @param[in]  value - enable or disable the pin's input function(1: enable,0: disable )
- * @author       BLE group .
+ * @author     BLE group .
  * @return     none
  */
 #define  gpio_set_input_en(pin,value)  gpio_set_input (pin,value)
 
 
 /**********************************************************************************************************************
- *                                     stimer  compatibility                                                            *
+ *                                     stimer  compatibility                                                          *
  *********************************************************************************************************************/
 
 /*
  * @brief     This function performs to get system timer tick.
  * @return    system timer tick value.
- * @author      BLE group .
+ * @author    BLE group .
  */
 #define  clock_time  stimer_get_tick
 

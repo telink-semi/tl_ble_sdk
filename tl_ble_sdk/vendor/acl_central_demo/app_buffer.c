@@ -34,17 +34,17 @@
 /********************* ACL connection LinkLayer TX & RX data FIFO allocation, Begin *******************************/
 
 /**
- * @brief    ACL RX buffer, shared by all connections to hold LinkLayer RF RX data.
- *             user should define and initialize this buffer if either ACL Central or ACL Peripheral is used.
+ * @brief   ACL RX buffer, shared by all connections to hold LinkLayer RF RX data.
+ *          user should define and initialize this buffer if either ACL Central or ACL Peripheral is used.
  */
-_attribute_ble_data_retention_    u8    app_acl_rx_fifo[ACL_RX_FIFO_SIZE * ACL_RX_FIFO_NUM] = {0};
+_attribute_ble_data_retention_  u8  app_acl_rx_fifo[ACL_RX_FIFO_SIZE * ACL_RX_FIFO_NUM] = {0};
 
 
 /**
- * @brief    ACL Central TX buffer, shared by all central connections to hold LinkLayer RF TX data.
+ * @brief   ACL Central TX buffer, shared by all central connections to hold LinkLayer RF TX data.
  *          ACL Central TX buffer should be defined only when ACl connection central role is used.
  */
-_attribute_ble_data_retention_    u8    app_acl_cen_tx_fifo[ACL_CENTRAL_TX_FIFO_SIZE * ACL_CENTRAL_TX_FIFO_NUM * ACL_CENTRAL_MAX_NUM] = {0};
+_attribute_ble_data_retention_  u8  app_acl_cen_tx_fifo[ACL_CENTRAL_TX_FIFO_SIZE * ACL_CENTRAL_TX_FIFO_NUM * ACL_CENTRAL_MAX_NUM] = {0};
 
 /******************** ACL connection LinkLayer TX & RX data FIFO allocation, End ***********************************/
 
@@ -55,15 +55,15 @@ _attribute_ble_data_retention_    u8    app_acl_cen_tx_fifo[ACL_CENTRAL_TX_FIFO_
 
 /***************** ACL connection L2CAP RX & TX data Buffer allocation, Begin **************************************/
 /**
- * @brief    L2CAP RX Data buffer for ACL Central
+ * @brief   L2CAP RX Data buffer for ACL Central
  */
-_attribute_ble_data_retention_    u8 app_cen_l2cap_rx_buf[ACL_CENTRAL_MAX_NUM * CENTRAL_L2CAP_BUFF_SIZE];
+_attribute_ble_data_retention_  u8 app_cen_l2cap_rx_buf[ACL_CENTRAL_MAX_NUM * CENTRAL_L2CAP_BUFF_SIZE];
 
 
 /**
- * @brief    L2CAP TX Data buffer for ACL Central
- *             if GATT server on ACL Central used, this buffer must be defined and initialized.
- *             if GATT server on ACL Central not used, this buffer can be saved.
+ * @brief   L2CAP TX Data buffer for ACL Central
+ *          if GATT server on ACL Central used, this buffer must be defined and initialized.
+ *          if GATT server on ACL Central not used, this buffer can be saved.
  */
 //_attribute_ble_data_retention_    u8 app_cen_l2cap_tx_buf[ACL_CENTRAL_MAX_NUM * CENTRAL_L2CAP_BUFF_SIZE];
 

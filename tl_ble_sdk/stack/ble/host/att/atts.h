@@ -27,9 +27,9 @@
 
 #define ATTS_SET_WRITE_CBACK            0x01
 #define ATTS_SET_READ_CBACK             0x02
-#define ATTS_SET_VARIABLE_LEN            0x04    //allow write value length is variable and can change length
+#define ATTS_SET_VARIABLE_LEN           0x04    //allow write value length is variable and can change length
 #define ATTS_SET_ALLOW_WRITE            0x08    //allow write value copy to attribute value ptr
-#define ATTS_SET_ATTR_VALUE_PROPERTIES    0x10    //attribute value is Characteristic attribute properties
+#define ATTS_SET_ATTR_VALUE_PROPERTIES  0x10    //attribute value is Characteristic attribute properties
 
 typedef struct
 {
@@ -48,22 +48,22 @@ typedef int (*atts_w_cb_t)(u16 connHandle, u8 opcode, u16 attrHandle, u8* writeV
 
 typedef struct atts_group
 {
-    struct atts_group            *pNext;
-    const atts_attribute_t            *pAttr;
+    struct atts_group           *pNext;
+    const atts_attribute_t          *pAttr;
 
-    atts_r_cb_t                    readCback;
-    atts_w_cb_t                    writeCback;
-    u16                            startHandle;
-    u16                            endHandle;
+    atts_r_cb_t                 readCback;
+    atts_w_cb_t                 writeCback;
+    u16                         startHandle;
+    u16                         endHandle;
 } atts_group_t;
 
 
 typedef struct{
-    u8 serviceNum;        //the number of the service uuid found
-    u8 num;                //the number of the characteristic uuid found
-    u16 charHandle;        //characteristic handle
-    u16 *charDataLen;    //characteristic data length
-    u8 *charData;        //characteristic data
+    u8 serviceNum;      //the number of the service uuid found
+    u8 num;             //the number of the characteristic uuid found
+    u16 charHandle;     //characteristic handle
+    u16 *charDataLen;   //characteristic data length
+    u8 *charData;       //characteristic data
     u8 *CCC;            //CCC
 }atts_foundCharParam_t;
 
@@ -113,9 +113,9 @@ ble_sts_t   blc_atts_sendErrResponse (u16 connHandle, u8 reqOpcode, u16 attHdlIn
 
 /**
  * @brief       Send ATT Handle Value Notify.
- * @param[in]   connHandle     - connection handle.
- * @param[in]   attHandle     - ATT handle
- * @param[in]   p             - Pointer point to application data buffer.
+ * @param[in]   connHandle  - connection handle.
+ * @param[in]   attHandle   - ATT handle
+ * @param[in]   p           - Pointer point to application data buffer.
  * @param[in]   len         - Pointer point to application data buffer.
  * @return      ble_sts_t.
  */
@@ -123,9 +123,9 @@ ble_sts_t   blc_atts_sendHandleValueNotify (u16 connHandle, u16 attHandle, u8 *p
 
 /**
  * @brief       Send ATT Handle Value Indicate.
- * @param[in]   connHandle     - connection handle.
- * @param[in]   attHandle     - ATT handle
- * @param[in]   p             - Pointer point to application data buffer.
+ * @param[in]   connHandle  - connection handle.
+ * @param[in]   attHandle   - ATT handle
+ * @param[in]   p           - Pointer point to application data buffer.
  * @param[in]   len         - Pointer point to application data buffer.
  * @return      ble_sts_t.
  */
@@ -140,7 +140,7 @@ ble_sts_t   blc_atts_sendHandleValueIndicate (u16 connHandle, u16 attHandle, u8 
  * @param[in]   p -
  * @return      ble_sts_t.
  */
-int            blc_atts_findCharacteristicByServiceUuid(const u8 *serviceUuid, u8 uuidLen, const atts_findCharList_t *charList, u16 charListLen, void *p);
+int         blc_atts_findCharacteristicByServiceUuid(const u8 *serviceUuid, u8 uuidLen, const atts_findCharList_t *charList, u16 charListLen, void *p);
 
 
 

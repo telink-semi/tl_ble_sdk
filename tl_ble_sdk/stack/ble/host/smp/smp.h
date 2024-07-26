@@ -31,30 +31,30 @@
  * @{
  */
 #define SMP_STANDARD_PAIR                               0
-#define SMP_FAST_CONNECT                                   1
+#define SMP_FAST_CONNECT                                1
 /** @} end of group SMP first pairing or connecting back */
 
 
 /** @addtogroup SMP pairing fail reason definition
  * @{
  */
-#define PAIRING_FAIL_REASON_PASSKEY_ENTRY                0x01
-#define PAIRING_FAIL_REASON_OOB_NOT_AVAILABLE            0x02
+#define PAIRING_FAIL_REASON_PASSKEY_ENTRY               0x01
+#define PAIRING_FAIL_REASON_OOB_NOT_AVAILABLE           0x02
 #define PAIRING_FAIL_REASON_AUTH_REQUIRE                0x03
-#define PAIRING_FAIL_REASON_CONFIRM_FAILED                0x04
-#define PAIRING_FAIL_REASON_PAIRING_NOT_SUPPORTED        0x05
+#define PAIRING_FAIL_REASON_CONFIRM_FAILED              0x04
+#define PAIRING_FAIL_REASON_PAIRING_NOT_SUPPORTED       0x05
 #define PAIRING_FAIL_REASON_ENCRYPT_KEY_SIZE            0x06
-#define PAIRING_FAIL_REASON_CMD_NOT_SUPPORT                0x07 //-- core 4.2
-#define PAIRING_FAIL_REASON_UNSPECIFIED_REASON            0x08
+#define PAIRING_FAIL_REASON_CMD_NOT_SUPPORT             0x07 //-- core 4.2
+#define PAIRING_FAIL_REASON_UNSPECIFIED_REASON          0x08
 #define PAIRING_FAIL_REASON_REPEATED_ATTEMPT            0x09
-#define PAIRING_FAIL_REASON_INVALID_PARAMETER            0x0A
+#define PAIRING_FAIL_REASON_INVALID_PARAMETER           0x0A
 #define PAIRING_FAIL_REASON_DHKEY_CHECK_FAIL            0x0B
-#define PAIRING_FAIL_REASON_NUMERIC_FAILED                0x0C
-#define PAIRING_FAIL_REASON_BREDR_PAIRING                0x0D
+#define PAIRING_FAIL_REASON_NUMERIC_FAILED              0x0C
+#define PAIRING_FAIL_REASON_BREDR_PAIRING               0x0D
 #define PAIRING_FAIL_REASON_CROSS_TRANSKEY_NOT_ALLOW    0x0E
-#define PAIRING_FAIL_REASON_PAIRING_TIMEOUT                0x80 //TLK defined
-#define PAIRING_FAIL_REASON_CONN_DISCONNECT                0x81 //TLK defined
-#define PAIRING_FAIL_REASON_SUPPORT_NC_ONLY                0x82 //TLK defined
+#define PAIRING_FAIL_REASON_PAIRING_TIMEOUT             0x80 //TLK defined
+#define PAIRING_FAIL_REASON_CONN_DISCONNECT             0x81 //TLK defined
+#define PAIRING_FAIL_REASON_SUPPORT_NC_ONLY             0x82 //TLK defined
 /** @} end of group SMP pairing fail reason */
 
 
@@ -69,14 +69,14 @@ typedef enum {
 // "PairReq" refer to "pairing request"
 typedef enum {
     PairReq_SEND_upon_SecReq = 0,   // central send "pairing request" when received peripheral's "security request"
-    PairReq_AUTO_SEND         = 1,   // central send "pairing request" automatically, regardless of "security request"
+    PairReq_AUTO_SEND        = 1,   // central send "pairing request" automatically, regardless of "security request"
 }PairReq_cfg;
 
 
 //See the Core_v5.0(Vol 3/Part C/10.2, Page 2067) for more information.
 typedef enum {
-    LE_Security_Mode_1_Level_1 = BIT(0),  No_Authentication_No_Encryption            = BIT(0), No_Security = BIT(0),
-    LE_Security_Mode_1_Level_2 = BIT(1),  Unauthenticated_Pairing_with_Encryption     = BIT(1),
+    LE_Security_Mode_1_Level_1 = BIT(0),  No_Authentication_No_Encryption           = BIT(0), No_Security = BIT(0),
+    LE_Security_Mode_1_Level_2 = BIT(1),  Unauthenticated_Pairing_with_Encryption   = BIT(1),
     LE_Security_Mode_1_Level_3 = BIT(2),  Authenticated_Pairing_with_Encryption         = BIT(2),
     LE_Security_Mode_1_Level_4 = BIT(3),  Authenticated_LE_Secure_Connection_Pairing_with_Encryption = BIT(3),
 
@@ -119,11 +119,11 @@ typedef enum {
 
 //Keypress Notification type
 typedef enum {
-    KEYPRESS_NTF_PKE_START            =    0x00,
-    KEYPRESS_NTF_PKE_DIGIT_ENTERED    =    0x01,
-    KEYPRESS_NTF_PKE_DIGIT_ERASED    =    0x02,
-    KEYPRESS_NTF_PKE_CLEARED        =    0x03,
-    KEYPRESS_NTF_PKE_COMPLETED        =    0x04,
+    KEYPRESS_NTF_PKE_START          =   0x00,
+    KEYPRESS_NTF_PKE_DIGIT_ENTERED  =   0x01,
+    KEYPRESS_NTF_PKE_DIGIT_ERASED   =   0x02,
+    KEYPRESS_NTF_PKE_CLEARED        =   0x03,
+    KEYPRESS_NTF_PKE_COMPLETED      =   0x04,
 } keypress_notify_t;
 
 //SC OOB local ECDH key
@@ -148,7 +148,7 @@ typedef struct  {
  * @param[in]  none
  * @return     none
  */
-void     blc_smp_smpParamInit(void);
+void    blc_smp_smpParamInit(void);
 
 
 /**
@@ -160,7 +160,7 @@ void     blc_smp_smpParamInit(void);
  * @param[in]  pending_ms - Send a Security Request to the central after pending_ms milliseconds
  * @return     none.
  */
-void     blc_smp_configSecurityRequestSending( secReq_cfg newConn_cfg,  secReq_cfg reConn_cfg, u16 pending_ms);
+void    blc_smp_configSecurityRequestSending( secReq_cfg newConn_cfg,  secReq_cfg reConn_cfg, u16 pending_ms);
 
 
 /**
@@ -178,7 +178,7 @@ void    blc_smp_configPairingRequestSending( PairReq_cfg newConn_cfg,  PairReq_c
  * @param[in]  none.
  * @return     none.
  */
-void     blc_smp_triggerCentralManualSmp(void);
+void    blc_smp_triggerCentralManualSmp(void);
 
 
 /**
@@ -186,16 +186,16 @@ void     blc_smp_triggerCentralManualSmp(void);
  * @param[in]  mode_level - The security level value can refer to the structure 'le_security_mode_level_t'.
  * @return     none.
  */
-void     blc_smp_setSecurityLevel(le_security_mode_level_t  mode_level);
-void     blc_smp_setSecurityLevel_central(le_security_mode_level_t  mode_level);
-void     blc_smp_setSecurityLevel_periphr(le_security_mode_level_t  mode_level);
+void    blc_smp_setSecurityLevel(le_security_mode_level_t  mode_level);
+void    blc_smp_setSecurityLevel_central(le_security_mode_level_t  mode_level);
+void    blc_smp_setSecurityLevel_periphr(le_security_mode_level_t  mode_level);
 
 
 /**
  * @brief      This function is used to get security level.
  * @param[in]  none
  * @return     mode_level - The security level value can refer to the structure 'le_security_mode_level_t'.
- * @note:        when SMP_SEC_LEVEL_CHECK_EN enable, this API can be used.
+ * @note:      when SMP_SEC_LEVEL_CHECK_EN enable, this API can be used.
  */
 le_security_mode_level_t blc_smp_getSecurityLevel_central(void);
 le_security_mode_level_t blc_smp_getSecurityLevel_periphr(void);
@@ -209,8 +209,8 @@ le_security_mode_level_t blc_smp_getSecurityLevel_periphr(void);
  * @return     none.
  */
 void    blc_smp_setPairingMethods(pairing_methods_t  method);
-void     blc_smp_setPairingMethods_central(pairing_methods_t  method);    //select pairing methods
-void     blc_smp_setPairingMethods_periphr (pairing_methods_t  method);    //select pairing methods
+void    blc_smp_setPairingMethods_central(pairing_methods_t  method);    //select pairing methods
+void    blc_smp_setPairingMethods_periphr (pairing_methods_t  method);    //select pairing methods
 
 
 /**
@@ -230,8 +230,8 @@ void    blc_smp_setIoCapability_periphr(io_capability_t ioCapability);
  * @return     none.
  */
 void    blc_smp_enableOobAuthentication(int OOB_en);
-void     blc_smp_enableOobAuthentication_central (int OOB_en);
-void     blc_smp_enableOobAuthentication_periphr (int OOB_en);
+void    blc_smp_enableOobAuthentication_central (int OOB_en);
+void    blc_smp_enableOobAuthentication_periphr (int OOB_en);
 
 
 /**
@@ -242,8 +242,8 @@ void     blc_smp_enableOobAuthentication_periphr (int OOB_en);
  * @return     none.
  */
 void    blc_smp_setBondingMode(bonding_mode_t mode);
-void     blc_smp_setBondingMode_central(bonding_mode_t mode);
-void     blc_smp_setBondingMode_periphr(bonding_mode_t mode);
+void    blc_smp_setBondingMode_central(bonding_mode_t mode);
+void    blc_smp_setBondingMode_periphr(bonding_mode_t mode);
 
 
 /**
@@ -253,8 +253,8 @@ void     blc_smp_setBondingMode_periphr(bonding_mode_t mode);
  * @return     none.
  */
 void    blc_smp_enableAuthMITM(int MITM_en);
-void     blc_smp_enableAuthMITM_central(int MITM_en);
-void     blc_smp_enableAuthMITM_periphr(int MITM_en);
+void    blc_smp_enableAuthMITM_central(int MITM_en);
+void    blc_smp_enableAuthMITM_periphr(int MITM_en);
 
 
 /**
@@ -264,8 +264,8 @@ void     blc_smp_enableAuthMITM_periphr(int MITM_en);
  * @return     none.
  */
 void    blc_smp_enableKeypress(int keyPress_en);
-void     blc_smp_enableKeypress_central(int keyPress_en);
-void     blc_smp_enableKeypress_periphr(int keyPress_en);
+void    blc_smp_enableKeypress_central(int keyPress_en);
+void    blc_smp_enableKeypress_periphr(int keyPress_en);
 
 
 /**
@@ -276,8 +276,8 @@ void     blc_smp_enableKeypress_periphr(int keyPress_en);
  * @return     none.
  */
 void    blc_smp_setEcdhDebugMode(ecdh_keys_mode_t mode);
-void     blc_smp_setEcdhDebugMode_central(ecdh_keys_mode_t mode);
-void     blc_smp_setEcdhDebugMode_periphr(ecdh_keys_mode_t mode);
+void    blc_smp_setEcdhDebugMode_central(ecdh_keys_mode_t mode);
+void    blc_smp_setEcdhDebugMode_periphr(ecdh_keys_mode_t mode);
 
 
 /**
@@ -300,11 +300,11 @@ void    blc_smp_setDefaultPinCode_periphr(u32 pinCodeInput);
  * @param[in]  ioCapability - The IO capability's value can refer to the structure 'io_capability_t'.
  * @return     none.
  */
-void     blc_smp_setSecurityParameters(bonding_mode_t mode, int MITM_en, pairing_methods_t method, int OOB_en,
+void    blc_smp_setSecurityParameters(bonding_mode_t mode, int MITM_en, pairing_methods_t method, int OOB_en,
                                      int keyPress_en, io_capability_t ioCapability);
-void     blc_smp_setSecurityParameters_central(bonding_mode_t  bond_mode, int MITM_en, pairing_methods_t method, int OOB_en,
+void    blc_smp_setSecurityParameters_central(bonding_mode_t  bond_mode, int MITM_en, pairing_methods_t method, int OOB_en,
                                            int keyPress_en,io_capability_t ioCapability);
-void     blc_smp_setSecurityParameters_periphr(bonding_mode_t  bond_mode, int MITM_en, pairing_methods_t method, int OOB_en,
+void    blc_smp_setSecurityParameters_periphr(bonding_mode_t  bond_mode, int MITM_en, pairing_methods_t method, int OOB_en,
                                            int keyPress_en,io_capability_t ioCapability);
 
 
@@ -314,7 +314,7 @@ void     blc_smp_setSecurityParameters_periphr(bonding_mode_t  bond_mode, int MI
  * @param[in]  oobData - TK's value, size: 16 byte.
  * @return     none.
  */
-u8        blc_smp_setTK_by_OOB              (u16 connHandle, u8 *oobData);      //used for set oob data
+u8      blc_smp_setTK_by_OOB              (u16 connHandle, u8 *oobData);      //used for set oob data
 
 
 /**
@@ -323,7 +323,7 @@ u8        blc_smp_setTK_by_OOB              (u16 connHandle, u8 *oobData);      
  * @param[in]  pinCodeInput - TK's value, input range [000000, 999999].
  * @return     none.
  */
-u8        blc_smp_setTK_by_PasskeyEntry     (u16 connHandle, u32 pinCodeInput);
+u8      blc_smp_setTK_by_PasskeyEntry     (u16 connHandle, u32 pinCodeInput);
 
 
 /**
@@ -331,9 +331,9 @@ u8        blc_smp_setTK_by_PasskeyEntry     (u16 connHandle, u32 pinCodeInput);
  * param[in]   connHandle - Current ACL connection handle.
  * @param[in]  ntfType - refer to 'keypress_notify_t'.
  * @return     True: send SUCC
- *                False: send FAIL
+ *             False: send FAIL
  */
-bool     blc_smp_sendKeypressNotify (u16 connHandle, keypress_notify_t ntfType);
+bool    blc_smp_sendKeypressNotify (u16 connHandle, keypress_notify_t ntfType);
 
 /**
  * @brief      This function is used to set numeric compare confirm YES or NO.
@@ -349,7 +349,7 @@ void    blc_smp_setNumericComparisonResult(u16 connHandle, bool YES_or_NO);   //
  * @brief      This function is used to check if the pairing is busy.
  * @param[in]  connHandle - Current ACL connection handle.
  * @return     1:is pair busy
- *                0:isn't pair busy
+ *             0:isn't pair busy
  */
 int     blc_smp_isPairingBusy(u16 connHandle);
 
@@ -358,7 +358,7 @@ int     blc_smp_isPairingBusy(u16 connHandle);
  * @brief      This function is used to check whether the PinCode needs to be input.
  * @param[in]  connHandle - Current ACL connection handle.
  * @return     1: Need to enter PinCode
- *                0: No need to enter PinCode
+ *             0: No need to enter PinCode
  */
 u8      blc_smp_isWaitingToSetTK(u16 connHandle);
 
@@ -367,9 +367,9 @@ u8      blc_smp_isWaitingToSetTK(u16 connHandle);
  * @brief      This function is used to check whether it is needed to confirm NC YES/NO.
  * @param[in]  connHandle - Current ACL connection handle.
  * @return     1: Need to confirm NC YES/NO
- *                0: No need to confirm NC YES/NO
+ *             0: No need to confirm NC YES/NO
  */
-u8         blc_smp_isWaitingToCfmNumericComparison(u16 connHandle);
+u8      blc_smp_isWaitingToCfmNumericComparison(u16 connHandle);
 
 
 /**
@@ -394,7 +394,7 @@ void    blc_smp_setRealEncryptionBusyEnable(u8 en);
  * param[out]  local_ecdh_key - local ECDH (Public/Private keys).
  * @return     1: SUCCESS; 0: FAILED
  */
-int        blc_smp_generateScOobData(smp_sc_oob_data_t *local_oob_data, smp_sc_oob_key_t *local_ecdh_key);
+int     blc_smp_generateScOobData(smp_sc_oob_data_t *local_oob_data, smp_sc_oob_key_t *local_ecdh_key);
 
 /**
  * @brief      This function is used to set SC OOB local(+ECDH key), remote data.
@@ -404,7 +404,7 @@ int        blc_smp_generateScOobData(smp_sc_oob_data_t *local_oob_data, smp_sc_o
  * param[in]   oob_remote - remote SC OOB data.
  * @return     1: SUCCESS; 0: FAILED
  */
-int        blc_smp_setScOobData(u16 connHandle, const smp_sc_oob_data_t *oob_local,
+int     blc_smp_setScOobData(u16 connHandle, const smp_sc_oob_data_t *oob_local,
                             const smp_sc_oob_key_t *local_ecdh_key,
                             const smp_sc_oob_data_t *oob_remote);
 
@@ -419,20 +419,20 @@ bool    blc_smp_cancel_auth(u16 connHandle);
 
 typedef enum {
     UNSPECIFIED = 0,            /* LE_Security_Mode_1_Level_1: No authentication, no encryption    */
-    LEGACY_JW     = BIT(1),        /* LE_Security_Mode_1_Level_2: Legacy JustWorks                    */
-    LESC_JW     = BIT(2),        /* LE_Security_Mode_1_Level_2: LESC JustWorks                      */
-    LEGACY_PKI     = BIT(3),        /* LE_Security_Mode_1_Level_3: Legacy Passkey Entry input          */
-    LEGACY_PKD     = BIT(4),        /* LE_Security_Mode_1_Level_3: Legacy Passkey Entry display        */
-    LEGACY_OOB     = BIT(5),        /* LE_Security_Mode_1_Level_3: Legacy Out of Band                  */
-    LESC_PKI     = BIT(6),        /* LE_Security_Mode_1_Level_4: LESC Passkey Entry input            */
-    LESC_PKD     = BIT(7),        /* LE_Security_Mode_1_Level_4: LESC Passkey Entry display          */
-    LESC_NC     = BIT(8),          /* LE_Security_Mode_1_Level_4: LESC Numeric Comparison             */
-    LESC_OOB     = BIT(9),        /* LE_Security_Mode_1_Level_4: LESC Out of Band                    */
+    LEGACY_JW   = BIT(1),       /* LE_Security_Mode_1_Level_2: Legacy JustWorks                    */
+    LESC_JW     = BIT(2),       /* LE_Security_Mode_1_Level_2: LESC JustWorks                      */
+    LEGACY_PKI  = BIT(3),       /* LE_Security_Mode_1_Level_3: Legacy Passkey Entry input          */
+    LEGACY_PKD  = BIT(4),       /* LE_Security_Mode_1_Level_3: Legacy Passkey Entry display        */
+    LEGACY_OOB  = BIT(5),       /* LE_Security_Mode_1_Level_3: Legacy Out of Band                  */
+    LESC_PKI    = BIT(6),       /* LE_Security_Mode_1_Level_4: LESC Passkey Entry input            */
+    LESC_PKD    = BIT(7),       /* LE_Security_Mode_1_Level_4: LESC Passkey Entry display          */
+    LESC_NC     = BIT(8),       /* LE_Security_Mode_1_Level_4: LESC Numeric Comparison             */
+    LESC_OOB    = BIT(9),       /* LE_Security_Mode_1_Level_4: LESC Out of Band                    */
 }smp_method_t;
 
 
 /**
- * @brief    connection complete SMP Callback function declaration
+ * @brief   connection complete SMP Callback function declaration
  */
 typedef int (*smp_conn_complete_callback_t) (u16);
 
@@ -453,25 +453,25 @@ void    blc_smp_setParametersConfigByConnHandleEnable(u8 enable);
 
 /**
  * @brief      This function is used to set device's smp  parameters.
- * @param[in]  connHandle     - Current slave  ACL connection handle.
+ * @param[in]  connHandle   - Current slave  ACL connection handle.
  * @param[in]  pinCodeInput - Input pincode value. Value range [000000~999999].
  * @return     status, 0x00:  succeed
- *                other: failed
+ *             other: failed
  */
 ble_sts_t blc_smp_setAclPeripheralPinCode(u16 connHandle, u32 pinCodeInput);
 
 
 /**
  * @brief      This function is used to set device's smp  parameters.
- * @param[in]  connHandle     - Current slave  ACL connection handle.
+ * @param[in]  connHandle   - Current slave  ACL connection handle.
  * @param[in]  expSmpMethod - The smp slave params can refer to the structure 'smp_method_t'.
  * @param[in]  bondable     - The bonding mode value can refer to the structure 'bonding_mode_t'.
  * @param[in]  keypress     - 0: Disable Keypress; 1: Enable Keypress.
  * @param[in]  mode         - The ECDH key mode value can refer to the structure 'ecdh_keys_mode_t'.
- *                                0: non debug mode;
- *                                1: debug mode.
+ *                              0: non debug mode;
+ *                              1: debug mode.
  * @return     status, 0x00:  succeed
- *                other: failed
+ *             other: failed
  */
 ble_sts_t blc_smp_setAclPeripheralParameters(u16 connHandle, smp_method_t expSmpMethod, bonding_mode_t bondable, bool keypress ,ecdh_keys_mode_t mode );
 

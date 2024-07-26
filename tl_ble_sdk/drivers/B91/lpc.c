@@ -24,10 +24,10 @@
 #include "lpc.h"
 
 /**
- * @brief        This function selects input reference voltage for low power comparator.
- * @param[in]    mode    - lower power comparator working mode includes normal mode and low power mode.
- * @param[in]    ref        - selected input reference voltage.
- * @return        none.
+ * @brief       This function selects input reference voltage for low power comparator.
+ * @param[in]   mode    - lower power comparator working mode includes normal mode and low power mode.
+ * @param[in]   ref     - selected input reference voltage.
+ * @return      none.
  */
 void lpc_set_input_ref(lpc_mode_e mode,lpc_reference_e ref)
 {

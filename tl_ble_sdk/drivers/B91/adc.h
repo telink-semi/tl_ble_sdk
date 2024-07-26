@@ -21,15 +21,15 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-/**    @page ADC
+/** @page ADC
  *
- *    Introduction
- *    ===============
- *    B91 supports hardware ADC function.
+ *  Introduction
+ *  ===============
+ *  B91 supports hardware ADC function.
  *
- *    API Reference
- *    ===============
- *    Header File: adc.h
+ *  API Reference
+ *  ===============
+ *  Header File: adc.h
  */
 #pragma once
 
@@ -142,9 +142,9 @@ typedef enum{
 
 typedef enum{
     ADC_PRESCALE_1   = 0x00,//Only for internal testing and temperature sensor sampling
-//    ADC_PRESCALE_1F2 = 0x01,//Only for internal testing
+//  ADC_PRESCALE_1F2 = 0x01,//Only for internal testing
     ADC_PRESCALE_1F4 = 0x02,
-//    ADC_PRESCALE_1F8 = 0x03,//Only for internal testing
+//  ADC_PRESCALE_1F8 = 0x03,//Only for internal testing
 }adc_pre_scale_e;
 enum{
     ADC_MAX_STATE_NUM  = 0x02,
@@ -197,7 +197,7 @@ static inline void adc_fifo_disable(void)
  */
 static inline void adc_clk_en(void)
 {
-    analog_write_reg8(areg_adc_clk_setting    , analog_read_reg8(areg_adc_clk_setting    ) | FLD_CLK_24M_TO_SAR_EN);
+    analog_write_reg8(areg_adc_clk_setting  , analog_read_reg8(areg_adc_clk_setting ) | FLD_CLK_24M_TO_SAR_EN);
 }
 /**
  * @brief      This function disable adc source clock: Pad_24M
@@ -205,7 +205,7 @@ static inline void adc_clk_en(void)
  */
 static inline void adc_clk_dis(void)
 {
-    analog_write_reg8(areg_adc_clk_setting    , analog_read_reg8(areg_adc_clk_setting    ) & (~FLD_CLK_24M_TO_SAR_EN));
+    analog_write_reg8(areg_adc_clk_setting  , analog_read_reg8(areg_adc_clk_setting ) & (~FLD_CLK_24M_TO_SAR_EN));
 }
 /**
  * @brief      This function sets adc sample clk. adc sample clk = 24M/(1+div)  div: 0~7.
@@ -314,7 +314,7 @@ void adc_set_diff_pin(adc_input_pin_def_e p_pin, adc_input_pin_def_e n_pin);
 /**
  * @brief     This function is serves to set the reference voltage for one-point calibration.
  *            ADC calibration environment: GPIO sampling, the pre_scale is 1/4, and the sampling frequency is 48K.
- *               Therefore, the voltage value measured using the calibration interface in this environment is the most accurate.
+ *            Therefore, the voltage value measured using the calibration interface in this environment is the most accurate.
  * @param[in] data - GPIO sampling one-point calibration value.
  * @return none
  */
@@ -348,7 +348,7 @@ void adc_set_scale_factor(adc_pre_scale_e pre_scale);
  * at the same time, the division factor is set to 1 the most accurate.
  * @return     none.
  * @attention  Temperature sensor suggested initial setting are Vref = 1.2V, pre_scale = 1.
- *             The user don't need to change it.
+ *          The user don't need to change it.
  */
 void adc_temperature_sample_init(void);
 /**
@@ -359,8 +359,8 @@ void adc_temperature_sample_init(void);
  * @param[in]  sample_freq - enum variable of ADC sample frequency.
  * @return none
  * @attention  gpio voltage sample suggested initial setting are Vref = 1.2V, pre_scale = 1/4. 
- *            changed by chaofan.20201230.
- *               In order to switch the pin of the ADC, it can be done by calling the interface 'adc_pin_config' and 'adc_set_diff_input'.
+ *          changed by chaofan.20201230.
+ *             In order to switch the pin of the ADC, it can be done by calling the interface 'adc_pin_config' and 'adc_set_diff_input'.
  */
 void adc_gpio_sample_init(adc_input_pin_def_e pin,adc_ref_vol_e v_ref,adc_pre_scale_e pre_scale,adc_sample_freq_e sample_freq);
 
@@ -368,15 +368,15 @@ void adc_gpio_sample_init(adc_input_pin_def_e pin,adc_ref_vol_e v_ref,adc_pre_sc
  * @brief This function servers to set ADC configuration with internal Vbat channel for ADC supply voltage sampling.
  * @return none
  * @attention Vbat channel battery voltage sample suggested initial setting are Vref = 1.2V, pre_scale = 1/4, vbat_div = off.
- *             The Vbat channel battery voltage sample range is 1.8~3.5V and is low accuracy,
- *             and must set sys_init with the mode for battery voltage less than 3.6V.
- *             For accurate battery voltage sampling or battery voltage > 3.6V, should use gpio sampling with some external voltage divider.
- *            Recommended configuration parameters:
- *            --3/4 external resistor voltage divider(total resistance 400k, without any capacitance),
- *            --1.2V Vref,
- *            --1/4 Scale
- *            --Sampling frequency below 48K.
- *            changed by chaofan.20201230.
+ *          The Vbat channel battery voltage sample range is 1.8~3.5V and is low accuracy,
+ *          and must set sys_init with the mode for battery voltage less than 3.6V.
+ *          For accurate battery voltage sampling or battery voltage > 3.6V, should use gpio sampling with some external voltage divider.
+ *          Recommended configuration parameters:
+ *          --3/4 external resistor voltage divider(total resistance 400k, without any capacitance),
+ *          --1.2V Vref,
+ *          --1/4 Scale
+ *          --Sampling frequency below 48K.
+ *          changed by chaofan.20201230.
  */
 void adc_battery_voltage_sample_init(void);
 /**
@@ -392,37 +392,37 @@ void adc_set_vbat_divider(adc_vbat_div_e vbat_div);
  * @param[in]  sample_freq - enum variable of ADC sample frequency.
  * @return     none
  * @attention  Many features are configured in adc_init function. But some features
- *         such as adc_clk, resolution, tsample_cycle, we think better to set as default value,
- *         and user don't need to change them in most use cases.
+ *      such as adc_clk, resolution, tsample_cycle, we think better to set as default value,
+ *      and user don't need to change them in most use cases.
  */
 void adc_init(adc_ref_vol_e v_ref,adc_pre_scale_e pre_scale,adc_sample_freq_e sample_freq);
 /**
  * @brief This function serves to start adc sample and get raw adc sample code.
  * @param[out]  sample_buffer - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception.
  *                              and the actual buffer size defined by the user needs to be not smaller than the sample_num, otherwise there may be an out-of-bounds problem.
- * @param[in]   sample_num       - This parameter is used to set the size of the received dma and must be set to a multiple of 4. The maximum value that can be set is 0xFFFFFC.
- * @return         none
+ * @param[in]   sample_num    - This parameter is used to set the size of the received dma and must be set to a multiple of 4. The maximum value that can be set is 0xFFFFFC.
+ * @return      none
  */
 void adc_get_code_dma(unsigned short *sample_buffer, unsigned short sample_num);
 /**
  * @brief This function serves to directly get an adc sample code from analog registers.
- * @return         adc_code     - the adc sample code.
+ * @return      adc_code    - the adc sample code.
  */
 unsigned short adc_get_code(void);
 
 /**
  * @brief This function serves to calculate voltage from adc sample code.
- *           ADC calibration environment: GPIO sampling, the pre_scale is 1/4, and the sampling frequency is 48K.
- *           Therefore, the voltage value measured using the calibration interface in this environment is the most accurate.
+ *        ADC calibration environment: GPIO sampling, the pre_scale is 1/4, and the sampling frequency is 48K.
+ *        Therefore, the voltage value measured using the calibration interface in this environment is the most accurate.
  * @param[in]   adc_code    - the adc sample code.
- * @return         adc_vol_mv     - the average value of adc voltage value.
+ * @return      adc_vol_mv  - the average value of adc voltage value.
  */
 unsigned short adc_calculate_voltage(unsigned short adc_code);
 /**
  * @brief This function serves to calculate temperature from temperature sensor adc sample code.
- * @param[in]   adc_code             - the temperature sensor adc sample code.
- * @return         adc_temp_value         - the of temperature value.
+ * @param[in]   adc_code            - the temperature sensor adc sample code.
+ * @return      adc_temp_value      - the of temperature value.
  * attention   Temperature and adc_code are linearly related. We test four chips between -40~130 (Celsius) and got an average relationship:
- *             Temp =  564 - ((adc_code * 819)>>13),when Vref = 1.2V, pre_scale = 1.
+ *          Temp =  564 - ((adc_code * 819)>>13),when Vref = 1.2V, pre_scale = 1.
  */
 unsigned short adc_calculate_temperature(unsigned short adc_code);

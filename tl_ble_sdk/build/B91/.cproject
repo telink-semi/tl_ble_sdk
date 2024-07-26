@@ -67,7 +67,7 @@
 								<option defaultValue="true" id="nds32le-elf-mculib-v5f.c.link.option.noshared.base.827341649" name="No shared libraries (-static)" superClass="nds32le-elf-mculib-v5f.c.link.option.noshared.base" valueType="boolean"/>
 								<option id="nds.c.linker.option.cmodel.52927975" name="Code Model" superClass="nds.c.linker.option.cmodel" value="-mcmodel=medium" valueType="string"/>
 								<option id="nds.c.link.option.LTO.1985249629" name="Link Time Optimization (-flto)" superClass="nds.c.link.option.LTO" value="true" valueType="boolean"/>
-								<option id="nds.c.link.option.other.duplacitecompiler.1885432481" name="DuplaciteComplierOption" superClass="nds.c.link.option.other.duplacitecompiler" value="-g3 -mcpu=d25f -ffunction-sections -fdata-sections -mext-dsp -fmessage-length=0 -fno-builtin -fomit-frame-pointer -fno-strict-aliasing -fshort-wchar -fuse-ld=bfd -fpack-struct " valueType="string"/>
+								<option id="nds.c.link.option.other.duplacitecompiler.1885432481" name="DuplaciteComplierOption" superClass="nds.c.link.option.other.duplacitecompiler" value="-g3 -mcpu=d25f -ffunction-sections -fdata-sections -mext-dsp -fmessage-length=0 -fno-builtin -fomit-frame-pointer -fno-strict-aliasing -fshort-wchar -fuse-ld=bfd -fpack-struct -fno-jump-tables " valueType="string"/>
 								<option id="nds.c.link.option.removesections.450952190" name="Remove unused sections (-ffunction-sections or -fdata-sections)" superClass="nds.c.link.option.removesections" value="true" valueType="boolean"/>
 								<option defaultValue="" id="nds.c.link.option.ldscript.1207483362" name="Linker Script (-T)" superClass="nds.c.link.option.ldscript" value="../../../boot/B91/boot_general.link" valueType="string"/>
 								<option id="nds.c.link.option.nostart.2062284842" name="Do not use standard start files (-nostartfiles)" superClass="nds.c.link.option.nostart" value="true" valueType="boolean"/>
@@ -75,7 +75,6 @@
 								<option id="nds.c.link.option.libs.1542962212" name="Libraries (-l)" superClass="nds.c.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="m"/>
 									<listOptionValue builtIn="false" value="lt_B91"/>
-									<listOptionValue builtIn="false" value="LC3"/>
 									<listOptionValue builtIn="false" value="dsp"/>
 								</option>
 								<option id="nds.c.link.option.paths.1690001310" name="Library search path (-L)" superClass="nds.c.link.option.paths" valueType="libPaths">
@@ -456,7 +455,7 @@
 								<option id="nds.c.link.option.virtualhosting.2142390380" name="Virtual Hosting (-mvh)" superClass="nds.c.link.option.virtualhosting" value="false" valueType="boolean"/>
 								<option id="nds.c.link.option.ldflags.2049893503" name="Linker flags" superClass="nds.c.link.option.ldflags" value=" " valueType="string"/>
 								<option id="nds.c.link.option.LTO.286790311" name="Link Time Optimization (-flto)" superClass="nds.c.link.option.LTO" value="true" valueType="boolean"/>
-								<option id="nds.c.link.option.other.duplacitecompiler.11257973" name="DuplaciteComplierOption" superClass="nds.c.link.option.other.duplacitecompiler" value="-g3 -mcpu=d25f -ffunction-sections -fdata-sections -fmessage-length=0 -fno-builtin -fomit-frame-pointer -fno-strict-aliasing -fshort-wchar -fuse-ld=bfd -fpack-struct " valueType="string"/>
+								<option id="nds.c.link.option.other.duplacitecompiler.11257973" name="DuplaciteComplierOption" superClass="nds.c.link.option.other.duplacitecompiler" value="-g3 -mcpu=d25f -ffunction-sections -fdata-sections -fmessage-length=0 -fno-builtin -fomit-frame-pointer -fno-strict-aliasing -fshort-wchar -fuse-ld=bfd -fpack-struct -fno-jump-tables " valueType="string"/>
 								<option id="nds.c.link.option.libs.668784822" name="Libraries (-l)" superClass="nds.c.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="m"/>
 									<listOptionValue builtIn="false" value="lt_B91"/>
@@ -733,180 +732,180 @@
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
 		<configuration configurationName="9518_UART1_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_GPIO_Demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="B91_cis_slave_demo"/>
 		<configuration configurationName="acl_peripheral_demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_TRNG_Demo"/>
 		<configuration configurationName="feature_demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="acl_central_demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="cis_central">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="PWM_DEMO"/>
 		<configuration configurationName="B91_feature">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="B91_master_dongle">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="B91m_controller"/>
 		<configuration configurationName="TIMER_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="B91_controller"/>
 		<configuration configurationName="B91_upper_tester"/>
 		<configuration configurationName="B91_hci">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_Flash_Demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_UART_DEMO"/>
 		<configuration configurationName="9518_RF_DEMO"/>
 		<configuration configurationName="B91_m4s4_demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_UART0_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="B91_feature_test">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="broadcast_receiver">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="B91_cis_master_demo"/>
 		<configuration configurationName="Base_Test_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_PSPI_Demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="cis_peripheral">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_USB_Mouse_Demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_Debug_Demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_NPE_Demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="acl_connection_demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="internal_test">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="audio_broadcast_assistant">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="B91_lower_tester"/>
 		<configuration configurationName="B91_audio_demo"/>
 		<configuration configurationName="audio_bis_sync_demo"/>
 		<configuration configurationName="audio_cis_slv_demo"/>
 		<configuration configurationName="B91_master_kma_dongle">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_SPI_Demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="BQB_controller">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_I2C_Demo"/>
 		<configuration configurationName="9518_HSPI_Demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="product_bis_sink"/>
 		<configuration configurationName="product_cis_sink"/>
 		<configuration configurationName="B91_slave">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="broadcast_sender"/>
 		<configuration configurationName="B91_ble_sample">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_ALG_REG_Demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="UART0_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_PWM_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="audio_unicast_server">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="product_bis_source"/>
 		<configuration configurationName="B91_debug_demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="audio_cis_mst_demo"/>
 		<configuration configurationName="9518_USB_Speaker_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="B91_internal_test">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_s7816_Demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_USB_MIC_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="Debug">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="Release">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="audio_broadcast_sink">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="UART_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="9518_Base_Test_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="audio_broadcast_source">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="audio_bis_bcst_demo"/>
 		<configuration configurationName="B91_ble_remote">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="product_cis_source"/>
 		<configuration configurationName="B91_module"/>
 		<configuration configurationName="IIC_DEMO"/>
 		<configuration configurationName="9518_TIMER_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="GPIO_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="audio_unicast_client">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="B91_demo">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 		<configuration configurationName="PSRAM_DEMO">
-			<resource resourceType="PROJECT" workspacePath="/B91_ble_multi_conn_src"/>
+			<resource resourceType="PROJECT" workspacePath="/TL_BLE_SDK_B91"/>
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>

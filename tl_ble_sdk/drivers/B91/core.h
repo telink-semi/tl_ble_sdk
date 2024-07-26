@@ -67,11 +67,11 @@ typedef enum {
     CORE_PREEMPT_PRI_MODE3 = BIT(1),                      /**< MEI, MSI and MTI can be nested within each other(MIE register bit1 is an invalid bit). */
 }core_preempt_pri_e;
 
-#define  read_csr(reg)                 __nds__csrr(reg)
+#define  read_csr(reg)               __nds__csrr(reg)
 #define  write_csr(reg, val)          __nds__csrw(val, reg)
-#define  swap_csr(reg, val)              __nds__csrrw(val, reg)
-#define set_csr(reg, bit)             __nds__csrrs(bit, reg)
-#define clear_csr(reg, bit)             __nds__csrrc(bit, reg)
+#define  swap_csr(reg, val)           __nds__csrrw(val, reg)
+#define set_csr(reg, bit)            __nds__csrrs(bit, reg)
+#define clear_csr(reg, bit)          __nds__csrrc(bit, reg)
 
 /*
  * Inline nested interrupt entry/exit macros
@@ -99,11 +99,11 @@ typedef enum {
      restore_csr(NDS_MEPC)                           \
      restore_mxstatus()
 
-#define fence_iorw              __nds__fence(FENCE_IORW,FENCE_IORW)
+#define fence_iorw          __nds__fence(FENCE_IORW,FENCE_IORW)
 
 typedef enum{
     FLD_FEATURE_PREEMPT_PRIORITY_INT_EN = BIT(0),
-    FLD_FEATURE_VECTOR_MODE_EN             = BIT(1),
+    FLD_FEATURE_VECTOR_MODE_EN          = BIT(1),
 }
 feature_e;
 

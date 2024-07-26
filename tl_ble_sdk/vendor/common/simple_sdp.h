@@ -30,20 +30,20 @@
 
 /* compatible with previous released SDK */
 #if (BLE_MASTER_SIMPLE_SDP_ENABLE)
-#define ACL_CENTRAL_SIMPLE_SDP_ENABLE                 BLE_MASTER_SIMPLE_SDP_ENABLE
+#define ACL_CENTRAL_SIMPLE_SDP_ENABLE               BLE_MASTER_SIMPLE_SDP_ENABLE
 #endif
 
 
 #ifndef ACL_CENTRAL_SIMPLE_SDP_ENABLE
-#define ACL_CENTRAL_SIMPLE_SDP_ENABLE                 0
+#define ACL_CENTRAL_SIMPLE_SDP_ENABLE               0
 #endif
 
 #ifndef APP_SIMPLE_SDP_LOG_EN
-#define APP_SIMPLE_SDP_LOG_EN                         0
+#define APP_SIMPLE_SDP_LOG_EN                       0
 #endif
 
 #ifndef PEER_SLAVE_USE_RPA_EN
-#define PEER_SLAVE_USE_RPA_EN                         0
+#define PEER_SLAVE_USE_RPA_EN                       0
 #endif
 
 
@@ -51,40 +51,40 @@
 
 
 typedef void (*main_service_t) (void);
-extern    main_service_t        main_service;
+extern  main_service_t      main_service;
 
-extern    int    central_sdp_pending;
-extern    dev_char_info_t  cur_sdp_device;
-
-
-typedef int    (*sdp_info_store_cb_t)(u32, void*);
+extern  int central_sdp_pending;
+extern  dev_char_info_t  cur_sdp_device;
 
 
-#define        ATT_DB_UUID16_NUM        20
-#define        ATT_DB_UUID128_NUM        8
+typedef int (*sdp_info_store_cb_t)(u32, void*);
+
+
+#define     ATT_DB_UUID16_NUM       20
+#define     ATT_DB_UUID128_NUM      8
 
 typedef struct {
-    u8    num;
-    u8    property;
-    u16    handle;
-    u16    uuid;
+    u8  num;
+    u8  property;
+    u16 handle;
+    u16 uuid;
     u16 ref;
-} att_db_uuid16_t;            //8-byte
+} att_db_uuid16_t;          //8-byte
 
 
 typedef struct {
-    u8    num;
-    u8    property;
-    u16    handle;
-    u8    uuid[16];
-} att_db_uuid128_t;            //20-byte
+    u8  num;
+    u8  property;
+    u16 handle;
+    u8  uuid[16];
+} att_db_uuid128_t;         //20-byte
 
 
 typedef struct{
-    u8    type;
+    u8  type;
     u8  rf_len;
-    u16    l2capLen;
-    u16    chanId;
+    u16 l2capLen;
+    u16 chanId;
     u8  opcode;
     u8  datalen;
     u8  data[1];            // character_handle / property / value_handle / value
@@ -92,33 +92,33 @@ typedef struct{
 
 
 typedef struct{
-    u8    type;
+    u8  type;
     u8  rf_len;
-    u16    l2capLen;
-    u16    chanId;
+    u16 l2capLen;
+    u16 chanId;
     u8  opcode;
-    u8     value[22];
+    u8  value[22];
 }ble_att_readRsp_t;
 
 
 
 
-#define ATT_BOND_MARK         0x5A
-#define ATT_ERASE_MARK        0x00
+#define ATT_BOND_MARK       0x5A
+#define ATT_ERASE_MARK      0x00
 
 
 typedef struct{
-    u8    flag;
-    u8    adr_type;
-    u8    addr[6];
+    u8  flag;
+    u8  adr_type;
+    u8  addr[6];
 
-    u8    rsvd[8];  //very important: 16 byte aligned, to avoid different flash page write for a sequence data
+    u8  rsvd[8];  //very important: 16 byte aligned, to avoid different flash page write for a sequence data
 
 #if (PEER_SLAVE_USE_RPA_EN)
     u8  irk[16];   //TODO: if peer device mac_address is RPA(resolvable private address), IRK will be used
 #endif
 
-    u16    char_handle[CHAR_HANDLE_MAX];
+    u16 char_handle[CHAR_HANDLE_MAX];
 }dev_att_t;
 
 
@@ -136,14 +136,14 @@ u16 blm_att_findHandleOfUuid128 (att_db_uuid128_t *p, const u8 * uuid);
  * @param   none.
  * @return  none.
  */
-void     app_service_discovery (void);
+void    app_service_discovery (void);
 
 /**
  * @brief       This function is used to register SDP handler.
  * @param[in]   p       - Pointer point to SDP handler.
  * @return      none.
  */
-void     app_register_service (void *p);
+void    app_register_service (void *p);
 
 /**
  * @brief       This function is used to process ATT packets related to SDP
@@ -166,7 +166,7 @@ int     host_att_register_idle_func (void *p);
  * @param[in]  none.
  * @return     none.
  */
-void     simple_sdp_loop (void);
+void    simple_sdp_loop (void);
 
 
 
@@ -185,7 +185,7 @@ int     dev_char_info_add_peer_att_handle (dev_char_info_t* dev_char_info);
  * @return      0: failed
  *             !0: return flash address
  */
-int        dev_char_info_store_peer_att_handle(dev_char_info_t* dev_char_info);
+int     dev_char_info_store_peer_att_handle(dev_char_info_t* dev_char_info);
 
 /**
  * @brief       Get peer device att handle info by peer address
@@ -195,7 +195,7 @@ int        dev_char_info_store_peer_att_handle(dev_char_info_t* dev_char_info);
  * @return      0: failed
  *             !0: return flash address
  */
-int        dev_char_info_search_peer_att_handle_by_peer_mac(u8 adr_type, u8* addr, dev_att_t * dev_att);
+int     dev_char_info_search_peer_att_handle_by_peer_mac(u8 adr_type, u8* addr, dev_att_t * dev_att);
 
 
 /**
@@ -205,13 +205,13 @@ int        dev_char_info_search_peer_att_handle_by_peer_mac(u8 adr_type, u8* add
  * @return      0: success
  *              1: not find
  */
-int        dev_char_info_delete_peer_att_handle_by_peer_mac(u8 addrType, u8 *addr);
+int     dev_char_info_delete_peer_att_handle_by_peer_mac(u8 addrType, u8 *addr);
 
 
 
 
 
-void     simple_sdp_register_store_info_callback(sdp_info_store_cb_t cb);
+void    simple_sdp_register_store_info_callback(sdp_info_store_cb_t cb);
 
 
 /* compatible with previous released SDK */

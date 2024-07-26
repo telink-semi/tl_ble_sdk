@@ -24,31 +24,31 @@
 #include "ext_hci_uart.h"
 #include "clock.h"
 
-#if HCI_TR_EN
+#if (HCI_UART_EXT_DRIVER_EN||HCI_TR_EN)
 /**
  * @brief  UART Select interface
  */
 #ifndef  EXT_HCI_UART_CHANNEL
-#define  EXT_HCI_UART_CHANNEL                  UART0
+#define  EXT_HCI_UART_CHANNEL               UART0
 #endif
 
 #ifndef  EXT_HCI_UART_IRQ
-#define  EXT_HCI_UART_IRQ                      IRQ_UART0
+#define  EXT_HCI_UART_IRQ                   IRQ_UART0
 #endif
 
 #ifndef  EXT_HCI_UART_DMA_CHN_RX
-#define  EXT_HCI_UART_DMA_CHN_RX              DMA2   //uart dma
+#define  EXT_HCI_UART_DMA_CHN_RX            DMA2   //uart dma
 #endif
 
 #ifndef  EXT_HCI_UART_DMA_CHN_TX
-#define  EXT_HCI_UART_DMA_CHN_TX              DMA3
+#define  EXT_HCI_UART_DMA_CHN_TX            DMA3
 #endif
 
 /*** RTS ***/
 #define RTS_INVERT    1 /*!< 0: RTS PIN will change from low to high. !! use for RTS auto mode(default auto mode)*/
 #define RTS_THRESH    5 /*!< RTS trigger threshold. range: 1-16. */
 /*** CTS ***/
-#define STOP_VOLT     1            //0 :Low level stops TX.  1 :High level stops TX.
+#define STOP_VOLT     1         //0 :Low level stops TX.  1 :High level stops TX.
 
 
 
@@ -59,8 +59,8 @@ _attribute_data_retention_sec_ static volatile unsigned char  *ReceAddr;
 
 /**
  * @brief   hci uart initialization
- * @param    none
- * @return    none
+ * @param   none
+ * @return  none
  */
 ext_hci_StatusTypeDef_e ext_hci_uartInit(ext_hci_InitTypeDef * uart)
 {
@@ -83,7 +83,6 @@ ext_hci_StatusTypeDef_e ext_hci_uartInit(ext_hci_InitTypeDef * uart)
     uart_set_tx_dma_config(EXT_HCI_UART_CHANNEL, EXT_HCI_UART_DMA_CHN_TX);
     uart_set_rx_dma_config(EXT_HCI_UART_CHANNEL,  EXT_HCI_UART_DMA_CHN_RX);
 
-    uart_set_tx_dma_config(EXT_HCI_UART_CHANNEL, EXT_HCI_UART_DMA_CHN_TX);
     uart_clr_irq_status(EXT_HCI_UART_CHANNEL,UART_TXDONE_IRQ_STATUS);
     uart_set_irq_mask(EXT_HCI_UART_CHANNEL, UART_TXDONE_MASK);
     plic_interrupt_enable(EXT_HCI_UART_IRQ);
@@ -169,6 +168,7 @@ unsigned char ext_hci_getTxCompleteDone(void)
  *              0  the length is error.
  * @note        addr: must be aligned by word (4 bytes), otherwise the program will enter an exception.
  */
+_attribute_ram_code_sec_
 unsigned char ext_hci_uartSendData(unsigned char *addr, unsigned int len)
 {
     uart_dma_send_flag = 0;
@@ -176,6 +176,7 @@ unsigned char ext_hci_uartSendData(unsigned char *addr, unsigned int len)
 
 }
 
+_attribute_ram_code_sec_
 void ext_hci_uartReceData(unsigned char *addr, unsigned int len)
 {
     uart_receive_dma(EXT_HCI_UART_CHANNEL, addr, len);

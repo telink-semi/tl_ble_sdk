@@ -44,7 +44,7 @@ typedef enum {
     HCI_ERR_CONN_TIMEOUT                                           = 0x08,
     HCI_ERR_CONN_LIMIT_EXCEEDED                                    = 0x09,
     HCI_ERR_SYNCH_CONN_LIMIT_EXCEEDED                              = 0x0A,
-    HCI_ERR_CONN_ALREADY_EXISTS                                       = 0x0B,
+    HCI_ERR_CONN_ALREADY_EXISTS                                    = 0x0B,
     HCI_ERR_CMD_DISALLOWED                                         = 0x0C,
     HCI_ERR_CONN_REJ_LIMITED_RESOURCES                             = 0x0D,
     HCI_ERR_CONN_REJECTED_SECURITY_REASONS                         = 0x0E,
@@ -136,12 +136,12 @@ typedef enum {
     L2CAP_ERR_NO_CREATE_COC_HANDLER,
 
     //SMP status
-    SMP_ERR_INVALID_PARAMETER                                        = 0xA0,
+    SMP_ERR_INVALID_PARAMETER                                      = 0xA0,
     SMP_ERR_PAIRING_BUSY,
     SMP_ERR_SC_MTU_TOO_SHORT,
 
     //GATT status
-    GATT_ERR_INVALID_PARAMETER                                       = 0xB0,
+    GATT_ERR_INVALID_PARAMETER                                     = 0xB0,
     GATT_ERR_PREVIOUS_INDICATE_DATA_HAS_NOT_CONFIRMED,
     GATT_ERR_SERVICE_DISCOVERY_TIMEOUT,
     GATT_ERR_NOTIFY_INDICATION_BUSY,
@@ -151,7 +151,7 @@ typedef enum {
     GATT_ERR_UNSPECIFIED,
 
     //GAP status
-    GAP_ERR_INVALID_PARAMETER                                        = 0xC0,
+    GAP_ERR_INVALID_PARAMETER                                      = 0xC0,
     GAP_ERR_STATE_NO_IDLE,
     GAP_ERR_WRITE_BUSY,
 
@@ -165,21 +165,21 @@ typedef enum {
     IAL_HCI_BUFFER_INVALID,
 
     //Service status
-    SERVICE_ERR_INVALID_PARAMETER                                    = 0xD0,
+    SERVICE_ERR_INVALID_PARAMETER                                  = 0xD0,
 
     //Profile common error
     PRF_ERR_INVALID_ATTR_HANDLE,
     PRF_ERR_INVALID_PARAMETER,
 
     //Audio Profile status
-    AUDIO_ERR_NO_MEMORY                                              = 0xE0,
+    AUDIO_ERR_NO_MEMORY                                            = 0xE0,
     AUDIO_ERR_INVALID_PARAMETER,
     AUDIO_ERR_DISCOVERY_FAILED,
     AUDIO_ERR_BUSY,
     AUDIO_ERR_STATUS,
 
     //LE Audio Server
-    LE_AUDIO_SERVER_INVALID_SERVICE                                  = 0xF0,
+    LE_AUDIO_SERVER_INVALID_SERVICE                                = 0xF0,
     LE_AUDIO_SERVER_INVALID_HANDLE,
 
 } ble_sts_t;
@@ -197,25 +197,25 @@ typedef enum {
 
     ATT_SUCCESS = 0,
 
-    ATT_ERR_INVALID_HANDLE = 0x01,                            //!< The attribute handle given was not valid on this server
-    ATT_ERR_READ_NOT_PERMITTED = 0x02,                        //!< The attribute cannot be read
-    ATT_ERR_WRITE_NOT_PERMITTED = 0x03,                        //!< The attribute cannot be written
-    ATT_ERR_INVALID_PDU = 0x04,                                //!< The attribute PDU was invalid
-    ATT_ERR_INSUFFICIENT_AUTH = 0x05,                        //!< The attribute requires authentication before it can be read or written
-    ATT_ERR_REQ_NOT_SUPPORTED = 0x06,                        //!< Attribute server does not support the request received from the client
-    ATT_ERR_INVALID_OFFSET = 0x07,                            //!< Offset specified was past the end of the attribute
-    ATT_ERR_INSUFFICIENT_AUTHOR = 0x08,                        //!< The attribute requires authorization before it can be read or written
-    ATT_ERR_PREPARE_QUEUE_FULL = 0x09,                        //!< Too many prepare writes have been queued
-    ATT_ERR_ATTR_NOT_FOUND = 0x0A,                            //!< No attribute found within the given attribute handle range
-    ATT_ERR_ATTR_NOT_LONG = 0x0B,                            //!< The attribute cannot be read or written using the Read Blob Request
-    ATT_ERR_INSUFFICIENT_KEY_SIZE = 0x0C,                    //!< The Encryption Key Size used for encrypting this link is insufficient
-    ATT_ERR_INVALID_ATTR_VALUE_LEN = 0x0D,                    //!< The attribute value length is invalid for the operation
+    ATT_ERR_INVALID_HANDLE = 0x01,                          //!< The attribute handle given was not valid on this server
+    ATT_ERR_READ_NOT_PERMITTED = 0x02,                      //!< The attribute cannot be read
+    ATT_ERR_WRITE_NOT_PERMITTED = 0x03,                     //!< The attribute cannot be written
+    ATT_ERR_INVALID_PDU = 0x04,                             //!< The attribute PDU was invalid
+    ATT_ERR_INSUFFICIENT_AUTH = 0x05,                       //!< The attribute requires authentication before it can be read or written
+    ATT_ERR_REQ_NOT_SUPPORTED = 0x06,                       //!< Attribute server does not support the request received from the client
+    ATT_ERR_INVALID_OFFSET = 0x07,                          //!< Offset specified was past the end of the attribute
+    ATT_ERR_INSUFFICIENT_AUTHOR = 0x08,                     //!< The attribute requires authorization before it can be read or written
+    ATT_ERR_PREPARE_QUEUE_FULL = 0x09,                      //!< Too many prepare writes have been queued
+    ATT_ERR_ATTR_NOT_FOUND = 0x0A,                          //!< No attribute found within the given attribute handle range
+    ATT_ERR_ATTR_NOT_LONG = 0x0B,                           //!< The attribute cannot be read or written using the Read Blob Request
+    ATT_ERR_INSUFFICIENT_KEY_SIZE = 0x0C,                   //!< The Encryption Key Size used for encrypting this link is insufficient
+    ATT_ERR_INVALID_ATTR_VALUE_LEN = 0x0D,                  //!< The attribute value length is invalid for the operation
     ATT_ERR_UNLIKELY_ERR = 0x0E,                            //!< The attribute request that was requested has encountered an error that was unlikely, and therefore could not be completed as requested
     ATT_ERR_INSUFFICIENT_ENCRYPT = 0x0F,                    //!< The attribute requires encryption before it can be read or written
     ATT_ERR_UNSUPPORTED_GRP_TYPE = 0x10,                    //!< The attribute type is not a supported grouping attribute as defined by a higher layer specification
-    ATT_ERR_INSUFFICIENT_RESOURCES = 0x11,                    //!< Insufficient Resources to complete the request
+    ATT_ERR_INSUFFICIENT_RESOURCES = 0x11,                  //!< Insufficient Resources to complete the request
     ATT_ERR_DATABASE_OUT_OF_SYNC = 0x12,                    //!< The server requests the client to rediscover the database
-    ATT_ERR_VALUE_NOT_ALLOWED = 0x13,                        //!< The attribute parameter value was not allowed
+    ATT_ERR_VALUE_NOT_ALLOWED = 0x13,                       //!< The attribute parameter value was not allowed
 
     /* List of Common Profile and Service Error Codes */
     ATT_ERR_WRITE_REQUEST_REJECT = 0xFC,                //!< Write Request Rejected
@@ -313,21 +313,21 @@ typedef enum {
 //Definition for BLE Common Address Type
 /*
  *
- *                  |--public  ..................................................... BLE_DEVICE_ADDRESS_PUBLIC
+ *                |--public  ..................................................... BLE_DEVICE_ADDRESS_PUBLIC
  *                |
- * Address Type --|              |-- random static  ................................. BLE_DEVICE_ADDRESS_RANDOM_STATIC
- *                 |           |
- *                  |--random --|
- *                                  |                       |-- non_resolvable private  ... BLE_DEVICE_ADDRESS_NON_RESOLVABLE_PRIVATE
- *                                |-- random private --|
- *                                                  |-- resolvable private  ....... BLE_DEVICE_ADDRESS_RESOLVABLE_PRIVATE
+ * Address Type --|           |-- random static  ................................. BLE_DEVICE_ADDRESS_RANDOM_STATIC
+ *                |           |
+ *                |--random --|
+ *                            |                    |-- non_resolvable private  ... BLE_DEVICE_ADDRESS_NON_RESOLVABLE_PRIVATE
+ *                            |-- random private --|
+ *                                                 |-- resolvable private  ....... BLE_DEVICE_ADDRESS_RESOLVABLE_PRIVATE
  *
  */
 
-#define BLE_DEVICE_ADDRESS_PUBLIC                            1
-#define BLE_DEVICE_ADDRESS_RANDOM_STATIC                     2
-#define BLE_DEVICE_ADDRESS_NON_RESOLVABLE_PRIVATE            3
-#define BLE_DEVICE_ADDRESS_RESOLVABLE_PRIVATE                4
+#define BLE_DEVICE_ADDRESS_PUBLIC                           1
+#define BLE_DEVICE_ADDRESS_RANDOM_STATIC                    2
+#define BLE_DEVICE_ADDRESS_NON_RESOLVABLE_PRIVATE           3
+#define BLE_DEVICE_ADDRESS_RESOLVABLE_PRIVATE               4
 
 
 
@@ -337,7 +337,7 @@ typedef enum {
 #define IS_RESOLVABLE_PRIVATE_ADDR(Type, Addr)          ( (Type)==BLE_ADDR_RANDOM && (Addr[5] & 0xC0) == 0x40 )
 
 
-#define        MAC_MATCH16(md,ms)    (md[0]==ms[0] && md[1]==ms[1] && md[2]==ms[2])
+#define     MAC_MATCH16(md,ms)  (md[0]==ms[0] && md[1]==ms[1] && md[2]==ms[2])
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -348,40 +348,40 @@ typedef enum {
  *  @brief  Definition for Attribute protocol PDUs
  */
 typedef enum{
-    ATT_OP_ERROR_RSP                       = 0x01,
-    ATT_OP_EXCHANGE_MTU_REQ                = 0x02,
-    ATT_OP_EXCHANGE_MTU_RSP                = 0x03,
-    ATT_OP_FIND_INFORMATION_REQ            = 0x04,        ATT_OP_FIND_INFO_REQ = 0x04,
-    ATT_OP_FIND_INFORMATION_RSP            = 0x05,        ATT_OP_FIND_INFO_RSP = 0x05,
-    ATT_OP_FIND_BY_TYPE_VALUE_REQ          = 0x06,
-    ATT_OP_FIND_BY_TYPE_VALUE_RSP          = 0x07,
-    ATT_OP_READ_BY_TYPE_REQ                = 0x08,
-    ATT_OP_READ_BY_TYPE_RSP                = 0x09,
-    ATT_OP_READ_REQ                        = 0x0A,
-    ATT_OP_READ_RSP                        = 0x0B,
-    ATT_OP_READ_BLOB_REQ                   = 0x0C,
-    ATT_OP_READ_BLOB_RSP                   = 0x0D,
-    ATT_OP_READ_MULTIPLE_REQ               = 0x0E,        ATT_OP_READ_MULTI_REQ = 0x0E,
-    ATT_OP_READ_MULTIPLE_RSP               = 0x0F,
-    ATT_OP_READ_BY_GROUP_TYPE_REQ          = 0x10,
-    ATT_OP_READ_BY_GROUP_TYPE_RSP          = 0x11,
-    ATT_OP_WRITE_REQ                       = 0x12,
-    ATT_OP_WRITE_RSP                       = 0x13,
-    ATT_OP_PREPARE_WRITE_REQ               = 0x16,
-    ATT_OP_PREPARE_WRITE_RSP               = 0x17,
-    ATT_OP_EXECUTE_WRITE_REQ               = 0x18,
-    ATT_OP_EXECUTE_WRITE_RSP               = 0x19,
+    ATT_OP_ERROR_RSP                    = 0x01,
+    ATT_OP_EXCHANGE_MTU_REQ             = 0x02,
+    ATT_OP_EXCHANGE_MTU_RSP             = 0x03,
+    ATT_OP_FIND_INFORMATION_REQ         = 0x04,     ATT_OP_FIND_INFO_REQ = 0x04,
+    ATT_OP_FIND_INFORMATION_RSP         = 0x05,     ATT_OP_FIND_INFO_RSP = 0x05,
+    ATT_OP_FIND_BY_TYPE_VALUE_REQ       = 0x06,
+    ATT_OP_FIND_BY_TYPE_VALUE_RSP       = 0x07,
+    ATT_OP_READ_BY_TYPE_REQ             = 0x08,
+    ATT_OP_READ_BY_TYPE_RSP             = 0x09,
+    ATT_OP_READ_REQ                     = 0x0A,
+    ATT_OP_READ_RSP                     = 0x0B,
+    ATT_OP_READ_BLOB_REQ                = 0x0C,
+    ATT_OP_READ_BLOB_RSP                = 0x0D,
+    ATT_OP_READ_MULTIPLE_REQ            = 0x0E,     ATT_OP_READ_MULTI_REQ = 0x0E,
+    ATT_OP_READ_MULTIPLE_RSP            = 0x0F,
+    ATT_OP_READ_BY_GROUP_TYPE_REQ       = 0x10,
+    ATT_OP_READ_BY_GROUP_TYPE_RSP       = 0x11,
+    ATT_OP_WRITE_REQ                    = 0x12,
+    ATT_OP_WRITE_RSP                    = 0x13,
+    ATT_OP_PREPARE_WRITE_REQ            = 0x16,
+    ATT_OP_PREPARE_WRITE_RSP            = 0x17,
+    ATT_OP_EXECUTE_WRITE_REQ            = 0x18,
+    ATT_OP_EXECUTE_WRITE_RSP            = 0x19,
 
-    ATT_OP_HANDLE_VALUE_NTF                = 0x1B,        ATT_OP_HANDLE_VALUE_NOTI = 0x1B,
-    ATT_OP_HANDLE_VALUE_IND                = 0x1D,
-    ATT_OP_HANDLE_VALUE_CFM                = 0x1E,
+    ATT_OP_HANDLE_VALUE_NTF             = 0x1B,     ATT_OP_HANDLE_VALUE_NOTI = 0x1B,
+    ATT_OP_HANDLE_VALUE_IND             = 0x1D,
+    ATT_OP_HANDLE_VALUE_CFM             = 0x1E,
 
-    ATT_OP_READ_MULTIPLE_VARIABLE_REQ      = 0x20,    //core_5.2
-    ATT_OP_READ_MULTIPLE_VARIABLE_RSP      = 0x21, //core_5.2
-    ATT_OP_MULTIPLE_HANDLE_VALUE_NTF       = 0x23, //core_5.2
+    ATT_OP_READ_MULTIPLE_VARIABLE_REQ   = 0x20, //core_5.2
+    ATT_OP_READ_MULTIPLE_VARIABLE_RSP   = 0x21, //core_5.2
+    ATT_OP_MULTIPLE_HANDLE_VALUE_NTF    = 0x23, //core_5.2
 
-    ATT_OP_WRITE_CMD                       = 0x52,
-    ATT_OP_SIGNED_WRITE_CMD                = 0xD2,
+    ATT_OP_WRITE_CMD                    = 0x52,
+    ATT_OP_SIGNED_WRITE_CMD             = 0xD2,
 }att_pdu_type;
 
 
@@ -390,34 +390,34 @@ typedef enum{
 
 
 /**
- * @brief    HCI ACL DATA buffer length = LE_ACL_Data_Packet_Length + 4, pkt_len is integer multiple of 4, so result is 4 Byte align
- *            4 = 2(connHandle) + 1(PBFlag) + 1(length)
+ * @brief   HCI ACL DATA buffer length = LE_ACL_Data_Packet_Length + 4, pkt_len is integer multiple of 4, so result is 4 Byte align
+ *          4 = 2(connHandle) + 1(PBFlag) + 1(length)
  */
-#define        CALCULATE_HCI_ACL_DATA_FIFO_SIZE(pkt_len)                ((pkt_len + 4 +3)/4*4)
+#define     CALCULATE_HCI_ACL_DATA_FIFO_SIZE(pkt_len)               ((pkt_len + 4 +3)/4*4)
 
 
 
 /**
- * @brief    6 = header(2)+l2cap_len(2)+CID(2)
+ * @brief   6 = header(2)+l2cap_len(2)+CID(2)
  */
-#define        CAL_L2CAP_BUFF_SIZE(n)                (((n + 6) + 3)/4 * 4)
+#define     CAL_L2CAP_BUFF_SIZE(n)              (((n + 6) + 3)/4 * 4)
 
 /**
- * @brief    12 = type(1) + len(1) + l2cap_len(2) + cid(2) + sud_len(2) + mic(4)
+ * @brief   12 = type(1) + len(1) + l2cap_len(2) + cid(2) + sud_len(2) + mic(4)
  */
-#define        L2CAP_ALIGN4_KFRAM_DMA_BUFF(n)        (((n + 12) + 3) / 4 * 4)
+#define     L2CAP_ALIGN4_KFRAM_DMA_BUFF(n)      (((n + 12) + 3) / 4 * 4)
 
 /**
- * @brief    CIS TX FIFO Size = n + CIS_TX_PDU_BUF_EXT_LEN + TLK_RF_TX_EXT_LEN
+ * @brief   CIS TX FIFO Size = n + CIS_TX_PDU_BUF_EXT_LEN + TLK_RF_TX_EXT_LEN
  * CIS_TX_PDU_BUF_EXT_LEN is extra data length designed by Stack
  * TLK_RF_TX_EXT_LEN depend on MCU
  * CIS TX FIFO do not use hardware FIFO, so no 16 byte align limitation
  * TX dma_len must be 4 byte align, so total buffer need 4 byte align */
-#define        CAL_LL_CIS_TX_FIFO_SIZE(n)            DATA_LENGTH_ALIGN4(n + CIS_TX_PDU_BUF_EXT_LEN + TLK_RF_TX_EXT_LEN)
+#define     CAL_LL_CIS_TX_FIFO_SIZE(n)          DATA_LENGTH_ALIGN4(n + CIS_TX_PDU_BUF_EXT_LEN + TLK_RF_TX_EXT_LEN)
 
-#define        BIS_PDU_ALIGN4_TXBUFF(n)              DATA_LENGTH_ALIGN4((CAL_LL_ISO_TX_FIFO_SIZE(n) +12 ))//12=OFFSETOF(bis_tx_pdu_t, isoTxPdu)
+#define     BIS_PDU_ALIGN4_TXBUFF(n)            DATA_LENGTH_ALIGN4((CAL_LL_ISO_TX_FIFO_SIZE(n) +12 ))//12=OFFSETOF(bis_tx_pdu_t, isoTxPdu)
 
-#define        BIS_PDU_ALIGN4_RXBUFF(n)              DATA_LENGTH_ALIGN4(BIS_LL_RX_PDU_FIFO_SIZE(n))
+#define     BIS_PDU_ALIGN4_RXBUFF(n)            DATA_LENGTH_ALIGN4(BIS_LL_RX_PDU_FIFO_SIZE(n))
 
 
 /*
@@ -430,8 +430,8 @@ typedef enum{
 total len = 14
 */
 
-#define IAL_SDU_HDR_EN                        14
-#define CAL_IAL_ISO_SDU_FIFO_SIZE(n)         (((n + IAL_SDU_HDR_EN) + 3) / 4 * 4)
+#define     IAL_SDU_HDR_EN                      14
+#define     CAL_IAL_ISO_SDU_FIFO_SIZE(n)        (((n + IAL_SDU_HDR_EN) + 3) / 4 * 4)
 
 
 /*
@@ -444,7 +444,7 @@ HCI TX fifo include ACL data report, HCI Event report (controller to host)
 | uart_len  | type  | handle  | data_len  | data_total_len  |
 ++++++
  */
-#define HCI_ACL_OUT_FIFO_SIZE(n)                    ((n+7 + 3) / 4 *4)
+#define     HCI_ACL_OUT_FIFO_SIZE(n)                ((n+7 + 3) / 4 *4)
 
 /* HCI ISO out DATA format in telink
 +++++++++
@@ -453,7 +453,7 @@ HCI TX fifo include ACL data report, HCI Event report (controller to host)
 | uart_len  | type  | handle  | ISO_data_load_length  | timestamp  | packet_sequence_num  | iso_sdu_length  | sdu_data  |
 +++++++++
  */
-#define  HCI_ISO_OUT_FIFO_SIZE(n)                    ((n+15 +3)/ 4*4)
+#define  HCI_ISO_OUT_FIFO_SIZE(n)                   ((n+15 +3)/ 4*4)
 
 
 //HCI OUT hold ISO data and ACL data, Event
@@ -483,13 +483,13 @@ HCI TX fifo include ACL data report, HCI Event report (controller to host)
 | type  | handle  | ISO_data_load_length  | timestamp  | packet_sequence_num  | iso_sdu_length  | sdu_data  |
 ++++++++
  */
-#define HCI_ISO_IN_FIFO_SIZE(n)                  (((n+13)+3)/4*4)
+#define HCI_ISO_IN_FIFO_SIZE(n)         (((n+13)+3)/4*4)
 
 
 /*
  * HCI in fifo include HCI ACL data and CMD, ISO data
  */
-#define HCI_IN_FIFO_MAX_SIZE(acl_len_max, iso_len_max)            (max2(HCI_ACL_IN_FIFO_SIZE(acl_len_max), HCI_ISO_IN_FIFO_SIZE(iso_len_max)))
+#define HCI_IN_FIFO_MAX_SIZE(acl_len_max, iso_len_max)          (max2(HCI_ACL_IN_FIFO_SIZE(acl_len_max), HCI_ISO_IN_FIFO_SIZE(iso_len_max)))
 
 
 
@@ -500,9 +500,9 @@ HCI TX fifo include ACL data report, HCI Event report (controller to host)
 
 /* for BLE B91 old SDK macro compatible with new SDK */
 /**
- * @brief    6 = header(2)+l2cap_len(2)+CID(2)
+ * @brief   6 = header(2)+l2cap_len(2)+CID(2)
  */
-#define        CAL_MTU_BUFF_SIZE(n)                (((n + 6) + 3)/4 * 4)
+#define     CAL_MTU_BUFF_SIZE(n)                (((n + 6) + 3)/4 * 4)
 
 
 
@@ -517,12 +517,12 @@ unsigned short crc16 (unsigned char *pD, int len);
 
 /**
  * @brief      get SDK and Lib version. Now the version is 16Bytes.
- *                         Struction                Example
- *                     - SDK Version (4B)        :    "04 00 01 01" means V4.0.1.1
- *                     - Patch Version (1B)     :    "01" means Patch_01
- *                     - Lib built date (5B)    :    "44 65 63 14 23" means Dec 14 2023
- *                     - Lib built time (2B)    :    "20 56" means 20:46
- *                     - Reserved (4B)            :    "FF FF FF FF"
+ *                      Struction               Example
+ *                  - SDK Version (4B)      :   "04 00 01 01" means V4.0.1.1
+ *                  - Patch Version (1B)    :   "01" means Patch_01
+ *                  - Lib built date (5B)   :   "44 65 63 14 23" means Dec 14 2023
+ *                  - Lib built time (2B)   :   "20 56" means 20:46
+ *                  - Reserved (4B)         :   "FF FF FF FF"
  * @param[in]  pbuf - the pointer to the verion buffer.
  * @param[in]  number - the value is reserved for future use.
  * @return     the length or version char array.

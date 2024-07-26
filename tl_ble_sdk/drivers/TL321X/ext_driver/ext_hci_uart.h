@@ -69,8 +69,8 @@ typedef enum
 
 /**
  * @brief   hci uart initialization
- * @param    none
- * @return    none
+ * @param   none
+ * @return  none
  */
 ext_hci_StatusTypeDef_e ext_hci_uartInit(ext_hci_InitTypeDef * uart);
 

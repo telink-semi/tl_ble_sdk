@@ -26,11 +26,11 @@
 
 
 #ifndef BATT_CHECK_ENABLE
-#define BATT_CHECK_ENABLE                    0
+#define BATT_CHECK_ENABLE                   0
 #endif
 
 
-#define BAT_DEEP_THRESHOLD_MV                2000   // 2000 mV low battery alarm
+#define BAT_DEEP_THRESHOLD_MV               2000   // 2000 mV low battery alarm
 
 #define DCDC_ADC_SOFTWARE_FILTER            0  // Filter ADC data in DCDC mode
 
@@ -45,15 +45,15 @@ void battery_set_detect_enable (int en);
 
 /**
  * @brief     This function serves to get battery detect status.
- * @param    none
+ * @param   none
  * @return    other: battery detect enable
- *               0: battery detect disable
+ *            0: battery detect disable
  */
 int  battery_get_detect_enable (void);
 
 /**
- * @brief        This is battery check function
- * @param[in]    alarm_vol_mv - input battery calibration
+ * @brief       This is battery check function
+ * @param[in]   alarm_vol_mv - input battery calibration
  * @return      0: batt_vol_mv < alarm_vol_mv 1: batt_vol_mv > alarm_vol_mv
  */
 _attribute_ram_code_

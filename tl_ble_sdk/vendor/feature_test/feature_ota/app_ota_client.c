@@ -35,10 +35,10 @@
 
 
 typedef struct{
-    u8    type;
+    u8  type;
     u8  rf_len;
-    u16    l2capLen;
-    u16    chanId;
+    u16 l2capLen;
+    u16 chanId;
     u8  opcode;
     u8  datalen;
     u8  data[1];            // character_handle / property / value_handle / value
@@ -53,29 +53,29 @@ typedef struct{
 
 
 
-static const  u8 my_OtaUUID[16]    = WRAPPING_BRACES(TELINK_SPP_DATA_OTA);
+static const  u8 my_OtaUUID[16] = WRAPPING_BRACES(TELINK_SPP_DATA_OTA);
 
 
 
 
 #if (OTA_CLIENT_SUPPORT_BIG_PDU_ENABLE)
-    #define OTA_PDU_LENGTH                                    240  // n*16 (n= 1 ~ 15),
+    #define OTA_PDU_LENGTH                                  240  // n*16 (n= 1 ~ 15),
 #else
-    #define OTA_PDU_LENGTH                                    16
+    #define OTA_PDU_LENGTH                                  16
 #endif
 
 
 typedef struct{
     u16 adr_index;
-    u8    data[OTA_PDU_LENGTH];
+    u8  data[OTA_PDU_LENGTH];
     u16 crc_16;
 }ota_pdu_t;
 
 
-#define OTA_PUBKEY_SIGN_LENGTH                                    16
+#define OTA_PUBKEY_SIGN_LENGTH                                  16
 typedef struct{
     u16 pubkey_sign_cmd;
-    u8    pubkey_sign_data[OTA_PUBKEY_SIGN_LENGTH];
+    u8  pubkey_sign_data[OTA_PUBKEY_SIGN_LENGTH];
     u16 crc_16;
 }ota_sign_t;
 
@@ -493,7 +493,7 @@ void app_proc_ota_update(void)
             DBG_CHN8_TOGGLE;
             u8 ret_status = blc_gatt_pushWriteCommand(blotaClt.ota_connHandle, blotaClt.ota_attHandle, ota_buffer,  4 + actual_pdu_len);
             if(ret_status == BLE_SUCCESS){
-//                    tlkapi_send_string_u32s(APP_OTA_CLIENT_LOG_EN, "[APP][OTA] ota data", pPdu->adr_index, 0, 0, 0);
+//                  tlkapi_send_string_u32s(APP_OTA_CLIENT_LOG_EN, "[APP][OTA] ota data", pPdu->adr_index, 0, 0, 0);
                 DBG_CHN9_TOGGLE;
                 blotaClt.cur_adr_index ++;
             }
@@ -540,7 +540,7 @@ void app_proc_ota_update(void)
 
 
 
-#define OTA_TRIG_OTA_RESULT_LED_INTERVAL_US      500000
+#define OTA_TRIG_OTA_RESULT_LED_INTERVAL_US     500000
 
 void app_ota_trigger_led_shine(void)
 {

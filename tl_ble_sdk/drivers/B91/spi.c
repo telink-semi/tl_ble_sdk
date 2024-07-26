@@ -30,66 +30,66 @@ static unsigned char s_pspi_tx_dma_chn;
 static unsigned char s_pspi_rx_dma_chn;
 
 dma_config_t hspi_tx_dma_config = {
-    .dst_req_sel     = DMA_REQ_SPI_AHB_TX,//tx req
-    .src_req_sel     = 0,
-    .dst_addr_ctrl    = DMA_ADDR_FIX,
+    .dst_req_sel    = DMA_REQ_SPI_AHB_TX,//tx req
+    .src_req_sel    = 0,
+    .dst_addr_ctrl  = DMA_ADDR_FIX,
     .src_addr_ctrl  = DMA_ADDR_INCREMENT,//increment
-    .dstmode         = DMA_HANDSHAKE_MODE,//handshake
-    .srcmode         = DMA_NORMAL_MODE,
-    .dstwidth         = DMA_CTR_WORD_WIDTH,//must word
-    .srcwidth         = DMA_CTR_WORD_WIDTH,//must word
+    .dstmode        = DMA_HANDSHAKE_MODE,//handshake
+    .srcmode        = DMA_NORMAL_MODE,
+    .dstwidth       = DMA_CTR_WORD_WIDTH,//must word
+    .srcwidth       = DMA_CTR_WORD_WIDTH,//must word
     .src_burst_size = 0,//must 0
-    .read_num_en     = 0,
-    .priority         = 0,
-    .write_num_en     = 0,
-    .auto_en         = 0,//must 0
+    .read_num_en    = 0,
+    .priority       = 0,
+    .write_num_en   = 0,
+    .auto_en        = 0,//must 0
 };
  dma_config_t hspi_rx_dma_config = {
     .dst_req_sel   = 0,//tx req
-    .src_req_sel     = DMA_REQ_SPI_AHB_RX,
+    .src_req_sel    = DMA_REQ_SPI_AHB_RX,
     .dst_addr_ctrl  = DMA_ADDR_INCREMENT,
     .src_addr_ctrl  = DMA_ADDR_FIX,
-    .dstmode         = DMA_NORMAL_MODE,
-    .srcmode         = DMA_HANDSHAKE_MODE,
-    .dstwidth        = DMA_CTR_WORD_WIDTH,//must word
-    .srcwidth         = DMA_CTR_WORD_WIDTH,////must word
+    .dstmode        = DMA_NORMAL_MODE,
+    .srcmode        = DMA_HANDSHAKE_MODE,
+    .dstwidth       = DMA_CTR_WORD_WIDTH,//must word
+    .srcwidth       = DMA_CTR_WORD_WIDTH,////must word
     .src_burst_size = 0,
-    .read_num_en     = 0,
-    .priority         = 0,
-    .write_num_en    = 0,
-    .auto_en         = 0,//must 0
+    .read_num_en    = 0,
+    .priority       = 0,
+    .write_num_en   = 0,
+    .auto_en        = 0,//must 0
 };
 
 dma_config_t pspi_tx_dma_config = {
     .dst_req_sel    = DMA_REQ_SPI_APB_TX,//tx req
-    .src_req_sel     = 0,
+    .src_req_sel    = 0,
     .dst_addr_ctrl  = DMA_ADDR_FIX,
     .src_addr_ctrl  = DMA_ADDR_INCREMENT,//increment
-    .dstmode         = DMA_HANDSHAKE_MODE,//handshake
-    .srcmode         = DMA_NORMAL_MODE,
-    .dstwidth         = DMA_CTR_WORD_WIDTH,//must word
-    .srcwidth         = DMA_CTR_WORD_WIDTH,//must word
+    .dstmode        = DMA_HANDSHAKE_MODE,//handshake
+    .srcmode        = DMA_NORMAL_MODE,
+    .dstwidth       = DMA_CTR_WORD_WIDTH,//must word
+    .srcwidth       = DMA_CTR_WORD_WIDTH,//must word
     .src_burst_size = 0,//must 0
-    .read_num_en     = 0,
-    .priority         = 0,
-    .write_num_en     = 0,
-    .auto_en         = 0,//must 0
+    .read_num_en    = 0,
+    .priority       = 0,
+    .write_num_en   = 0,
+    .auto_en        = 0,//must 0
 };
 
 dma_config_t pspi_rx_dma_config = {
-    .dst_req_sel     = 0,//tx req
-    .src_req_sel     = DMA_REQ_SPI_APB_RX,
+    .dst_req_sel    = 0,//tx req
+    .src_req_sel    = DMA_REQ_SPI_APB_RX,
     .dst_addr_ctrl  = DMA_ADDR_INCREMENT,
     .src_addr_ctrl  = DMA_ADDR_FIX,
-    .dstmode         = DMA_NORMAL_MODE,
-    .srcmode         = DMA_HANDSHAKE_MODE,
-    .dstwidth         = DMA_CTR_WORD_WIDTH,//must word
-    .srcwidth         = DMA_CTR_WORD_WIDTH,////must word
+    .dstmode        = DMA_NORMAL_MODE,
+    .srcmode        = DMA_HANDSHAKE_MODE,
+    .dstwidth       = DMA_CTR_WORD_WIDTH,//must word
+    .srcwidth       = DMA_CTR_WORD_WIDTH,////must word
     .src_burst_size = 0,
-    .read_num_en     = 0,
-    .priority         = 0,
-    .write_num_en     = 0,
-    .auto_en         = 0,//must 0
+    .read_num_en    = 0,
+    .priority       = 0,
+    .write_num_en   = 0,
+    .auto_en        = 0,//must 0
 };
 
 /**
@@ -134,9 +134,9 @@ void hspi_set_pin_mux(hspi_pin_def_e pin)
 }
 
 /**
- * @brief         This function enable hspi csn pin.
- * @param[in]     pin - the csn pin.
- * @return         none
+ * @brief       This function enable hspi csn pin.
+ * @param[in]   pin - the csn pin.
+ * @return      none
  */
 void hspi_cs_pin_en(hspi_csn_pin_def_e pin)
 {
@@ -144,15 +144,15 @@ void hspi_cs_pin_en(hspi_csn_pin_def_e pin)
 }
 
 /**
- * @brief         This function disable hspi csn pin.
- * @param[in]     pin - the csn pin.
- * @return         none
+ * @brief       This function disable hspi csn pin.
+ * @param[in]   pin - the csn pin.
+ * @return      none
  */
 void hspi_cs_pin_dis(hspi_csn_pin_def_e pin)
 {
     /**
      * Bug fix: Move the operation of gpio_function_en to the end of the function.
-     *         changed by chaofan.20210301.
+     *      changed by chaofan.20210301.
      */
     gpio_output_en(pin);
     gpio_input_dis(pin);
@@ -161,10 +161,10 @@ void hspi_cs_pin_dis(hspi_csn_pin_def_e pin)
 }
 
 /**
- * @brief         This function change hspi csn pin.
- * @param[in]     current_csn_pin - the current csn pin.
- * @param[in]     next_csn_pin - the next csn pin.
- * @return         none.
+ * @brief       This function change hspi csn pin.
+ * @param[in]   current_csn_pin - the current csn pin.
+ * @param[in]   next_csn_pin - the next csn pin.
+ * @return      none.
  */
 void hspi_change_csn_pin(hspi_csn_pin_def_e current_csn_pin, hspi_csn_pin_def_e next_csn_pin)
 {
@@ -212,9 +212,9 @@ void pspi_set_pin_mux(pspi_pin_def_e pin)
     }
 }
 /**
- * @brief         This function enable pspi csn pin.
- * @param[in]     pin - the csn pin.
- * @return         none
+ * @brief       This function enable pspi csn pin.
+ * @param[in]   pin - the csn pin.
+ * @return      none
  */
 void pspi_cs_pin_en(pspi_csn_pin_def_e pin)
 {
@@ -222,15 +222,15 @@ void pspi_cs_pin_en(pspi_csn_pin_def_e pin)
 }
 
 /**
- * @brief         This function disable pspi csn pin.
- * @param[in]     pin - the csn pin.
- * @return         none
+ * @brief       This function disable pspi csn pin.
+ * @param[in]   pin - the csn pin.
+ * @return      none
  */
 void pspi_cs_pin_dis(pspi_csn_pin_def_e pin)
 {
     /**
      * Bug fix: Move the operation of gpio_function_en to the end of the function.
-     *         changed by chaofan.20210301.
+     *      changed by chaofan.20210301.
      */
     gpio_output_en(pin);
     gpio_input_dis(pin);
@@ -239,10 +239,10 @@ void pspi_cs_pin_dis(pspi_csn_pin_def_e pin)
 }
 
 /**
- * @brief         This function change pspi csn pin.
- * @param[in]     current_csn_pin - the current csn pin.
- * @param[in]     next_csn_pin - the next csn pin.
- * @return         none.
+ * @brief       This function change pspi csn pin.
+ * @param[in]   current_csn_pin - the current csn pin.
+ * @param[in]   next_csn_pin - the next csn pin.
+ * @return      none.
  */
 void pspi_change_csn_pin(pspi_csn_pin_def_e current_csn_pin, pspi_csn_pin_def_e next_csn_pin)
 {
@@ -266,9 +266,9 @@ void hspi_set_pin(hspi_pin_config_t *config)
 }
 
 /**
- * @brief         This function configures pspi pin.
- * @param[in]     config - the pointer of pin config struct.
- * @return         none
+ * @brief       This function configures pspi pin.
+ * @param[in]   config - the pointer of pin config struct.
+ * @return      none
  */
 void pspi_set_pin(pspi_pin_config_t *config)
 {
@@ -286,7 +286,7 @@ void spi_slave_set_pin(void)
 {
     /**
      * Bug fix: Replace the incorrectly used reg_gpio_pb_fuc_l with reg_gpio_pa_fuc_l.
-     *         changed by chaofan.20210301.
+     *      changed by chaofan.20210301.
      */
     reg_gpio_pa_fuc_l = (reg_gpio_pa_fuc_l & 0x03);//set PA1 as csn,PA2 as clk,PA3 as mosi_io0,
     reg_gpio_pa_fuc_h = (reg_gpio_pa_fuc_l & 0xfc);//set PA4 slave miso_io1
@@ -295,48 +295,48 @@ void spi_slave_set_pin(void)
 }
 
 /**
- * @brief         This function configures the clock and working mode for SPI interface.
- * @param[in]     spi_sel     - the spi module.
- * @param[in]     div_clock     - the division factor for SPI module.
- *               spi_clock_out = ahb_clock / ((div_clock+1)*2)
- * @param[in]     mode         - the selected working mode of SPI module.
- *               bit5:CPHA-Clock Polarity ; bit6:CPOL:CPHA-Clock Phase
- *                MODE0:  CPOL = 0, CPHA =0;
- *                MODE1:  CPOL = 0, CPHA =1;
- *                MODE2:  CPOL = 1, CPHA =0;
- *                MODE3:  CPOL = 1, CPHA =1;
+ * @brief       This function configures the clock and working mode for SPI interface.
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   div_clock   - the division factor for SPI module.
+ *              spi_clock_out = ahb_clock / ((div_clock+1)*2)
+ * @param[in]    mode       - the selected working mode of SPI module.
+ *              bit5:CPHA-Clock Polarity ; bit6:CPOL:CPHA-Clock Phase
+ *              MODE0:  CPOL = 0, CPHA =0;
+ *              MODE1:  CPOL = 0, CPHA =1;
+ *              MODE2:  CPOL = 1, CPHA =0;
+ *              MODE3:  CPOL = 1, CPHA =1;
  * @return      none
  */
 void spi_master_init(spi_sel_e spi_sel, unsigned char div_clock, spi_mode_type_e mode)
 {
      reg_spi_mode1(spi_sel) = div_clock;
-     reg_spi_mode0(spi_sel)    |= FLD_SPI_MASTER_MODE;//master
+     reg_spi_mode0(spi_sel) |= FLD_SPI_MASTER_MODE;//master
      reg_spi_mode0(spi_sel) = ((reg_spi_mode0(spi_sel) & (~FLD_SPI_MODE_WORK_MODE)) | (mode << 5));// select SPI mode, support four modes
 }
 
 
 /**
- * @brief         This function configures the clock and working mode for SPI interface.
- * @param[in]     spi_sel - the spi module.
- * @param[in]     mode     - the selected working mode of SPI module.
+ * @brief       This function configures the clock and working mode for SPI interface.
+ * @param[in]   spi_sel - the spi module.
+ * @param[in]   mode    - the selected working mode of SPI module.
  *              bit5:CPHA-Clock Polarity ; bit6:CPOL:CPHA-Clock Phase
- *                MODE0:  CPOL = 0, CPHA =0;
- *                MODE1:  CPOL = 0, CPHA =1;
- *                MODE2:  CPOL = 1, CPHA =0;
- *                MODE3:  CPOL = 1, CPHA =1;
+ *              MODE0:  CPOL = 0, CPHA =0;
+ *              MODE1:  CPOL = 0, CPHA =1;
+ *              MODE2:  CPOL = 1, CPHA =0;
+ *              MODE3:  CPOL = 1, CPHA =1;
  * @return      none
- * @note          spi_clock_in  (spi_slave_clock frequency)/3
+ * @note        spi_clock_in  (spi_slave_clock frequency)/3
  */
 void spi_slave_init(spi_sel_e spi_sel, spi_mode_type_e mode)
 {
-     reg_spi_mode0(spi_sel)    &= (~FLD_SPI_MASTER_MODE);//slave
+     reg_spi_mode0(spi_sel) &= (~FLD_SPI_MASTER_MODE);//slave
      reg_spi_mode0(spi_sel) = ((reg_spi_mode0(spi_sel) & (~FLD_SPI_MODE_WORK_MODE)) | (mode << 5));// select SPI mode, support four modes
 }
 
 /**
- * @brief         This function servers to set dummy cycle cnt.
- * @param[in]     spi_sel     - the spi module.
- * @param[in]     dummy_cnt     - the cnt of dummy clock.
+ * @brief       This function servers to set dummy cycle cnt.
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   dummy_cnt   - the cnt of dummy clock.
  * @return      none
  */
 void spi_set_dummy_cnt(spi_sel_e spi_sel, unsigned char dummy_cnt)
@@ -345,9 +345,9 @@ void spi_set_dummy_cnt(spi_sel_e spi_sel, unsigned char dummy_cnt)
 }
 
 /**
- * @brief         This function servers to set spi transfer mode.
- * @param[in]     spi_sel - the spi module.
- * @param[in]     mode     - transfer mode.
+ * @brief       This function servers to set spi transfer mode.
+ * @param[in]   spi_sel - the spi module.
+ * @param[in]   mode    - transfer mode.
  * @return      none
  */
 void spi_set_transmode(spi_sel_e spi_sel, spi_tans_mode_e mode)
@@ -356,8 +356,8 @@ void spi_set_transmode(spi_sel_e spi_sel, spi_tans_mode_e mode)
 }
 
 /**
- * @brief         This function servers to set normal mode.
- * @param[in]     spi_sel     - the spi module.
+ * @brief       This function servers to set normal mode.
+ * @param[in]   spi_sel     - the spi module.
  * @return      none
  */
 void spi_set_normal_mode(spi_sel_e spi_sel)
@@ -371,8 +371,8 @@ void spi_set_normal_mode(spi_sel_e spi_sel)
 }
 
 /**
- * @brief         This function servers to set dual mode.
- * @param[in]     spi_sel     - the spi module.
+ * @brief       This function servers to set dual mode.
+ * @param[in]   spi_sel     - the spi module.
  * @return      none
  */
 void spi_set_dual_mode(spi_sel_e spi_sel)
@@ -386,8 +386,8 @@ void spi_set_dual_mode(spi_sel_e spi_sel)
 }
 
 /**
- * @brief    This function servers to set quad mode.
- * @return    none
+ * @brief   This function servers to set quad mode.
+ * @return  none
  */
 void hspi_set_quad_mode()
 {
@@ -397,8 +397,8 @@ void hspi_set_quad_mode()
 }
 
 /**
- * @brief         This function servers to set 3line mode.
- * @param[in]     spi_sel     - the spi module.
+ * @brief       This function servers to set 3line mode.
+ * @param[in]   spi_sel     - the spi module.
  * @return      none
  */
 void spi_set_3line_mode(spi_sel_e spi_sel)
@@ -413,9 +413,9 @@ void spi_set_3line_mode(spi_sel_e spi_sel)
 }
 
 /**
- * @brief         This function servers to set hspi io  mode.
- * @param[in]     spi_sel - the spi module.
- * @param[in]    mode     - single/dual/quad /3line.
+ * @brief       This function servers to set hspi io  mode.
+ * @param[in]   spi_sel - the spi module.
+ * @param[in]   mode    - single/dual/quad /3line.
  * @return      none
   */
 void spi_set_io_mode(spi_sel_e spi_sel, spi_io_mode_e mode)
@@ -438,9 +438,9 @@ void spi_set_io_mode(spi_sel_e spi_sel, spi_io_mode_e mode)
 }
 
 /**
- * @brief         This function servers to config normal mode.
- * @param[in]     spi_sel - the spi module.
- * @param[in]     mode     - normal ,mode 3line.
+ * @brief       This function servers to config normal mode.
+ * @param[in]   spi_sel - the spi module.
+ * @param[in]   mode    - normal ,mode 3line.
  * @return      none
  */
 void spi_master_config(spi_sel_e spi_sel, spi_normal_3line_mode_e mode)
@@ -454,8 +454,8 @@ void spi_master_config(spi_sel_e spi_sel, spi_normal_3line_mode_e mode)
 }
 
 /**
- * @brief         This function servers to config hspi special mode.
- * @param[in]     config     - the pointer of pin special config struct.
+ * @brief       This function servers to config hspi special mode.
+ * @param[in]   config  - the pointer of pin special config struct.
  * @return      none
  */
 void hspi_master_config_plus(hspi_config_t *config)
@@ -502,8 +502,8 @@ void hspi_master_config_plus(hspi_config_t *config)
 }
 
 /**
- * @brief         This function servers to config pspi special mode.
- * @param[in]     config     - the pointer of pin special config struct.
+ * @brief       This function servers to config pspi special mode.
+ * @param[in]   config  - the pointer of pin special config struct.
  * @return      none
  */
 void pspi_master_config_plus(pspi_config_t *config)
@@ -521,9 +521,9 @@ void pspi_master_config_plus(pspi_config_t *config)
 }
 
 /**
- * @brief         This function servers to set slave address hspi only.
- * @param[in]     addr - address of slave.
- * @return        none
+ * @brief       This function servers to set slave address hspi only.
+ * @param[in]   addr - address of slave.
+ * @return      none
  */
 void hspi_set_address(unsigned int addr)
 {
@@ -531,11 +531,11 @@ void hspi_set_address(unsigned int addr)
 }
 
 /**
- * @brief         This function servers to write hspi fifo.
- * @param[in]     spi_sel - the spi module.
- * @param[in]     data     - the pointer to the data for write.
- * @param[in]     len     - write length.
- * @return        none
+ * @brief       This function servers to write hspi fifo.
+ * @param[in]   spi_sel - the spi module.
+ * @param[in]   data    - the pointer to the data for write.
+ * @param[in]   len     - write length.
+ * @return      none
  */
 void spi_write(spi_sel_e spi_sel, unsigned char *data, unsigned int len)
 {
@@ -548,11 +548,11 @@ void spi_write(spi_sel_e spi_sel, unsigned char *data, unsigned int len)
 
 
 /**
- * @brief         This function servers to read hspi fifo.
- * @param[in]     spi_sel    - the spi module.
- * @param[in]     data     - the pointer to the data for read.
- * @param[in]     len     - read length.
- * @return        none
+ * @brief       This function servers to read hspi fifo.
+ * @param[in]   spi_sel - the spi module.
+ * @param[in]   data    - the pointer to the data for read.
+ * @param[in]   len     - read length.
+ * @return      none
  */
 void spi_read(spi_sel_e spi_sel, unsigned char *data, unsigned int len)
 {
@@ -564,10 +564,10 @@ void spi_read(spi_sel_e spi_sel, unsigned char *data, unsigned int len)
 }
 
 /**
- * @brief         This function serves to normal write data in normal.
- * @param[in]     spi_sel - the spi module.
- * @param[in]     data     - the pointer to the data for write.
- * @param[in]     len     - write length.
+ * @brief       This function serves to normal write data in normal.
+ * @param[in]   spi_sel - the spi module.
+ * @param[in]   data    - the pointer to the data for write.
+ * @param[in]   len     - write length.
  * @return      none
  */
 void spi_master_write(spi_sel_e spi_sel, unsigned char *data, unsigned int len)
@@ -582,14 +582,14 @@ void spi_master_write(spi_sel_e spi_sel, unsigned char *data, unsigned int len)
 }
 
 /**
- * @brief         This function serves to normal write and read data.
+ * @brief       This function serves to normal write and read data.
  * This interface cannot be used for full duplex.
  * rd_len shouldn't set to 0. Must write first, then read.
- * @param[in]     spi_sel - the spi module.
- * @param[in]     wr_data - the pointer to the data for write.
- * @param[in]     wr_len     - write length.
- * @param[in]     rd_data - the pointer to the data for read.
- * @param[in]     rd_len     - read length.
+ * @param[in]   spi_sel - the spi module.
+ * @param[in]   wr_data - the pointer to the data for write.
+ * @param[in]   wr_len  - write length.
+ * @param[in]   rd_data - the pointer to the data for read.
+ * @param[in]   rd_len  - read length.
  * @return      none
  */
 void spi_master_write_read(spi_sel_e spi_sel, unsigned char *wr_data, unsigned int wr_len, unsigned char *rd_data, unsigned int rd_len)
@@ -608,13 +608,13 @@ void spi_master_write_read(spi_sel_e spi_sel, unsigned char *wr_data, unsigned i
 }
 
 /**
- * @brief         This function serves to single/dual/quad write to the SPI slave.
- * @param[in]     spi_sel     - the spi module.
- * @param[in]     cmd         - cmd one byte will first write.
- * @param[in]     addr         - the address of slave.
- * @param[in]     data         -  pointer to the data need to write.
- * @param[in]     data_len     - length in byte of the data need to write.
- * @param[in]     wr_mode     - write mode.dummy or not dummy.
+ * @brief       This function serves to single/dual/quad write to the SPI slave.
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   cmd         - cmd one byte will first write.
+ * @param[in]   addr        - the address of slave.
+ * @param[in]   data        -  pointer to the data need to write.
+ * @param[in]   data_len    - length in byte of the data need to write.
+ * @param[in]   wr_mode     - write mode.dummy or not dummy.
  * @return      none
  */
 void spi_master_write_plus(spi_sel_e spi_sel, unsigned char cmd, unsigned int addr, unsigned char *data, unsigned int data_len, spi_wr_tans_mode_e wr_mode)
@@ -634,14 +634,14 @@ void spi_master_write_plus(spi_sel_e spi_sel, unsigned char cmd, unsigned int ad
 }
 
 /**
- * @brief         This function serves to single/dual/quad  read from the SPI slave.
- * @param[in]     spi_sel     - the spi module.
- * @param[in]      cmd         - cmd one byte will first write.
- * @param[in]      addr         - the address of slave.
- * @param[in]      data         - pointer to the data need to read.
- * @param[in]      data_len     - the length of data.
- * @param[in]      rd_mode     - read mode.dummy or not dummy.
- * @return       none
+ * @brief       This function serves to single/dual/quad  read from the SPI slave.
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   cmd         - cmd one byte will first write.
+ * @param[in]   addr        - the address of slave.
+ * @param[in]   data        - pointer to the data need to read.
+ * @param[in]   data_len    - the length of data.
+ * @param[in]   rd_mode     - read mode.dummy or not dummy.
+ * @return      none
  */
 void spi_master_read_plus(spi_sel_e spi_sel, unsigned char cmd, unsigned int addr, unsigned char *data, unsigned int data_len, spi_rd_tans_mode_e rd_mode)
 {
@@ -659,16 +659,16 @@ void spi_master_read_plus(spi_sel_e spi_sel, unsigned char cmd, unsigned int add
 }
 
 /**
- * @brief          This function serves to write address, then read data from the SPI slave.
+ * @brief       This function serves to write address, then read data from the SPI slave.
  * This interface cannot be used for full duplex.
- * @param[in]      spi_sel         - the spi module.
- * @param[in]      cmd         - cmd one byte will first write.
- * @param[in]      addrs         - pointer to the address of slave.
- * @param[in]      addr_len     - the length of address.
- * @param[in]      data         - the pointer to the data for read.
- * @param[in]      data_len     - read length.
- * @param[in]     wr_mode     - write mode.dummy or not dummy.
- * @return       none
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   cmd         - cmd one byte will first write.
+ * @param[in]   addrs       - pointer to the address of slave.
+ * @param[in]   addr_len    - the length of address.
+ * @param[in]   data        - the pointer to the data for read.
+ * @param[in]   data_len    - read length.
+ * @param[in]   wr_mode     - write mode.dummy or not dummy.
+ * @return      none
  */
 void spi_master_write_read_plus(spi_sel_e spi_sel, unsigned char cmd, unsigned char *addrs, unsigned int addr_len, unsigned char *data, unsigned int data_len, spi_rd_tans_mode_e wr_mode)
 {
@@ -687,8 +687,8 @@ void spi_master_write_read_plus(spi_sel_e spi_sel, unsigned char cmd, unsigned c
 }
 
 /**
- * @brief         This function serves to set tx_dma channel and config dma tx default.
- * @param[in]     chn     - dma channel.
+ * @brief       This function serves to set tx_dma channel and config dma tx default.
+ * @param[in]   chn     - dma channel.
  * @return      none
  * @note        In the case that the DMA transfer is not completed(bit 0 of reg_dma_ctr0(chn): 1-the transmission has not been completed,0-the transmission is completed), re-calling the DMA-related functions may cause problems.
  *              If you must do this, you must perform the following sequence:
@@ -702,8 +702,8 @@ void hspi_set_tx_dma_config(dma_chn_e chn)
 }
 
 /**
- * @brief         This function serves to set rx_dma channel and config dma rx default.
- * @param[in]     chn     - dma channel.
+ * @brief       This function serves to set rx_dma channel and config dma rx default.
+ * @param[in]   chn     - dma channel.
  * @return      none
  * @note        In the case that the DMA transfer is not completed(bit 0 of reg_dma_ctr0(chn): 1-the transmission has not been completed,0-the transmission is completed), re-calling the DMA-related functions may cause problems.
  *              If you must do this, you must perform the following sequence:
@@ -716,8 +716,8 @@ void hspi_set_rx_dma_config(dma_chn_e chn)
 }
 
 /**
- * @brief         This function serves to set tx_dma channel and config dma tx default.
- * @param[in]     chn     - dma channel.
+ * @brief       This function serves to set tx_dma channel and config dma tx default.
+ * @param[in]   chn     - dma channel.
  * @return      none
  * @note        In the case that the DMA transfer is not completed(bit 0 of reg_dma_ctr0(chn): 1-the transmission has not been completed,0-the transmission is completed), re-calling the DMA-related functions may cause problems.
  *              If you must do this, you must perform the following sequence:
@@ -731,8 +731,8 @@ void pspi_set_tx_dma_config(dma_chn_e chn)
 }
 
 /**
- * @brief         This function serves to set rx_dma channel and config dma rx default.
- * @param[in]     chn     - dma channel.
+ * @brief       This function serves to set rx_dma channel and config dma rx default.
+ * @param[in]   chn     - dma channel.
  * @return      none
  * @note        In the case that the DMA transfer is not completed(bit 0 of reg_dma_ctr0(chn): 1-the transmission has not been completed,0-the transmission is completed), re-calling the DMA-related functions may cause problems.
  *              If you must do this, you must perform the following sequence:
@@ -746,10 +746,10 @@ void pspi_set_rx_dma_config(dma_chn_e chn)
 
 /**
  * @brief       this  function set spi dma channel.
- * @param[in]      spi_dma_chn - dma channel.
- * @param[in]      src_addr     - the address of source.
- * @param[in]      dst_addr     - the address of destination.
- * @param[in]      len         - the length of data.
+ * @param[in]   spi_dma_chn - dma channel.
+ * @param[in]   src_addr    - the address of source.
+ * @param[in]   dst_addr    - the address of destination.
+ * @param[in]   len         - the length of data.
  * */
 void spi_set_dma(dma_chn_e spi_dma_chn, unsigned int src_addr, unsigned int dst_addr, unsigned int len)
 {
@@ -760,11 +760,11 @@ void spi_set_dma(dma_chn_e spi_dma_chn, unsigned int src_addr, unsigned int dst_
 
 /**
  * @brief       this  function set spi tx dma channel.
- * @param[in]      spi_sel     - the spi module.
- * @param[in]      src_addr     - the address of source.
- * @param[in]      len         - the length of data.
- * @return        none
- * @note          src_addr : must be aligned by word (4 bytes), otherwise the program will enter an exception.
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   src_addr    - the address of source.
+ * @param[in]   len         - the length of data.
+ * @return      none
+ * @note        src_addr : must be aligned by word (4 bytes), otherwise the program will enter an exception.
  * */
 void spi_set_tx_dma(spi_sel_e spi_sel, unsigned char* src_addr,unsigned int len)
 {
@@ -795,7 +795,7 @@ void spi_set_tx_dma(spi_sel_e spi_sel, unsigned char* src_addr,unsigned int len)
  * @param[in]  dst_addr - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception.
  *                        and the actual buffer size defined by the user needs to be not smaller than the len, otherwise there may be an out-of-bounds problem.
  * @param[in]  len      - This parameter is used to set the size of the received dma and must be set to a multiple of 4. The maximum value that can be set is 0xFFFFFC.
- * @return        none
+ * @return     none
  */
 void spi_set_rx_dma(spi_sel_e spi_sel, unsigned char* dst_addr,unsigned int len)
 {
@@ -820,12 +820,12 @@ void spi_set_rx_dma(spi_sel_e spi_sel, unsigned char* dst_addr,unsigned int len)
 
 
 /**
- * @brief         This function serves to normal write data by dma.
- * @param[in]     spi_sel     - the spi module.
- * @param[in]     src_addr     - the pointer to the data for write.
- * @param[in]     len         - write length.
+ * @brief       This function serves to normal write data by dma.
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   src_addr    - the pointer to the data for write.
+ * @param[in]   len         - write length.
  * @return      none
- * @note          src_addr : must be aligned by word (4 bytes), otherwise the program will enter an exception.
+ * @note        src_addr : must be aligned by word (4 bytes), otherwise the program will enter an exception.
  */
 void spi_master_write_dma(spi_sel_e spi_sel, unsigned char *src_addr, unsigned int len)
 {
@@ -847,15 +847,15 @@ void spi_master_write_dma(spi_sel_e spi_sel, unsigned char *src_addr, unsigned i
 }
 
 /**
- * @brief         This function serves to normal write cmd and address, then read data by dma.
+ * @brief       This function serves to normal write cmd and address, then read data by dma.
  * The interface does not support full-duplex communication.
- * @param[in]     spi_sel     - the spi module.
- * @param[in]     addr         - the pointer to the cmd and address for write.
- * @param[in]     addr_len     - write length.
- * @param[in]     data         - the pointer to the data for read.
- * @param[in]     data_len     - read length.
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   addr        - the pointer to the cmd and address for write.
+ * @param[in]   addr_len    - write length.
+ * @param[in]   data        - the pointer to the data for read.
+ * @param[in]   data_len    - read length.
  * @return      none
- * @note          addr/data : must be aligned by word (4 bytes), otherwise the program will enter an exception.
+ * @note        addr/data : must be aligned by word (4 bytes), otherwise the program will enter an exception.
  */
 void spi_master_write_read_dma(spi_sel_e spi_sel, unsigned char *addr, unsigned int addr_len, unsigned char *data, unsigned int data_len)
 {
@@ -883,15 +883,15 @@ void spi_master_write_read_dma(spi_sel_e spi_sel, unsigned char *addr, unsigned 
 }
 
 /**
- * @brief          This function serves to single/dual/quad  write to the SPI slave by dma.
- * @param[in]      spi_sel     - the spi module.
- * @param[in]      cmd         - cmd one byte will first write.
- * @param[in]      addr         - the address of slave.
- * @param[in]      data         - pointer to the data need to write.
- * @param[in]      data_len     - length in byte of the data need to write.
- * @param[in]      wr_mode     - write mode.dummy or not dummy.
- * @return       none
- * @note          data : must be aligned by word (4 bytes), otherwise the program will enter an exception.
+ * @brief       This function serves to single/dual/quad  write to the SPI slave by dma.
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   cmd         - cmd one byte will first write.
+ * @param[in]   addr        - the address of slave.
+ * @param[in]   data        - pointer to the data need to write.
+ * @param[in]   data_len    - length in byte of the data need to write.
+ * @param[in]   wr_mode     - write mode.dummy or not dummy.
+ * @return      none
+ * @note        data : must be aligned by word (4 bytes), otherwise the program will enter an exception.
  */
 void spi_master_write_dma_plus(spi_sel_e spi_sel, unsigned char cmd, unsigned int addr, unsigned char *data, unsigned int data_len, spi_wr_tans_mode_e wr_mode)
 {
@@ -914,15 +914,15 @@ void spi_master_write_dma_plus(spi_sel_e spi_sel, unsigned char cmd, unsigned in
 }
 
 /**
- * @brief          This function serves to single/dual/quad  read from the SPI slave by dma.
- * @param[in]      spi_sel     - the spi module.
- * @param[in]      cmd         - cmd one byte will first write.
- * @param[in]      addr         - the address of slave.
- * @param[in]      dst_addr     - pointer to the buffer that will cache the reading out data.
- * @param[in]      data_len     - length in byte of the data need to read.
- * @param[in]      rd_mode     - read mode.dummy or not dummy.
- * @return       none
- * @note          dst_addr : must be aligned by word (4 bytes), otherwise the program will enter an exception.
+ * @brief       This function serves to single/dual/quad  read from the SPI slave by dma.
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   cmd         - cmd one byte will first write.
+ * @param[in]   addr        - the address of slave.
+ * @param[in]   dst_addr    - pointer to the buffer that will cache the reading out data.
+ * @param[in]   data_len    - length in byte of the data need to read.
+ * @param[in]   rd_mode     - read mode.dummy or not dummy.
+ * @return      none
+ * @note        dst_addr : must be aligned by word (4 bytes), otherwise the program will enter an exception.
  */
 void spi_master_read_dma_plus(spi_sel_e spi_sel, unsigned char cmd, unsigned int addr, unsigned char *dst_addr, unsigned int data_len, spi_rd_tans_mode_e rd_mode)
 {
@@ -945,20 +945,20 @@ void spi_master_read_dma_plus(spi_sel_e spi_sel, unsigned char cmd, unsigned int
 }
 
 /**
- * @brief          This function serves to single/dual/quad write address and read from the SPI slave by dma.
+ * @brief       This function serves to single/dual/quad write address and read from the SPI slave by dma.
  * This interface could be used for full duplex.
  * When this interface is used for full-duplex communication, it can only be used on the master side.
  * 1.the spi_master_config() interface must be called first to disable hardware cmd and hardware address
  * 2.must cmd is 0,addr_len is equal to rd_len,rd_mode is SPI_MODE_WRITE_AND_READ.
- * @param[in]      spi_sel     - the spi module.
- * @param[in]      cmd         - cmd one byte will first write.
- * @param[in]      addr         - the pointer to the cmd and address for write.
- * @param[in]      addr_len     - the length of address.
- * @param[in]      rd_data     - pointer to the buffer that will cache the reading out data.
- * @param[in]      rd_len         - length in byte of the data need to read.
- * @param[in]      rd_mode     - read mode.dummy or not dummy.
- * @return       none
- * @note          addr/rd_data : must be aligned by word (4 bytes), otherwise the program will enter an exception.
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   cmd         - cmd one byte will first write.
+ * @param[in]   addr        - the pointer to the cmd and address for write.
+ * @param[in]   addr_len    - the length of address.
+ * @param[in]   rd_data     - pointer to the buffer that will cache the reading out data.
+ * @param[in]   rd_len      - length in byte of the data need to read.
+ * @param[in]   rd_mode     - read mode.dummy or not dummy.
+ * @return      none
+ * @note        addr/rd_data : must be aligned by word (4 bytes), otherwise the program will enter an exception.
  */
 void spi_master_write_read_dma_plus(spi_sel_e spi_sel, unsigned char cmd, unsigned char *addr, unsigned int addr_len, unsigned char *rd_data, unsigned int rd_len, spi_rd_tans_mode_e rd_mode)
 {
@@ -986,13 +986,13 @@ void spi_master_write_read_dma_plus(spi_sel_e spi_sel, unsigned char cmd, unsign
 }
 
 /**
- * @brief          This function serves to single/dual (quad) write to the SPI slave by xip.
- * @param[in]      cmd         - cmd one byte will first write.
- * @param[in]      addr_offset - offset of xip base address.
- * @param[in]      data         - pointer to the data need to write.
- * @param[in]      data_len     - length in byte of the data need to write.
- * @param[in]      wr_mode     - write mode  dummy or not dummy.
- * @return       none
+ * @brief       This function serves to single/dual (quad) write to the SPI slave by xip.
+ * @param[in]   cmd         - cmd one byte will first write.
+ * @param[in]   addr_offset - offset of xip base address.
+ * @param[in]   data        - pointer to the data need to write.
+ * @param[in]   data_len    - length in byte of the data need to write.
+ * @param[in]   wr_mode     - write mode  dummy or not dummy.
+ * @return      none
  */
 _attribute_ram_code_sec_noinline_ void hspi_master_write_xip(unsigned char cmd, unsigned int addr_offset, unsigned char *data, unsigned int data_len, spi_wr_tans_mode_e wr_mode)
 {
@@ -1006,13 +1006,13 @@ _attribute_ram_code_sec_noinline_ void hspi_master_write_xip(unsigned char cmd, 
 }
 
 /**
- * @brief          This function serves to single/dual (quad) read from the SPI slave by xip.
- * @param[in]      cmd         - cmd one byte will first write.
- * @param[in]      addr_offset - offset of xip base address.
- * @param[in]      data         - pointer to the data need to read.
- * @param[in]      data_len     - length in byte of the data need to read.
- * @param[in]      rd_mode     - read mode.dummy or not dummy.
- * @return       none
+ * @brief       This function serves to single/dual (quad) read from the SPI slave by xip.
+ * @param[in]   cmd         - cmd one byte will first write.
+ * @param[in]   addr_offset - offset of xip base address.
+ * @param[in]   data        - pointer to the data need to read.
+ * @param[in]   data_len    - length in byte of the data need to read.
+ * @param[in]   rd_mode     - read mode.dummy or not dummy.
+ * @return      none
  */
 _attribute_ram_code_sec_noinline_ void hspi_master_read_xip(unsigned char cmd, unsigned int addr_offset, unsigned char *data, unsigned int data_len, spi_rd_tans_mode_e rd_mode)
 {
@@ -1027,12 +1027,12 @@ _attribute_ram_code_sec_noinline_ void hspi_master_read_xip(unsigned char cmd, u
 }
 
 /**
- * @brief          This function serves to a cmd and one data write to the SPI slave by xip.
- * @param[in]      cmd         - cmd one byte will first write.
- * @param[in]      addr_offset - offset of xip base address.
- * @param[in]      data_in     - data need to write.
- * @param[in]      wr_mode     - write mode  dummy or not dummy.
- * @return       none
+ * @brief       This function serves to a cmd and one data write to the SPI slave by xip.
+ * @param[in]   cmd         - cmd one byte will first write.
+ * @param[in]   addr_offset - offset of xip base address.
+ * @param[in]   data_in     - data need to write.
+ * @param[in]   wr_mode     - write mode  dummy or not dummy.
+ * @return      none
  */
 void hspi_master_write_xip_cmd_data(unsigned char cmd, unsigned int addr_offset, unsigned char data_in, spi_wr_tans_mode_e wr_mode)
 {
@@ -1043,16 +1043,16 @@ void hspi_master_write_xip_cmd_data(unsigned char cmd, unsigned int addr_offset,
 }
 
 /**
- * @brief          This function serves to write and read data simultaneously.
+ * @brief       This function serves to write and read data simultaneously.
  * This interface can only be used by the master.
  * When initializing the master, call the spi_master_config() interface to disable the hardware cmd and hardware address,
  * and then start sending and receiving data.
  * The default chunk size sent and received by this interface is 8byte.
- * @param[in]      spi_sel     - the spi module.
- * @param[in]      write_data  - write data pointer.
- * @param[in]      read_data     - read data pointer.
- * @param[in]      len         - write/read length.
- * @return       none
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   write_data  - write data pointer.
+ * @param[in]   read_data   - read data pointer.
+ * @param[in]   len         - write/read length.
+ * @return      none
  */
 void spi_master_write_read_full_duplex(spi_sel_e spi_sel,unsigned char *write_data, unsigned char *read_data, unsigned int len)
 {
@@ -1088,11 +1088,11 @@ void spi_master_write_read_full_duplex(spi_sel_e spi_sel,unsigned char *write_da
     while(spi_is_busy(spi_sel));
 }
 /**
- * @brief          This function serves to read data in normal.
- * @param[in]      spi_sel     - the spi module.
- * @param[in]      data         - read data pointer.
- * @param[in]      len         - read length.
- * @return       none
+ * @brief       This function serves to read data in normal.
+ * @param[in]   spi_sel     - the spi module.
+ * @param[in]   data        - read data pointer.
+ * @param[in]   len         - read length.
+ * @return      none
  */
 void spi_master_read(spi_sel_e spi_sel, unsigned char *data, unsigned int len)
 {

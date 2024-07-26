@@ -1,3 +1,220 @@
+## V4.0.4.1
+
+### Version
+
+* SDK Version: tl_ble_sdk_v4.0.4.1
+* Chip Version: 
+  - TLSR921X		A3/A4
+  - TL721X			A1
+  - TL321X			A0
+* Driver Version: 
+  - TLSR921X		tl_platform_sdk V2.3.0
+  - TL721X			tl_platform_sdk V3.1.0
+  - TL321X			tl_platform_sdk V3.1.0
+* Toolchain Version:
+  - TLSR921X		GCC 7 (IDE: Telink RDS)
+  - TL721X			GCC 12(IDE: Telink IoT Studio)
+  - TL321X			GCC 12(IDE: Telink IoT Studio)
+
+### Hardware
+* TLSR921X
+  - C1T213A20
+* TL721X
+  - C1T314A20
+* TL321X
+  - C1T331A20
+  - C1T335A20
+  
+### Note
+
+* TL721X/TL321X currently does not support USB debug logs.
+* When the bin size is larger than 256K, please change the OTA startup address using API "blc_ota_setFirmwareSizeAndBootAddress". The API needs to be placed before sys_init().
+* Replaced all tabs with spaces.
+
+### Bug Fixes
+* **BLE general function**
+   - Fixed [OTA] For TL321X, there is a small probability of failure during OTA for TL321X.
+   - Fixed [ACL] When connecting to ACL central, the ACL peripheral device may fail with a low probability.
+### BREAKING CHANGES 	
+   * N/A
+  
+### Features
+* **Power Management**
+  - Added Power Management for TL721X/TL321X.
+* **BLE general function** 
+  - Added PHY test for TL321X.
+  - Added SMP secure connection for TL321X.
+  - Added API "blc_att_enableWriteReqReject" to allow the BLE stack to report the Write Request error code for TL721X/TL321X.
+  - Added API "blc_att_enableReadReqReject" to allow the BLE stack to report the Read Request error code for TL721X/TL321X.
+
+### Refactoring
+   * N/A
+
+### Performance Improvements
+   * N/A
+
+### Known issues
+   * N/A
+   
+### Flash
+* TLSR921X
+  - P25Q80U
+  - P25Q16SU
+* TL721X
+  - P25Q16SU
+* TL321X
+  - P25Q80U
+  - P25Q16SU
+
+### CodeSize
+* TLSR921X
+  - Compiling acl_central_demo
+    - Flash bin size: 103.0KB
+    - IRAM size: 53.0KB
+    - DRAM size: 0.4KB
+  - Compiling acl_connection_demo
+    - Flash bin size:128.0KB 
+    - IRAM size: 67.3KB
+    - DRAM size: 4.4KB
+  - Compiling acl_peripheral_demo
+    - Flash bin size: 108.0KB
+    - IRAM size: 54.6KB
+    - DRAM size: 0.3KB 
+
+* TL721X
+  - Compiling acl_central_demo
+    - Flash bin size: 99.2KB
+    - IRAM size: 52.7KB
+  - Compiling acl_connection_demo
+    - Flash bin size:  124.0KB
+    - IRAM size: 71.2KB
+  - Compiling acl_peripheral_demo
+    - Flash bin size:  107.9KB
+    - IRAM size: 60.0KB
+
+* TL321X
+  - Compiling acl_central_demo
+    - Flash bin size: 97.8KB
+    - IRAM size: 50.5KB
+    - DRAM size: 0.3KB
+  - Compiling acl_connection_demo
+    - Flash bin size:122.4KB 
+    - IRAM size: 63.8KB
+    - DRAM size: 4.5KB
+  - Compiling acl_peripheral_demo
+    - Flash bin size: 106.4KB
+    - IRAM size: 54.6KB
+    - DRAM size: 3.0KB 
+
+
+### Version
+
+* SDK Version: tl_ble_sdk_v4.0.4.1
+* Chip Version: 
+  - TLSR921X		A3/A4
+  - TL721X			A1
+  - TL321X			A0
+* Driver Version: 
+  - TLSR921X		tl_platform_sdk V2.3.0
+  - TL721X			tl_platform_sdk V3.1.0
+  - TL321X			tl_platform_sdk V3.1.0
+* Toolchain Version:
+  - TLSR921X		GCC 7 (IDE: Telink RDS)
+  - TL721X			GCC 12(IDE: Telink IoT Studio)
+  - TL321X			GCC 12(IDE: Telink IoT Studio)
+
+### Hardware
+* TLSR921X
+  - C1T213A20
+* TL721X
+  - C1T314A20
+* TL321X
+  - C1T331A20
+  - C1T335A20
+  
+### Note
+
+* TL721X/TL321X当前不支持USB调试log。
+* 当bin大小大于256K时，请调用API​​ “blc_ota_setFirmwareSizeAndBootAddress”更改OTA启动地址，注意该API需要放在sys_init()之前。
+* 已将所有的tab替换为空格。
+### Bug Fixes
+* **BLE通用功能**
+   - Fixed [OTA] 修复了针对TL321X OTA过程中的小概率失败问题。
+   - Fixed [ACL] 修复了作为peripheral建立连接时的小概率失败问题。
+
+### BREAKING CHANGES 	
+   * N/A
+  
+### Features
+* **Power Management**
+  - 对于TL721X/TL321X增加了功耗管理。
+* **BLE通用功能** 
+  - 对于TL321X增加了PHY test。
+  - 对于TL321X增加了SMP secure connection模式。
+  - 对于TL721X/TL321X增加了API “blc_att_enableWriteReqReject”使能协议栈上报执行Write Request时的错误码。
+  - 对于TL721X/TL321X增加了API “blc_att_enableReadReqReject”使能协议栈上报执行Read Request时的错误码。
+
+### Refactoring
+   * N/A
+
+### Performance Improvements
+   * N/A
+
+### Known issues
+   * N/A
+
+### Flash
+* TLSR921X
+  - P25Q80U
+  - P25Q16SU
+* TL721X
+  - P25Q16SU
+* TL321X
+  - P25Q80U
+  - P25Q16SU
+
+### CodeSize
+* TLSR921X
+  - 编译 acl_central_demo
+    - Flash bin size: 103.0KB
+    - IRAM size: 53.0KB
+    - DRAM size: 0.4KB
+  - 编译 acl_connection_demo
+    - Flash bin size:128.0KB 
+    - IRAM size: 67.3KB
+    - DRAM size: 4.4KB
+  - 编译 acl_peripheral_demo
+    - Flash bin size: 108.0KB
+    - IRAM size: 54.6KB
+    - DRAM size: 0.3KB 
+
+* TL721X
+  - 编译 acl_central_demo
+    - Flash bin size: 99.2KB
+    - IRAM size: 52.7KB
+  - 编译 acl_connection_demo
+    - Flash bin size:  124.0KB
+    - IRAM size: 71.2KB
+  - 编译 acl_peripheral_demo
+    - Flash bin size:  107.9KB
+    - IRAM size: 60.0KB
+
+* TL321X
+  - 编译 acl_central_demo
+    - Flash bin size: 97.8KB
+    - IRAM size: 50.5KB
+    - DRAM size: 0.3KB
+  - 编译 acl_connection_demo
+    - Flash bin size:122.4KB 
+    - IRAM size: 63.8KB
+    - DRAM size: 4.5KB
+  - 编译 acl_peripheral_demo
+    - Flash bin size: 106.4KB
+    - IRAM size: 54.6KB
+    - DRAM size: 3.0KB 
+
+
+
 ## V4.0.4.0
 
 ### Version

@@ -25,7 +25,7 @@
 #define APP_UI_H_
 
 
-extern int     key_not_released;
+extern int  key_not_released;
 
 
 /**

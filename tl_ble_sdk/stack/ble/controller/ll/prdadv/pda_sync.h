@@ -27,10 +27,10 @@
 
 /**
  * @brief      for user to initialize periodic advertising synchronization module
- * @param       none
+ * @param      none
  * @return     none
  */
-void         blc_ll_initPeriodicAdvertisingSynchronization_module(void);
+void        blc_ll_initPeriodicAdvertisingSynchronization_module(void);
 
 
 /**
@@ -46,51 +46,51 @@ void         blc_ll_initPeriodicAdvertisingSynchronization_module(void);
  * @param[in]  sync_cte_type -
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
-ble_sts_t     blc_ll_periodicAdvertisingCreateSync ( option_msk_t options, u8 adv_sid, u8 adv_adrType, u8 *adv_addr, u16 skip, sync_tm_t sync_timeout, u8 sync_cte_type);
+ble_sts_t   blc_ll_periodicAdvertisingCreateSync ( option_msk_t options, u8 adv_sid, u8 adv_adrType, u8 *adv_addr, u16 skip, sync_tm_t sync_timeout, u8 sync_cte_type);
 
 /**
  * @brief      This function is used to cancel the periodic advertising create sync command while it is pending.
  * @param      none
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
-ble_sts_t     blc_ll_periodicAdvertisingCreateSyncCancel (void);
+ble_sts_t   blc_ll_periodicAdvertisingCreateSyncCancel (void);
 
 
 
 /**
  * @brief      This function is used to stop reception of the periodic advertising train identified
- *                by the Sync_Handle parameter.
+ *             by the Sync_Handle parameter.
  * @param[in]  sync_handle - Sync_Handle identifying the periodic advertising train
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
-ble_sts_t     blc_ll_periodicAdvertisingTerminateSync (u16 sync_handle);
+ble_sts_t   blc_ll_periodicAdvertisingTerminateSync (u16 sync_handle);
 
 /**
  * @brief      This function is used to add an entry, consisting of a single device address and SID,
- *                to the Periodic Advertiser list stored in the Controller.
+ *             to the Periodic Advertiser list stored in the Controller.
  * @param[in]  adv_adrType - Advertiser_Address_Type
  * @param[in]  *adv_addr - Advertiser_Address
  * @param[in]  adv_sid - Advertising_SID
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
-ble_sts_t     blc_ll_addDeviceToPeriodicAdvertiserList (u8 adv_adrType, u8 *adv_addr, u8 adv_sid);
+ble_sts_t   blc_ll_addDeviceToPeriodicAdvertiserList (u8 adv_adrType, u8 *adv_addr, u8 adv_sid);
 
 /**
  * @brief      This function is used to remove one entry from the list of Periodic Advertisers
- *                stored in the Controller.
+ *             stored in the Controller.
  * @param[in]  adv_adrType - Advertiser_Address_Type
  * @param[in]  *adv_addr - Advertiser_Address
  * @param[in]  adv_sid - Advertising_SID
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
-ble_sts_t     blc_ll_removeDeviceFromPeriodicAdvertiserList (u8 adv_adrType, u8 *adv_addr, u8 adv_sid);
+ble_sts_t   blc_ll_removeDeviceFromPeriodicAdvertiserList (u8 adv_adrType, u8 *adv_addr, u8 adv_sid);
 
 /**
  * @brief      This function is used to remove all entries from the list of Periodic Advertisers.
- * @param       none
+ * @param      none
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
-ble_sts_t     blc_ll_clearPeriodicAdvertiserList (void);
+ble_sts_t   blc_ll_clearPeriodicAdvertiserList (void);
 
 /**
  * @brief      This function is used to read the total number of Periodic Advertiser list entries.
@@ -98,7 +98,7 @@ ble_sts_t     blc_ll_clearPeriodicAdvertiserList (void);
  * @param[out]  *perdAdvListSize - point to Periodic_Advertiser_List_Size
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
-ble_sts_t     blc_ll_readPeriodicAdvertiserListSize (u8 *perdAdvListSize);
+ble_sts_t   blc_ll_readPeriodicAdvertiserListSize (u8 *perdAdvListSize);
 
 /**
  * @brief      This function is used to enable or disable reports for the periodic advertising train

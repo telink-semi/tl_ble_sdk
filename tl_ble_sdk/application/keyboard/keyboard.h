@@ -25,21 +25,21 @@
 
 #include "drivers.h"
 
-#define KB_RETURN_KEY_MAX    6
+#define KB_RETURN_KEY_MAX   6
 
-#define    KB_NUMLOCK_STATUS_INVALID            BIT(7)
-#define    KB_NUMLOCK_STATUS_POWERON            BIT(15)
+#define KB_NUMLOCK_STATUS_INVALID           BIT(7)
+#define KB_NUMLOCK_STATUS_POWERON           BIT(15)
 
-#define DEEPBACK_KEY_IDLE                    0
-#define DEEPBACK_KEY_CACHE                    1   //there is deepback key cached in kb_event_cache
+#define DEEPBACK_KEY_IDLE                   0
+#define DEEPBACK_KEY_CACHE                  1   //there is deepback key cached in kb_event_cache
 #define DEEPBACK_KEY_WAIT_RELEASE           2
 
 
-#ifndef        KB_REPEAT_KEY_ENABLE
-#define        KB_REPEAT_KEY_ENABLE            0
+#ifndef     KB_REPEAT_KEY_ENABLE
+#define     KB_REPEAT_KEY_ENABLE            0
 #endif
 
-#define KEY_NONE          0
+#define KEY_NONE        0
 #define KEY_CHANGE      1
 #define KEY_SAME        2
 typedef struct{
@@ -57,7 +57,7 @@ typedef struct{
     unsigned char cnt;
     unsigned char ctrl_key;
     unsigned char keycode[KB_RETURN_KEY_MAX];
-    //unsigned char padding[2];    //  for  32 bit padding,  if KB_RETURN_KEY_MAX change,  this should be changed
+    //unsigned char padding[2]; //  for  32 bit padding,  if KB_RETURN_KEY_MAX change,  this should be changed
 }kb_data_t;
 
 extern kb_data_t    kb_event;
@@ -66,13 +66,13 @@ extern unsigned char deepback_key_state;
 extern unsigned int deepback_key_tick;
 
 
-#ifndef        LONG_PRESS_KEY_POWER_OPTIMIZE
-#define        LONG_PRESS_KEY_POWER_OPTIMIZE        0
+#ifndef     LONG_PRESS_KEY_POWER_OPTIMIZE
+#define     LONG_PRESS_KEY_POWER_OPTIMIZE       0
 #endif
 
 
-#ifndef        STUCK_KEY_PROCESS_ENABLE
-#define        STUCK_KEY_PROCESS_ENABLE            0
+#ifndef     STUCK_KEY_PROCESS_ENABLE
+#define     STUCK_KEY_PROCESS_ENABLE            0
 #endif
 
 
@@ -92,7 +92,7 @@ static inline void kb_set_key_invalid(kb_data_t *p){
 extern unsigned int kb_key_pressed(unsigned char * gpio);
 extern unsigned int kb_scan_key_value (int numlock_status, int read_key,unsigned char * gpio);
 
-extern unsigned int    scan_pin_need;
+extern unsigned int scan_pin_need;
 
 
 static inline unsigned int kb_scan_key (int numlock_status, int read_key) {

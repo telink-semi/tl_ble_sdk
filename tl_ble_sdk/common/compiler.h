@@ -24,16 +24,16 @@
 #ifndef COMPILER_H_
 #define COMPILER_H_
 
-#define _attribute_noinline_                      __attribute__((noinline))
+#define _attribute_noinline_                    __attribute__((noinline))
 
-#define _attribute_ram_code_sec_                  __attribute__((section(".ram_code")))
-#define _attribute_ram_code_sec_noinline_          __attribute__((section(".ram_code"))) __attribute__((noinline))
+#define _attribute_ram_code_sec_                __attribute__((section(".ram_code")))
+#define _attribute_ram_code_sec_noinline_       __attribute__((section(".ram_code"))) __attribute__((noinline))
 
-#define _attribute_text_sec_                       __attribute__((section(".text")))
+#define _attribute_text_sec_                    __attribute__((section(".text")))
 
-#define _attribute_aes_data_sec_                  __attribute__((section(".aes_data")))
+#define _attribute_aes_data_sec_                __attribute__((section(".aes_data")))
 
-#define _attribute_aligned_(s)                    __attribute__((aligned(s)))
+#define _attribute_aligned_(s)                  __attribute__((aligned(s)))
 
 #define _always_inline                          inline __attribute__((always_inline))
 
@@ -52,12 +52,12 @@
 /*******************************      BLE Stack Use     ******************************/
 #include "common/config/user_config.h"
 
-#define _attribute_packed_                __attribute__((packed))
-#define _attribute_session_(s)            __attribute__((section(s)))
-#define _attribute_custom_code_          _attribute_session_(".custom") volatile
+#define _attribute_packed_              __attribute__((packed))
+#define _attribute_session_(s)          __attribute__((section(s)))
+#define _attribute_custom_code_         _attribute_session_(".custom") volatile
 #define _attribute_no_inline_           __attribute__((noinline))
-#define _inline_                         inline
-#define _attribute_data_dlm_               _attribute_session_(".dlm_data")//dlm:Data Local Memory
+#define _inline_                        inline
+#define _attribute_data_dlm_            _attribute_session_(".dlm_data")//dlm:Data Local Memory
 
 
 #define _attribute_iram_noinit_data_    __attribute__((section(".iram_noinit_data")))
@@ -66,9 +66,9 @@
 
 
 #if (BLC_PM_DEEP_RETENTION_MODE_EN)
-    #define _attribute_data_retention_sec_           __attribute__((section(".retention_data")))
-    #define _attribute_data_retention_               __attribute__((section(".retention_data")))
-    #define _attribute_ble_data_retention_           __attribute__((section(".retention_data")))
+    #define _attribute_data_retention_sec_          __attribute__((section(".retention_data")))
+    #define _attribute_data_retention_              __attribute__((section(".retention_data")))
+    #define _attribute_ble_data_retention_          __attribute__((section(".retention_data")))
 #else
     #define _attribute_data_retention_sec_
     #define _attribute_data_retention_
@@ -87,7 +87,7 @@
 #define __INLINE static __attribute__((__always_inline__)) inline
 
 /// define the IRQ handler attribute for this compiler
-#define __IRQ     __attribute__ ((interrupt ("machine"), aligned(4)))
+#define __IRQ   __attribute__ ((interrupt ("machine"), aligned(4)))
 
 /// define the BLE IRQ handler attribute for this compiler
 #define __BTIRQ

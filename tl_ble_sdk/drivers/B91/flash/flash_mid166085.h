@@ -36,8 +36,8 @@
  */
 typedef enum{
     //---------WPS=0, CMP bit = 0-----------------//
-    FLASH_LOCK_NONE_MID166085            =    0x0000,  //000000h-000000h  //0x0020 0x407c...
-    FLASH_LOCK_UP_64K_MID166085            =   0x0004,  //3F0000h-3FFFFFh
+    FLASH_LOCK_NONE_MID166085           =   0x0000,  //000000h-000000h  //0x0020 0x407c...
+    FLASH_LOCK_UP_64K_MID166085         =   0x0004,  //3F0000h-3FFFFFh
     FLASH_LOCK_UP_128K_MID166085        =   0x0008,  //3E0000h-3FFFFFh
     FLASH_LOCK_UP_256K_MID166085        =   0x000c,  //3C0000h-3FFFFFh
     FLASH_LOCK_UP_512K_MID166085        =   0x0010,  //380000h-3FFFFFh
@@ -80,55 +80,55 @@ typedef enum{
 }mid166085_lock_block_e;
 
 /**
- * @brief     the options of qe 
+ * @brief   the options of qe 
  * 
  */
 typedef enum{
-    FLASH_QE_DISABLE_MID166085            =    0x0000,
-    FLASH_QE_ENABLE_MID166085            =    0x0200,
+    FLASH_QE_DISABLE_MID166085          =   0x0000,
+    FLASH_QE_ENABLE_MID166085           =   0x0200,
 }mid166085_qe_e;
 
 /**
  * @brief     The starting address of the Security Registers.
  */
 typedef enum{
-    FLASH_OTP_0x001000_1024B_MID166085    =    0x001000,    //001000h-0013FFh
-    FLASH_OTP_0x002000_1024B_MID166085    =    0x002000,    //002000h-0023FFh
-    FLASH_OTP_0x003000_1024B_MID166085    =    0x003000,    //003000h-0033FFh
+    FLASH_OTP_0x001000_1024B_MID166085  =   0x001000,   //001000h-0013FFh
+    FLASH_OTP_0x002000_1024B_MID166085  =   0x002000,   //002000h-0023FFh
+    FLASH_OTP_0x003000_1024B_MID166085  =   0x003000,   //003000h-0033FFh
 }mid166085_otp_block_e;
 
 /**
  * @brief     the lock area of the Security Registers.
  */
 typedef enum{
-    FLASH_LOCK_OTP_0x001000_1024B_MID166085    =    0x0800,    //001000h-0013FFh
-    FLASH_LOCK_OTP_0x002000_1024B_MID166085    =    0x1000,    //002000h-0023FFh
-    FLASH_LOCK_OTP_0x003000_1024B_MID166085    =    0x2000,    //003000h-0033FFh
+    FLASH_LOCK_OTP_0x001000_1024B_MID166085 =   0x0800, //001000h-0013FFh
+    FLASH_LOCK_OTP_0x002000_1024B_MID166085 =   0x1000, //002000h-0023FFh
+    FLASH_LOCK_OTP_0x003000_1024B_MID166085 =   0x2000, //003000h-0033FFh
 }mid166085_lock_otp_e;
 
 /**
  * @brief     the range of masks to be modified when writing status.
  */
 typedef enum{
-    FLASH_WRITE_STATUS_BP_MID166085        =    0x407c,//the values that can be set can refer to mid166085_lock_block_e
-    FLASH_WRITE_STATUS_QE_MID166085        =    0x0200,//the values that can be set can refer to mid166085_qe_e
-    FLASH_WRITE_STATUS_OTP_MID166085    =    0x3800,//the values that can be set can refer to mid166085_lock_otp_e
+    FLASH_WRITE_STATUS_BP_MID166085     =   0x407c,//the values that can be set can refer to mid166085_lock_block_e
+    FLASH_WRITE_STATUS_QE_MID166085     =   0x0200,//the values that can be set can refer to mid166085_qe_e
+    FLASH_WRITE_STATUS_OTP_MID166085    =   0x3800,//the values that can be set can refer to mid166085_lock_otp_e
     
     /*Related to flash hardware protection.When using this function, you need to pay attention. 
      *If the #WP pin of the flash is grounded and the hardware protection is set at this time, 
      *the status register of the flash will be locked and irreversible.*/
-    FLASH_WRITE_STATUS_SRP_MID166085    =     0x0180,
+    FLASH_WRITE_STATUS_SRP_MID166085    =   0x0180,
 }mid166085_write_status_mask_e;
 
 /**
  * @brief     the range of bits to be modified when writing configure.
  */
 typedef enum{
-    FLASH_WRITE_CONFIGURE_WPS_MID166085        =    0x04,
+    FLASH_WRITE_CONFIGURE_WPS_MID166085     =   0x04,
 }mid166085_write_config_bit_e;
 /**
- * @brief         This function reads the status of flash.
- * @return         the value of status.
+ * @brief       This function reads the status of flash.
+ * @return      the value of status.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -141,10 +141,10 @@ typedef enum{
  */
 unsigned short flash_read_status_mid166085(void);
 /**
- * @brief         This function write the status of flash.
- * @param[in]      data    - the status value of the flash after the mask.
- * @param[in]      mask        - the range of masks to be modified when writing status.
- * @return         1: success, 0: error, 2: parameter error.
+ * @brief       This function write the status of flash.
+ * @param[in]   data    - the status value of the flash after the mask.
+ * @param[in]   mask        - the range of masks to be modified when writing status.
+ * @return      1: success, 0: error, 2: parameter error.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -158,9 +158,9 @@ unsigned short flash_read_status_mid166085(void);
 unsigned char flash_write_status_mid166085(unsigned short data, mid166085_write_status_mask_e mask);
 
 /**
- * @brief         This function serves to set the protection area of the flash.
+ * @brief       This function serves to set the protection area of the flash.
  * @param[in]   data    - refer to the protection area definition in the .h file.
- * @return         1: success, 0: error, 2: parameter error.
+ * @return      1: success, 0: error, 2: parameter error.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -174,8 +174,8 @@ unsigned char flash_write_status_mid166085(unsigned short data, mid166085_write_
 unsigned char flash_lock_mid166085(mid166085_lock_block_e data);
 
 /**
- * @brief         This function serves to flash release protection.
- * @return         1: success, 0: error, 2: parameter error.
+ * @brief       This function serves to flash release protection.
+ * @return      1: success, 0: error, 2: parameter error.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -189,8 +189,8 @@ unsigned char flash_lock_mid166085(mid166085_lock_block_e data);
 unsigned char flash_unlock_mid166085(void);
 
 /**
- * @brief         This function serves to get the protection area of the flash.
- * @return         the protection area of the flash.
+ * @brief       This function serves to get the protection area of the flash.
+ * @return      the protection area of the flash.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -204,14 +204,14 @@ unsigned char flash_unlock_mid166085(void);
 mid166085_lock_block_e flash_get_lock_block_mid166085(void);
 
 /**
- * @brief         This function serves to read data from the Security Registers of the flash.
+ * @brief       This function serves to read data from the Security Registers of the flash.
  * @param[in]   addr    - the start address of the Security Registers.
- *                        the address of the  Security Registers #1 0x001000-0x0013ff
- *                        the address of the  Security Registers #2 0x002000-0x0023ff
- *                        the address of the  Security Registers #3 0x003000-0x0033ff
- * @param[in]   len        - the length(in byte, must be above 0) of the content to be read.
- * @param[out]  buf        - the starting address of the content to be read.
- * @return         none.
+ *                      the address of the  Security Registers #1 0x001000-0x0013ff
+ *                      the address of the  Security Registers #2 0x002000-0x0023ff
+ *                      the address of the  Security Registers #3 0x003000-0x0033ff
+ * @param[in]   len     - the length(in byte, must be above 0) of the content to be read.
+ * @param[out]  buf     - the starting address of the content to be read.
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -225,14 +225,14 @@ mid166085_lock_block_e flash_get_lock_block_mid166085(void);
 void flash_read_otp_mid166085(unsigned long addr, unsigned long len, unsigned char* buf);
 
 /**
- * @brief         This function serves to write data to the Security Registers of the flash you choose.
+ * @brief       This function serves to write data to the Security Registers of the flash you choose.
  * @param[in]   addr    - the start address of the Security Registers.
- *                        the address of the  Security Registers #1 0x001000-0x0013ff
- *                        the address of the  Security Registers #2 0x002000-0x0023ff
- *                        the address of the  Security Registers #3 0x003000-0x0033ff
- * @param[in]   len        - the length(in byte, must be above 0) of content to be written.
- * @param[in]   buf        - the starting address of the content to be written.
- * @return         none.
+ *                      the address of the  Security Registers #1 0x001000-0x0013ff
+ *                      the address of the  Security Registers #2 0x002000-0x0023ff
+ *                      the address of the  Security Registers #3 0x003000-0x0033ff
+ * @param[in]   len     - the length(in byte, must be above 0) of content to be written.
+ * @param[in]   buf     - the starting address of the content to be written.
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -246,13 +246,13 @@ void flash_read_otp_mid166085(unsigned long addr, unsigned long len, unsigned ch
 void flash_write_otp_mid166085(unsigned long addr, unsigned long len, unsigned char *buf);
 
 /**
- * @brief         This function serves to erase the data of the Security Registers that you choose.
- *                 You can erase 1024-byte one time.
+ * @brief       This function serves to erase the data of the Security Registers that you choose.
+ *              You can erase 1024-byte one time.
  * @param[in]   addr    - the address that you want to erase.
- *                        the address of the  Security Registers #1 0x001000-0x0013ff
- *                        the address of the  Security Registers #2 0x002000-0x0023ff
- *                        the address of the  Security Registers #3 0x003000-0x0033ff
- * @return         none.
+ *                      the address of the  Security Registers #1 0x001000-0x0013ff
+ *                      the address of the  Security Registers #2 0x002000-0x0023ff
+ *                      the address of the  Security Registers #3 0x003000-0x0033ff
+ * @return      none.
  * @note        Even you choose the middle area of the Security Registers,it will erase the whole area.
  *
  *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
@@ -268,11 +268,11 @@ void flash_write_otp_mid166085(unsigned long addr, unsigned long len, unsigned c
 void flash_erase_otp_mid166085(mid166085_otp_block_e addr);
 
 /**
- * @brief         This function serves to provide the write protect control to the Security Registers.
+ * @brief       This function serves to provide the write protect control to the Security Registers.
  * @param[in]   data    - the lock area of the Security Registers.
- * @return         none.
+ * @return      none.
  * @note        once they are set to 1, the Security Registers will become read-only permanently,
- *                 you can't write or erase the area anymore.
+ *              you can't write or erase the area anymore.
  *
  *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
@@ -287,10 +287,10 @@ void flash_erase_otp_mid166085(mid166085_otp_block_e addr);
 void flash_lock_otp_mid166085(mid166085_lock_otp_e data);
 
 /**
- * @brief         This function write the configure of flash.
- * @param[in]      data    - the value of configure.
- * @param[in]      bit        - the range of bits to be modified when writing configure.
- * @return         none.
+ * @brief       This function write the configure of flash.
+ * @param[in]   data    - the value of configure.
+ * @param[in]   bit     - the range of bits to be modified when writing configure.
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater

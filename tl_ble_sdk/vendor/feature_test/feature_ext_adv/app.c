@@ -37,16 +37,16 @@
 
 
 
-_attribute_ble_data_retention_        int    central_smp_pending = 0;         // SMP: security & encryption;
+_attribute_ble_data_retention_      int central_smp_pending = 0;        // SMP: security & encryption;
 
 
 /*********************************** Extended ADV data buffer allocation, Begin ************************************/
 
 _attribute_iram_bss_            u8  app_extAdvSetParam_buf[ADV_SET_PARAM_LENGTH * APP_EXT_ADV_SETS_NUMBER];
 
-_attribute_iram_noinit_data_    u8     app_extAdvData_buf[APP_EXT_ADV_DATA_LENGTH * APP_EXT_ADV_SETS_NUMBER];
+_attribute_iram_noinit_data_    u8  app_extAdvData_buf[APP_EXT_ADV_DATA_LENGTH * APP_EXT_ADV_SETS_NUMBER];
 
-_attribute_iram_noinit_data_    u8     app_extScanRspData_buf[APP_EXT_SCANRSP_DATA_LENGTH * APP_EXT_ADV_SETS_NUMBER];
+_attribute_iram_noinit_data_    u8  app_extScanRspData_buf[APP_EXT_SCANRSP_DATA_LENGTH * APP_EXT_ADV_SETS_NUMBER];
 
 /*********************************** Extended ADV data buffer allocation, End** ************************************/
 
@@ -93,14 +93,14 @@ int app_le_connection_complete_event_handle(u8 *p)
  */
 int     app_disconnect_event_handle(u8 *p)
 {
-    hci_disconnectionCompleteEvt_t    *pDisConn = (hci_disconnectionCompleteEvt_t *)p;
+    hci_disconnectionCompleteEvt_t  *pDisConn = (hci_disconnectionCompleteEvt_t *)p;
     tlkapi_printf(APP_CONTR_EVT_LOG_EN,"app Disconnect event connHandle:%04X reason:%02X",pDisConn->connHandle,pDisConn->reason);
 
     //terminate reason
-    if(pDisConn->reason == HCI_ERR_CONN_TIMEOUT){      //connection timeout
+    if(pDisConn->reason == HCI_ERR_CONN_TIMEOUT){   //connection timeout
 
     }
-    else if(pDisConn->reason == HCI_ERR_REMOTE_USER_TERM_CONN){      //peer device send terminate command on link layer
+    else if(pDisConn->reason == HCI_ERR_REMOTE_USER_TERM_CONN){     //peer device send terminate command on link layer
 
     }
     //central host disconnect( blm_ll_disconnect(current_connHandle, HCI_ERR_REMOTE_USER_TERM_CONN) )
@@ -148,7 +148,7 @@ int app_le_connection_update_complete_event_handle(u8 *p)
 int app_controller_event_callback (u32 h, u8 *p, int n)
 {
     (void)n;
-    if (h &HCI_FLAG_EVENT_BT_STD)        //Controller HCI event
+    if (h &HCI_FLAG_EVENT_BT_STD)       //Controller HCI event
     {
         u8 evtCode = h & 0xff;
 
@@ -162,19 +162,19 @@ int app_controller_event_callback (u32 h, u8 *p, int n)
             u8 subEvt_code = p[0];
 
             //------hci le event: le connection complete event---------------------------------
-            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE)    // connection complete
+            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE)  // connection complete
             {
                 app_le_connection_complete_event_handle(p);
             }
             //--------hci le event: le adv report event ----------------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT)    // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT)  // ADV packet
             {
                 //after controller is set to scan state, it will report all the adv packet it received by this event
 
                 app_le_adv_report_event_handle(p);
             }
             //------hci le event: le connection update complete event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE)    // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE)  // connection update
             {
                 app_le_connection_update_complete_event_handle(p);
             }
@@ -289,10 +289,10 @@ int app_host_event_callback (u32 h, u8 *para, int n)
 
 
 
-#define            HID_HANDLE_CONSUME_REPORT            25
-#define            HID_HANDLE_KEYBOARD_REPORT            29
-#define            AUDIO_HANDLE_MIC                    52
-#define            OTA_HANDLE_DATA                        48
+#define         HID_HANDLE_CONSUME_REPORT           25
+#define         HID_HANDLE_KEYBOARD_REPORT          29
+#define         AUDIO_HANDLE_MIC                    52
+#define         OTA_HANDLE_DATA                     48
 
 /**
  * @brief      BLE GATT data handler call-back.
@@ -318,8 +318,8 @@ int app_gatt_data_handler (u16 connHandle, u8 *pkt)
         dev_char_info_t* dev_info = dev_char_info_search_by_connhandle (connHandle);
         if(dev_info)
         {
-            //-------    user process ------------------------------------------------
-//            u16 attHandle = pAtt->handle;
+            //-------   user process ------------------------------------------------
+//          u16 attHandle = pAtt->handle;
 
             if(pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI)  //peripheral handle notify
             {
@@ -369,8 +369,8 @@ int app_gatt_data_handler (u16 connHandle, u8 *pkt)
 ///////////////////////////////////////////
 
 /**
- * @brief        user initialization when MCU power on or wake_up from deepSleep mode
- * @param[in]    none
+ * @brief       user initialization when MCU power on or wake_up from deepSleep mode
+ * @param[in]   none
  * @return      none
  */
 _attribute_no_inline_ void user_init_normal(void)
@@ -443,7 +443,7 @@ _attribute_no_inline_ void user_init_normal(void)
 
     //bluetooth low energy(LE) event
     blc_hci_le_setEventMask_cmd(        HCI_LE_EVT_MASK_CONNECTION_COMPLETE  \
-                                    |    HCI_LE_EVT_MASK_ADVERTISING_REPORT \
+                                    |   HCI_LE_EVT_MASK_ADVERTISING_REPORT \
                                     |   HCI_LE_EVT_MASK_CONNECTION_UPDATE_COMPLETE);
 
 
@@ -494,9 +494,9 @@ _attribute_no_inline_ void user_init_normal(void)
 
     //host(GAP/SMP/GATT/ATT) event process: register host event callback and set event mask
     blc_gap_registerHostEventHandler( app_host_event_callback );
-    blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN             |  \
-                          GAP_EVT_MASK_SMP_PAIRING_SUCCESS           |  \
-                          GAP_EVT_MASK_SMP_PAIRING_FAIL                |  \
+    blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN            |  \
+                          GAP_EVT_MASK_SMP_PAIRING_SUCCESS          |  \
+                          GAP_EVT_MASK_SMP_PAIRING_FAIL             |  \
                           GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE);
     //////////// Host Initialization  End /////////////////////////
 
@@ -524,8 +524,8 @@ _attribute_no_inline_ void user_init_normal(void)
 
 
 /**
- * @brief        user initialization when MCU wake_up from deepSleep_retention mode
- * @param[in]    none
+ * @brief       user initialization when MCU wake_up from deepSleep_retention mode
+ * @param[in]   none
  * @return      none
  */
 void user_init_deepRetn(void)
@@ -546,12 +546,12 @@ void user_init_deepRetn(void)
 int main_idle_loop (void)
 {
   static u32 tickLoop = 1;
-      if(tickLoop && clock_time_exceed(tickLoop, 500000)){
-          tickLoop = clock_time()|1;
-          gpio_toggle(GPIO_LED_BLUE);
-          extern void app_ext_adv_set_test(void);
-          app_ext_adv_set_test();
-      }
+    if(tickLoop && clock_time_exceed(tickLoop, 500000)){
+        tickLoop = clock_time()|1;
+        gpio_toggle(GPIO_LED_BLUE);
+        extern void app_ext_adv_set_test(void);
+        app_ext_adv_set_test();
+    }
 
 
     ////////////////////////////////////// BLE entry /////////////////////////////////

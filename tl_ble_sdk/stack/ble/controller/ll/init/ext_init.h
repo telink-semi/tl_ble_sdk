@@ -28,11 +28,11 @@
 
 /**
  * @brief      for user to initialize extended initiating module
- *                notice that only one module can be selected between legacy initiating module and extended initiating module
- * @param       none
+ *             notice that only one module can be selected between legacy initiating module and extended initiating module
+ * @param      none
  * @return     none
  */
-void         blc_ll_initExtendedInitiating_module(void);
+void        blc_ll_initExtendedInitiating_module(void);
 
 
 
@@ -48,10 +48,10 @@ void         blc_ll_initExtendedInitiating_module(void);
  * @param[in]  init_phys - indicates the PHY(s) on which the advertising packets should be received on the primary advertising physical channel and
                             the PHYs for which connection parameters have been specified.
  *
- *                Attention:
- *                scanInter_0/scanWindow_0/conn_min_0/conn_max_0/timeout_0 are only for     1M PHY.  If    1M PHY is not supported, these parameters are ignored.
- *                scanInter_1/scanWindow_1/conn_min_1/conn_max_1/timeout_1 are only for     2M PHY.  If    2M PHY is not supported, these parameters are ignored.
- *                scanInter_2/scanWindow_2/conn_min_2/conn_max_2/timeout_2 are only for Coded PHY.  If Coded PHY is not supported, these parameters are ignored.
+ *             Attention:
+ *             scanInter_0/scanWindow_0/conn_min_0/conn_max_0/timeout_0 are only for    1M PHY.  If    1M PHY is not supported, these parameters are ignored.
+ *             scanInter_1/scanWindow_1/conn_min_1/conn_max_1/timeout_1 are only for    2M PHY.  If    2M PHY is not supported, these parameters are ignored.
+ *             scanInter_2/scanWindow_2/conn_min_2/conn_max_2/timeout_2 are only for Coded PHY.  If Coded PHY is not supported, these parameters are ignored.
  *
  * @param[in]  scanInter_0 - for 1M PHY: recommendations from the Host on how frequently (LE_Scan_Interval) the Controller should scan.
  * @param[in]  scanWindow_0 - for 1M PHY: recommendations from the Host on how long (LE_Scan_Window) the Controller should scan.
@@ -70,10 +70,10 @@ void         blc_ll_initExtendedInitiating_module(void);
  * @param[in]  timeout_2 - for Coded PHY: Supervision timeout for the LE Link.
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
-ble_sts_t     blc_ll_extended_createConnection ( init_fp_t  filter_policy,  own_addr_type_t  ownAdrType,             u8    peerAdrType,            u8 *peerAddr, init_phy_t init_phys,
-                                               scan_inter_t scanInter_0,       scan_wind_t scanWindow_0,     conn_inter_t conn_min_0, conn_inter_t conn_max_0, conn_tm_t timeout_0,
-                                               scan_inter_t scanInter_1,     scan_wind_t scanWindow_1,     conn_inter_t conn_min_1, conn_inter_t conn_max_1, conn_tm_t timeout_1,
-                                               scan_inter_t scanInter_2,     scan_wind_t scanWindow_2,     conn_inter_t conn_min_2, conn_inter_t conn_max_2, conn_tm_t timeout_2 );
+ble_sts_t   blc_ll_extended_createConnection ( init_fp_t  filter_policy,  own_addr_type_t  ownAdrType,          u8  peerAdrType,            u8 *peerAddr, init_phy_t init_phys,
+                                               scan_inter_t scanInter_0,     scan_wind_t scanWindow_0,  conn_inter_t conn_min_0, conn_inter_t conn_max_0, conn_tm_t timeout_0,
+                                               scan_inter_t scanInter_1,     scan_wind_t scanWindow_1,  conn_inter_t conn_min_1, conn_inter_t conn_max_1, conn_tm_t timeout_1,
+                                               scan_inter_t scanInter_2,     scan_wind_t scanWindow_2,  conn_inter_t conn_min_2, conn_inter_t conn_max_2, conn_tm_t timeout_2 );
 
 
 

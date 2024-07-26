@@ -24,12 +24,12 @@
 #include "uart.h"
 
 /**********************************************************************************************************************
- *                                              local constants                                                       *
+ *                                            local constants                                                       *
  *********************************************************************************************************************/
 
 
 /**********************************************************************************************************************
- *                                               local macro                                                        *
+ *                                              local macro                                                        *
  *********************************************************************************************************************/
 
 
@@ -42,63 +42,63 @@
  *                                              global variable                                                       *
  *********************************************************************************************************************/
 dma_config_t uart_tx_dma_config[2]={
-    {    .dst_req_sel         = DMA_REQ_UART0_TX,//tx req
-        .src_req_sel         = 0,
-        .dst_addr_ctrl        = DMA_ADDR_FIX,
-        .src_addr_ctrl         = DMA_ADDR_INCREMENT,//increment
-        .dstmode             = DMA_HANDSHAKE_MODE,//handshake
+    {   .dst_req_sel        = DMA_REQ_UART0_TX,//tx req
+        .src_req_sel        = 0,
+        .dst_addr_ctrl      = DMA_ADDR_FIX,
+        .src_addr_ctrl      = DMA_ADDR_INCREMENT,//increment
+        .dstmode            = DMA_HANDSHAKE_MODE,//handshake
         .srcmode            = DMA_NORMAL_MODE,
-        .dstwidth             = DMA_CTR_WORD_WIDTH,//must be word
-        .srcwidth             = DMA_CTR_WORD_WIDTH,//must be word
+        .dstwidth           = DMA_CTR_WORD_WIDTH,//must be word
+        .srcwidth           = DMA_CTR_WORD_WIDTH,//must be word
         .src_burst_size     = 0,//must be 0
         .read_num_en        = 0,
-        .priority             = 0,
-        .write_num_en        = 0,
-        .auto_en             = 0,//must be 0
+        .priority           = 0,
+        .write_num_en       = 0,
+        .auto_en            = 0,//must be 0
     },
-    {    .dst_req_sel         = DMA_REQ_UART1_TX,//tx req
-        .src_req_sel         = 0,
-        .dst_addr_ctrl        = DMA_ADDR_FIX,
-        .src_addr_ctrl         = DMA_ADDR_INCREMENT,//increment
-        .dstmode             = DMA_HANDSHAKE_MODE,//handshake
+    {   .dst_req_sel        = DMA_REQ_UART1_TX,//tx req
+        .src_req_sel        = 0,
+        .dst_addr_ctrl      = DMA_ADDR_FIX,
+        .src_addr_ctrl      = DMA_ADDR_INCREMENT,//increment
+        .dstmode            = DMA_HANDSHAKE_MODE,//handshake
         .srcmode            = DMA_NORMAL_MODE,
-        .dstwidth             = DMA_CTR_WORD_WIDTH,//must be word
-        .srcwidth             = DMA_CTR_WORD_WIDTH,//must be word
+        .dstwidth           = DMA_CTR_WORD_WIDTH,//must be word
+        .srcwidth           = DMA_CTR_WORD_WIDTH,//must be word
         .src_burst_size     = 0,//must be 0
         .read_num_en        = 0,
-        .priority             = 0,
-        .write_num_en        = 0,
-        .auto_en             = 0,//must be 0
+        .priority           = 0,
+        .write_num_en       = 0,
+        .auto_en            = 0,//must be 0
     }
 };
 dma_config_t uart_rx_dma_config[2]={
-    {     .dst_req_sel         = 0,//tx req
-        .src_req_sel         = DMA_REQ_UART0_RX,
-        .dst_addr_ctrl         = DMA_ADDR_INCREMENT,
-        .src_addr_ctrl         = DMA_ADDR_FIX,
-        .dstmode             = DMA_NORMAL_MODE,
-        .srcmode             = DMA_HANDSHAKE_MODE,
-        .dstwidth             = DMA_CTR_WORD_WIDTH,//must be word
-        .srcwidth             = DMA_CTR_WORD_WIDTH,////must be word
+    {   .dst_req_sel        = 0,//tx req
+        .src_req_sel        = DMA_REQ_UART0_RX,
+        .dst_addr_ctrl      = DMA_ADDR_INCREMENT,
+        .src_addr_ctrl      = DMA_ADDR_FIX,
+        .dstmode            = DMA_NORMAL_MODE,
+        .srcmode            = DMA_HANDSHAKE_MODE,
+        .dstwidth           = DMA_CTR_WORD_WIDTH,//must be word
+        .srcwidth           = DMA_CTR_WORD_WIDTH,////must be word
         .src_burst_size     = 0,
-        .read_num_en         = 0,
-        .priority             = 0,
-        .write_num_en         = 0,
-        .auto_en             = 0,//must be 0
+        .read_num_en        = 0,
+        .priority           = 0,
+        .write_num_en       = 0,
+        .auto_en            = 0,//must be 0
     },
-    {     .dst_req_sel         = 0,//tx req
-        .src_req_sel         = DMA_REQ_UART1_RX,
-        .dst_addr_ctrl         = DMA_ADDR_INCREMENT,
-        .src_addr_ctrl         = DMA_ADDR_FIX,
-        .dstmode             = DMA_NORMAL_MODE,
-        .srcmode             = DMA_HANDSHAKE_MODE,
-        .dstwidth             = DMA_CTR_WORD_WIDTH,//must be word
-        .srcwidth             = DMA_CTR_WORD_WIDTH,////must be word
+    {   .dst_req_sel        = 0,//tx req
+        .src_req_sel        = DMA_REQ_UART1_RX,
+        .dst_addr_ctrl      = DMA_ADDR_INCREMENT,
+        .src_addr_ctrl      = DMA_ADDR_FIX,
+        .dstmode            = DMA_NORMAL_MODE,
+        .srcmode            = DMA_HANDSHAKE_MODE,
+        .dstwidth           = DMA_CTR_WORD_WIDTH,//must be word
+        .srcwidth           = DMA_CTR_WORD_WIDTH,////must be word
         .src_burst_size     = 0,
-        .read_num_en         = 0,
-        .priority             = 0,
-        .write_num_en         = 0,
-        .auto_en             = 0,//must be 0
+        .read_num_en        = 0,
+        .priority           = 0,
+        .write_num_en       = 0,
+        .auto_en            = 0,//must be 0
     }
 };
 /**********************************************************************************************************************
@@ -118,10 +118,10 @@ dma_config_t uart_rx_dma_config[2]={
  static unsigned char uart_is_prime(unsigned int n);
 
  /**
-  *    @brief    This function serves to set pin for UART function.
-  *    @param  tx_pin - To set TX pin.
-  *    @param  rx_pin - To set RX pin.
-  *    @return    none
+  * @brief  This function serves to set pin for UART function.
+  * @param  tx_pin - To set TX pin.
+  * @param  rx_pin - To set RX pin.
+  * @return none
   */
 static void uart_set_fuc_pin(uart_tx_pin_e tx_pin,uart_rx_pin_e rx_pin);
 
@@ -282,7 +282,7 @@ void uart_cal_div_and_bwpc(unsigned int baudrate, unsigned int pclk, unsigned sh
 }
 
 /**
- * @brief       Set rx_timeout.
+ * @brief    Set rx_timeout.
    @verbatim
        The effect:
          - When no data is received within the rx_timeout period, that is rx timeout, the UART_RXDONE interrupt is generated.
@@ -297,8 +297,8 @@ void uart_cal_div_and_bwpc(unsigned int baudrate, unsigned int pclk, unsigned sh
  * @param[in] bit_cnt  - bit number,conditions that need to be met:
  *                         - for example, if transferring one bytes (1start bit+8bits data+1 priority bit+2stop bits) total 12 bits,then set it to at least 12;
  *                         - ((bwpc+1) * bit_cnt)<=0xff;
- * @param[in] mul       - mul.
- * @return       none
+ * @param[in] mul      - mul.
+ * @return    none
  */
 void uart_set_rx_timeout(uart_num_e uart_num,unsigned char bwpc, unsigned char bit_cnt, uart_timeout_mul_e mul)
 {
@@ -394,9 +394,9 @@ void uart_set_rts_level(uart_num_e uart_num, unsigned char polarity)
 }
 
 /**
- *    @brief        Set pin for UART cts function,the pin connection mode:CTS<->RTS.
- *    @param[in]  cts_pin -To set cts pin.
- *    @return        none
+ *  @brief      Set pin for UART cts function,the pin connection mode:CTS<->RTS.
+ *  @param[in]  cts_pin -To set cts pin.
+ *  @return     none
  */
 void uart_set_cts_pin(uart_cts_pin_e cts_pin)
 {
@@ -439,9 +439,9 @@ void uart_set_cts_pin(uart_cts_pin_e cts_pin)
 }
 
 /**
- *    @brief        Set pin for UART rts function,the pin connection mode:RTS<->CTS.
- *    @param[in]  rts_pin - To set rts pin.
- *    @return        none
+ *  @brief      Set pin for UART rts function,the pin connection mode:RTS<->CTS.
+ *  @param[in]  rts_pin - To set rts pin.
+ *  @return     none
  */
 void uart_set_rts_pin(uart_rts_pin_e rts_pin)
 {
@@ -514,33 +514,33 @@ void uart_set_pin(uart_tx_pin_e tx_pin,uart_rx_pin_e rx_pin)
 void uart_set_rtx_pin(uart_rx_pin_e rtx_pin)
 {
     unsigned char val = 0;
-     unsigned char mask = 0xff;
+    unsigned char mask = 0xff;
     if(rtx_pin == UART0_RX_PA4)
     {
-         mask= (unsigned char)~(BIT(1)|BIT(0));
-         val = BIT(0);
+        mask= (unsigned char)~(BIT(1)|BIT(0));
+        val = BIT(0);
     }
     else if(rtx_pin == UART0_RX_PB3)
     {
-         mask = (unsigned char)~(BIT(7)|BIT(6));
-         val = BIT(7);
-         reg_gpio_pad_mul_sel|=BIT(0);
+        mask = (unsigned char)~(BIT(7)|BIT(6));
+        val = BIT(7);
+        reg_gpio_pad_mul_sel|=BIT(0);
     }
     else if(rtx_pin ==UART0_RX_PD3)
     {
         mask = (unsigned char)~(BIT(7)|BIT(6));
-         val = 0;
+        val = 0;
     }
     else if(rtx_pin == UART1_RX_PC7)
     {
         mask = (unsigned char)~(BIT(7)|BIT(6));
-         val = BIT(7);
-         reg_gpio_pad_mul_sel|=BIT(0);
+        val = BIT(7);
+        reg_gpio_pad_mul_sel|=BIT(0);
     }
     else if(rtx_pin ==  UART1_RX_PD7)
     {
-         mask = (unsigned char)~(BIT(7)|BIT(6));
-         val = 0;
+        mask = (unsigned char)~(BIT(7)|BIT(6));
+        val = 0;
     }
     else if(rtx_pin ==  UART1_RX_PE2)
     {
@@ -572,10 +572,10 @@ unsigned char uart_send(uart_num_e uart_num, unsigned char * addr, unsigned char
 }
 
 /**
- * @brief         Send an amount of data in DMA mode
- * @param[in]      uart_num - uart channel
- * @param[in]     addr     - Pointer to data buffer. It must be 4-bytes aligned address
- * @param[in]     len      - Amount of data to be sent in bytes, range from 1 to 0xFFFFFC
+ * @brief       Send an amount of data in DMA mode
+ * @param[in]   uart_num - uart channel
+ * @param[in]   addr     - Pointer to data buffer. It must be 4-bytes aligned address
+ * @param[in]   len      - Amount of data to be sent in bytes, range from 1 to 0xFFFFFC
  * @return      1  DMA start send.
  *              0  the length is error.
  */
@@ -608,7 +608,7 @@ unsigned char uart_send_dma(uart_num_e uart_num, unsigned char * addr, unsigned 
  * @param[in]  addr     - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception.
  *                        and the actual buffer size defined by the user needs to be not smaller than the rev_size, otherwise there may be an out-of-bounds problem.
  * @param[in]  rev_size - This parameter is used to set the size of the received dma and must be set to a multiple of 4. The maximum value that can be set is 0xFFFFFC.
- * @return        none
+ * @return     none
  */
 
 _attribute_ram_code_sec_  //BLE SDK use:
@@ -656,7 +656,7 @@ unsigned int uart_get_dma_rev_data_len(uart_num_e uart_num,dma_chn_e chn)
  void uart_set_tx_dma_config(uart_num_e uart_num, dma_chn_e chn)
  {
     uart_dma_tx_chn[uart_num]=chn;
-     dma_config(chn, &uart_tx_dma_config[uart_num]);
+    dma_config(chn, &uart_tx_dma_config[uart_num]);
  }
 
  /**
@@ -671,7 +671,7 @@ unsigned int uart_get_dma_rev_data_len(uart_num_e uart_num,dma_chn_e chn)
  void uart_set_rx_dma_config(uart_num_e uart_num, dma_chn_e chn)
  {
     uart_dma_rx_chn[uart_num]=chn;
-     dma_config(chn, &uart_rx_dma_config[uart_num]);
+    dma_config(chn, &uart_rx_dma_config[uart_num]);
  }
 
  /**
@@ -730,7 +730,7 @@ unsigned int uart_get_dma_rev_data_len(uart_num_e uart_num,dma_chn_e chn)
  }
 
  /**********************************************************************************************************************
-  *                                            local function implementation                                             *
+  *                                         local function implementation                                             *
   *********************************************************************************************************************/
  /**
    * @brief     This function is used to look for the prime.if the prime is found,it will return 1, or return 0.
@@ -739,108 +739,108 @@ unsigned int uart_get_dma_rev_data_len(uart_num_e uart_num,dma_chn_e chn)
    */
  static unsigned char uart_is_prime(unsigned int n)
  {
-     unsigned int i = 5;
-     if(n <= 3){
-         return 1; //although n is prime, the bwpc must be larger than 2.
-     }
-     else if((n %2 == 0) || (n % 3 == 0)){
-         return 0;
-     }
-     else{
-         for(i=5;i*i<n;i+=6){
-             if((n % i == 0)||(n %(i+2))==0){
-                 return 0;
-             }
-         }
-         return 1;
-     }
+    unsigned int i = 5;
+    if(n <= 3){
+        return 1; //although n is prime, the bwpc must be larger than 2.
+    }
+    else if((n %2 == 0) || (n % 3 == 0)){
+        return 0;
+    }
+    else{
+        for(i=5;i*i<n;i+=6){
+            if((n % i == 0)||(n %(i+2))==0){
+                return 0;
+            }
+        }
+        return 1;
+    }
  }
 
  /**
-  *    @brief    This function serves to set pin for UART function.
-  *    @param  tx_pin - To set TX pin.
-  *    @param  rx_pin - To set RX pin.
-  *    @return    none
+  * @brief  This function serves to set pin for UART function.
+  * @param  tx_pin - To set TX pin.
+  * @param  rx_pin - To set RX pin.
+  * @return none
   */
 static void uart_set_fuc_pin(uart_tx_pin_e tx_pin,uart_rx_pin_e rx_pin)
  {
-     unsigned char val = 0;
-     unsigned char mask = 0xff;
+    unsigned char val = 0;
+    unsigned char mask = 0xff;
 
-     if(tx_pin == UART0_TX_PA3)
-     {
-         mask= (unsigned char)~(BIT(7)|BIT(6));
-         val = BIT(6);
-     }
-     else if(tx_pin == UART0_TX_PB2)
-     {
-         mask = (unsigned char)~(BIT(5)|BIT(4));
-         val = BIT(5);
-         reg_gpio_pad_mul_sel|=BIT(0);
-     }
-     else if(tx_pin == UART0_TX_PD2)
-     {
-         mask = (unsigned char)~(BIT(5)|BIT(4));
-         val = 0;
-     }
-     else if(tx_pin == UART1_TX_PC6)
-     {
-         mask = (unsigned char)~(BIT(5)|BIT(4));
-         val = BIT(5);
-         reg_gpio_pad_mul_sel|=BIT(0);
-     }
-     else if(tx_pin == UART1_TX_PD6)
-     {
-         mask = (unsigned char)~(BIT(5)|BIT(4));
-         val = 0;
-     }
-     else if(tx_pin == UART1_TX_PE0)
-     {
-         mask = (unsigned char)~(BIT(1)|BIT(0));;
-         val = BIT(0);
-     }
-     if(tx_pin != UART_TX_NONE_PIN){
-        reg_gpio_func_mux(tx_pin)=(reg_gpio_func_mux(tx_pin)& mask)|val;
-        gpio_function_dis(tx_pin);
-     }
+    if(tx_pin == UART0_TX_PA3)
+    {
+        mask= (unsigned char)~(BIT(7)|BIT(6));
+        val = BIT(6);
+    }
+    else if(tx_pin == UART0_TX_PB2)
+    {
+        mask = (unsigned char)~(BIT(5)|BIT(4));
+        val = BIT(5);
+        reg_gpio_pad_mul_sel|=BIT(0);
+    }
+    else if(tx_pin == UART0_TX_PD2)
+    {
+        mask = (unsigned char)~(BIT(5)|BIT(4));
+        val = 0;
+    }
+    else if(tx_pin == UART1_TX_PC6)
+    {
+        mask = (unsigned char)~(BIT(5)|BIT(4));
+        val = BIT(5);
+        reg_gpio_pad_mul_sel|=BIT(0);
+    }
+    else if(tx_pin == UART1_TX_PD6)
+    {
+        mask = (unsigned char)~(BIT(5)|BIT(4));
+        val = 0;
+    }
+    else if(tx_pin == UART1_TX_PE0)
+    {
+        mask = (unsigned char)~(BIT(1)|BIT(0));;
+        val = BIT(0);
+    }
+    if(tx_pin != UART_TX_NONE_PIN){
+       reg_gpio_func_mux(tx_pin)=(reg_gpio_func_mux(tx_pin)& mask)|val;
+       gpio_function_dis(tx_pin);
+    }
 
 
-     if(rx_pin == UART0_RX_PA4)
-     {
-         mask= (unsigned char)~(BIT(1)|BIT(0));
-         val = BIT(0);
+    if(rx_pin == UART0_RX_PA4)
+    {
+        mask= (unsigned char)~(BIT(1)|BIT(0));
+        val = BIT(0);
 
-     }
-     else if(rx_pin == UART0_RX_PB3)
-     {
-         mask = (unsigned char)~(BIT(7)|BIT(6));
-         val = BIT(7);
-         reg_gpio_pad_mul_sel|=BIT(0);
-     }
-     else if(rx_pin ==UART0_RX_PD3)
-     {
-         mask = (unsigned char)~(BIT(7)|BIT(6));
-         val = 0;
-     }
-     else if(rx_pin == UART1_RX_PC7)
-     {
-         mask = (unsigned char)~(BIT(7)|BIT(6));
-         val = BIT(7);
-         reg_gpio_pad_mul_sel|=BIT(0);
-     }
-     else if(rx_pin ==  UART1_RX_PD7)
-     {
-         mask = (unsigned char)~(BIT(7)|BIT(6));
-         val = 0;
-     }
-     else if(rx_pin ==  UART1_RX_PE2)
-     {
-         mask = (unsigned char)~(BIT(5)|BIT(4));
-         val = BIT(4);
-     }
-     //note:  setting pad the function  must before  setting no_gpio function, cause it will lead to uart transmit extra one byte data at begin.(confirmed by minghai&sunpeng)
-     if(rx_pin != UART_RX_NONE_PIN){
-       reg_gpio_func_mux(rx_pin)=(reg_gpio_func_mux(rx_pin)& mask)|val;
-       gpio_function_dis(rx_pin);
-     }
+    }
+    else if(rx_pin == UART0_RX_PB3)
+    {
+        mask = (unsigned char)~(BIT(7)|BIT(6));
+        val = BIT(7);
+        reg_gpio_pad_mul_sel|=BIT(0);
+    }
+    else if(rx_pin ==UART0_RX_PD3)
+    {
+        mask = (unsigned char)~(BIT(7)|BIT(6));
+        val = 0;
+    }
+    else if(rx_pin == UART1_RX_PC7)
+    {
+        mask = (unsigned char)~(BIT(7)|BIT(6));
+        val = BIT(7);
+        reg_gpio_pad_mul_sel|=BIT(0);
+    }
+    else if(rx_pin ==  UART1_RX_PD7)
+    {
+        mask = (unsigned char)~(BIT(7)|BIT(6));
+        val = 0;
+    }
+    else if(rx_pin ==  UART1_RX_PE2)
+    {
+        mask = (unsigned char)~(BIT(5)|BIT(4));
+        val = BIT(4);
+    }
+    //note:  setting pad the function  must before  setting no_gpio function, cause it will lead to uart transmit extra one byte data at begin.(confirmed by minghai&sunpeng)
+    if(rx_pin != UART_RX_NONE_PIN){
+      reg_gpio_func_mux(rx_pin)=(reg_gpio_func_mux(rx_pin)& mask)|val;
+      gpio_function_dis(rx_pin);
+    }
  }

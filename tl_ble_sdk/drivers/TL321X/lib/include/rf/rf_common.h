@@ -34,9 +34,6 @@
 /**********************************************************************************************************************
  *                                         RF  global macro                                                           *
  *********************************************************************************************************************/
-#ifndef RF_BB_TIMER_AUTO_MODE
-#define RF_BB_TIMER_AUTO_MODE               1  //TODO:Need to update code after subsequent confirmation of usage
-#endif
 
 /**
  * @brief       This define for ble debug the effect of rx_dly.
@@ -408,11 +405,6 @@ typedef enum {
      RF_CHANNEL_ALL =    0xff,      /**< all RF channel */
 } rf_channel_e;
 
-typedef enum{
-    BB_TIMER = 0,
-    STIMER,
-}rf_timer_source;
-
 /**
  * @brief define rf bb timer clock tick per us/ms/s.
  */
@@ -432,15 +424,6 @@ extern rf_crc_config_t rf_crc_config[3];
 /**********************************************************************************************************************
  *                                         RF function declaration                                                    *
  *********************************************************************************************************************/
-
-/**
- * @brief     This function performs to get rf baseband timer tick.
- * @return    rf baseband timer tick value.
- */
-static inline unsigned int rf_bb_timer_get_tick(void)
-{
-    return reg_bb_timer_tick;
-}
 
 /**
  * @brief       This function serves to judge the statue of  RF receive.
@@ -1160,27 +1143,6 @@ void rf_clr_dig_logic_state(void);
  *             (3)After calling this interface, RF DMA configurations need to be reconfigured.
  */
 void rf_reset_register_value(void);
-
-/**
- * @brief       This function serves to enable synchronization alignment the baseband timer to the system timer.
- * @param[in]   none
- * @return      none
- */
-void rf_bb_timer_sync_to_stimer_en(void);
-
-/**
- * @brief       This function serves to trigger synchronization alignment the baseband timer to the system timer.
- * @param[in]   none
- * @return      none
- */
-void rf_bb_timer_sync_to_stimer_trig(void);
-
-/**
- * @brief       This function serves to set the RF state machine timer source.
- * @param[in]   clk BB_TIMER or STIMER
- * @return      none
- */
-void rf_set_timer_source(rf_timer_source clk);
 
 /**
  *  @brief      This function is used to set the tx fast_settle calibration value.

@@ -1153,7 +1153,7 @@ typedef enum{
 
 #define    reg_rf_ll_pid_l         REG_ADDR8(REG_BB_LL_BASE_ADDR+0x22)
 enum{
-    FLD_RF_SN                     = BIT_RNG(0,1), /**BLE used**/
+    FLD_RF_PID0                   = BIT_RNG(0,1),
     FLD_RF_PID1                   = BIT_RNG(2,3),
     FLD_RF_PID2                   = BIT_RNG(4,5),
     FLD_RF_PID3                   = BIT_RNG(6,7),
@@ -1178,8 +1178,6 @@ typedef enum {
     FLD_RF_STATE_MACHINE_RX_WAIT,           /**< rx wait */
     FLD_RF_STATE_MACHINE_RX,                /**< rx */
     FLD_RF_STATE_MACHINE_TX_WAIT,           /**< tx wait */
-
-    FLD_RF_NESN = BIT(7),                   /**BLE used**/
 } state_machine_status_e;
 
 

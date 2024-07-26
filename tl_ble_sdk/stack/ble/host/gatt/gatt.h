@@ -25,12 +25,12 @@
 
 
 /* Client Supported Features bit assignments */
-#define CLIENT_SUPP_FEAT_ROBUST_CACHING            BIT(0) //The client supports robust caching
-#define CLIENT_NOT_SUPP_FEAT_ROBUST_CACHING        0
+#define CLIENT_SUPP_FEAT_ROBUST_CACHING         BIT(0) //The client supports robust caching
+#define CLIENT_NOT_SUPP_FEAT_ROBUST_CACHING     0
 #define CLIENT_SUPP_FEAT_EATT_BEARER            BIT(1) //The client supports Enhanced ATT bearer
 #define CLIENT_NOT_SUPP_FEAT_EATT_BEARER        0
-#define CLIENT_SUPP_FEAT_MULTI_HDL_VAL_NTF        BIT(2) //The client supports Enhanced ATT bearer
-#define CLIENT_NOT_SUPP_FEAT_MULTI_HDL_VAL_NTF    0
+#define CLIENT_SUPP_FEAT_MULTI_HDL_VAL_NTF      BIT(2) //The client supports Enhanced ATT bearer
+#define CLIENT_NOT_SUPP_FEAT_MULTI_HDL_VAL_NTF  0
 
 /* Server Supported Features bit assignments */
 #define SERVER_SUPP_FEAT_EATT_BEARER            BIT(0) //The server supports Enhanced ATT bearer
@@ -68,7 +68,7 @@ typedef struct __attribute__((packed)) {
 }gatt_attr_t;
 
 
-#define GATT_RD_CONT                      BIT(0)
+#define GATT_RD_CONT                    BIT(0)
 #define GATT_RD_CMPLT                   BIT(1)
 
 typedef struct {
@@ -81,7 +81,7 @@ typedef struct {
 /** GATT Characteristic Properties bit field */
 #define CHAR_PROP_BROADCAST              BIT(0)
 #define CHAR_PROP_READ                   BIT(1)
-#define CHAR_PROP_WRITE_WITHOUT_RSP         BIT(2)
+#define CHAR_PROP_WRITE_WITHOUT_RSP      BIT(2)
 #define CHAR_PROP_WRITE                  BIT(3)
 #define CHAR_PROP_NOTIFY                 BIT(4)
 #define CHAR_PROP_INDICATE               BIT(5)
@@ -93,7 +93,7 @@ typedef struct __attribute__((packed)) {
     /** GATT Characteristic attribute Handle. */
     u16 attrHdl;
     /** GATT Characteristic Properties. */
-    u8    properties;
+    u8  properties;
     /** GATT Characteristic Value Attribute Handle. */
     u16 valueHdl;
     /** GATT Characteristic UUID. */
@@ -101,8 +101,8 @@ typedef struct __attribute__((packed)) {
 } gatt_chrc_t;
 
 /** Characteristic Extended Properties bit field */
-#define CHAR_EXT_PROP_RELIABLE_WR        0x0001
-#define CHAR_EXT_PROP_WRITABLE_AUX         0x0002
+#define CHAR_EXT_PROP_RELIABLE_WR       0x0001
+#define CHAR_EXT_PROP_WRITABLE_AUX      0x0002
 
 /* Characteristic Extended Properties Attribute Value. */
 typedef struct {
@@ -122,7 +122,7 @@ typedef struct {
 
 
 /* Server Characteristic Configuration bits value. */
-#define SVR_CHAR_CFG_BROADCAST            0x0001
+#define SVR_CHAR_CFG_BROADCAST          0x0001
 
 /** Server Characteristic Configuration Attribute Value */
 typedef struct {

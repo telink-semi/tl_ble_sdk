@@ -34,9 +34,6 @@
 /**********************************************************************************************************************
  *                                         RF  global macro                                                           *
  *********************************************************************************************************************/
-#ifndef RF_BB_TIMER_AUTO_MODE
-#define RF_BB_TIMER_AUTO_MODE               1  //TODO:Need to update code after subsequent confirmation of usage
-#endif
 
 /**
  * @brief       This define for ble debug the effect of rx_dly.

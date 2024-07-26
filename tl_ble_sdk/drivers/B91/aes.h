@@ -21,15 +21,15 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-/**    @page AES
+/** @page AES
  *
- *    Introduction
- *    ===============
- *    B91 supports hardware AES function.
+ *  Introduction
+ *  ===============
+ *  B91 supports hardware AES function.
  *
- *    API Reference
- *    ===============
- *    Header File: aes.h
+ *  API Reference
+ *  ===============
+ *  Header File: aes.h
  */
 #ifndef _AES_H_
 #define _AES_H_
@@ -104,9 +104,9 @@ int aes_decrypt_bt_en(unsigned char* key, unsigned char* plaintext, unsigned cha
 /**
  * @brief     This function refer to set the em base address.
  * @param[in] addr - The range of em base address that can be set is the address space of DLM and ILM, which can view the Memory Map of datasheets.
- *                      The current driver default setting is em_base_addr = 0xc0000000, if you call this function to modify the em base address,
- *                      you need to ensure that the _attribute_aes_data_sec_ section in the link file (AES-related functions will use this section)
- *                      is set in the following address range: [em_base_addr,em_base_addr+64KB] (chip design requirements)
+ *                   The current driver default setting is em_base_addr = 0xc0000000, if you call this function to modify the em base address,
+ *                   you need to ensure that the _attribute_aes_data_sec_ section in the link file (AES-related functions will use this section)
+ *                   is set in the following address range: [em_base_addr,em_base_addr+64KB] (chip design requirements)
  * @return    none.
  * @attention If you are using a BT-related SDK, you must follow the planning of BT's sdk to handle this address and not call this function
  */
@@ -114,12 +114,12 @@ void aes_set_em_base_addr(unsigned int addr);
 
 /**
  * @brief     This function refer to encrypt/decrypt to set key and data. AES module register must be used by word.
- *                 All data need Little endian.
+ *              All data need Little endian.
  * @param[in] key  - the key of encrypt/decrypt.
  * @param[in] data - the data which to do encrypt/decrypt. The address is 32 bits, but only the lower 16 bits are used.
  * @return    none.
  * @note      reg_embase_addr (32bit) +reg_aes_ptr (16bit) is the actual access address.
- *               reg_aes_ptr is only 16bit, so access space is only 64K. Adjusting reg_embase_addr changes the initial address of 64K.
+ *            reg_aes_ptr is only 16bit, so access space is only 64K. Adjusting reg_embase_addr changes the initial address of 64K.
  */
 void aes_set_key_data(unsigned char *key, unsigned char* data);
 
@@ -163,8 +163,8 @@ static inline void aes_clr_irq_mask(aes_irq_e mask)
 /**
  * @brief     This function refer to get aes irq status.
  * @param[in] status - the irq status to get.
- * @retval      non-zero   -  the interrupt occurred.
- * @retval      zero  -  the interrupt did not occur.
+ * @retval    non-zero   -  the interrupt occurred.
+ * @retval    zero  -  the interrupt did not occur.
  */
 static inline int aes_get_irq_status(aes_irq_e status)
 {

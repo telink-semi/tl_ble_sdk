@@ -34,14 +34,14 @@
 
 #if (UI_KEYBOARD_ENABLE)
 
-_attribute_ble_data_retention_    int     key_not_released;
+_attribute_ble_data_retention_  int     key_not_released;
 
 
-#define CONSUMER_KEY                      1
-#define KEYBOARD_KEY                      2
-#define PAIR_UNPAIR_KEY                   3
+#define CONSUMER_KEY                1
+#define KEYBOARD_KEY                2
+#define PAIR_UNPAIR_KEY             3
 
-_attribute_ble_data_retention_    u8         key_type;
+_attribute_ble_data_retention_  u8      key_type;
 
 /**
  * @brief   Check changed key value.
@@ -52,7 +52,7 @@ void key_change_proc(void)
 {
 
     u8 key0 = kb_event.keycode[0];
-//    u8 key_buf[8] = {0,0,0,0,0,0,0,0};
+//  u8 key_buf[8] = {0,0,0,0,0,0,0,0};
 
     key_not_released = 1;
     if (kb_event.cnt == 2)   //two key press
@@ -140,9 +140,9 @@ void key_change_proc(void)
 
 
 
-#define GPIO_WAKEUP_KEYPROC_CNT                3
-_attribute_ble_data_retention_    static u32 keyScanTick = 0;
-_attribute_ble_data_retention_    static int gpioWakeup_keyProc_cnt = 0;
+#define GPIO_WAKEUP_KEYPROC_CNT             3
+_attribute_ble_data_retention_  static u32 keyScanTick = 0;
+_attribute_ble_data_retention_  static int gpioWakeup_keyProc_cnt = 0;
 
 /**
  * @brief      keyboard task handler
@@ -209,8 +209,9 @@ _attribute_ram_code_ void  app_set_kb_wakeup (u8 e, u8 *p, int n)
  */
 void keyboard_init(void)
 {
-    u32 pin[] = KB_DRIVE_PINS;
+
     #if (BLE_APP_PM_ENABLE)
+        u32 pin[] = KB_DRIVE_PINS;
         /////////// keyboard GPIO wakeup init ////////
         for (unsigned int i=0; i<(sizeof (pin)/sizeof(*pin)); i++){
             pm_set_gpio_wakeup (pin[i], WAKEUP_LEVEL_HIGH, 1);  //drive pin pad high level wakeup deepsleep

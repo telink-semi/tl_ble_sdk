@@ -37,21 +37,21 @@ typedef void (*os_give_sem_t)(void);
 typedef void (*os_mutex_sem_t)(void);
 
 /**
- * @brief        This feature is used to enable support for OS mode
+ * @brief       This feature is used to enable support for OS mode
  * @param[in]   true - Enable, false - disable
  * @return      none
  */
 void blc_setOsSupEnable(bool en);
 
 /**
- * @brief        This function is to check if OS is supported
+ * @brief       This function is to check if OS is supported
  * @param[in]   none
  * @return      true - Enable, false - disable
  */
 bool blc_isOsSupEnable(void);
 
 /**
- * @brief        This feature is used to check if the task schedule is busy
+ * @brief       This feature is used to check if the task schedule is busy
  * @param[in]   none
  * @return      true - busy,   false - no busy
  */

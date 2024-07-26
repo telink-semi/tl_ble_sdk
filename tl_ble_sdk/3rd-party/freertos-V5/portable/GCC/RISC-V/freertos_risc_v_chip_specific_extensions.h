@@ -61,7 +61,7 @@
 
 #define portasmHANDLE_INTERRUPT xPortIrqHandler
 
-#define portasmHAS_MTIME     1
+#define portasmHAS_MTIME    1
 
 #if __riscv_flen == 64
     #define portFPWORD_SIZE 8
@@ -86,7 +86,7 @@
 #endif
 
 /* Constants to define the additional registers. */
-#define mxstatus     0x7c4
+#define mxstatus    0x7c4
 #define ucode       0x801
 
 /* Additional FPU registers to save and restore (fcsr + 32 FPUs) */
@@ -98,17 +98,17 @@
 /* When the kernel update, TCB structure may be changed. So the offset need to be modified */
 #if (configHSP_ENABLE==1)
     /* Set the bytes of stack's offset in TCB. Unit:byte */
-    #define StackOffset_TCB            48 /* The offset of pxCurrentTCB->pxStack in TCB structure */
+    #define StackOffset_TCB         48 /* The offset of pxCurrentTCB->pxStack in TCB structure */
 
     /* Set the offset of top address of stack in TCB. Unit:byte */
-    #define EndStackOffset_TCB        (52 + configMAX_TASK_NAME_LEN) /* The offset of pxCurrentTCB->pxEndOfStack in TCB structure */
+    #define EndStackOffset_TCB      (52 + configMAX_TASK_NAME_LEN) /* The offset of pxCurrentTCB->pxEndOfStack in TCB structure */
 #endif
 
 
 /* Save additional registers found on the V5 core. */
 .macro portasmSAVE_ADDITIONAL_REGISTERS
     addi sp, sp, -(portasmADDITIONAL_CONTEXT_SIZE * portWORD_SIZE) /* Make room for the additional registers. */
-    csrr t0, mxstatus                             /* Load additional registers into accessible temporary registers. */
+    csrr t0, mxstatus                            /* Load additional registers into accessible temporary registers. */
     store_x t0, 1 * portWORD_SIZE( sp )
 
     #ifdef __riscv_dsp
@@ -186,7 +186,7 @@
         csrw mhsp_ctl, t0
     #endif
 
-    load_x t0, 1 * portWORD_SIZE( sp )            /* Load additional registers into accessible temporary registers. */
+    load_x t0, 1 * portWORD_SIZE( sp )          /* Load additional registers into accessible temporary registers. */
     csrw mxstatus, t0
 
     #ifdef __riscv_dsp

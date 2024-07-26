@@ -36,10 +36,10 @@ ble_sts_t   blc_attc_sendMtuSizeExchangeRequest (u16 connHandle, u16 mtuSize);
 
 /**
  * @brief       Send ATT Prepare Write Request.
- * @param[in]   connHandle     - connection handle.
- * @param[in]   attHandle     - ATT handle.
- * @param[in]   offset         - The offset of the first octet to be written.
- * @param[in]   p             - Pointer point to application data buffer.
+ * @param[in]   connHandle  - connection handle.
+ * @param[in]   attHandle   - ATT handle.
+ * @param[in]   offset      - The offset of the first octet to be written.
+ * @param[in]   p           - Pointer point to application data buffer.
  * @param[in]   len         - Pointer point to application data buffer.
  * @return      ble_sts_t.
  */
@@ -47,19 +47,19 @@ ble_sts_t   blc_attc_sendPrepareWriteRequest (u16 connHandle, u16 attHandle, u16
 
 /**
  * @brief       Send ATT Execute Write Request.
- * @param[in]   connHandle    - connection handle.
- * @param[in]   attHandle    - ATT handle.
- * @param[in]   flags        - 0x00: Cancel all prepared writes
- *                             - 0x01: Immediately write all pending prepared values
+ * @param[in]   connHandle  - connection handle.
+ * @param[in]   attHandle   - ATT handle.
+ * @param[in]   flags       - 0x00: Cancel all prepared writes
+ *                          - 0x01: Immediately write all pending prepared values
  * @return      ble_sts_t.
  */
 ble_sts_t   blc_attc_sendExecuteWriteRequest (u16 connHandle, u16 attHandle, u8 flags);
 
 /**
  * @brief       Send ATT Write Request.
- * @param[in]   connHandle     - connection handle.
- * @param[in]   attHandle     - ATT handle.
- * @param[in]   p             - Pointer point to application data buffer.
+ * @param[in]   connHandle  - connection handle.
+ * @param[in]   attHandle   - ATT handle.
+ * @param[in]   p           - Pointer point to application data buffer.
  * @param[in]   len         - Pointer point to application data buffer.
  * @return      ble_sts_t.
  */
@@ -67,9 +67,9 @@ ble_sts_t   blc_attc_sendWriteRequest (u16 connHandle, u16 attHandle, u8 *p, u16
 
 /**
  * @brief       Send ATT Write Command.
- * @param[in]   connHandle     - connection handle.
- * @param[in]   attHandle     - ATT handle.
- * @param[in]   p             - Pointer point to application data buffer.
+ * @param[in]   connHandle  - connection handle.
+ * @param[in]   attHandle   - ATT handle.
+ * @param[in]   p           - Pointer point to application data buffer.
  * @param[in]   len         - Pointer point to application data buffer.
  * @return      ble_sts_t.
  */
@@ -77,9 +77,9 @@ ble_sts_t   blc_attc_sendWriteCommand (u16 connHandle, u16 attHandle, u8 *p, u16
 
 /**
  * @brief       Send ATT Find Info Request.
- * @param[in]   connHandle     - connection handle.
- * @param[in]   startAttHdl    - the start of ATT handle.
- * @param[in]   endAttHdl     - the end of ATT handle.
+ * @param[in]   connHandle  - connection handle.
+ * @param[in]   startAttHdl - the start of ATT handle.
+ * @param[in]   endAttHdl   - the end of ATT handle.
  * @return      ble_sts_t.
  */
 ble_sts_t   blc_attc_sendFindInfoRequest (u16 connHandle, u16 startAttHdl, u16 endAttHdl);
@@ -118,17 +118,17 @@ ble_sts_t   blc_attc_sendReadByGroupTypeRequest (u16 connHandle, u16 startAttHdl
 
 /**
  * @brief       Send ATT Read Request.
- * @param[in]   connHandle        - connection handle.
- * @param[in]   attHandle          - ATT handle.
+ * @param[in]   connHandle      - connection handle.
+ * @param[in]   attHandle       - ATT handle.
  * @return      ble_sts_t.
  */
 ble_sts_t   blc_attc_sendReadRequest (u16 connHandle, u16 attHandle);
 
 /**
  * @brief       Send ATT Read Blob Request.
- * @param[in]   connHandle    - connection handle.
- * @param[in]   attHandle     - ATT handle.
- * @param[in]   offset         - ATT value offset.
+ * @param[in]   connHandle  - connection handle.
+ * @param[in]   attHandle   - ATT handle.
+ * @param[in]   offset      - ATT value offset.
  * @return      ble_sts_t.
  */
 ble_sts_t   blc_attc_sendReadBlobRequest (u16 connHandle, u16 attHandle, u16 offset);
@@ -140,7 +140,7 @@ ble_sts_t   blc_attc_sendReadBlobRequest (u16 connHandle, u16 attHandle, u16 off
  * @param[in]   pHandle -.
  * @return      ble_sts_t.
  */
-ble_sts_t    blc_attc_sendReadMultReq(u16 connHandle, u8 numHandles, u16 *pHandle);
+ble_sts_t   blc_attc_sendReadMultReq(u16 connHandle, u8 numHandles, u16 *pHandle);
 
 /**
  * @brief       Send ATT Read Multiple Variable Request.
@@ -149,11 +149,11 @@ ble_sts_t    blc_attc_sendReadMultReq(u16 connHandle, u8 numHandles, u16 *pHandl
  * @param[in]   pHandle -.
  * @return      ble_sts_t.
  */
-ble_sts_t    blc_attc_sendReadMultVarReq(u16 connHandle, u8 numHandles, u16 *pHandle);
+ble_sts_t   blc_attc_sendReadMultVarReq(u16 connHandle, u8 numHandles, u16 *pHandle);
 
 /**
  * @brief       Send ATT Handle Value Confirm.
- * @param[in]   connHandle        - connection handle.
+ * @param[in]   connHandle      - connection handle.
  * @return      ble_sts_t.
  */
 ble_sts_t   blc_attc_sendAttHdlValueCfm (u16 connHandle);

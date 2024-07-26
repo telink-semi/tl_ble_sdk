@@ -30,8 +30,8 @@
 device_led_t device_led;
 
 /**
- * @brief        This function is used to control device led on or off
- * @param[in]    on - the status of led
+ * @brief       This function is used to control device led on or off
+ * @param[in]   on - the status of led
  * @return      none
  */
 void device_led_on_off(u8 on)
@@ -43,9 +43,9 @@ void device_led_on_off(u8 on)
 
 
 /**
- * @brief        This function is used to initialize device led setting
- * @param[in]    gpio - the GPIO corresponding to device led
- * @param[in]    polarity - 1 for high led on, 0 for low led on
+ * @brief       This function is used to initialize device led setting
+ * @param[in]   gpio - the GPIO corresponding to device led
+ * @param[in]   polarity - 1 for high led on, 0 for low led on
  * @return      none
  */
 void device_led_init(u32 gpio,u8 polarity){  //polarity: 1 for high led on, 0 for low led on
@@ -58,10 +58,10 @@ void device_led_init(u32 gpio,u8 polarity){  //polarity: 1 for high led on, 0 fo
 }
 
 /**
- * @brief        This function is used to create new led task
- * @param[in]    led_cfg - Configure the parameters for led event
+ * @brief       This function is used to create new led task
+ * @param[in]   led_cfg - Configure the parameters for led event
  * @return      0 - new led event priority not higher than the not ongoing one
- *                 1 - new led event created successfully
+ *              1 - new led event created successfully
  */
 int device_led_setup(led_cfg_t led_cfg)
 {
@@ -101,8 +101,8 @@ int device_led_setup(led_cfg_t led_cfg)
 }
 
 /**
- * @brief        This function is used to manage led tasks
- * @param[in]    none
+ * @brief       This function is used to manage led tasks
+ * @param[in]   none
  * @return      none
  */
 void led_proc(void)

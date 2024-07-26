@@ -69,8 +69,8 @@ typedef enum{
 }lpc_scaling_e;
 
 /**
- * @brief        This function servers to powers down low power comparator.
- * @return        none.
+ * @brief       This function servers to powers down low power comparator.
+ * @return      none.
  */
 static inline void lpc_power_down(void)
 {
@@ -78,8 +78,8 @@ static inline void lpc_power_down(void)
 }
 
 /**
- * @brief        This function servers to power on low power comparator.
- * @return        none.
+ * @brief       This function servers to power on low power comparator.
+ * @return      none.
  */
 static inline void lpc_power_on(void)
 {
@@ -87,9 +87,9 @@ static inline void lpc_power_on(void)
 }
 
 /**
- * @brief        This function selects input channel for low power comparator.
- * @param[in]    pin        - selected input channel.Input derived from external PortB(PB<1>~PB<7>).
- * @return        none.
+ * @brief       This function selects input channel for low power comparator.
+ * @param[in]   pin     - selected input channel.Input derived from external PortB(PB<1>~PB<7>).
+ * @return      none.
  */
 static inline void lpc_set_input_chn(lpc_input_channel_e pin)
 {
@@ -97,9 +97,9 @@ static inline void lpc_set_input_chn(lpc_input_channel_e pin)
 }
 
 /**
- * @brief        This function serves to set scaling_coefficient for low power comparator.
- * @param[in]    divider    - selected scaling coefficient.(%25,%50,%75,%100)
- * @return        none.
+ * @brief       This function serves to set scaling_coefficient for low power comparator.
+ * @param[in]   divider - selected scaling coefficient.(%25,%50,%75,%100)
+ * @return      none.
  */
 static inline void lpc_set_scaling_coeff(lpc_scaling_e divider)
 {
@@ -107,8 +107,8 @@ static inline void lpc_set_scaling_coeff(lpc_scaling_e divider)
 }
 
 /**
- * @brief        This function serves to get the comparison results.if Vin>Vref 0x88[6]=0,else 0x88[6]=1.
- * @return        comparison results.
+ * @brief       This function serves to get the comparison results.if Vin>Vref 0x88[6]=0,else 0x88[6]=1.
+ * @return      comparison results.
  */
 static inline unsigned char lpc_get_result(void)
 {
@@ -116,10 +116,10 @@ static inline unsigned char lpc_get_result(void)
 }
 
 /**
- * @brief        This function selects input reference voltage for low power comparator.
- * @param[in]    mode    - lower power comparator working mode includes normal mode and low power mode.
- * @param[in]    ref        - selected input reference voltage.
- * @return        none.
+ * @brief       This function selects input reference voltage for low power comparator.
+ * @param[in]   mode    - lower power comparator working mode includes normal mode and low power mode.
+ * @param[in]   ref     - selected input reference voltage.
+ * @return      none.
  */
 void lpc_set_input_ref(lpc_mode_e mode, lpc_reference_e ref);
 

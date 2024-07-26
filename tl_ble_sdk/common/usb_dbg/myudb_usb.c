@@ -34,15 +34,15 @@
 
 typedef struct myudb_cfg
 {
-    u16        id;
+    u16     id;
     u16     response_len;
 
-    u8*        response;
-    u32        tick_sync;
+    u8*     response;
+    u32     tick_sync;
 
-    u8         stall;
-    u8        rptr;
-    u16        cmd_len;
+    u8      stall;
+    u8      rptr;
+    u16     cmd_len;
 
 } myudb_cfg_t;
 
@@ -55,7 +55,7 @@ static USB_Request_Header_t control_request;
 my_fifo_t   *myudb_print_fifo = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//        USB device handling
+//      USB device handling
 //-----------------------------------------------------------------------------------------
 enum {
     MYUDB_USB_IRQ_SETUP_REQ = 0,
@@ -161,7 +161,7 @@ void myudb_usb_handle_request(u8 data_request) {
         break;
     case (REQDIR_DEVICETOHOST | REQTYPE_VENDOR | REQREC_INTERFACE):
         if (MYUDB_USB_IRQ_SETUP_REQ == data_request) {
-            if (0xc0 == bRequest) {                    // Get board version
+            if (0xc0 == bRequest) {                 // Get board version
                 usbhw_reset_ctrl_ep_ptr();
                 usbhw_write_ctrl_ep_data(myudb.id);
                 usbhw_write_ctrl_ep_data(myudb.id >> 8);
@@ -174,7 +174,7 @@ void myudb_usb_handle_request(u8 data_request) {
         break;
     case (REQDIR_DEVICETOHOST | REQTYPE_VENDOR | REQREC_DEVICE):    // 0xc0
         if (MYUDB_USB_IRQ_SETUP_REQ == data_request) {
-            if (0xc0 == bRequest) {                    // Get board version
+            if (0xc0 == bRequest) {                 // Get board version
                 usbhw_reset_ctrl_ep_ptr();
                 usbhw_write_ctrl_ep_data(0x40);
                 usbhw_write_ctrl_ep_data(0x25);
@@ -248,7 +248,7 @@ _attribute_ram_code_ int  myudb_print_fifo_full (void)
 
 _attribute_ram_code_ void usb_send_status_pkt(u8 status, u8 buffer_num, u8 *pkt, u16 len)
 {
-//    if (myudb_print_fifo_full()) return;        //skip if overflow
+//  if (myudb_print_fifo_full()) return;        //skip if overflow
 
     u8 *p = myudb_print_fifo->p + (myudb_print_fifo->wptr & (myudb_print_fifo->num - 1)) * myudb_print_fifo->size;
     if (len > 272)
@@ -270,7 +270,7 @@ _attribute_ram_code_ void usb_send_status_pkt(u8 status, u8 buffer_num, u8 *pkt,
 _attribute_ram_code_ void usb_send_str_data (char *str, u8 *ph, int n)
 {
 
-//    if (myudb_print_fifo_full()) return;        //skip if overflow
+//  if (myudb_print_fifo_full()) return;        //skip if overflow
     u32 rie = core_interrupt_disable ();
 
     u8 *ps =  myudb_print_fifo->p + (myudb_print_fifo->wptr & (myudb_print_fifo->num - 1)) * myudb_print_fifo->size;
@@ -300,7 +300,7 @@ _attribute_ram_code_ void usb_send_str_data (char *str, u8 *ph, int n)
         *pd++ = 0x95;   //special mark�� 0xA695
         *pd++ = 0xA6;
         *pd++ = ns;     // string length, 1byte
-        *pd++ = n;        // data length, 2 byte
+        *pd++ = n;      // data length, 2 byte
         *pd++ = n >> 8;
 
         while (ns--)
@@ -378,7 +378,7 @@ _attribute_ram_code_ void myudb_to_usb(void)
     static u8 *p = 0;
 
     if(usbhw_is_ep_busy(MYUDB_EDP_IN_HCI)) return;
-    if (!p && (myudb_print_fifo->wptr != myudb_print_fifo->rptr))        //first packet
+    if (!p && (myudb_print_fifo->wptr != myudb_print_fifo->rptr))       //first packet
     {
         p =  myudb_print_fifo->p + (myudb_print_fifo->rptr++ & (myudb_print_fifo->num - 1)) * myudb_print_fifo->size;;
         //len = p[1] + 3;
@@ -402,7 +402,7 @@ _attribute_ram_code_ void myudb_to_usb(void)
     }
 }
 
-int    usb_send_str_int (char *str,int w)
+int usb_send_str_int (char *str,int w)
 {
     if (myudb_print_fifo_full())
     {
@@ -465,7 +465,7 @@ int    usb_send_str_int (char *str,int w)
 }
 
 
-#define            USB_ENDPOINT_BULK_OUT_FLAG        (1 << (MYUDB_EDP_OUT_HCI & 7))
+#define         USB_ENDPOINT_BULK_OUT_FLAG      (1 << (MYUDB_EDP_OUT_HCI & 7))
 
 _attribute_ram_code_ int myudb_usb_get_packet (u8 *p)
 {
@@ -491,27 +491,27 @@ _attribute_ram_code_ int myudb_usb_get_packet (u8 *p)
     return 0;
 }
 
-func_myudb_hci_cmd_cb_t    myudb_hci_cmd_cb = 0;
+func_myudb_hci_cmd_cb_t myudb_hci_cmd_cb = 0;
 
 void myudb_register_hci_cb (void *p)
 {
     myudb_hci_cmd_cb = p;
 }
 
-func_myudb_hci_cmd_cb_t    myudb_hci_debug_cb = 0;
+func_myudb_hci_cmd_cb_t myudb_hci_debug_cb = 0;
 void myudb_register_hci_debug_cb (void *p)
 {
     myudb_hci_debug_cb = p;
 }
 
-#define            MYHCI_FW_DOWNLOAD            0xfe
+#define         MYHCI_FW_DOWNLOAD           0xfe
 int fw_download = 0;
 
 _attribute_ram_code_ int myudb_mem_cmd (u8 *p, int nbyte)
 {
     int len = nbyte;
     int cmd = p[0];
-    u8    rsp[280];
+    u8  rsp[280];
 
     int ret = 0;
 
@@ -557,18 +557,18 @@ _attribute_ram_code_ int myudb_mem_cmd (u8 *p, int nbyte)
         u32 adr = p[2] | (p[3] << 8) | (p[4] << 16) | (p[5] << 24);
         int n = len - 6;
 
-        if (type == 0)                //RAM
+        if (type == 0)              //RAM
         {
             memcpy ((void *)adr, p + 6, n);
         }
-        else if (type == 1)            //Analog Register
+        else if (type == 1)         //Analog Register
         {
             for (int i=0; i<n; i++)
             {
                 analog_write_reg8 (adr + i, p[i + 6]);
             }
         }
-        else if (type == 2)            // flash
+        else if (type == 2)         // flash
         {
             if (fw_download && (adr & 0xfff) == 0)
             {
@@ -661,7 +661,7 @@ _attribute_ram_code_ int myudb_hci_cmd_from_usb (void)
 
 /////////////////////////////////////////////////////////////////////////
 void udb_usb_handle_irq(void) {
-    if(1){        //  do nothing when in suspend. Maybe not unnecessary
+    if(1){      //  do nothing when in suspend. Maybe not unnecessary
         u32 irq = usbhw_get_ctrl_ep_irq();
         if (irq & FLD_CTRL_EP_IRQ_SETUP) {
             usbhw_clr_ctrl_ep_irq(FLD_CTRL_EP_IRQ_SETUP);

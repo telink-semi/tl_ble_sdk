@@ -263,6 +263,14 @@ static void cpu_task( void *pvParameters )
  */
 void app_TaskCreate(void)
 {
+    /*If you wake up from deepretion mode, you don't need to create task again.
+     *Only enable interrupt and resume general registers need to be opened */
+    if(pm_is_MCU_deepRetentionWakeup()){
+        configPOST_SLEEP_PROCESSING(0);
+        extern void vPortRestoreTask(void);
+        vPortRestoreTask();
+    }
+
     /* Enable OS support */
     blc_setOsSupEnable(1);
 

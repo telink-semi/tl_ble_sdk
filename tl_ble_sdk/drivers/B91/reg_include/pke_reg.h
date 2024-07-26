@@ -33,9 +33,9 @@
 #define PKE_CTRL             (*((volatile unsigned int *)(PKE_BASE)))
 #define PKE_CONF             (*((volatile unsigned int *)(PKE_BASE+0x04)))
 typedef enum{
-    FLD_PKE_CONF_IRQ_EN            = BIT(8),
-    FLD_PKE_CONF_PARTIAL_RADIX    = BIT_RNG(16,23),
-    FLD_PKE_CONF_BASE_RADIX        = BIT_RNG(24,26),
+    FLD_PKE_CONF_IRQ_EN         = BIT(8),
+    FLD_PKE_CONF_PARTIAL_RADIX  = BIT_RNG(16,23),
+    FLD_PKE_CONF_BASE_RADIX     = BIT_RNG(24,26),
 }pke_conf_e;
 #define PKE_MC_PTR           (*((volatile unsigned int *)(PKE_BASE+0x10)))
 #define PKE_STAT             (*((volatile unsigned int *)(PKE_BASE+0x20)))

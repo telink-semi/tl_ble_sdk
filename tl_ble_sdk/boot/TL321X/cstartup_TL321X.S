@@ -4,9 +4,9 @@
  * @brief   This is the boot file for TL321X
  *
  * @author  Driver Group
- * @date    2021
+ * @date    2024
  *
- * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2024, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -23,24 +23,23 @@
  *******************************************************************************************************/
  #include "user_config.h"
 /**
- * @brief    Set "DP_THROUGH_SWIRE_DIS" as "1" to disable the "dp_through_swire" function. Set "DP_THROUGH_SWIRE_DIS" as "0" to enable the "dp_through_swire" function.
- *            Risk description:
- *            The "dp_through_swire" function is enabled by default.When DP and DM pin are used as GPIO function and trigger "dp_through_swire" timing,
- *            there may be a problem of miswriting the chip through swire to cause the chip to crash. Therefore, disable the "dp_through_swire" function in this startup file.(set "DP_THROUGH_SWIRE_DIS" as "1").
- *            If the chip has only dp pin but no sws pin, using the above scheme (set "DP_THROUGH_SWIRE_DIS" as "1") will cause the following problems.
- *            1. During fixture production, burning a firmware program that disables the "dp_through_swire"function into unprogrammed chip will cause the problem that chip can not be burned again due to swire communication failure.
- *            2. Burning a firmware program that disables the "dp_through_swire" function with BDT tool may result in failure of debugging due to swire communication failure.
- *            If developers evaluate that the above scheme (set "DP_THROUGH_SWIRE_DIS" as "1") cannot be used, they can only set "DP_THROUGH_SWIRE_DIS" to "0" to enable the "dp_through_swire" function. However, be careful not to make DP and DM pin trigger "dp_through_swire" timing.
+ * @brief   Set "DP_THROUGH_SWIRE_DIS" as "1" to disable the "dp_through_swire" function. Set "DP_THROUGH_SWIRE_DIS" as "0" to enable the "dp_through_swire" function.
+ *          Risk description:
+ *          The "dp_through_swire" function is enabled by default.When DP and DM pin are used as GPIO function and trigger "dp_through_swire" timing,
+ *          there may be a problem of miswriting the chip through swire to cause the chip to crash. Therefore, disable the "dp_through_swire" function in this startup file.(set "DP_THROUGH_SWIRE_DIS" as "1").
+ *          If the chip has only dp pin but no sws pin, using the above scheme (set "DP_THROUGH_SWIRE_DIS" as "1") will cause the following problems.
+ *          1. During fixture production, burning a firmware program that disables the "dp_through_swire"function into unprogrammed chip will cause the problem that chip can not be burned again due to swire communication failure.
+ *          2. Burning a firmware program that disables the "dp_through_swire" function with BDT tool may result in failure of debugging due to swire communication failure.
+ *          If developers evaluate that the above scheme (set "DP_THROUGH_SWIRE_DIS" as "1") cannot be used, they can only set "DP_THROUGH_SWIRE_DIS" to "0" to enable the "dp_through_swire" function. However, be careful not to make DP and DM pin trigger "dp_through_swire" timing.
  */
 #ifndef DP_THROUGH_SWIRE_DIS
 #define DP_THROUGH_SWIRE_DIS      1
 #endif
 
-//According to the current internal seal flash model of B91m, the maximum time between the flash awakening and the operating flash is 20us, which leaves some margin and is set to 25us.
+//According to the current internal seal flash model of Telink RISC-V MCU, the maximum time between the flash awakening and the operating flash is 20us, which leaves some margin and is set to 25us.
 //When adding flash later, if tRES1 is greater than 25us, this waiting time needs to be updated. (flash tRES1, which can be viewed in the comments of the variable flash_support_mid.)
 //(add by weihua.zhang 20230811)
-#define EFUSE_LOAD_AND_FLASH_WAKEUP_LOOP_NUM        320    //25us
-
+#define EFUSE_LOAD_AND_FLASH_WAKEUP_LOOP_NUM        320 //25us
 
     .section .vectors, "ax"
 
@@ -52,27 +51,27 @@
     .org 0x0
 
     .global _RESET_ENTRY
-     .type _RESET_ENTRY,@function
+    .type _RESET_ENTRY,@function
 
     .align 2
 _RESET_ENTRY:
-    j          _START
+    j        _START
     //free the 6th ~ 7th byte to store the crc type of the bin file
 
 /* used to check flash protection function consistency between the old and new  firmware when OTA upgrading */
-#if    APP_FLASH_PROTECTION_ENABLE
+#if APP_FLASH_PROTECTION_ENABLE
     .org 0x15    //correspond to "FIRMWARE_FLASH_PROTECTION_FLAG_ADDR" in mcu_boot.h
     .byte (0x5A)
 #endif
 
 /* used to check firmware encryption function consistency between the old and new  firmware when OTA upgrading */
-#if    APP_HW_FIRMWARE_ENCRYPTION_ENABLE
+#if APP_HW_FIRMWARE_ENCRYPTION_ENABLE
     .org 0x16    //correspond to "FIRMWARE_ENCRYPTION_FLAG_ADDR" in mcu_boot.h
     .byte (0x5A)
 #endif
 
 /* used to check secure boot function consistency between the old and new  firmware when OTA upgrading */
-#if    APP_HW_SECURE_BOOT_ENABLE
+#if APP_HW_SECURE_BOOT_ENABLE
     .org 0x17        //correspond to "SECURE_BOOT_FLAG_ADDR" in mcu_boot.h
     .byte (0x5A)
 #endif
@@ -87,9 +86,8 @@ _RESET_ENTRY:
 /* in the original configuration, set bit[22] to 1, enable timeout:
  * when xip reaches a certain time without fetching instructions, cs will not be pulled down, saving power consumption.
  */
-//    .word (0x034020A8)            //READ:    cmd:1x, addr:1x, data:1x, dummy cycle:0
-    .word (0x3b4097a9)            //DREAD:   cmd:1x, addr:1x, data:2x, dummy cycle:8
-//    .word (0xeb4493ba)            //X4READ:  cmd:1x, addr:4x, data:4x, dummy cycle:6
+    .word (0x3b4097a9)          //DREAD:   cmd:1x, addr:1x, data:2x, dummy cycle:8
+//  .word (0xeb4493ba)          //X4READ:  cmd:1x, addr:4x, data:4x, dummy cycle:6
 
     .option pop
     .align 2
@@ -97,12 +95,12 @@ _RESET_ENTRY:
 _START:
 #if 0
     // add debug, PB4 output 1
-    lui        t0, 0x80140
+    lui     t0, 0x80140
     addi    t0, t0, 0x790
-    li        t1, 0xef
-    li        t2, 0x10
-    sb        t1, 0x482(t0)        //0x80140c12  PB oen     =  0xef
-    sb        t2, 0x484(t0)        //0x80140c14  PB output  =  0x10
+    li      t1, 0xef
+    li      t2, 0x10
+    sb      t1, 0x482(t0)       //0x80140c12  PB oen     =  0xef
+    sb      t2, 0x484(t0)       //0x80140c14  PB output  =  0x10
 #endif
 
     /* timer rst enable. */
@@ -132,10 +130,10 @@ _START:
     .option pop
 
 #if DP_THROUGH_SWIRE_DIS
-    lui        t0, 0x80100
+    lui     t0, 0x80100
     addi    t0 , t0 , 0x700
-    li        t1, 0x40
-    sb        t1, 0x501(t0)  //0x80100c01 -> 0x40  <7>: 0 swire_usb_dis <6>:read-only bit
+    li      t1, 0x40
+    sb      t1, 0x501(t0)  //0x80100c01 -> 0x40  <7>: 0 swire_usb_dis <6>:read-only bit
 #endif
 
     /* Initialize stack pointer */
@@ -164,9 +162,9 @@ _START:
     csrsi  mmisc_ctl, 2
 
     /*vector mode enable bit (VECTORED) of the Feature Enable Register */
-    lui        t0, 0xc4000
-    li        t1, 0x02
-    sw        t1, 0x0(t0)         //(*(volatile unsigned long*)(0xc4000000))= 0x02
+    lui     t0, 0xc4000
+    li      t1, 0x02
+    sw      t1, 0x0(t0)      //(*(volatile unsigned long*)(0xc4000000))= 0x02
 
     /* Enable I/D-Cache */
     csrr   t0,  mcache_ctl
@@ -233,33 +231,10 @@ _ZERO_BSS:
     la     t2, _BSS_VMA_START
     la     t3, _BSS_VMA_END
 _ZERO_BSS_BEGIN:
-    bleu   t3, t2, _ZERO_AES
-    sw     t0, 0(t2)
-    addi   t2, t2, 4
-    j      _ZERO_BSS_BEGIN
-
-    /* Zero .aes section in sram */
-_ZERO_AES:
-    lui    t0, 0
-    la     t2, _AES_VMA_START
-    la     t3, _AES_VMA_END
-_ZERO_AES_BEGIN:
-    bleu   t3, t2, _ZERO_IRAM_BSS
-    sw     t0, 0(t2)
-    addi   t2, t2, 4
-    j      _ZERO_AES_BEGIN
-
-    /* Zero .iram_bss section in sram */
-_ZERO_IRAM_BSS:
-    lui    t0, 0
-    la     t2, _IRAM_BSS_VMA_START
-    la     t3, _IRAM_BSS_VMA_END
-_ZERO_IRAM_BSS_BEGIN:
     bleu   t3, t2, _FILL_STK
     sw     t0, 0(t2)
     addi   t2, t2, 4
-    j      _ZERO_IRAM_BSS_BEGIN
-
+    j      _ZERO_BSS_BEGIN
 
     /* Fill the remaining section in sram */
 _FILL_STK:
@@ -295,23 +270,23 @@ _END:
     .option push
     .option norelax
     .global _IRESET_ENTRY
-     .type _IRESET_ENTRY,@function
+    .type _IRESET_ENTRY,@function
 
     .align 2
 _IRESET_ENTRY:
     /* Decide whether this is an NMI or cold reset */
-    j         _ISTART
+    j       _ISTART
 
     .org 0x22
 _ISTART:
 #if 0
     // add debug, PB4 output 1
-    lui        t0, 0x80140
+    lui     t0, 0x80140
     addi    t0, t0, 0x790
-    li        t1, 0xef
-    li        t2, 0x10
-    sb        t1, 0x482(t0)        //0x80140c12  PB oen     =  0xef
-    sb        t2, 0x484(t0)        //0x80140c14  PB output  =  0x10
+    li      t1, 0xef
+    li      t2, 0x10
+    sb      t1, 0x482(t0)       //0x80140c12  PB oen     =  0xef
+    sb      t2, 0x484(t0)       //0x80140c14  PB output  =  0x10
 #endif
 
     /* timer rst enable. */
@@ -364,9 +339,9 @@ _ISTART:
     csrsi  mmisc_ctl, 2
 
     /*vector mode enable bit (VECTORED) of the Feature Enable Register */
-    lui        t0, 0xc4000
-    li        t1, 0x02
-    sw        t1, 0x0(t0)         //(*(volatile unsigned long*)(0xc4000000))= 0x02
+    lui     t0, 0xc4000
+    li      t1, 0x02
+    sw      t1, 0x0(t0)      //(*(volatile unsigned long*)(0xc4000000))= 0x02
 
     /* Enable I/D-Cache */
     csrr   t0,  mcache_ctl
@@ -376,85 +351,72 @@ _ISTART:
     fence.i
 
     /* flash wakeup */
-    lui        t0, 0xA3FFF
+    lui     t0, 0xA3FFF
     addi    t0, t0, 0x790
-    li        t1, 0x0e
-    sb        t1, 0x78c(t0)        //xip_stop        :0xA3FFFF1c = 0x0e
+    li      t1, 0x0e
+    sb      t1, 0x78c(t0)       //xip_stop      :0xA3FFFF1c = 0x0e
 _MSPI_WAIT_1:
-    lui        t0, 0xA3FFF
+    lui     t0, 0xA3FFF
     addi    t0, t0, 0x790
-    lb        t2, 0x798(t0)
-    li        t3, 0x80
+    lb      t2, 0x798(t0)
+    li      t3, 0x80
     beq     t3, t2, _MSPI_WAIT_1//read reg_mspi_status FLD_MSPI_BUSY(0xA3FFFF28[bit7])
-    lui        t0, 0xA3FFF
+    lui     t0, 0xA3FFF
     addi    t0, t0, 0x790
-    li        t1, 0x06
-    sb        t1, 0x78c(t0)        //xip_disable        :0xA3FFFF1c = 0x06
-    lui        t0, 0x80140
-    addi    t0, t0, 0x790
-    li        t1, 0x3f
-    sb        t1, 0x4c1(t0)        //mspi ie enable    :0x80140c51 = 0x3f
-    lui        t0, 0xA3FFF
-    addi    t0, t0, 0x790
-    li        t2, 0x00
-    sb        t2, 0x77c(t0)        //mspi_ctrl1        :0xA3FFFF0c = 0x00
-    li        t2, 0x80
-    sb        t2, 0x778(t0)        //mspi_ctrl1        :0xA3FFFF08 = 0x80
-    li        t2, 0x70
-    sb        t2, 0x779(t0)        //mspi_ctrl1        :0xA3FFFF09 = 0x70
-    li        t2, 0x00
-    sb        t2, 0x77a(t0)        //mspi_ctrl1        :0xA3FFFF0a = 0x00
-    li        t3, 0xab
-    sb        t3, 0x774(t0)        //wakeup_cmd        :0xA3FFFF04 = 0xab
-    li        t3, 0xab
-    sb        t3, 0x776(t0)        //wakeup_cmd        :0xA3FFFF06 = 0xab
+    li      t1, 0x06
+    sb      t1, 0x78c(t0)       //xip_disable       :0xA3FFFF1c = 0x06
+    li      t2, 0x00
+    sb      t2, 0x77c(t0)       //mspi_ctrl1        :0xA3FFFF0c = 0x00
+    li      t2, 0x80
+    sb      t2, 0x778(t0)       //mspi_ctrl1        :0xA3FFFF08 = 0x80
+    li      t2, 0x70
+    sb      t2, 0x779(t0)       //mspi_ctrl1        :0xA3FFFF09 = 0x70
+    li      t2, 0x00
+    sb      t2, 0x77a(t0)       //mspi_ctrl1        :0xA3FFFF0a = 0x00
+    li      t3, 0xab
+    sb      t3, 0x774(t0)       //wakeup_cmd        :0xA3FFFF04 = 0xab
+    li      t3, 0xab
+    sb      t3, 0x776(t0)       //wakeup_cmd        :0xA3FFFF06 = 0xab
 _MSPI_WAIT_2:
-    lui        t0, 0xA3FFF
+    lui     t0, 0xA3FFF
     addi    t0, t0, 0x790
-    lb        t2, 0x798(t0)
-    li        t3, 0x80
+    lb      t2, 0x798(t0)
+    li      t3, 0x80
     beq     t3, t2, _MSPI_WAIT_2//read reg_mspi_status FLD_MSPI_BUSY(0xA3FFFF28[bit7])
-    lui        t0, 0xA3FFF
+    lui     t0, 0xA3FFF
     addi    t0, t0, 0x790
-    li        t1, 0x0a
-    sb        t1, 0x78c(t0)        //xip_enable        :0xA3FFFF1c = 0x0a
+    li      t1, 0x0a
+    sb      t1, 0x78c(t0)       //xip_enable        :0xA3FFFF1c = 0x0a
 
     /*flash wakeup need delay about 20us */
     /*efuse load need delay about 0us */
-    li        t0, 0
-    li        t1, EFUSE_LOAD_AND_FLASH_WAKEUP_LOOP_NUM
+    li      t0, 0
+    li      t1, EFUSE_LOAD_AND_FLASH_WAKEUP_LOOP_NUM
 _WAIT_EFUSE_LOAD_AND_FLASH_WAKEUP_FINISH:
-    addi     t0, t0, 1
-    bgeu     t1, t0, _WAIT_EFUSE_LOAD_AND_FLASH_WAKEUP_FINISH
-#if 0
+    addi    t0, t0, 1
+    bgeu    t1, t0, _WAIT_EFUSE_LOAD_AND_FLASH_WAKEUP_FINISH
+
 _MULTI_ADDRESS_BEGIN:
-    lui        t0, 0xA3FFF
-    addi    t0, t0 , 0x790
-    la        t1, g_pm_multi_addr
-    lw        t2, 0(t1)
-    sw        t2, 0x790(t0)        //g_pm_multi_addr->0xA3FFFF20
-#endif
+    lui     t0, 0xA3FFF
+    addi    t0, t0 , 0x7ff        //t0:A3FFF7FF
+    la      t1, g_pm_multi_addr   //g_pm_multi_addr address to t1
+    lh      t2, 0(t1)             //load t1 to t2(half word load)
+    sh      t2, 0x7c3(t0)         //t2 half word store t0+0x7c3(0xA3FFFFc2)
+
+    lw      t2, 0(t1)             //load t1 to t2(word load)
+    srli    t2, t2, 16            //t2 = t2 >>16
+    sh      t2, 0x7c5(t0)        //t2 half word store t0+0x7c3(0xA3FFFFc4)
+
     /* Zero .bss section in sram */
 _IZERO_BSS:
     lui    t0, 0
     la     t2, _BSS_VMA_START
     la     t3, _BSS_VMA_END
 _IZERO_BSS_BEGIN:
-    bleu   t3, t2, _IZERO_AES
-    sw     t0, 0(t2)
-    addi   t2, t2, 4
-    j      _IZERO_BSS_BEGIN
-
-    /* Zero .aes section in sram */
-_IZERO_AES:
-    lui    t0, 0
-    la     t2, _AES_VMA_START
-    la     t3, _AES_VMA_END
-_IZERO_AES_BEGIN:
     bleu   t3, t2, _IFILL_STK
     sw     t0, 0(t2)
     addi   t2, t2, 4
-    j      _IZERO_AES_BEGIN
+    j      _IZERO_BSS_BEGIN
 
     /* Fill the remaining section in sram */
 _IFILL_STK:
@@ -505,12 +467,12 @@ _IEND:
     .align 2
 
 default_irq_entry:
-1:    j 1b
+1:  j 1b
 
        .weak trap_handler
 
  trap_handler:
-1:    j 1b
+1:  j 1b
 
     .macro INTERRUPT num
     .weak entry_irq\num
@@ -520,7 +482,7 @@ default_irq_entry:
 
 #define VECTOR_NUMINTRS         63
 
-       .section .ram_code, "ax"
+    .section .ram_code, "ax"
 
     .global __vectors
     .balign 256

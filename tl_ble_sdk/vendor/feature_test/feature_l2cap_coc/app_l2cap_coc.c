@@ -184,7 +184,7 @@ void app_sendCocData(void)
     {
         if(app_cocCid[i].connHandle)
         {
-//            ble_sts_t state = blc_l2cap_sendCocData(app_cocCid[i].connHandle, app_cocCid[i].srcCid, sendTestDataBuffer, min(sizeof(sendTestDataBuffer), app_cocCid[i].mtu));
+//          ble_sts_t state = blc_l2cap_sendCocData(app_cocCid[i].connHandle, app_cocCid[i].srcCid, sendTestDataBuffer, min(sizeof(sendTestDataBuffer), app_cocCid[i].mtu));
             ble_sts_t state = blc_l2cap_sendCocData(app_cocCid[i].connHandle, app_cocCid[i].srcCid, sendTestDataBuffer, 300);
             tlkapi_printf(APP_COC_LOG_EN, "[APP][COC] Send CoC data: ConnHandle<0x%04x>, SrcCid<0x%x>, length<%d>, result<0x%x>\r\n",
                     app_cocCid[i].connHandle, app_cocCid[i].srcCid, min(sizeof(sendTestDataBuffer), app_cocCid[i].mtu), state);

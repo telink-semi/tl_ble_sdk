@@ -726,7 +726,7 @@ __attribute__((weak)) void i2c1_m_timeout_handler(unsigned int i2c1_m_error_time
     g_i2c1_m_error_timeout_code = i2c1_m_error_timeout_code;
 }
 
-#define I2C1_M_WAIT(i2c1_m_api_error_code)                              wait_condition_fails_or_timeout(i2c1_m_master_busy,g_i2c1_m_error_timeout_us,i2c_timeout_handler,(unsigned int)i2c1_m_api_error_code)
+#define I2C1_M_WAIT(i2c1_m_api_error_code)                              wait_condition_fails_or_timeout(i2c1_m_master_busy,g_i2c1_m_error_timeout_us,i2c1_m_timeout_handler,(unsigned int)i2c1_m_api_error_code)
 
 /**
  *@brief   check whether receives nack that slave return.

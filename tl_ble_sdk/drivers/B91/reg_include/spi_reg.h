@@ -30,9 +30,9 @@
 
 
 
-#define    HSPI_BASE_ADDR                    0x1FFFFC0
-#define    PSPI_BASE_ADDR                    0x140040
-#define    BASE_ADDR_DIFF                    0x1EBFF80
+#define    HSPI_BASE_ADDR                   0x1FFFFC0
+#define    PSPI_BASE_ADDR                   0x140040
+#define    BASE_ADDR_DIFF                   0x1EBFF80
 
 #define   reg_hspi_data_buf_adr               0x1FFFFC8
 #define   reg_hspi_xip_base_adr               0x1000000
@@ -50,14 +50,14 @@
  *            MODE3:  CPOL = 1, CPHA =1;
  * BIT[7]  set master/slave mode. 0 slave 1 master default.master/slave
  */
-#define reg_spi_mode0(i)             REG_ADDR8(PSPI_BASE_ADDR+(i)*BASE_ADDR_DIFF)
+#define reg_spi_mode0(i)            REG_ADDR8(PSPI_BASE_ADDR+(i)*BASE_ADDR_DIFF)
 enum{
     FLD_SPI_CS2SCLK             = BIT_RNG(0,1),
-    FLD_SPI_3LINE                  = BIT(2),
+    FLD_SPI_3LINE               = BIT(2),
     FLD_SPI_LSB                 = BIT(3),
     FLD_SPI_DUAL                = BIT(4),
     FLD_SPI_MODE_WORK_MODE     = BIT_RNG(5,6),
-    FLD_SPI_MASTER_MODE          = BIT(7),
+    FLD_SPI_MASTER_MODE         = BIT(7),
 };
 
 /*the clock freq ratio between the source_clock and spi_clock.master only
@@ -65,7 +65,7 @@ enum{
  * spi_clk_div=reg_hspi_mode1[7:0]. max_value=0xff,spi_clock==source_clock
  */
 //#define reg_hspi_mode1            REG_ADDR8(HSPI_BASE_ADDR+0x01)
-#define reg_spi_mode1(i)             REG_ADDR8(PSPI_BASE_ADDR+0x01+(i)*BASE_ADDR_DIFF)
+#define reg_spi_mode1(i)            REG_ADDR8(PSPI_BASE_ADDR+0x01+(i)*BASE_ADDR_DIFF)
 
 /**
  * BIT[0]  set cmd format 0: single mode  1: the format of the cmd phase is the same as the data phase(Dual/Quad).master only
@@ -73,13 +73,13 @@ enum{
  * BIT[2]  set the spi command phase enable.master only
  * BIT[4:7]   the minimum time that SPI CS should stay HIGH.the actual duration is (SPI_CLK period_out / 2)*(csht+1).default=2,master only
  */
-#define reg_spi_mode2(i)             REG_ADDR8(PSPI_BASE_ADDR+0x02+(i)*BASE_ADDR_DIFF)
+#define reg_spi_mode2(i)            REG_ADDR8(PSPI_BASE_ADDR+0x02+(i)*BASE_ADDR_DIFF)
 
 
 enum{
-    FLD_HSPI_CMD_FMT              =BIT(0),
-    FLD_HSPI_QUAD                  =BIT(1),
-    FLD_SPI_CMD_EN                     =BIT(2),
+    FLD_HSPI_CMD_FMT             =BIT(0),
+    FLD_HSPI_QUAD                =BIT(1),
+    FLD_SPI_CMD_EN               =BIT(2),
     FLD_SPI_HSPI_MODE2_RESERVED  =BIT(3),
     FLD_SPI_CSHT                 =BIT_RNG(4,7),
 };
@@ -87,35 +87,35 @@ enum{
 /**
  * BIT[0:7]   transfer count0 for write data.master only
  */
-#define reg_spi_tx_cnt0(i)                 REG_ADDR8(PSPI_BASE_ADDR+0x03+(i)*BASE_ADDR_DIFF)
+#define reg_spi_tx_cnt0(i)             REG_ADDR8(PSPI_BASE_ADDR+0x03+(i)*BASE_ADDR_DIFF)
 
 /**
  * BIT[0:7]   transfer count1 for write data.master only
  */
 
-#define reg_spi_tx_cnt1(i)             REG_ADDR8(PSPI_BASE_ADDR+0x12+(i)*(BASE_ADDR_DIFF-0x12+0x20))
-//#define reg_hspi_tx_cnt1           REG_ADDR8(HSPI_BASE_ADDR+0x20)
+#define reg_spi_tx_cnt1(i)          REG_ADDR8(PSPI_BASE_ADDR+0x12+(i)*(BASE_ADDR_DIFF-0x12+0x20))
+//#define reg_hspi_tx_cnt1         REG_ADDR8(HSPI_BASE_ADDR+0x20)
 /**
  * BIT[0:7]   transfer count2 for write data.master only
  */
 
-#define reg_spi_tx_cnt2(i)             REG_ADDR8(PSPI_BASE_ADDR+0x13+(i)*(BASE_ADDR_DIFF-0x13+0x21))
+#define reg_spi_tx_cnt2(i)          REG_ADDR8(PSPI_BASE_ADDR+0x13+(i)*(BASE_ADDR_DIFF-0x13+0x21))
 
 /**
  * BIT[0:7]   transfer count0 for read data.master only
  */
-#define reg_spi_rx_cnt0(i)              REG_ADDR8(PSPI_BASE_ADDR+0x04+(i)*BASE_ADDR_DIFF)
+#define reg_spi_rx_cnt0(i)           REG_ADDR8(PSPI_BASE_ADDR+0x04+(i)*BASE_ADDR_DIFF)
 
 /**
  * BIT[0:7]   transfer count1 for read data.master only
  */
 
-#define reg_spi_rx_cnt1(i)             REG_ADDR8(PSPI_BASE_ADDR+0x10+(i)*(BASE_ADDR_DIFF-0x10+0x1e))
+#define reg_spi_rx_cnt1(i)          REG_ADDR8(PSPI_BASE_ADDR+0x10+(i)*(BASE_ADDR_DIFF-0x10+0x1e))
 /**
  * BIT[0:7]   transfer count2 for read data.master only
  */
 
-#define reg_spi_rx_cnt2(i)             REG_ADDR8(PSPI_BASE_ADDR+0x11+(i)*(BASE_ADDR_DIFF-0x11+0x1f))
+#define reg_spi_rx_cnt2(i)          REG_ADDR8(PSPI_BASE_ADDR+0x11+(i)*(BASE_ADDR_DIFF-0x11+0x1f))
 
 
 
@@ -135,11 +135,11 @@ enum{
  * 0x9:Dummy,read
  * 0xa~0xf:reserved
  */
-#define reg_spi_trans0(i)         REG_ADDR8(PSPI_BASE_ADDR+0x05+(i)*BASE_ADDR_DIFF)
+#define reg_spi_trans0(i)       REG_ADDR8(PSPI_BASE_ADDR+0x05+(i)*BASE_ADDR_DIFF)
 
 enum{
-    FLD_SPI_DUMMY_CNT           = BIT_RNG(0,3),
-    FLD_SPI_TRANSMODE             =BIT_RNG(4,7),
+    FLD_SPI_DUMMY_CNT          = BIT_RNG(0,3),
+    FLD_SPI_TRANSMODE           =BIT_RNG(4,7),
 };
 
 
@@ -148,16 +148,16 @@ enum{
  * BIT[0:7]  SPI Command.master only
  */
 
-#define reg_spi_trans1(i)         REG_ADDR8(PSPI_BASE_ADDR+0x06+(i)*BASE_ADDR_DIFF)
+#define reg_spi_trans1(i)       REG_ADDR8(PSPI_BASE_ADDR+0x06+(i)*BASE_ADDR_DIFF)
 enum{
     FLD_SPI_CMD_RESERVED            =BIT(0),
     FLD_SPI_CMD_TRANS_HWORD         =BIT(1),//1 apb hword transfer
-    FLD_SPI_CMD_TRANS_WORD             =BIT(2),//1 apb word transfer
-    FLD_SPI_CMD_RD_DUMMY_4CYCLE     =BIT(3),// 0 8cycle 1 4cycle
+    FLD_SPI_CMD_TRANS_WORD           =BIT(2),//1 apb word transfer
+    FLD_SPI_CMD_RD_DUMMY_4CYCLE  =BIT(3),// 0 8cycle 1 4cycle
     FLD_SPI_CMD_ADDR_AUTO_INCREASE  =BIT(4),// 0 AUTO incease
-    FLD_SPI_CMD_DATA_DUAL             =BIT(5),// 0 Single 1 DuaL
+    FLD_SPI_CMD_DATA_DUAL            =BIT(5),// 0 Single 1 DuaL
     FLD_SPI_CMD_ADDR_DUAL           =BIT(6),// 0 Single 1 DuaL
-    FLD_SPI_CMD_RD_EN                 =BIT(7),// 0  write 1 read
+    FLD_SPI_CMD_RD_EN                =BIT(7),// 0  write 1 read
 };
 
 /**
@@ -171,16 +171,16 @@ enum{
  * BIT[7] enable TX DMA
  */
 
-#define reg_spi_trans2(i)         REG_ADDR8(PSPI_BASE_ADDR+0x07+(i)*BASE_ADDR_DIFF)
+#define reg_spi_trans2(i)       REG_ADDR8(PSPI_BASE_ADDR+0x07+(i)*BASE_ADDR_DIFF)
 enum{
     FLD_SPI_RXFIFO_OR_INT_EN        =BIT(0),
     FLD_SPI_TXFIFO_UR_INT_EN        =BIT(1),
-    FLD_SPI_RXFIFO_INT_EN             =BIT(2),
-    FLD_SPI_TXFIFO_INT_EN            =BIT(3),
+    FLD_SPI_RXFIFO_INT_EN           =BIT(2),
+    FLD_SPI_TXFIFO_INT_EN           =BIT(3),
     FLD_SPI_END_INT_EN              =BIT(4),
-    FLD_SPI_SLV_CMD_EN                =BIT(5),
+    FLD_SPI_SLV_CMD_EN              =BIT(5),
     FLD_SPI_RX_DMA_EN               =BIT(6),
-    FLD_SPI_TX_DMA_EN                 =BIT(7),
+    FLD_SPI_TX_DMA_EN               =BIT(7),
 };
 
 
@@ -188,24 +188,24 @@ enum{
  * BIT[0:7]   data0[7:0] to transmit or received.
  */
 
-#define reg_spi_wr_rd_data0(i)         REG_ADDR8(PSPI_BASE_ADDR+0x08+(i)*BASE_ADDR_DIFF)
+#define reg_spi_wr_rd_data0(i)      REG_ADDR8(PSPI_BASE_ADDR+0x08+(i)*BASE_ADDR_DIFF)
 /**
  * BIT[0:7]   data1[7:0] to transmit or received.
  */
 
-#define reg_spi_wr_rd_data1(i)         REG_ADDR8(PSPI_BASE_ADDR+0x09+(i)*BASE_ADDR_DIFF)
+#define reg_spi_wr_rd_data1(i)      REG_ADDR8(PSPI_BASE_ADDR+0x09+(i)*BASE_ADDR_DIFF)
 /**
  * BIT[0:7]   data2[7:0] to transmit or received.
  */
-#define reg_spi_wr_rd_data2(i)         REG_ADDR8(PSPI_BASE_ADDR+0x0a+(i)*BASE_ADDR_DIFF)
+#define reg_spi_wr_rd_data2(i)      REG_ADDR8(PSPI_BASE_ADDR+0x0a+(i)*BASE_ADDR_DIFF)
 
 /**
  * BIT[0:7]   data3[7:0] to transmit or received.
  */
 
-#define reg_spi_wr_rd_data3(i)               REG_ADDR8(PSPI_BASE_ADDR+0x0b+(i)*BASE_ADDR_DIFF)
+#define reg_spi_wr_rd_data3(i)          REG_ADDR8(PSPI_BASE_ADDR+0x0b+(i)*BASE_ADDR_DIFF)
 
-#define reg_spi_wr_rd_data(i,j)         REG_ADDR8(PSPI_BASE_ADDR+0x08+(j)+(i)*BASE_ADDR_DIFF)
+#define reg_spi_wr_rd_data(i,j)      REG_ADDR8(PSPI_BASE_ADDR+0x08+(j)+(i)*BASE_ADDR_DIFF)
 
 
 
@@ -228,16 +228,16 @@ enum{
  * BIT[6]  txfifo full flag.
  * BIT[7]  txfifo empty flag
  */
-#define reg_spi_fifo_state(i)         REG_ADDR8(PSPI_BASE_ADDR+0x0d+(i)*BASE_ADDR_DIFF)
+#define reg_spi_fifo_state(i)       REG_ADDR8(PSPI_BASE_ADDR+0x0d+(i)*BASE_ADDR_DIFF)
 
 enum{
-    FLD_SPI_FIFO_STA_RESERVED     = BIT_RNG(0,1),
-    FLD_SPI_RXF_CLR                  =BIT(2),
-    FLD_SPI_TXF_CLR                =BIT(3),
+    FLD_SPI_FIFO_STA_RESERVED   = BIT_RNG(0,1),
+    FLD_SPI_RXF_CLR             =BIT(2),
+    FLD_SPI_TXF_CLR             =BIT(3),
     FLD_SPI_RXF_FULL            =BIT(4),
-    FLD_SPI_RXF_EMPTY            =BIT(5),
+    FLD_SPI_RXF_EMPTY           =BIT(5),
     FLD_SPI_TXF_FULL            =BIT(6),
-    FLD_SPI_TXF_EMPTY            =BIT(7),
+    FLD_SPI_TXF_EMPTY           =BIT(7),
 };
 
 /**
@@ -248,16 +248,16 @@ enum{
  * BIT[6]  End of SPI Transfer interrupt status.set 1 to clear.master/slave
  * BIT[7]  Slave Command Interrupt status.set 1 to clear.slave only
  */
-#define reg_spi_irq_state(i)         REG_ADDR8(PSPI_BASE_ADDR + 0x0e +(i)*BASE_ADDR_DIFF)
+#define reg_spi_irq_state(i)        REG_ADDR8(PSPI_BASE_ADDR + 0x0e +(i)*BASE_ADDR_DIFF)
 
 enum{
     FLD_SPI_STATE_RESERVED  =BIT_RNG(0,1),
-    FLD_SPI_RXF_OR_INT        =BIT(2),
-    FLD_SPI_TXF_UR_INT        =BIT(3),
+    FLD_SPI_RXF_OR_INT      =BIT(2),
+    FLD_SPI_TXF_UR_INT      =BIT(3),
     FLD_SPI_RXF_INT         =BIT(4),
     FLD_SPI_TXF_INT         =BIT(5),
     FLD_SPI_END_INT         =BIT(6),
-    FLD_SPI_SLV_CMD_INT        =BIT(7),
+    FLD_SPI_SLV_CMD_INT     =BIT(7),
 };
 
 /**
@@ -266,10 +266,10 @@ enum{
  * BIT[4:6] fifo threshold. 0x4 default.
  * BIT[7]  SPI transfer status .1 is busy, 0 not busy.
  */
-#define reg_spi_status(i)         REG_ADDR8(PSPI_BASE_ADDR + 0x0f +(i)*BASE_ADDR_DIFF)
+#define reg_spi_status(i)       REG_ADDR8(PSPI_BASE_ADDR + 0x0f +(i)*BASE_ADDR_DIFF)
 enum{
     FLD_HSPI_SLAVE_READY           =BIT(0),
-    FLD_HSPI_SOFT_RESET               =BIT(1),
+    FLD_HSPI_SOFT_RESET            =BIT(1),
     FLD_HSPI_HSPI_STATUS_RESERVED  =BIT_RNG(2,3),
     FLD_HSPI_FIFO_THRES            =BIT_RNG(4,6),
     FLD_HSPI_BUSY                  =BIT(7),
@@ -278,22 +278,22 @@ enum{
 /**
  * BIT[0:7]  hspi_addr0.
  */
-#define reg_hspi_addr0        REG_ADDR8(HSPI_BASE_ADDR+0x10)
+#define reg_hspi_addr0      REG_ADDR8(HSPI_BASE_ADDR+0x10)
 
 /**
  * BIT[0:7]  hspi_addr1.
  */
-#define reg_hspi_addr1        REG_ADDR8(HSPI_BASE_ADDR+0x11)
+#define reg_hspi_addr1      REG_ADDR8(HSPI_BASE_ADDR+0x11)
 
 /**
  * BIT[0:7]  hspi_addr2.
  */
-#define reg_hspi_addr2        REG_ADDR8(HSPI_BASE_ADDR+0x12)
+#define reg_hspi_addr2      REG_ADDR8(HSPI_BASE_ADDR+0x12)
 
 /**
  * BIT[0:7]  hspi_addr3.
  */
-#define reg_hspi_addr3        REG_ADDR8(HSPI_BASE_ADDR+0x13)
+#define reg_hspi_addr3      REG_ADDR8(HSPI_BASE_ADDR+0x13)
 
 #define reg_hspi_addr(i)    REG_ADDR8(HSPI_BASE_ADDR+0x10+i)
 
@@ -312,10 +312,10 @@ enum{
  * BIT[6]  xip mode 0:xip normal mode  1:xip sequential mode
  * BIT[7]  0:xip timeout ,disable 1:xip timeout enable .default 1
  */
-#define reg_hspi_xip_ctrl        REG_ADDR8(HSPI_BASE_ADDR+0x14)
+#define reg_hspi_xip_ctrl       REG_ADDR8(HSPI_BASE_ADDR+0x14)
 enum{
     FLD_HSPI_ADDR_EN            = BIT(0),
-    FLD_HSPI_ADDR_FMT            = BIT(1),
+    FLD_HSPI_ADDR_FMT           = BIT(1),
     FLD_HSPI_ADDR_LEN           = BIT_RNG(2,3),
     FLD_HSPI_XIP_ENABLE         = BIT(4),
     FLD_HSPI_XIP_STOP           = BIT(5),
@@ -327,17 +327,17 @@ enum{
 /**
  * BIT[0:7] write command used for xip
  */
-#define reg_hspi_xip_wr_cmd         REG_ADDR8(HSPI_BASE_ADDR+0x15)
+#define reg_hspi_xip_wr_cmd      REG_ADDR8(HSPI_BASE_ADDR+0x15)
 
 /**
  * BIT[0:7] read command used for xip
  */
-#define reg_hspi_xip_rd_cmd         REG_ADDR8(HSPI_BASE_ADDR+0x16)
+#define reg_hspi_xip_rd_cmd      REG_ADDR8(HSPI_BASE_ADDR+0x16)
 
 /**
  * BIT[0:7]  Use this combined with xip_mode being xip sequential mode.default page boundary size is 32byte, 2^page_size.
  */
-#define reg_hspi_page_size         REG_ADDR8(HSPI_BASE_ADDR+0x17)
+#define reg_hspi_page_size       REG_ADDR8(HSPI_BASE_ADDR+0x17)
 
 
 /**
@@ -382,7 +382,7 @@ enum{
  * BIT[1]    hspi 3line dcx (data/command selection). 0:command 1:data
  * BIT[4:2]  2data_lane mode.3'b000:2data_lane close  3'b001:RGB565  3'b011:RGB666  3'b011:RGB888.
  */
-#define reg_hspi_panel_ctrl        REG_ADDR8(HSPI_BASE_ADDR+0x22)
+#define reg_hspi_panel_ctrl     REG_ADDR8(HSPI_BASE_ADDR+0x22)
 enum{
     FLD_HSPI_PANEL_3LINE_DCX_EN     = BIT(0),
     FLD_HSPI_PANEL_3LINE_DCX        = BIT(1),

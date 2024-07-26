@@ -34,17 +34,17 @@
 /********************* ACL connection LinkLayer TX & RX data FIFO allocation, Begin *******************************/
 
 /**
- * @brief    ACL RX buffer, shared by all connections to hold LinkLayer RF RX data.
- *             user should define and initialize this buffer if either ACL Central or ACL Peripheral is used.
+ * @brief   ACL RX buffer, shared by all connections to hold LinkLayer RF RX data.
+ *          user should define and initialize this buffer if either ACL Central or ACL Peripheral is used.
  */
-_attribute_ble_data_retention_    u8    app_acl_rx_fifo[ACL_RX_FIFO_SIZE * ACL_RX_FIFO_NUM] = {0};
+_attribute_ble_data_retention_  u8  app_acl_rx_fifo[ACL_RX_FIFO_SIZE * ACL_RX_FIFO_NUM] = {0};
 
 
 /**
- * @brief    ACL Peripheral TX buffer, shared by all peripheral connections to hold LinkLayer RF TX data.
+ * @brief   ACL Peripheral TX buffer, shared by all peripheral connections to hold LinkLayer RF TX data.
  *          ACL Peripheral TX buffer should be defined only when ACl connection peripheral role is used.
  */
-_attribute_ble_data_retention_    u8    app_acl_per_tx_fifo[ACL_PERIPHR_TX_FIFO_SIZE * ACL_PERIPHR_TX_FIFO_NUM * ACL_PERIPHR_MAX_NUM] = {0};
+_attribute_ble_data_retention_  u8  app_acl_per_tx_fifo[ACL_PERIPHR_TX_FIFO_SIZE * ACL_PERIPHR_TX_FIFO_NUM * ACL_PERIPHR_MAX_NUM] = {0};
 
 /******************** ACL connection LinkLayer TX & RX data FIFO allocation, End ***********************************/
 
@@ -55,16 +55,16 @@ _attribute_ble_data_retention_    u8    app_acl_per_tx_fifo[ACL_PERIPHR_TX_FIFO_
 
 /***************** ACL connection L2CAP RX & TX data Buffer allocation, Begin **************************************/
 /**
- * @brief    L2CAP RX Data buffer for ACL Peripheral
+ * @brief   L2CAP RX Data buffer for ACL Peripheral
  */
-_attribute_ble_data_retention_    u8 app_per_l2cap_rx_buf[ACL_PERIPHR_MAX_NUM * PERIPHR_L2CAP_BUFF_SIZE];
+_attribute_ble_data_retention_  u8 app_per_l2cap_rx_buf[ACL_PERIPHR_MAX_NUM * PERIPHR_L2CAP_BUFF_SIZE];
 
 
 /**
- * @brief    L2CAP TX Data buffer for ACL Peripheral
- *            GATT server on ACL Peripheral use this buffer.
+ * @brief   L2CAP TX Data buffer for ACL Peripheral
+ *          GATT server on ACL Peripheral use this buffer.
  */
-_attribute_ble_data_retention_    u8 app_per_l2cap_tx_buf[ACL_PERIPHR_MAX_NUM * PERIPHR_L2CAP_BUFF_SIZE];
+_attribute_ble_data_retention_  u8 app_per_l2cap_tx_buf[ACL_PERIPHR_MAX_NUM * PERIPHR_L2CAP_BUFF_SIZE];
 
 /***************** ACL connection L2CAP RX & TX data Buffer allocation, End ****************************************/
 

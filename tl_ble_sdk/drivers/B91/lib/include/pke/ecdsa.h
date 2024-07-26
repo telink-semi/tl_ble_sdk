@@ -50,25 +50,25 @@ enum ECDSA_RET_CODE
 //APIs
 
 /**
- * @brief        Generate ECDSA Signature in octet string style.
- * @param[in]    curve        - ecc curve struct pointer, please make sure it is valid.
- * @param[in]    E            - hash value, big-endian.
- * @param[in]    EByteLen    - byte length of E.
- * @param[in]    priKey        - private key, big-endian.
- * @param[out]    signature    - signature r and s, big-endian.
- * @return        ECDSA_SUCCESS(success), other(error).
+ * @brief       Generate ECDSA Signature in octet string style.
+ * @param[in]   curve       - ecc curve struct pointer, please make sure it is valid.
+ * @param[in]   E           - hash value, big-endian.
+ * @param[in]   EByteLen    - byte length of E.
+ * @param[in]   priKey      - private key, big-endian.
+ * @param[out]  signature   - signature r and s, big-endian.
+ * @return      ECDSA_SUCCESS(success), other(error).
  */
 unsigned char ecdsa_sign(eccp_curve_t *curve, unsigned char *E, unsigned int EByteLen, unsigned char *rand_k, unsigned char *priKey,
                    unsigned char *signature);
 
 /**
- * @brief        Verify ECDSA Signature in octet string style.
- * @param[in]    curve        - ecc curve struct pointer, please make sure it is valid.
- * @param[in]    E            - hash value, big-endian.
- * @param[in]    EByteLen    - byte length of E.
- * @param[in]    pubKey        - public key, big-endian.
- * @param[in]    signature    - signature r and s, big-endian.
- * @return        ECDSA_SUCCESS(success), other(error).
+ * @brief       Verify ECDSA Signature in octet string style.
+ * @param[in]   curve       - ecc curve struct pointer, please make sure it is valid.
+ * @param[in]   E           - hash value, big-endian.
+ * @param[in]   EByteLen    - byte length of E.
+ * @param[in]   pubKey      - public key, big-endian.
+ * @param[in]   signature   - signature r and s, big-endian.
+ * @return      ECDSA_SUCCESS(success), other(error).
  */
 unsigned char ecdsa_verify(eccp_curve_t *curve, unsigned char *E, unsigned int EByteLen, unsigned char *pubKey, unsigned char *signature);
 

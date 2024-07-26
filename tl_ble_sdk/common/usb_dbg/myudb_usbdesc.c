@@ -71,9 +71,9 @@ static const USB_Descriptor_Device_t device_desc = { {
         MYUDB_ID_VENDOR, // VendorID
         MYUDB_ID_PRODUCT, // ProductID
         MYUDB_ID_VERSION/*0x0100*/, // .ReleaseNumber
-        MYUDB_USB_STRING_VENDOR,     // .ManufacturerStrIndex
+        MYUDB_USB_STRING_VENDOR,    // .ManufacturerStrIndex
         MYUDB_USB_STRING_PRODUCT, // .ProductStrIndex
-        0,     // .SerialNumStrIndex, iSerialNumber
+        0,  // .SerialNumStrIndex, iSerialNumber
         1 };
 
 static const MYUDB_USB_Descriptor_Configuration_t

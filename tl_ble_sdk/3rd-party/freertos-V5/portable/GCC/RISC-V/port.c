@@ -49,9 +49,9 @@
 prvTaskExitError() in case it messes up unwinding of the stack in the
 debugger. */
 #ifdef configTASK_RETURN_ADDRESS
-    #define portTASK_RETURN_ADDRESS    configTASK_RETURN_ADDRESS
+    #define portTASK_RETURN_ADDRESS configTASK_RETURN_ADDRESS
 #else
-    #define portTASK_RETURN_ADDRESS    prvTaskExitError
+    #define portTASK_RETURN_ADDRESS prvTaskExitError
 #endif
 
 /* The stack used by interrupt service routines.  Set configISR_STACK_SIZE_WORDS
@@ -68,7 +68,7 @@ interrupt stack after the scheduler has started. */
     /* Don't use 0xa5 as the stack fill bytes as that is used by the kernerl for
     the task stacks, and so will legitimately appear in many positions within
     the ISR stack. */
-    #define portISR_STACK_FILL_BYTE    0xee
+    #define portISR_STACK_FILL_BYTE 0xee
 #else
     extern const uint32_t __freertos_irq_stack_top[];
     PRIVILEGED_DATA StackType_t xISRStackTop = ( StackType_t ) __freertos_irq_stack_top;
@@ -98,11 +98,11 @@ task stack, not the ISR stack). */
     #warning This path not tested, or even compiled yet.
 
     static const uint8_t ucExpectedStackBytes[] = {
-                                    portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE,        \
-                                    portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE,        \
-                                    portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE,        \
-                                    portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE,        \
-                                    portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE };    \
+                                    portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE,     \
+                                    portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE,     \
+                                    portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE,     \
+                                    portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE,     \
+                                    portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE };   \
 
     #define portCHECK_ISR_STACK() configASSERT( ( memcmp( ( void * ) xISRStack, ( void * ) ucExpectedStackBytes, sizeof( ucExpectedStackBytes ) ) == 0 ) )
 #else
@@ -146,7 +146,7 @@ extern void xPortStartFirstTask( void );
         /* Check the least significant two bits of mtvec are 00 - indicating
         single vector mode. */
         __asm volatile( "csrr %0, mtvec" : "=r"( mtvec ) );
-//        configASSERT( ( mtvec & 0x03UL ) == 0 );
+//      configASSERT( ( mtvec & 0x03UL ) == 0 );
 
         /* Check alignment of the interrupt stack - which is the same as the
         stack that was being used by main() prior to the scheduler being
@@ -157,7 +157,7 @@ extern void xPortStartFirstTask( void );
         {
             memset( ( void * ) xISRStack, portISR_STACK_FILL_BYTE, sizeof( xISRStack ) );
         }
-        #endif     /* configISR_STACK_SIZE_WORDS */
+        #endif   /* configISR_STACK_SIZE_WORDS */
     }
     #endif /* configASSERT_DEFINED */
 
@@ -237,7 +237,7 @@ extern int blc_pm_handler(void);
 #endif
 
 
-#define SYSTICK_TO_OSTICK               (SYSTEM_TIMER_TICK_1S / configTICK_RATE_HZ)
+#define SYSTICK_TO_OSTICK              (SYSTEM_TIMER_TICK_1S / configTICK_RATE_HZ)
 
 #define OS_TICK_TO_SYSTIMER_TICK(x)    ((x) * (SYSTEM_TIMER_TICK_1S /configTICK_RATE_HZ))
 #define SYSTIMER_TICK_TO_OS_TICK(x)    (((x) + SYSTICK_TO_OSTICK/2) / SYSTICK_TO_OSTICK)
@@ -253,7 +253,7 @@ RAM_CODE
         //vTaskStepTick((t + SYSTICK_TO_OSTICK/2) / SYSTICK_TO_OSTICK);
         vTaskStepTick(SYSTIMER_TICK_TO_OS_TICK(t));
     }
-#endif    
+#endif  
 }
 
 
@@ -275,7 +275,7 @@ void vPortSuppressTicksAndSleep_i(uint32_t xExpectedIdleTime)
     uint32_t res = 1;
     uint32_t t = 0;
     /* If a context switch is pending then abandon the low power entry as the
-    context switch might have been pended by an external interrupt that    requires
+    context switch might have been pended by an external interrupt that requires
     processing. */
     eSleepModeStatus eSleepAction = eTaskConfirmSleepModeStatus();
     if( eSleepAction == eAbortSleep )
@@ -316,10 +316,10 @@ void vPortSuppressTicksAndSleep_i(uint32_t xExpectedIdleTime)
 void vPortRestoreTask(void)
 {
 #if OS_PM_EN
-    __asm volatile( "csrci     mstatus,8");
+    __asm volatile( "csrci   mstatus,8");
 
     core_mie_enable(FLD_MIE_MTIE | FLD_MIE_MSIE);
-    vPortSetupTimerInterrupt();     //    reset the timer compare register to prevent irq triggered immediately
+    vPortSetupTimerInterrupt();     //  reset the timer compare register to prevent irq triggered immediately
 
     // to reset IDLE task stack
     vPortRestoreActiveTask();
@@ -338,8 +338,8 @@ volatile uint32_t A_mtval       = 0;    //Debug use
 volatile uint32_t A_mstatus     = 0;    //Debug use
 volatile uint32_t A_trap_cnt    = 0;    //Debug use
 
-volatile uint32_t A_mtime_cnt     = 0;    //Debug use
-volatile uint32_t A_mswi_cnt     = 0;    //Debug use
+volatile uint32_t A_mtime_cnt   = 0;    //Debug use
+volatile uint32_t A_mswi_cnt    = 0;    //Debug use
 
 #if OS_EN
 RAM_CODE
@@ -351,7 +351,7 @@ void mtime_handler(void)
     vPortTimerUpdate();
 
     if(xTaskIncrementTick() != 0){
-        vTaskSwitchContext();     //RTOS task scheduling
+        vTaskSwitchContext();   //RTOS task scheduling
     }
 }
 
@@ -362,7 +362,7 @@ void mswi_handler(void)
 {
     A_mswi_cnt++;//Debug use
 
-    vTaskSwitchContext();    //RTOS task scheduling
+    vTaskSwitchContext();   //RTOS task scheduling
 }
 #endif
 

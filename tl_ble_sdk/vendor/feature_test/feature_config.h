@@ -33,37 +33,39 @@
 
 
 //ble link layer test
-#define    TEST_LL_MD                                        1   //link layer more data
+#define TEST_LL_MD                                      1   //link layer more data
 
-#define TEST_LL_DLE                                        2   //link layer Data Length Extension
+#define TEST_LL_DLE                                     2   //link layer Data Length Extension
 
 #define TEST_2M_CODED_PHY_CONNECTION                    3
 
-#define TEST_WHITELIST                                    4
+#define TEST_WHITELIST                                  4
 
 #define TEST_SMP                                        5
 
-#define TEST_GATT_API                                    6
+#define TEST_GATT_API                                   6
 
 #define TEST_EXT_ADV                                    7   //Extended ADV demo
 
-#define TEST_EXT_SCAN                                    8   //Extended Scan demo
+#define TEST_EXT_SCAN                                   8   //Extended Scan demo
 
 #define TEST_PER_ADV                                    9   //Periodic ADV demo
 
-#define TEST_PER_ADV_SYNC                                30    //Periodic ADV Sync demo
+#define TEST_PER_ADV_SYNC                               30  //Periodic ADV Sync demo
 
 #define TEST_OTA                                        20
 
 #define TEST_SOFT_TIMER                                 22
 
-#define TEST_BLE_PHY                                    32        // BQB PHY_TEST demo
 
-#define TEST_L2CAP_COC                                    33
+#define TEST_BLE_PHY                                    32      // BQB PHY_TEST demo
 
-#define TEST_FEATURE_BACKUP                                200
+#define TEST_L2CAP_COC                                  33
 
-#define FEATURE_TEST_MODE                                TEST_FEATURE_BACKUP
+
+#define TEST_FEATURE_BACKUP                             200
+
+#define FEATURE_TEST_MODE                               TEST_FEATURE_BACKUP
 
 
 

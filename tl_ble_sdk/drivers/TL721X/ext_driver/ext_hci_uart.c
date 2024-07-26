@@ -27,11 +27,11 @@
 
 
 #ifndef HCI_UART_EXT_DRIVER_EN
-#define HCI_UART_EXT_DRIVER_EN    0
+#define HCI_UART_EXT_DRIVER_EN  0
 #endif
 
 #ifndef HCI_TR_EN
-#define HCI_TR_EN                0
+#define HCI_TR_EN               0
 #endif
 
 #if (HCI_UART_EXT_DRIVER_EN||HCI_TR_EN)
@@ -39,32 +39,32 @@
  * @brief  UART Select interface
  */
 #ifndef  EXT_HCI_UART_CHANNEL
-#define  EXT_HCI_UART_CHANNEL                  EXT_HCI_UART1  //    UART0 = 0, UART1 = 1, UART2 = 2
+#define  EXT_HCI_UART_CHANNEL               EXT_HCI_UART1  //    UART0 = 0, UART1 = 1, UART2 = 2
 #endif
 
 #if  (EXT_HCI_UART_CHANNEL == EXT_HCI_UART0)
-#define  EXT_HCI_UART_IRQ                      IRQ_UART0
+#define  EXT_HCI_UART_IRQ                   IRQ_UART0
 #elif (EXT_HCI_UART_CHANNEL == EXT_HCI_UART1)
-#define  EXT_HCI_UART_IRQ                      IRQ_UART1
+#define  EXT_HCI_UART_IRQ                   IRQ_UART1
 #elif (EXT_HCI_UART_CHANNEL == EXT_HCI_UART2)
-#define  EXT_HCI_UART_IRQ                      IRQ_UART2
+#define  EXT_HCI_UART_IRQ                   IRQ_UART2
 #else
 #error "no support"
 #endif
 
 #ifndef  EXT_HCI_UART_DMA_CHN_RX
-#define  EXT_HCI_UART_DMA_CHN_RX              DMA2   //uart dma
+#define  EXT_HCI_UART_DMA_CHN_RX            DMA2   //uart dma
 #endif
 
 #ifndef  EXT_HCI_UART_DMA_CHN_TX
-#define  EXT_HCI_UART_DMA_CHN_TX              DMA3
+#define  EXT_HCI_UART_DMA_CHN_TX            DMA3
 #endif
 
 /*** RTS ***/
 #define RTS_INVERT    1 /*!< 0: RTS PIN will change from low to high. !! use for RTS auto mode(default auto mode)*/
 #define RTS_THRESH    5 /*!< RTS trigger threshold. range: 1-16. */
 /*** CTS ***/
-#define STOP_VOLT     1            //0 :Low level stops TX.  1 :High level stops TX.
+#define STOP_VOLT     1         //0 :Low level stops TX.  1 :High level stops TX.
 
 
 
@@ -75,8 +75,8 @@ _attribute_data_retention_sec_ static volatile unsigned char  *ReceAddr;
 
 /**
  * @brief   hci uart initialization
- * @param    none
- * @return    none
+ * @param   none
+ * @return  none
  */
 ext_hci_StatusTypeDef_e ext_hci_uartInit(ext_hci_InitTypeDef * uart)
 {
@@ -99,7 +99,6 @@ ext_hci_StatusTypeDef_e ext_hci_uartInit(ext_hci_InitTypeDef * uart)
     uart_set_tx_dma_config(EXT_HCI_UART_CHANNEL, EXT_HCI_UART_DMA_CHN_TX);
     uart_set_rx_dma_config(EXT_HCI_UART_CHANNEL,  EXT_HCI_UART_DMA_CHN_RX);
 
-    uart_set_tx_dma_config(EXT_HCI_UART_CHANNEL, EXT_HCI_UART_DMA_CHN_TX);
     uart_clr_irq_status(EXT_HCI_UART_CHANNEL,UART_TXDONE_IRQ_STATUS);
     uart_set_irq_mask(EXT_HCI_UART_CHANNEL, UART_TXDONE_MASK);
     plic_interrupt_enable(EXT_HCI_UART_IRQ);

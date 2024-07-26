@@ -30,7 +30,7 @@
 
 /**
  * @brief      this function is used to initialize channel selection algorithm #2 feature
- * @param       none
+ * @param      none
  * @return     none
  */
 void blc_ll_initChannelSelectionAlgorithm_2_feature(void);

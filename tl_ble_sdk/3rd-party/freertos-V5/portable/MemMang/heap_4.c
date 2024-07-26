@@ -162,8 +162,8 @@ void * pvPortMalloc( size_t xWantedSize )
 
             if( ( xWantedSize > 0 ) && ( xWantedSize <= xFreeBytesRemaining ) )
             {
-                /* Traverse the list from the start    (lowest address) block until
-                 * one    of adequate size is found. */
+                /* Traverse the list from the start (lowest address) block until
+                 * one  of adequate size is found. */
                 pxPreviousBlock = &xStart;
                 pxBlock = xStart.pxNextFreeBlock;
 
@@ -174,7 +174,7 @@ void * pvPortMalloc( size_t xWantedSize )
                 }
 
                 /* If the end marker was reached then a block of adequate size
-                 * was    not found. */
+                 * was  not found. */
                 if( pxBlock != pxEnd )
                 {
                     /* Return the memory space pointed to - jumping over the

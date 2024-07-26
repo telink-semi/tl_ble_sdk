@@ -46,10 +46,10 @@ u32 fw_crc_init = 0xFFFFFFFF;
  * sys_init will set the ota_program_offset value.
  */
 /**
- * @brief        This function is used to check the firmware is ok or not
- * @param[in]    crc_init_value - the initial value of CRC
- * @return        0 - CRC is check success
- *                 1 - CRC is check fail
+ * @brief       This function is used to check the firmware is ok or not
+ * @param[in]   crc_init_value - the initial value of CRC
+ * @return      0 - CRC is check success
+ *              1 - CRC is check fail
  */
 bool flash_fw_check( u32 crc_init_value ){
 

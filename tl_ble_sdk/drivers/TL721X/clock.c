@@ -25,6 +25,7 @@
 #include "clock.h"
 #include "mspi.h"
 #include "stimer.h"
+#include "pwm.h"
 #include "lib/include/pm/pm.h"
 
 
@@ -111,36 +112,32 @@ unsigned char clock_kick_32k_xtal(unsigned char xtal_times)
     int curr_32k_tick;
     for(unsigned char i = 0; i< xtal_times; i++)
     {
-        //**Note that the clock is 24M crystal oscillator. PCLK is 24MHZ
-        //2.set PD0 as pwm output
-        unsigned char reg_360 = read_reg8(0x140360);
-        write_reg8(0x140360, PWM0);                 //PD0
-        unsigned char reg_31e = read_reg8(0x14031e);
-        write_reg8(0x14031e, reg_31e & 0xfe);       //PD0
-        unsigned char reg_403 = read_reg8(0x140403);
-        write_reg8(0x140403, 0x00);                 //pwm0 mode
-        unsigned char reg_414 = read_reg8(0x140414);
-        write_reg8(0x140414, 0x02);                 //pwm0 cmp
-        unsigned char reg_416 = read_reg8(0x140416);
-        write_reg8(0x140416, 0x04);                 //pwm0 max
+        unsigned char reg_c8a = read_reg8(0x140c8a);
+        unsigned char reg_c36 = read_reg8(0x140c36);
         unsigned char reg_402 = read_reg8(0x140402);
-        write_reg8(0x140402, 0xb6);                 //24M/(0xb6 + 1)/4 = 32786, ~=32768
+        unsigned short reg_408 = read_reg16(0x140408);
+        unsigned short reg_40a = read_reg16(0x14040a);
+        unsigned char reg_403 = read_reg8(0x140403);
         unsigned short reg_400 = read_reg16(0x140400);
-        write_reg16(0x140400, reg_400|0x0100);      //pwm0 en
 
-        //3.wait for PWM wake up Xtal
+        //set PD2 as pwm output
+        pwm_set_pin(GPIO_FC_PD2,PWM0);
+        pwm_set_clk(0);
+        pwm_set_tcmp(PWM0_ID,sys_clk.pclk*1000*1000/32768/2);
+        pwm_set_tmax(PWM0_ID,sys_clk.pclk*1000*1000/32768);
+        pwm_set_pwm0_mode(PWM_NORMAL_MODE);
+        pwm_start(FLD_PWM0_EN);
+
+        //wait for PWM wake up Xtal
         delay_ms(100);
 
-        //4.Xtal 32k output
-        analog_write_reg8(0x03,0x4f); //<7:6>current select
-
-        //5.Recover PD0 as Xtal pin
-        write_reg8(0x140360,reg_360);
-        write_reg8(0x14031e,reg_31e);
-        write_reg8(0x140403,reg_403);
-        write_reg8(0x140414,reg_414);
-        write_reg8(0x140416,reg_416);
+        //Recover PD2 as Xtal pin
+        write_reg8(0x140c8a,reg_c8a);
+        write_reg8(0x140c36,reg_c36);
         write_reg8(0x140402,reg_402);
+        write_reg16(0x140408,reg_408);
+        write_reg16(0x14040a,reg_40a);
+        write_reg8(0x140403,reg_403);
         write_reg16(0x140400,reg_400);
 
         last_32k_tick = clock_get_32k_tick();   //clock_get_32k_tick()
@@ -264,10 +261,7 @@ _attribute_ram_code_sec_noinline_ unsigned int clock_get_32k_tick(void)
     return timer_32k_tick;
 }
 #else
-#if(PM_DEBUG)
-volatile unsigned int debug_get_32k_tick_t0;
-volatile unsigned int debug_get_32k_tick_t1;
-#endif
+
 _attribute_ram_code_sec_noinline_ unsigned int clock_get_32k_tick(void)
 {
     unsigned int t0 = 0;
@@ -278,15 +272,11 @@ _attribute_ram_code_sec_noinline_ unsigned int clock_get_32k_tick(void)
     //first wait for the rising edge to pass to avoid overlap with the subsequent write tick value operation.
     //modify by weihua.zhang, confirmed by jianzhi at 20210126
     t0 = analog_read_reg32(0x60);
-#if(PM_DEBUG)
-    debug_get_32k_tick_t0 = t0;
-#endif
+
     while(1)
     {
         t1 = analog_read_reg32(0x60);
-#if(PM_DEBUG)
-        debug_get_32k_tick_t1 = t1;
-#endif
+
         if((t1-t0) == 1)
         {
             return t1;
@@ -294,9 +284,6 @@ _attribute_ram_code_sec_noinline_ unsigned int clock_get_32k_tick(void)
         else if(t1-t0)
         {
             t0 = t1;
-#if(PM_DEBUG)
-            debug_get_32k_tick_t0 = t0;
-#endif
         }
     }
 }

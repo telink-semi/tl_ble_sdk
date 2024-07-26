@@ -362,7 +362,6 @@ _always_inline void sys_reset_all(void)
  */
 void pm_set_gpio_wakeup (gpio_pin_e pin, pm_gpio_wakeup_level_e pol, int en);
 
-#if 0
 /**
  * @brief       This function serves to recover system timer.
  *              The code is placed in the ram code section, in order to shorten the time.
@@ -419,7 +418,6 @@ void pm_set_suspend_power_cfg(pm_pd_module_e value, unsigned char on_off);
  * @return      indicate whether the cpu is wake up successful.
  */
 _attribute_text_sec_ int pm_sleep_wakeup(pm_sleep_mode_e sleep_mode,  pm_sleep_wakeup_src_e wakeup_src, pm_wakeup_tick_type_e wakeup_tick_type, unsigned int  wakeup_tick);
-#endif
 
 /**
  * @brief       this function servers to wait bbpll clock lock.
@@ -459,6 +457,12 @@ _attribute_ram_code_sec_noinline_ void pm_set_dig_module_power_switch(pm_pd_modu
 /********************************************************************************************************
  *              This is just for internal debug purpose, users are prohibited from calling.
  *******************************************************************************************************/
+
+/**
+ * @brief       The function of this interface is to configure the voltage of the sleep-related LDO.
+ * @return      none.
+ */
+void pm_set_sleep_ldo_voltage(void);
 
 /**
  * @brief       This function serves to trim dig ldo voltage

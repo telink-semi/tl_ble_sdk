@@ -31,8 +31,8 @@
 
 
 /**
- * @brief        BLE RF interrupt handler.
- * @param[in]    none
+ * @brief       BLE RF interrupt handler.
+ * @param[in]   none
  * @return      none
  */
 _attribute_ram_code_ void rf_irq_handler(void)
@@ -45,8 +45,8 @@ _attribute_ram_code_ void rf_irq_handler(void)
 }
 PLIC_ISR_REGISTER(rf_irq_handler, IRQ_ZB_RT)
 /**
- * @brief        System timer interrupt handler.
- * @param[in]    none
+ * @brief       System timer interrupt handler.
+ * @param[in]   none
  * @return      none
  */
 _attribute_ram_code_ void stimer_irq_handler(void)
@@ -59,19 +59,19 @@ _attribute_ram_code_ void stimer_irq_handler(void)
 }
 PLIC_ISR_REGISTER(stimer_irq_handler, IRQ_SYSTIMER)
 /**
- * @brief        This is main function
- * @param[in]    none
+ * @brief       This is main function
+ * @param[in]   none
  * @return      none
  */
 _attribute_ram_code_ int main(void)
 {
     /* this function must called before "sys_init()" when:
      * (1). For all IC: using 32K RC for power management,
-         (2). For B91 only: even no power management */
+       (2). For B91 only: even no power management */
     blc_pm_select_internal_32k_crystal();
 
     #if (MCU_CORE_TYPE == MCU_CORE_B91)
-        sys_init(LDO_1P4_LDO_1P8, VBAT_MAX_VALUE_GREATER_THAN_3V6);
+        sys_init(LDO_1P4_LDO_1P8, VBAT_MAX_VALUE_GREATER_THAN_3V6, INTERNAL_CAP_XTAL24M);
         CCLK_32M_HCLK_32M_PCLK_16M;
     #elif (MCU_CORE_TYPE == MCU_CORE_B92)
         sys_init(DCDC_1P4_LDO_2P0, VBAT_MAX_VALUE_GREATER_THAN_3V6, GPIO_VOLTAGE_3V3);

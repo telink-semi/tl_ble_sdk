@@ -54,7 +54,7 @@ void usbhw_write_ep(unsigned int ep, unsigned char * data, int len) {
     for(int i = 0; i < (len); ++i){
         reg_usb_ep_dat(ep) = data[i];
     }
-    reg_usb_ep_ctrl(ep) = FLD_EP_DAT_ACK;        // ACK
+    reg_usb_ep_ctrl(ep) = FLD_EP_DAT_ACK;       // ACK
 }
 
 /**

@@ -39,7 +39,7 @@ typedef enum{
     FLD_MDEC_RST        = BIT(7),
 }mdec_set_e;
 
-#define    mdec_ctrl                        0x54
+#define mdec_ctrl                       0x54
 
 
 

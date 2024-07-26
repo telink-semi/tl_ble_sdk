@@ -26,19 +26,19 @@
 
 
 /**
- * @brief    Application Flash protection enable control. Default disable, use can enable it in app_conifg.h.
- *             User must enable Flash protection on mass production application !!!
+ * @brief   Application Flash protection enable control. Default disable, use can enable it in app_conifg.h.
+ *          User must enable Flash protection on mass production application !!!
  */
 #ifndef APP_FLASH_PROTECTION_ENABLE
-#define APP_FLASH_PROTECTION_ENABLE                    0   //enable or disable
+#define APP_FLASH_PROTECTION_ENABLE                 0   //enable or disable
 #endif
 
 
 /**
- * @brief    Application Flash protection log enable or not. Default disable, use can enable it in app_conifg.h.
+ * @brief   Application Flash protection log enable or not. Default disable, use can enable it in app_conifg.h.
  */
 #ifndef APP_FLASH_PROT_LOG_EN
-#define APP_FLASH_PROT_LOG_EN                        0
+#define APP_FLASH_PROT_LOG_EN                       0
 #endif
 
 
@@ -55,22 +55,22 @@ typedef enum{
      * Flash size is at least 1M in this SDK, system data is stored above 256K. User data must stored above 256K too.
      * If using Telink OTA with multiple hardware boot address, low 256K area is used for both raw firmware and new firmware storage.
      * If user data stored below 256K, please do not use reference code, but design and implement by themselves. */
-    FLASH_LOCK_FW_LOW_256K        =    1,
+    FLASH_LOCK_FW_LOW_256K      =   1,
 
     /* lock low 512K for firmware, do not consider system data and user data.
      * Flash size is at least 1M in this SDK, system data is stored above 512K. User data must stored above 512K too.
      * If using Telink OTA with multiple hardware boot address, low 512K area is used for both raw firmware and new firmware storage.
      * If user data stored below 512K, please do not use reference code, but design and implement by themselves. */
-    FLASH_LOCK_FW_LOW_512K        =    2,
+    FLASH_LOCK_FW_LOW_512K      =   2,
 
 
     /* lock low 1M for firmware, do not consider system data and user data.
      * 1. For 1M capacity flash
-     *         can not lock 1M all, should leave some upper 64K for system data and user data.
-     *        System data is stored above 960K(0x1F0000). User data must stored above 960K too. Then we can choose lock 960K.
-     *        If user data stored below 960K, please do not use reference code, but design and implement by themselves.
+     *      can not lock 1M all, should leave some upper 64K for system data and user data.
+     *      System data is stored above 960K(0x1F0000). User data must stored above 960K too. Then we can choose lock 960K.
+     *      If user data stored below 960K, please do not use reference code, but design and implement by themselves.
      * 2. For Flash capacity bigger than 1M
-     *         System data is stored above 1M. User data must stored above 1M too.
+     *      System data is stored above 1M. User data must stored above 1M too.
      *      If using Telink OTA with multiple hardware boot address, low 1M area is used for both raw firmware and new firmware storage.
      *      If user data stored below 1M, please do not use reference code, but design and implement by themselves. */
     FLASH_LOCK_FW_LOW_1M        =   3,
@@ -80,47 +80,47 @@ typedef enum{
 
     /* lock all Flash area, even system data and user data.
      * Attention: More conditions need to be considered, such as system data(SMP pairing information or OTA data if OTA used)*/
-    FLASH_LOCK_ALL_AREA            =   4,
+    FLASH_LOCK_ALL_AREA         =   4,
 }flash_app_lock_e;
 
 
 
 /**
- * @brief    The structure of some initialization error about flash protect.
+ * @brief   The structure of some initialization error about flash protect.
  */
 typedef struct{
-    u8    init_err;
+    u8  init_err;
 
 }flash_prot_t;
-extern flash_prot_t    blc_flashProt;
+extern flash_prot_t blc_flashProt;
 
 
 
 /**
- * @brief        this function serves to  locks a specific region or address range in the flash memory.
- * @param[in]    none
+ * @brief       this function serves to  locks a specific region or address range in the flash memory.
+ * @param[in]   none
  * @return      none
  */
 typedef unsigned char  (*flash_lock_t)(unsigned int);
 /**
- * @brief        this function serves to unlocks a specific region or address range in the flash memory.
- * @param[in]    none
+ * @brief       this function serves to unlocks a specific region or address range in the flash memory.
+ * @param[in]   none
  * @return      none
  */
 typedef unsigned char  (*flash_unlock_t)(void);
 /**
- * @brief        this function that retrieves the lock status of a specific region or address range in the flash memory.
- * @param[in]    none
+ * @brief       this function that retrieves the lock status of a specific region or address range in the flash memory.
+ * @param[in]   none
  * @return      none
  */
 typedef unsigned short  (*flash_get_lock_status_t)(void);
 /**
- * @brief        this function as a callback function for flash protection operations.
- * @param[in]    none
+ * @brief       this function as a callback function for flash protection operations.
+ * @param[in]   none
  * @return      none
  */
 typedef void  (*flash_prot_op_callback_t)(unsigned char, unsigned int, unsigned int);
-extern    flash_prot_op_callback_t         flash_prot_op_cb;
+extern  flash_prot_op_callback_t        flash_prot_op_cb;
 
 
 
@@ -135,7 +135,7 @@ extern    flash_prot_op_callback_t         flash_prot_op_cb;
  */
 
 /* application layer event, initialization, lock flash */
-#define FLASH_OP_EVT_APP_INITIALIZATION                                 1
+#define FLASH_OP_EVT_APP_INITIALIZATION                             1
 
 
 
@@ -147,27 +147,27 @@ extern    flash_prot_op_callback_t         flash_prot_op_cb;
  *     OTA operate Flash type 2: write new firmware data(write Flash) for OTA ongoing
  *
  * If user design and implement OTA with proprietary mechanism, Please refer to Telink OTA.
- *        Sample code in BLE stack below, taking OTA writing new firmware for example:
- *                           if(flash_prot_op_cb){
- *                        flash_prot_op_cb(FLASH_OP_EVT_STACK_OTA_WRITE_NEW_FW_BEGIN, address_start, address_end);
- *                    }
+ *     Sample code in BLE stack below, taking OTA writing new firmware for example:
+ *                  if(flash_prot_op_cb){
+ *                      flash_prot_op_cb(FLASH_OP_EVT_STACK_OTA_WRITE_NEW_FW_BEGIN, address_start, address_end);
+ *                  }
  *
- *                           if(flash_prot_op_cb){
- *                        flash_prot_op_cb(FLASH_OP_EVT_STACK_OTA_WRITE_NEW_FW_END, address_start, address_end);
- *                    }
+ *                  if(flash_prot_op_cb){
+ *                      flash_prot_op_cb(FLASH_OP_EVT_STACK_OTA_WRITE_NEW_FW_END, address_start, address_end);
+ *                  }
  */
 
 /* stack layer event, OTA initialization, clear old firmware begin, may need unlock flash */
-#define FLASH_OP_EVT_STACK_OTA_CLEAR_OLD_FW_BEGIN                    10
+#define FLASH_OP_EVT_STACK_OTA_CLEAR_OLD_FW_BEGIN                   10
 /* stack layer event, OTA initialization, clear old firmware end , may need restore locking flash */
-#define FLASH_OP_EVT_STACK_OTA_CLEAR_OLD_FW_END                        11
+#define FLASH_OP_EVT_STACK_OTA_CLEAR_OLD_FW_END                     11
 
 
 
 /* stack layer event, OTA initialization, write new firmware begin, may need unlock flash */
-#define FLASH_OP_EVT_STACK_OTA_WRITE_NEW_FW_BEGIN                    12
+#define FLASH_OP_EVT_STACK_OTA_WRITE_NEW_FW_BEGIN                   12
 /* stack layer event, OTA initialization, write new firmware begin, may need restore locking flash */
-#define FLASH_OP_EVT_STACK_OTA_WRITE_NEW_FW_END                        13
+#define FLASH_OP_EVT_STACK_OTA_WRITE_NEW_FW_END                     13
 
 
 
@@ -180,27 +180,27 @@ extern    flash_prot_op_callback_t         flash_prot_op_cb;
  * SMP operate Flash type 1: select paring area when first power on, write a mark on Flash
  * SMP operate Flash type 2: save pairing information when paired with peer device success
  * SMP operate Flash type 3: delete pairing information of one paired peer device
- *                              maybe triggered by stack internal,
- *                              maybe triggered by user API "blc smp_eraseAllBondingInfo" or "blc smp_deleteBondingSlaveInfo_by_PeerMacAddress"
+ *                           maybe triggered by stack internal,
+ *                           maybe triggered by user API "blc smp_eraseAllBondingInfo" or "blc smp_deleteBondingSlaveInfo_by_PeerMacAddress"
  * SMP operate Flash type 4: switch pairing information area between normal area and backup area,
- *                              need erase old area data and write valid pairing information to new area
+ *                           need erase old area data and write valid pairing information to new area
  */
 
 /* stack layer event, SMP select pairing information area begin(write a special mark), may need unlock flash */
-#define FLASH_OP_EVT_STACK_SMP_SELECT_PAIRING_INFO_AREA_BEGIN        20
+#define FLASH_OP_EVT_STACK_SMP_SELECT_PAIRING_INFO_AREA_BEGIN       20
 /* stack layer event, SMP select pairing information area begin , may need restore locking flash */
 #define FLASH_OP_EVT_STACK_SMP_SELECT_PAIRING_INFO_AREA_END         21
 
 
 
 /* stack layer event, SMP save pairing information begin, may need unlock flash */
-#define FLASH_OP_EVT_STACK_SMP_SAVE_PAIRING_INFO_BEGIN                22
+#define FLASH_OP_EVT_STACK_SMP_SAVE_PAIRING_INFO_BEGIN              22
 /* stack layer event, SMP save pairing information end , may need restore locking flash */
 #define FLASH_OP_EVT_STACK_SMP_SAVE_PAIRING_INFO_END                23
 
 
 /* stack layer event, SMP delete pairing information begin, may need unlock flash */
-#define FLASH_OP_EVT_STACK_SMP_DELETE_DEVICE_BEGIN                    24
+#define FLASH_OP_EVT_STACK_SMP_DELETE_DEVICE_BEGIN                  24
 /* stack layer event, SMP delete pairing information end , may need restore locking flash */
 #define FLASH_OP_EVT_STACK_SMP_DELETE_DEVICE_END                    25
 
@@ -208,7 +208,7 @@ extern    flash_prot_op_callback_t         flash_prot_op_cb;
 /* stack layer event, SMP switch pairing information area begin, may need unlock flash */
 #define FLASH_OP_EVT_STACK_SMP_SWITCH_PAIRING_INFO_BEGIN            26
 /* stack layer event, SMP switch pairing information area end , may need restore locking flash */
-#define FLASH_OP_EVT_STACK_SMP_SWITCH_PAIRING_INFO_END                27
+#define FLASH_OP_EVT_STACK_SMP_SWITCH_PAIRING_INFO_END              27
 
 
 
@@ -236,24 +236,24 @@ void flash_protection_init(void);
 void blc_appRegisterStackFlashOperationCallback(flash_prot_op_callback_t cb);
 
 /**
- * @brief         This function serves to set the protection of the flash.
+ * @brief       This function serves to set the protection of the flash.
  * @param[in]   flash_lock_cmd - flash lock block command for different flash type
- *                 e.g. for P25Q16SU, command is selected from "mid156085_lock_block_e"
- * @return         1: Flash lock succeed; 0: Flash lock fail
+ *              e.g. for P25Q16SU, command is selected from "mid156085_lock_block_e"
+ * @return      1: Flash lock succeed; 0: Flash lock fail
  */
 bool flash_lock(unsigned int flash_lock_cmd);
 
 /**
- * @brief         This function serves to release flash protection.
+ * @brief       This function serves to release flash protection.
  * @param[in]   none.
- * @return         none.
+ * @return      none.
  */
 bool flash_unlock(void);
 
 /**
  * @brief      this function is used to change application lock block definition to flash lock block definition according to flash type used
- *                attention: only processed a few lock block size for SDK demo, if you have more lock block size, please
- *                           add more code by yourself
+ *             attention: only processed a few lock block size for SDK demo, if you have more lock block size, please
+ *                        add more code by yourself
  * @param[in]  app_lock_block - application lock block definition
  * @return     flash_lock_block_size - The size of the lock block size of flash.
  */

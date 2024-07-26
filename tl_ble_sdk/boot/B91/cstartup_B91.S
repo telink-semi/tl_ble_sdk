@@ -29,9 +29,9 @@
     .equ __BOOT_SWITCH_FLASH_ADDR, 0x20000000
 #endif
 
-#if    1    /*default is open*/
+#if 1   /*default is open*/
     .section .vectors, "ax"
-    .global    __BOOT_SWITCH_FLASH_ADDR
+    .global __BOOT_SWITCH_FLASH_ADDR
     
     //.org  and linker's relaxation (-flto) cannot be used at the same time
     //Pop corresponds to push. Before using .option norelax, use push to save the current .option configuration
@@ -42,15 +42,15 @@
 
 
     .global _RESET_ENTRY
-     .type _RESET_ENTRY,@function
+    .type _RESET_ENTRY,@function
 
     .align 2
 _RESET_ENTRY:
-    j          _START
+    j        _START
     //free the 6th ~ 7th byte to store the crc type of the bin file
 
 /* used to check flash protection function consistency between the old and new  firmware when OTA upgrading */
-#if    APP_FLASH_PROTECTION_ENABLE
+#if APP_FLASH_PROTECTION_ENABLE
     .org 0x15    //correspond to "FIRMWARE_FLASH_PROTECTION_FLAG_ADDR" in mcu_boot.h
     .byte (0x5A)
 #endif
@@ -74,11 +74,11 @@ _START:
 
 #if 0
     // add debug, PB4 output 1
-    lui        t0,0x80140             //0x8014030a
-    li        t1, 0xef
-    li        t2, 0x10
-    sb        t1 , 0x30a(t0)         //0x8014030a  PB oen     =  0xef
-    sb        t2 , 0x30b(t0)         //0x8014030b  PB output  =  0x10
+    lui     t0,0x80140          //0x8014030a
+    li      t1, 0xef
+    li      t2, 0x10
+    sb      t1 , 0x30a(t0)       //0x8014030a  PB oen     =  0xef
+    sb      t2 , 0x30b(t0)       //0x8014030b  PB output  =  0x10
 #endif
     /* Initialize global pointer */
     .option push
@@ -112,17 +112,17 @@ _START:
     csrsi  mmisc_ctl, 2
 /*
 *#if (SUPPORT_PFT_ARCH)
-*    plic_set_feature(FLD_FEATURE_PREEMPT_PRIORITY_INT_EN | FLD_FEATURE_VECTOR_MODE_EN);//enable vectored in PLIC
+*   plic_set_feature(FLD_FEATURE_PREEMPT_PRIORITY_INT_EN | FLD_FEATURE_VECTOR_MODE_EN);//enable vectored in PLIC
 *   =(0xe4000000))= 0x03
 *#else
-*    plic_set_feature(FLD_FEATURE_VECTOR_MODE_EN);//enable vectored in PLIC
-*    =(0xe4000000))= 0x02
+*   plic_set_feature(FLD_FEATURE_VECTOR_MODE_EN);//enable vectored in PLIC
+*   =(0xe4000000))= 0x02
 *#endif
 */
     /*vector mode enable bit (VECTORED) of the Feature Enable Register */
-    lui        t0, 0xe4000
-    li        t1, 0x03
-    sw        t1, 0x0(t0)         //(*(volatile unsigned long*)(0xe4000000))= 0x02
+    lui     t0, 0xe4000
+    li      t1, 0x03
+    sw      t1, 0x0(t0)      //(*(volatile unsigned long*)(0xe4000000))= 0x02
 
     /* Enable I/D-Cache */
     csrr   t0,  mcache_ctl
@@ -254,12 +254,12 @@ _END:
     .option push
     .option norelax
     .global _IRESET_ENTRY
-     .type _IRESET_ENTRY,@function
+    .type _IRESET_ENTRY,@function
 
     .align 2
 _IRESET_ENTRY:
     /* Decide whether this is an NMI or cold reset */
-    j         _ISTART
+    j       _ISTART
 
     .org 0x22
 _ISTART:
@@ -268,19 +268,19 @@ _ISTART:
 /* GPIO_DEBUG */
 #if 0
     // add debug, PE1 output 1
-    lui        t0,    0x80140             //0x80140322
-    li        t1, 0xfd
-    li        t2, 0x02
-    sb        t1 , 0x322(t0)         //0x8014030a  Pe oen     =  0xfd
-    sb        t2 , 0x323(t0)         //0x8014030b  Pe output  =  0x02
+    lui     t0, 0x80140             //0x80140322
+    li      t1, 0xfd
+    li      t2, 0x02
+    sb      t1 , 0x322(t0)       //0x8014030a  Pe oen     =  0xfd
+    sb      t2 , 0x323(t0)       //0x8014030b  Pe output  =  0x02
 #endif
 #if 0
     // add debug, PD0 output 1
-    lui        t0,0x80140             //0x8014031a
-    li        t1, 0xfe
-    li        t2, 0x01
-    sb        t1 , 0x31a(t0)         //0x8014031a  PD oen     =  0xfe
-    sb        t2 , 0x31b(t0)         //0x8014031b  PD output  =  0x01
+    lui     t0,0x80140          //0x8014031a
+    li      t1, 0xfe
+    li      t2, 0x01
+    sb      t1 , 0x31a(t0)       //0x8014031a  PD oen     =  0xfe
+    sb      t2 , 0x31b(t0)       //0x8014031b  PD output  =  0x01
 #endif
 
     /* Initialize global pointer */
@@ -315,17 +315,17 @@ _ISTART:
 
 /*
 *#if (SUPPORT_PFT_ARCH)
-*    plic_set_feature(FLD_FEATURE_PREEMPT_PRIORITY_INT_EN | FLD_FEATURE_VECTOR_MODE_EN);//enable vectored in PLIC
+*   plic_set_feature(FLD_FEATURE_PREEMPT_PRIORITY_INT_EN | FLD_FEATURE_VECTOR_MODE_EN);//enable vectored in PLIC
 *   =(0xe4000000))= 0x03
 *#else
-*    plic_set_feature(FLD_FEATURE_VECTOR_MODE_EN);//enable vectored in PLIC
-*    =(0xe4000000))= 0x02
+*   plic_set_feature(FLD_FEATURE_VECTOR_MODE_EN);//enable vectored in PLIC
+*   =(0xe4000000))= 0x02
 *#endif
 */
     /*vector mode enable bit (VECTORED) of the Feature Enable Register */
-    lui        t0, 0xe4000
-    li        t1, 0x03
-    sw        t1, 0x0(t0)         //(*(volatile unsigned long*)(0xe4000000))= 0x03
+    lui     t0, 0xe4000
+    li      t1, 0x03
+    sw      t1, 0x0(t0)      //(*(volatile unsigned long*)(0xe4000000))= 0x03
 
     /* Enable I/D-Cache */
     csrr   t0,  mcache_ctl
@@ -337,46 +337,46 @@ _ISTART:
 
 /* flash wakeup */
 _WAKEUP_FLASH:
-    lui        t0 , 0x80140
-    li        t1 , 0xff
-    li        t2 , 0x0
-    li        t3 , 0xab
-    sb        t1 , 0x329(t0)             //mspi ie enable    :0x140329:0x1f
-    sb        t2 , 0x101(t0)             //cs_low            :0x140101:0x00
-    sb        t3 , 0x100(t0)             //wakeup_cmd        :0x140100:0xab
+    lui     t0 , 0x80140
+    li      t1 , 0xff
+    li      t2 , 0x0
+    li      t3 , 0xab
+    sb      t1 , 0x329(t0)           //mspi ie enable   :0x140329:0x1f
+    sb      t2 , 0x101(t0)           //cs_low           :0x140101:0x00
+    sb      t3 , 0x100(t0)           //wakeup_cmd       :0x140100:0xab
 _MSPI_WAIT:
-    lui        t0 , 0x80140
-    lb        t2 , 0x102(t0)            //read reg_mspi_status FLD_MSPI_BUSY(bit0)
-    li        t3 , 0x1
-    li        t4 , 0x10
+    lui     t0 , 0x80140
+    lb      t2 , 0x102(t0)          //read reg_mspi_status FLD_MSPI_BUSY(bit0)
+    li      t3 , 0x1
+    li      t4 , 0x10
     beq     t3 , t2 ,_MSPI_WAIT
-    sb        t4 , 0x101(t0)            //cs_high            :0x140101:0x10
+    sb      t4 , 0x101(t0)          //cs_high           :0x140101:0x10
 #if 0
     // add debug, PB4 output 1
-    lui        t0,0x80140             //0x8014030a
-    li        t1, 0x00
-    sb        t1 , 0x30b(t0)         //0x8014030b  PB output  =  0x00
+    lui     t0,0x80140          //0x8014030a
+    li      t1, 0x00
+    sb      t1 , 0x30b(t0)       //0x8014030b  PB output  =  0x00
 #endif
 /*efuse load need delay about 18us */
-    li        t0 , 0
-    li        t1 , 226
+    li      t0 , 0
+    li      t1 , 226
 _WAIT_EFUSE_LOAD_FINISH:
-    addi     t0 , t0 , 1
-    bgeu     t1 , t0 , _WAIT_EFUSE_LOAD_FINISH
+    addi    t0 , t0 , 1
+    bgeu    t1 , t0 , _WAIT_EFUSE_LOAD_FINISH
 
 #if 0
     // add debug, PB4 output 1
-    lui        t0,0x80140             //0x8014030a
-    li        t1, 0x10
-    sb        t1 , 0x30b(t0)         //0x8014030b  PB output  =  0x00
+    lui     t0,0x80140          //0x8014030a
+    li      t1, 0x10
+    sb      t1 , 0x30b(t0)       //0x8014030b  PB output  =  0x00
 #endif
 
 
 _MULTI_ADDRESS_BEGIN:
-    lui        t0 , 0x80140
-    la        t1 , g_pm_mspi_cfg
-    lw        t2 , 0(t1)
-    sw        t2 , 0x104(t0)             //g_pm_mspi_cfg->0x80140104
+    lui     t0 , 0x80140
+    la      t1 , g_pm_mspi_cfg
+    lw      t2 , 0(t1)
+    sw      t2 , 0x104(t0)           //g_pm_mspi_cfg->0x80140104
 
 
 #if 0
@@ -467,12 +467,12 @@ _IEND:
     .align 2
 
 default_irq_entry:
-1:    j 1b
+1:  j 1b
 
        .weak trap_handler
 
  trap_handler:
-1:    j 1b
+1:  j 1b
 
     .macro INTERRUPT num
     .weak entry_irq\num
@@ -482,7 +482,7 @@ default_irq_entry:
 
 #define VECTOR_NUMINTRS         63
 
-       .section .ram_code, "ax"
+    .section .ram_code, "ax"
 
     .global __vectors
     .balign 256

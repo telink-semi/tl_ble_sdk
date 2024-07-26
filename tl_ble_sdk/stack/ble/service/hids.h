@@ -30,7 +30,7 @@
 #define HID_REPORT_ID_KEYBOARD_INPUT                    1   //!< Keyboard input report ID
 #define HID_REPORT_ID_CONSUME_CONTROL_INPUT             2   //!< Consumer Control input report ID
 #define HID_REPORT_ID_MOUSE_INPUT                       3   //!< Mouse input report ID
-#define HID_REPORT_ID_GAMEPAD_INPUT                        4   //!< Gamepad  input report ID
+#define HID_REPORT_ID_GAMEPAD_INPUT                     4   //!< Gamepad  input report ID
 #define HID_REPORT_ID_LED_OUT                           0   //!< LED output report ID
 #define HID_REPORT_ID_FEATURE                           0   //!< Feature report ID
 

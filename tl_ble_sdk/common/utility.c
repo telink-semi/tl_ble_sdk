@@ -263,7 +263,7 @@ const char *hex_to_str(const void *buf, u8 len)
 
 const char *addr_to_str(u8* addr)
 {
-#define BDADDR_STR_LEN        18
+#define BDADDR_STR_LEN      18
     static char addrStr[BDADDR_STR_LEN];
     snprintf(addrStr, sizeof(addrStr), "%02X:%02X:%02X:%02X:%02X:%02X", addr[5], addr[4], addr[3], addr[2], addr[1], addr[0]);
     return addrStr;

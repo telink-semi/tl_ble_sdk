@@ -25,9 +25,9 @@
 
 #define BLT_GAPC_DEBUG(fmt, ...)                BLT_HOST_DBUG(DBG_GAPC_LOG, "[GAPC]"fmt, ##__VA_ARGS__)
 
-#define GAPC_DISCOVERY_MAX_NUM                2
-#define GAPC_DISC_MAX_ATTR_INFO                2
-#define GAPC_DISC_MAX_INCLUDE_INFO            3
+#define GAPC_DISCOVERY_MAX_NUM              2
+#define GAPC_DISC_MAX_ATTR_INFO             2
+#define GAPC_DISC_MAX_INCLUDE_INFO          3
 
 typedef enum{
     GAPC_CHAR_FIND_DESCRIPTOR = BIT(2),
@@ -38,7 +38,7 @@ typedef enum{
 } blc_gapc_char_setting_enum;
 
 typedef struct{
-    u8 properties;    //supported CHAR_PROP_READ, CHAR_PROP_NOTIFY, CHAR_PROP_INDICATE
+    u8 properties;  //supported CHAR_PROP_READ, CHAR_PROP_NOTIFY, CHAR_PROP_INDICATE
     u16 valueHandle;
     u16 cccHandle;
 } blc_gapc_charInfo_t;
@@ -119,16 +119,16 @@ typedef int (*gapc_getCharInfo_fun_t)(u16 connHandle, blc_gapc_charInfo_t* charI
  * @param connHandle --- acl connection handle.
  * @param count --- the number of reconnect include uuid. 1, 2, ...
  * @return true --- can reconnect this include service.
- *             false --- not supported reconnect include.
+ *          false --- not supported reconnect include.
  */
 typedef bool (*gapc_reconnIncl_fun_t)(u16 connHandle, int count);
 
 /*
  * @param connHandle --- acl connection handle.
  * @param count --- the number of reconnect service uuid. 1, 2, ...
- *                     0 mean reconnect service ending
+ *                  0 mean reconnect service ending
  * @return true --- can reconnect this service.
- *             false --- not supported reconnect service.
+ *          false --- not supported reconnect service.
  */
 typedef bool (*gapc_reconnService_fun_t)(u16 connHandle, int count);
 
@@ -141,16 +141,16 @@ typedef struct{
 
 typedef struct{
     union {
-        u8 setting;    //blc_gapc_char_setting_enum
+        u8 setting; //blc_gapc_char_setting_enum
         struct {
             //Automatically subscribe to the notify property, if had.
-            bool subscribeNtf    :1;
+            bool subscribeNtf   :1;
             //Automatically subscribe to the indicate property, if had.
-            bool subscribeInd    :1;
+            bool subscribeInd   :1;
             //found Descriptors, if had.
-            bool findDecs        :1;
+            bool findDecs       :1;
             //Automatically read characteristic value, if had read property.
-            bool readValue        :1;
+            bool readValue      :1;
         };
     };
     //characteristic uuid.

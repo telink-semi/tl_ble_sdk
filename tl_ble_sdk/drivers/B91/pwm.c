@@ -44,7 +44,7 @@ dma_config_t pwm_tx_dma_config={
 /**
  * @brief     This function servers to set pin as pwm.
  * @param[in] pin - selected pin
- * @return      none.
+ * @return    none.
  */
 void pwm_set_pin(pwm_pin_e pin)
 {
@@ -52,12 +52,12 @@ void pwm_set_pin(pwm_pin_e pin)
     unsigned char start_bit = (BIT_LOW_BIT(pin & 0xff) %4 )<<1;
     unsigned char mask =(unsigned char) ~BIT_RNG(start_bit , start_bit+1);
 
-    if(pin==PWM_PWM2_PB7){                                                                                     // Pad Function Mux:0
+    if(pin==PWM_PWM2_PB7){                                                                                  // Pad Function Mux:0
          val = 0;
          BM_CLR(reg_gpio_pad_mul_sel, BIT(3));
     }else if((pin==PWM_PWM0_PB4) || (pin==PWM_PWM4_PD7) ||(pin==PWM_PWM2_N_PE6) ||(pin==PWM_PWM3_N_PE7)){   // Pad Function Mux:1
          val = 1<<(start_bit);
-    }else{                                                                                                    // Pad Function Mux:2
+    }else{                                                                                                  // Pad Function Mux:2
          val = 2<<(start_bit);
          reg_gpio_pad_mul_sel|=BIT(0);
     }

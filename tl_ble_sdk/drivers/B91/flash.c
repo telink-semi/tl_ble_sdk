@@ -29,16 +29,16 @@
 #include "core.h"
 #include "stimer.h"
 #include "string.h"
-#include "watchdog.h"                //BLE SDK use
+#include "watchdog.h"               //BLE SDK use
 /*
- *    If add flash type, need pay attention to the read uid command and the bit number of status register
+ *  If add flash type, need pay attention to the read uid command and the bit number of status register
  *  Flash trim scheme has been added for P25Q80U.If other types of flash adds this scheme, user need to modify "flash_trim" and "flash_trim_check" function.
  *  When adding flash, if tRES1 is greater than 25us, update the delay of EFUSE_LOAD_AND_FLASH_WAKEUP_LOOP_NUM in the S file.
  *  If tRES1 is greater than 150us, this flash model cannot be used, because the chip hardware boot program only waits for 150us.
-    Flash Type    uid CMD        MID            Company        tRES1    Sector Erase Time(MAX)
-    P25Q80U        0x4b        0x146085    PUYA        8us        20ms
-    P25Q16SU    0x4b        0x156085    PUYA        8us        30ms
-    P25Q32SU    0x4b        0x166085    PUYA        8us        30ms
+    Flash Type  uid CMD     MID         Company     tRES1   Sector Erase Time(MAX)
+    P25Q80U     0x4b        0x146085    PUYA        8us     20ms
+    P25Q16SU    0x4b        0x156085    PUYA        8us     30ms
+    P25Q32SU    0x4b        0x166085    PUYA        8us     30ms
     PY25Q128H   0x4b        0x182085    PUYA        20us    240ms
  */
 unsigned int flash_support_mid[] = {0x146085,0x156085,0x166085,0x182085};
@@ -54,14 +54,14 @@ _attribute_data_retention_sec_ static preempt_config_t s_flash_preempt_config =
 };
 
 /*******************************************************************************************************************
- *                                                Primary interface
+ *                                              Primary interface
  ******************************************************************************************************************/
 
 /**
- * @brief         This function serves to set priority threshold. When the interrupt priority is greater than the maximum of the current interrupt threshold and the given interrupt threshold, flash process will disturb by interrupt.
- * @param[in]   preempt_en    - 1 can disturb by interrupt, 0 can disturb by interrupt.
- * @param[in]    threshold    - priority Threshold.
- * @return        none.
+ * @brief       This function serves to set priority threshold. When the interrupt priority is greater than the maximum of the current interrupt threshold and the given interrupt threshold, flash process will disturb by interrupt.
+ * @param[in]   preempt_en  - 1 can disturb by interrupt, 0 can disturb by interrupt.
+ * @param[in]   threshold   - priority Threshold.
+ * @return      none.
  *              -# The correlation between flash_plic_preempt_config() and the flash functions that call sub-functions(flash_mspi_read_ram/flash_mspi_write_ram) is as follows:
  *                  - When preempt_en = 1 and interrupt nesting is enabled (plic_preempt_feature_en):
  *                      - During the flash functions execution, the threshold of the PLIC is set to the maximum of the threshold before calling the interface and the given threshold value. \n
@@ -78,23 +78,23 @@ void flash_plic_preempt_config(unsigned char preempt_en, unsigned char threshold
 }
 
 /*******************************************************************************************************************
- *                                Functions for internal use in flash,
- *        There is no need to add an evasion solution to solve the problem of access flash conflicts.
+ *                              Functions for internal use in flash,
+ *      There is no need to add an evasion solution to solve the problem of access flash conflicts.
  ******************************************************************************************************************/
 /**
- * @brief        This function to determine whether the flash is busy..
- * @return        1:Indicates that the flash is busy. 0:Indicates that the flash is free
+ * @brief       This function to determine whether the flash is busy..
+ * @return      1:Indicates that the flash is busy. 0:Indicates that the flash is free
  */
 _attribute_ram_code_sec_ static inline int flash_is_busy(void){
-    return mspi_read() & 0x01;        //the busy bit, pls check flash spec
+    return mspi_read() & 0x01;      //the busy bit, pls check flash spec
 }
 
 /**
- * @brief        This function serves to set flash write command.This function interface is only used internally by flash,
- *                 and is currently included in the H file for compatibility with other SDKs. When using this interface,
- *                 please ensure that you understand the precautions of flash before using it.
- * @param[in]    cmd    - set command.
- * @return        none.
+ * @brief       This function serves to set flash write command.This function interface is only used internally by flash,
+ *              and is currently included in the H file for compatibility with other SDKs. When using this interface,
+ *              please ensure that you understand the precautions of flash before using it.
+ * @param[in]   cmd - set command.
+ * @return      none.
  */
 _attribute_ram_code_sec_noinline_ void flash_send_cmd(flash_command_e cmd)
 {
@@ -106,9 +106,9 @@ _attribute_ram_code_sec_noinline_ void flash_send_cmd(flash_command_e cmd)
 }
 
 /**
- * @brief        This function serves to send flash address.
- * @param[in]    addr    - the flash address.
- * @return        none.
+ * @brief       This function serves to send flash address.
+ * @param[in]   addr    - the flash address.
+ * @return      none.
  */
 _attribute_ram_code_sec_noinline_ static void flash_send_addr(unsigned int addr){
     mspi_write((unsigned char)(addr>>16));
@@ -137,25 +137,25 @@ _attribute_ram_code_sec_noinline_ static void flash_wait_done(void)
 }
 
 /*******************************************************************************************************************
- *        It is necessary to add an evasion plan to solve the problem of access flash conflict.
+ *      It is necessary to add an evasion plan to solve the problem of access flash conflict.
  ******************************************************************************************************************/
 
 /**
- * @brief         This function is used to read data from flash or read the status of flash.
- * @param[in]   cmd            - the read command.
+ * @brief       This function is used to read data from flash or read the status of flash.
+ * @param[in]   cmd         - the read command.
  * @param[in]   addr        - starting address.
- * @param[in]   addr_en        - whether need to send an address.
- * @param[in]   dummy_cnt    - the length(in byte) of dummy.
+ * @param[in]   addr_en     - whether need to send an address.
+ * @param[in]   dummy_cnt   - the length(in byte) of dummy.
  * @param[out]  data        - the start address of the data buffer(ram address).
  * @param[in]   data_len    - the length(in byte, must be above 0) of content needs to read out.
- * @return         none.
+ * @return      none.
  */
 _attribute_ram_code_sec_noinline_ void flash_mspi_read_ram(flash_command_e cmd, unsigned long addr, unsigned char addr_en, unsigned char dummy_cnt, unsigned char *data, unsigned long data_len)
 {
     unsigned int r=plic_enter_critical_sec(s_flash_preempt_config.preempt_en,s_flash_preempt_config.threshold);
     mspi_stop_xip();
     /*Flash single line mode does not distinguish between mspi read and mspi write.This is just to be compatible with single line, dual line and quad line.*/
-    mspi_fm_write_en();            /* write mode */
+    mspi_fm_write_en();         /* write mode */
     mspi_fm_data_line(MSPI_SINGLE_LINE);
     flash_send_cmd(cmd);
     if(cmd == FLASH_X4READ_CMD)
@@ -168,24 +168,24 @@ _attribute_ram_code_sec_noinline_ void flash_mspi_read_ram(flash_command_e cmd, 
     }
     for(unsigned int i = 0; i < dummy_cnt; ++i)
     {
-        mspi_write(0x00);        /* dummy */
+        mspi_write(0x00);       /* dummy */
         mspi_wait();
     }
     if(cmd == FLASH_DREAD_CMD)
     {
         mspi_fm_data_line(MSPI_DUAL_LINE);
     }
-    mspi_fm_read_en();            /* read mode */
-    mspi_write(0x00);            /* to issue clock */
+    mspi_fm_read_en();          /* read mode */
+    mspi_write(0x00);           /* to issue clock */
     mspi_wait();
-    mspi_fm_rd_trig_en();        /* auto mode, mspi_get() automatically triggers mspi_write(0x00) once. */
+    mspi_fm_rd_trig_en();       /* auto mode, mspi_get() automatically triggers mspi_write(0x00) once. */
     mspi_wait();
     for(unsigned int i = 0; i < data_len; ++i)
     {
         *data++ = mspi_get();
         mspi_wait();
     }
-    mspi_fm_rd_trig_dis();        /* off read auto mode */
+    mspi_fm_rd_trig_dis();      /* off read auto mode */
     if((cmd == FLASH_X4READ_CMD)||(cmd == FLASH_DREAD_CMD))
     {
         mspi_fm_data_line(MSPI_SINGLE_LINE);
@@ -197,13 +197,13 @@ _attribute_ram_code_sec_noinline_ void flash_mspi_read_ram(flash_command_e cmd, 
 }
 
 /**
- * @brief         This function is used to write data or status to flash.
- * @param[in]   cmd            - the write command.
+ * @brief       This function is used to write data or status to flash.
+ * @param[in]   cmd         - the write command.
  * @param[in]   addr        - starting address.
- * @param[in]   addr_en        - whether need to send an address.
+ * @param[in]   addr_en     - whether need to send an address.
  * @param[out]  data        - the start address of the data buffer(ram address).
  * @param[in]   data_len    - the length(in byte, must be above 0) of content needs to be written.
- * @return         none.
+ * @return      none.
  * @note        important:  "data" must not reside at flash, such as constant string.If that case, pls copy to memory first before write.
  */
 _attribute_ram_code_sec_noinline_ void flash_mspi_write_ram(flash_command_e cmd, unsigned long addr, unsigned char addr_en, unsigned char *data, unsigned long data_len)
@@ -211,7 +211,7 @@ _attribute_ram_code_sec_noinline_ void flash_mspi_write_ram(flash_command_e cmd,
     unsigned int r=plic_enter_critical_sec(s_flash_preempt_config.preempt_en,s_flash_preempt_config.threshold);
     mspi_stop_xip();
     /*Flash single line mode does not distinguish between mspi read and mspi write.This is just to be compatible with single line, dual line and quad line.*/
-    mspi_fm_write_en();            /* write mode */
+    mspi_fm_write_en();         /* write mode */
     mspi_fm_data_line(MSPI_SINGLE_LINE);
     flash_send_cmd(FLASH_WRITE_ENABLE_CMD);
     flash_send_cmd(cmd);
@@ -240,13 +240,13 @@ _attribute_ram_code_sec_noinline_ void flash_mspi_write_ram(flash_command_e cmd,
 }
 
 /**
- * @brief         This function serves to erase a sector.
+ * @brief       This function serves to erase a sector.
  * @param[in]   addr    - must be 0 or a multiple of 0x1000.
- * @return         none.
+ * @return      none.
  * @note        Attention: The block erase takes a long time, please pay attention to feeding the dog in advance.
- *                 The maximum block erase time is listed at the beginning of this document and is available for viewing.
+ *              The maximum block erase time is listed at the beginning of this document and is available for viewing.
  *
- *                 Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
  *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
@@ -265,13 +265,13 @@ _attribute_text_sec_ void flash_erase_sector(unsigned long addr)
 }
 
 /**
- * @brief         This function reads the content from a page to the buf with single mode.
+ * @brief       This function reads the content from a page to the buf with single mode.
  * @param[in]   addr    - the start address of the page.
- * @param[in]   len        - the length(in byte, must be above 0) of content needs to read out from the page.
- * @param[out]  buf        - the start address of the buffer(ram address).
- * @return         none.
+ * @param[in]   len     - the length(in byte, must be above 0) of content needs to read out from the page.
+ * @param[out]  buf     - the start address of the buffer(ram address).
+ * @return      none.
  * @note        cmd:1x, addr:1x, data:1x, dummy:0
- *                 Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
  *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
@@ -289,13 +289,13 @@ _attribute_text_sec_ void flash_read_data(unsigned long addr, unsigned long len,
 }
 
 /**
- * @brief         This function reads the content from a page to the buf with dual read mode.
+ * @brief       This function reads the content from a page to the buf with dual read mode.
  * @param[in]   addr    - the start address of the page.
- * @param[in]   len        - the length(in byte, must be above 0) of content needs to read out from the page.
- * @param[out]  buf        - the start address of the buffer(ram address).
- * @return         none.
+ * @param[in]   len     - the length(in byte, must be above 0) of content needs to read out from the page.
+ * @param[out]  buf     - the start address of the buffer(ram address).
+ * @return      none.
  * @note        cmd:1x, addr:1x, data:2x, dummy:8
- *                 Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
  *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
@@ -313,13 +313,13 @@ _attribute_text_sec_ void flash_dread(unsigned long addr, unsigned long len, uns
 }
 
 /**
- * @brief         This function reads the content from a page to the buf with 4*IO read mode.
+ * @brief       This function reads the content from a page to the buf with 4*IO read mode.
  * @param[in]   addr    - the start address of the page.
- * @param[in]   len        - the length(in byte, must be above 0) of content needs to read out from the page.
- * @param[out]  buf        - the start address of the buffer(ram address).
- * @return         none.
+ * @param[in]   len     - the length(in byte, must be above 0) of content needs to read out from the page.
+ * @param[out]  buf     - the start address of the buffer(ram address).
+ * @return      none.
  * @note        cmd:1x, addr:4x, data:4x, dummy:6
- *                 Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
  *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
@@ -337,12 +337,12 @@ _attribute_text_sec_ void flash_4read(unsigned long addr, unsigned long len, uns
 }
 
 /**
- * @brief         This function writes the buffer's content to the flash.
+ * @brief       This function writes the buffer's content to the flash.
  * @param[in]   addr    - the start address of the area.
- * @param[in]   len        - the length(in byte, must be above 0) of content needs to write into the flash.
- * @param[in]   buf        - the start address of the content needs to write into(ram address).
- * @param[in]   cmd        - the write command. FLASH_WRITE_CMD or FLASH_QUAD_PAGE_PROGRAM_CMD.
- * @return         none.
+ * @param[in]   len     - the length(in byte, must be above 0) of content needs to write into the flash.
+ * @param[in]   buf     - the start address of the content needs to write into(ram address).
+ * @param[in]   cmd     - the write command. FLASH_WRITE_CMD or FLASH_QUAD_PAGE_PROGRAM_CMD.
+ * @return      none.
  */
 _attribute_text_sec_ static void flash_write(unsigned long addr, unsigned long len, unsigned char *buf, flash_command_e cmd)
 {
@@ -362,16 +362,16 @@ _attribute_text_sec_ static void flash_write(unsigned long addr, unsigned long l
 }
 
 /**
- * @brief         This function writes the buffer's content to the flash with single mode.It is necessary to confirm whether this area
- *                 has been erased before writing. If not, you need to erase and then write, otherwise the write may be unsuccessful
- *                 and the data will become the wrong value. Note that when erasing, the minimum is erased by sector (4k bytes).
- *                 Do not erase the useful information in other locations of the sector during erasing.
+ * @brief       This function writes the buffer's content to the flash with single mode.It is necessary to confirm whether this area
+ *              has been erased before writing. If not, you need to erase and then write, otherwise the write may be unsuccessful
+ *              and the data will become the wrong value. Note that when erasing, the minimum is erased by sector (4k bytes).
+ *              Do not erase the useful information in other locations of the sector during erasing.
  * @param[in]   addr    - the start address of the area.
- * @param[in]   len        - the length(in byte, must be above 0) of content needs to write into the flash.
- * @param[in]   buf        - the start address of the content needs to write into(ram address).
- * @return         none.
+ * @param[in]   len     - the length(in byte, must be above 0) of content needs to write into the flash.
+ * @param[in]   buf     - the start address of the content needs to write into(ram address).
+ * @return      none.
  * @note        cmd:1x, addr:1x, data:1x
- *                 the function support cross-page writing,which means the len of buf can bigger than 256.
+ *              the function support cross-page writing,which means the len of buf can bigger than 256.
  *
  *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
@@ -389,16 +389,16 @@ _attribute_text_sec_ void flash_page_program(unsigned long addr, unsigned long l
 }
 
 /**
- * @brief         This function writes the buffer's content to the flash with quad page program mode.It is necessary to confirm whether this area
- *                 has been erased before writing. If not, you need to erase and then write, otherwise the write may be unsuccessful
- *                 and the data will become the wrong value. Note that when erasing, the minimum is erased by sector (4k bytes).
- *                 Do not erase the useful information in other locations of the sector during erasing.
+ * @brief       This function writes the buffer's content to the flash with quad page program mode.It is necessary to confirm whether this area
+ *              has been erased before writing. If not, you need to erase and then write, otherwise the write may be unsuccessful
+ *              and the data will become the wrong value. Note that when erasing, the minimum is erased by sector (4k bytes).
+ *              Do not erase the useful information in other locations of the sector during erasing.
  * @param[in]   addr    - the start address of the area.
- * @param[in]   len        - the length(in byte, must be above 0) of content needs to write into the flash.
- * @param[in]   buf        - the start address of the content needs to write into(ram address).
- * @return         none.
+ * @param[in]   len     - the length(in byte, must be above 0) of content needs to write into the flash.
+ * @param[in]   buf     - the start address of the content needs to write into(ram address).
+ * @return      none.
  * @note        cmd:1x, addr:1x, data:4x
- *                 the function support cross-page writing,which means the len of buf can bigger than 256.
+ *              the function support cross-page writing,which means the len of buf can bigger than 256.
  *
  *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
@@ -416,9 +416,9 @@ _attribute_text_sec_ void flash_quad_page_program(unsigned long addr, unsigned l
 }
 
 /**
- * @brief        This function reads the status of flash.
- * @param[in]     cmd    - the cmd of read status. FLASH_READ_STATUS_CMD_LOWBYTE or FLASH_READ_STATUS_CMD_HIGHBYTE.
- * @return         the value of status.
+ * @brief       This function reads the status of flash.
+ * @param[in]   cmd - the cmd of read status. FLASH_READ_STATUS_CMD_LOWBYTE or FLASH_READ_STATUS_CMD_HIGHBYTE.
+ * @return      the value of status.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -439,10 +439,10 @@ _attribute_text_sec_ unsigned char flash_read_status(flash_command_e cmd)
 }
 
 /**
- * @brief         This function write the status of flash.
- * @param[in]      type    - the type of status.8 bit or 16 bit.
- * @param[in]      data    - the value of status.
- * @return         none.
+ * @brief       This function write the status of flash.
+ * @param[in]   type    - the type of status.8 bit or 16 bit.
+ * @param[in]   data    - the value of status.
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -472,11 +472,11 @@ _attribute_text_sec_ void flash_write_status(flash_status_typedef_e type, unsign
 }
 
 /**
- * @brief         This function serves to read data from the Security Registers of the flash.
+ * @brief       This function serves to read data from the Security Registers of the flash.
  * @param[in]   addr    - the start address of the Security Registers.
- * @param[in]   len        - the length(in byte, must be above 0) of the content to be read.
- * @param[out]  buf        - the starting address of the content to be read(ram address).
- * @return         none.
+ * @param[in]   len     - the length(in byte, must be above 0) of the content to be read.
+ * @param[out]  buf     - the starting address of the content to be read(ram address).
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -495,11 +495,11 @@ _attribute_text_sec_ void flash_read_otp(unsigned long addr, unsigned long len, 
 }
 
 /**
- * @brief         This function serves to write data to the Security Registers of the flash you choose.
+ * @brief       This function serves to write data to the Security Registers of the flash you choose.
  * @param[in]   addr    - the start address of the Security Registers.
- * @param[in]   len        - the length(in byte, must be above 0) of content to be written.
- * @param[in]   buf        - the starting address of the content to be written(ram address).
- * @return         none.
+ * @param[in]   len     - the length(in byte, must be above 0) of content to be written.
+ * @param[in]   buf     - the starting address of the content to be written(ram address).
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -528,10 +528,10 @@ _attribute_text_sec_ void flash_write_otp(unsigned long addr, unsigned long len,
 }
 
 /**
- * @brief         This function serves to erase the data of the Security Registers that you choose.
+ * @brief       This function serves to erase the data of the Security Registers that you choose.
  * @param[in]   addr    - the address that you want to erase.
- * @return         none.
- * @Attention    Even you choose the middle area of the Security Registers,it will erase the whole area.
+ * @return      none.
+ * @Attention   Even you choose the middle area of the Security Registers,it will erase the whole area.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -550,10 +550,10 @@ _attribute_text_sec_ void flash_erase_otp(unsigned long addr)
 }
 
 /**
- * @brief          This function serves to read MID of flash(MAC id). Before reading UID of flash,
- *                 you must read MID of flash. and then you can look up the related table to select
- *                 the idcmd and read UID of flash.
- * @return        MID of the flash(4 bytes).
+ * @brief       This function serves to read MID of flash(MAC id). Before reading UID of flash,
+ *              you must read MID of flash. and then you can look up the related table to select
+ *              the idcmd and read UID of flash.
+ * @return      MID of the flash(4 bytes).
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -574,11 +574,11 @@ _attribute_text_sec_ unsigned int flash_read_mid(void)
 }
 
 /**
- * @brief          This function serves to read UID of flash.Before reading UID of flash, you must read MID of flash.
- *                 and then you can look up the related table to select the idcmd and read UID of flash.
- * @param[in]     idcmd    - different flash vendor have different read-uid command. E.g: GD/PUYA:0x4B; XTX: 0x5A.
- * @param[in]     buf        - store UID of flash.
- * @return        none.
+ * @brief       This function serves to read UID of flash.Before reading UID of flash, you must read MID of flash.
+ *              and then you can look up the related table to select the idcmd and read UID of flash.
+ * @param[in]   idcmd   - different flash vendor have different read-uid command. E.g: GD/PUYA:0x4B; XTX: 0x5A.
+ * @param[in]   buf     - store UID of flash.
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -592,7 +592,7 @@ _attribute_text_sec_ unsigned int flash_read_mid(void)
 _attribute_text_sec_ void flash_read_uid(unsigned char idcmd, unsigned char *buf)
 {
     DISABLE_BTB;
-    if(idcmd == FLASH_READ_UID_CMD_GD_PUYA_ZB_TH)    //< GD/PUYA/ZB/TH
+    if(idcmd == FLASH_READ_UID_CMD_GD_PUYA_ZB_TH)   //< GD/PUYA/ZB/TH
     {
         flash_mspi_read_ram(idcmd, 0, 0, 4, buf, 16);
     }
@@ -600,10 +600,10 @@ _attribute_text_sec_ void flash_read_uid(unsigned char idcmd, unsigned char *buf
 }
 
 /**
- * @brief         This function is used to update the configuration parameters of xip(eXecute In Place),
- *                 this configuration will affect the speed of MCU fetching,
- *                 this parameter needs to be consistent with the corresponding parameters in the flash datasheet.
- * @param[in]    config    - xip configuration,reference structure flash_xip_config_e
+ * @brief       This function is used to update the configuration parameters of xip(eXecute In Place),
+ *              this configuration will affect the speed of MCU fetching,
+ *              this parameter needs to be consistent with the corresponding parameters in the flash datasheet.
+ * @param[in]   config  - xip configuration,reference structure flash_xip_config_e
  * @return none
  */
 _attribute_ram_code_sec_noinline_ void flash_set_xip_config_sram(flash_xip_config_e config)
@@ -624,10 +624,10 @@ _attribute_text_sec_ void flash_set_xip_config(flash_xip_config_e config)
 }
 
 /**
- * @brief         This function is used to write the configure of the flash,P25Q16SU/P25Q32SU/PY25Q128H uses this function.
- * @param[in]   cmd            - the write command.
+ * @brief       This function is used to write the configure of the flash,P25Q16SU/P25Q32SU/PY25Q128H uses this function.
+ * @param[in]   cmd         - the write command.
  * @param[out]  data        - the start address of the data buffer.
- * @return         none.
+ * @return      none.
  * @note        important:  "data" must not reside at flash, such as constant string.If that case, pls copy to memory first before write.
  *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
@@ -647,8 +647,8 @@ _attribute_text_sec_ void flash_write_config(flash_command_e cmd,unsigned char d
 }
 
 /**
- * @brief         This function is used to read the configure of the flash,P25Q16SU/P25Q32SU/PY25Q128H uses this function.
- * @return         the value of configure.
+ * @brief       This function is used to read the configure of the flash,P25Q16SU/P25Q32SU/PY25Q128H uses this function.
+ * @return      the value of configure.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -669,14 +669,14 @@ _attribute_text_sec_ unsigned char  flash_read_config(void)
 }
 
 /*******************************************************************************************************************
- *                                    secondary calling function,
- *    there is no need to add an circumvention solution to solve the problem of access flash conflicts.
+ *                                  secondary calling function,
+ *  there is no need to add an circumvention solution to solve the problem of access flash conflicts.
  ******************************************************************************************************************/
 /**
- * @brief        This function serves to read flash mid and uid,and check the correctness of mid and uid.
- * @param[out]    flash_mid    - Flash Manufacturer ID.
- * @param[out]    flash_uid    - Flash Unique ID.
- * @return        0: flash no uid or not a known flash model      1:the flash model is known and the uid is read.
+ * @brief       This function serves to read flash mid and uid,and check the correctness of mid and uid.
+ * @param[out]  flash_mid   - Flash Manufacturer ID.
+ * @param[out]  flash_uid   - Flash Unique ID.
+ * @return      0: flash no uid or not a known flash model   1:the flash model is known and the uid is read.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -717,9 +717,9 @@ _attribute_text_sec_ int flash_read_mid_uid_with_check(unsigned int *flash_mid, 
 }
 
 /**
- * @brief        This function serves to get flash vendor.
- * @param[in]    none.
- * @return        0 - err, other - flash vendor.
+ * @brief       This function serves to get flash vendor.
+ * @param[in]   none.
+ * @return      0 - err, other - flash vendor.
  */
 unsigned int flash_get_vendor(unsigned int flash_mid)
 {

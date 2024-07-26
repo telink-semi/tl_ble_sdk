@@ -30,9 +30,9 @@
  * @brief      This function is used to clear WhiteList
  * @param[in]  none
  * @return     Status - 0x00: command succeeded;
- *  *                     Others: command failed, refer to definition of "ble_sts_t" to know the reason
+ *  *                   Others: command failed, refer to definition of "ble_sts_t" to know the reason
  */
-ble_sts_t        blc_ll_clearWhiteList(void);
+ble_sts_t       blc_ll_clearWhiteList(void);
 
 
 /**
@@ -41,9 +41,9 @@ ble_sts_t        blc_ll_clearWhiteList(void);
  * @param[in]  adr_type - device address type
  * @param[in]  addr - device address
  * @return     Status - 0x00: command succeeded;
- *                         Others: command failed, refer to definition of "ble_sts_t" to know the reason
+ *                      Others: command failed, refer to definition of "ble_sts_t" to know the reason
  */
-ble_sts_t        blc_ll_addDeviceToWhiteList(u8 adr_type, u8 *addr);
+ble_sts_t       blc_ll_addDeviceToWhiteList(u8 adr_type, u8 *addr);
 
 
 /**
@@ -51,9 +51,9 @@ ble_sts_t        blc_ll_addDeviceToWhiteList(u8 adr_type, u8 *addr);
  * @param[in]  adr_type - device address type
  * @param[in]  addr - device address
  * @return     Status - 0x00: command succeeded;
- *                         Others: command failed, refer to definition of "ble_sts_t" to know the reason
+ *                      Others: command failed, refer to definition of "ble_sts_t" to know the reason
  */
-ble_sts_t        blc_ll_removeDeviceFromWhiteList(u8 adr_type, u8 *addr);
+ble_sts_t       blc_ll_removeDeviceFromWhiteList(u8 adr_type, u8 *addr);
 
 
 

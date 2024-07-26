@@ -29,16 +29,16 @@
 #if (FEATURE_TEST_MODE == TEST_2M_CODED_PHY_CONNECTION)
 
 /**
- * @brief        user initialization when MCU power on or wake_up from deepSleep mode
- * @param[in]    none
+ * @brief       user initialization when MCU power on or wake_up from deepSleep mode
+ * @param[in]   none
  * @return      none
  */
 void user_init_normal(void);
 
 
 /**
- * @brief        user initialization when MCU wake_up from deepSleep_retention mode
- * @param[in]    none
+ * @brief       user initialization when MCU wake_up from deepSleep_retention mode
+ * @param[in]   none
  * @return      none
  */
 void user_init_deepRetn(void);

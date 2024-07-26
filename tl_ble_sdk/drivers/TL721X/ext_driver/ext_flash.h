@@ -36,7 +36,7 @@
 /**
 * @brief This function serves to read flash mid and uid,and check the correctness of mid and uid.
 */
-#define flash_read_mid_uid_with_check(mid, uid)          flash_read_mid_uid_with_check_with_device_num(BLE_EXT_DRIVER_SLAVE_NUM,mid,uid)
+#define flash_read_mid_uid_with_check(mid, uid)         flash_read_mid_uid_with_check_with_device_num(BLE_EXT_DRIVER_SLAVE_NUM,mid,uid)
 
 
 /**
@@ -58,8 +58,8 @@ mid156085_lock_block_e flash_get_lock_block_mid156085(void);
 
 
 /**
- * @brief          This function serves to read MID of flash(MAC id).
- * @return        MID of the flash(4 bytes).
+ * @brief       This function serves to read MID of flash(MAC id).
+ * @return      MID of the flash(4 bytes).
  */
 __attribute__((always_inline)) inline unsigned int ble_flash_read_mid(void)
 {
@@ -68,9 +68,9 @@ __attribute__((always_inline)) inline unsigned int ble_flash_read_mid(void)
 
 
 /**
- * @brief         This function is used to set the use of quad IO mode when reading and writing flash.
- * @param[in]      flash_mid    - the mid of flash.
- * @return         1: success, 0: error, 2: parameter error, 3: mid is not supported.
+ * @brief       This function is used to set the use of quad IO mode when reading and writing flash.
+ * @param[in]   flash_mid   - the mid of flash.
+ * @return      1: success, 0: error, 2: parameter error, 3: mid is not supported.
  */
 unsigned char ble_flash_4line_enable(void);
 

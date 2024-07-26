@@ -26,17 +26,17 @@
 #include "config.h"
 
 
-#define ACL_CENTRAL_MAX_NUM                            0 // ACL central maximum number
-#define ACL_PERIPHR_MAX_NUM                            4 // ACL peripheral maximum number
+#define ACL_CENTRAL_MAX_NUM                         0 // ACL central maximum number
+#define ACL_PERIPHR_MAX_NUM                         4 // ACL peripheral maximum number
 
 ///////////////////////// Feature Configuration////////////////////////////////////////////////
-#define ACL_PERIPHR_SMP_ENABLE                         1  //1 for smp,  0 no security
-#define BLE_OTA_SERVER_ENABLE                          1
+#define ACL_PERIPHR_SMP_ENABLE                      1  //1 for smp,  0 no security
+#define BLE_OTA_SERVER_ENABLE                       1
 
-#define BLE_APP_PM_ENABLE                              1
-#define PM_DEEPSLEEP_RETENTION_ENABLE                  1
+#define BLE_APP_PM_ENABLE                           1
+#define PM_DEEPSLEEP_RETENTION_ENABLE               1
 
-#define BATT_CHECK_ENABLE                              0
+#define BATT_CHECK_ENABLE                           0
 
 
 /* Flash Protection:
@@ -48,13 +48,14 @@
  *    be directly used on user's mass production application without any change. User should refer to sample code, understand the
  *    principles and methods, then change and implement a more appropriate mechanism according to their application if needed.
  */
-#define APP_FLASH_PROTECTION_ENABLE                    1
+#define APP_FLASH_PROTECTION_ENABLE                 1
+
 
 ///////////////////////// OS settings /////////////////////////////////////////////////////////
-#define FREERTOS_ENABLE                                0
-#define OS_SEPARATE_STACK_SPACE                        1   //Separate the task stack and interrupt stack space
-#define configTOTAL_HEAP_SIZE                          (16*1024)
-#define configISR_PLIC_STACK_SIZE                      640
+#define FREERTOS_ENABLE                             0
+#define OS_SEPARATE_STACK_SPACE                     1   //Separate the task stack and interrupt stack space
+#define configTOTAL_HEAP_SIZE                       (16*1024)
+#define configISR_PLIC_STACK_SIZE                   640
 
 
 
@@ -65,33 +66,33 @@
 #elif (MCU_CORE_TYPE == MCU_CORE_TL721X)
     #define BOARD_SELECT                                BOARD_721X_EVK_C1T315A20
 #elif (MCU_CORE_TYPE == MCU_CORE_TL321X)
-    #define BOARD_SELECT                                BOARD_321X_EVK_C1T331A20
+    #define BOARD_SELECT                                BOARD_321X_EVK_C1T331A20 //BOARD_321X_EVK_C1T335A20
 #endif
 
 ///////////////////////// UI Configuration ////////////////////////////////////////////////////
-#define UI_LED_ENABLE                                  1
-#define    UI_KEYBOARD_ENABLE                          1
+#define UI_LED_ENABLE                               1
+#define UI_KEYBOARD_ENABLE                          1
 
 
 ///////////////////////// DEBUG  Configuration ////////////////////////////////////////////////
-#define DEBUG_GPIO_ENABLE                              0
+#define DEBUG_GPIO_ENABLE                           0
 
-#define TLKAPI_DEBUG_ENABLE                            1
-#define TLKAPI_DEBUG_CHANNEL                           TLKAPI_DEBUG_CHANNEL_GSUART
+#define TLKAPI_DEBUG_ENABLE                         1
+#define TLKAPI_DEBUG_CHANNEL                        TLKAPI_DEBUG_CHANNEL_GSUART
 
-#define APP_LOG_EN                                     1
-#define APP_CONTR_EVT_LOG_EN                           1    //controller event
-#define APP_HOST_EVT_LOG_EN                            1
-#define APP_KEY_LOG_EN                                 1
+#define APP_LOG_EN                                  1
+#define APP_CONTR_EVT_LOG_EN                        1   //controller event
+#define APP_HOST_EVT_LOG_EN                         1
+#define APP_KEY_LOG_EN                              1
 
-#define JTAG_DEBUG_DISABLE                             1  //if use JTAG, change this
+#define JTAG_DEBUG_DISABLE                          1  //if use JTAG, change this
 
 
 
 /////////////////// DEEP SAVE FLG //////////////////////////////////
-#define USED_DEEP_ANA_REG                             PM_ANA_REG_POWER_ON_CLR_BUF1 //u8,can save 8 bit info when deep
-#define LOW_BATT_FLG                                  BIT(0) //if 1: low battery
-#define CONN_DEEP_FLG                                 BIT(1) //if 1: conn deep, 0: adv deep
+#define USED_DEEP_ANA_REG                   PM_ANA_REG_POWER_ON_CLR_BUF1 //u8,can save 8 bit info when deep
+#define LOW_BATT_FLG                        BIT(0) //if 1: low battery
+#define CONN_DEEP_FLG                       BIT(1) //if 1: conn deep, 0: adv deep
 
 
 
@@ -100,19 +101,20 @@
     #undef UI_KEYBOARD_ENABLE
     #define UI_KEYBOARD_ENABLE                        0
 
+    
     #define traceAPP_LED_Task_Toggle()  //gpio_toggle(GPIO_CH01);
-    #define traceAPP_BLE_Task_BEGIN()    //gpio_write(GPIO_CH02,1);
-    #define traceAPP_BLE_Task_END()        //gpio_write(GPIO_CH02,0);
-    #define traceAPP_KEY_Task_BEGIN()    //gpio_write(GPIO_CH03,1);
-    #define traceAPP_KEY_Task_END()        //gpio_write(GPIO_CH03,0);
-    #define traceAPP_BAT_Task_BEGIN()    //gpio_write(GPIO_CH04,1);
-    #define traceAPP_BAT_Task_END()        //gpio_write(GPIO_CH04,0);
+    #define traceAPP_BLE_Task_BEGIN()   //gpio_write(GPIO_CH02,1);
+    #define traceAPP_BLE_Task_END()     //gpio_write(GPIO_CH02,0);
+    #define traceAPP_KEY_Task_BEGIN()   //gpio_write(GPIO_CH03,1);
+    #define traceAPP_KEY_Task_END()     //gpio_write(GPIO_CH03,0);
+    #define traceAPP_BAT_Task_BEGIN()   //gpio_write(GPIO_CH04,1);
+    #define traceAPP_BAT_Task_END()     //gpio_write(GPIO_CH04,0);
 
-    #define traceAPP_MUTEX_Task_BEGIN()    //gpio_write(GPIO_CH05,1);
-    #define traceAPP_MUTEX_Task_END()    //gpio_write(GPIO_CH05,0);
+    #define traceAPP_MUTEX_Task_BEGIN() //gpio_write(GPIO_CH05,1);
+    #define traceAPP_MUTEX_Task_END()   //gpio_write(GPIO_CH05,0);
 
     #define tracePort_IrqHandler_BEGIN() //gpio_write(GPIO_CH06,1);
-    #define tracePort_IrqHandler_END()      //gpio_write(GPIO_CH06,0);
+    #define tracePort_IrqHandler_END()   //gpio_write(GPIO_CH06,0);
 
 #endif
 

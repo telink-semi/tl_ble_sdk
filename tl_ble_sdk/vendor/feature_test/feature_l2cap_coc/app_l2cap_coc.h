@@ -30,7 +30,7 @@
 #if (FEATURE_TEST_MODE == TEST_L2CAP_COC)
 
 #define CREATE_COC_CONNECT_ACL_COUNT            2
-#define COC_CID_COUNT                            15
+#define COC_CID_COUNT                           15
 #define COC_MTU_SIZE                            1000
 
 void app_l2cap_coc_init(void);

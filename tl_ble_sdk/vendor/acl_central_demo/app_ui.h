@@ -26,10 +26,10 @@
 
 
 
-extern     int    central_pairing_enable;
-extern     u16 central_unpair_enable;
+extern  int central_pairing_enable;
+extern  u16 central_unpair_enable;
 
-extern    u16 central_disconnect_connhandle;
+extern  u16 central_disconnect_connhandle;
 
 
 /**
@@ -50,11 +50,11 @@ void proc_central_role_unpair(void);
 
 
 /**
- * @brief        this function is used to detect if button pressed or released.
- * @param[in]    none
+ * @brief       this function is used to detect if button pressed or released.
+ * @param[in]   none
  * @return      none
  */
-void     proc_button (void);
+void    proc_button (void);
 
 
 /**

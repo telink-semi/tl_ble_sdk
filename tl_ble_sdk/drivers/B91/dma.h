@@ -21,15 +21,15 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-/**    @page DMA
+/** @page DMA
  *
- *    Introduction
- *    ===============
+ *  Introduction
+ *  ===============
  *
  *
- *    API Reference
- *    ===============
- *    Header File: dma.h
+ *  API Reference
+ *  ===============
+ *  Header File: dma.h
  */
 #ifndef DMA_H_
 #define DMA_H_
@@ -113,9 +113,9 @@ typedef enum{
 dma_transfer_width_e;
 
 typedef enum{
-    TC_MASK   =       BIT(1),
-    ERR_MASK  =        BIT(2),
-    ABT_MASK  =        BIT(3),
+    TC_MASK   =     BIT(1),
+    ERR_MASK  =     BIT(2),
+    ABT_MASK  =     BIT(3),
 }dma_irq_mask_e;
 
 typedef struct {

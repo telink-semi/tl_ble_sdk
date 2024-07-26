@@ -28,10 +28,10 @@
 
 /**
  * @brief      for user to initialize ACL connection central role.
- * @param       none
+ * @param      none
  * @return     none
  */
-void         blc_ll_initAclCentralRole_module(void);
+void        blc_ll_initAclCentralRole_module(void);
 
 
 /**
@@ -41,19 +41,19 @@ void         blc_ll_initAclCentralRole_module(void);
  * @param[in]  fifo_number - TX FIFO number, can only be 4, 8, 16 or 32
  * @param[in]  conn_number - Number of supported ACL central connections
  * @return     status, 0x00:  succeed
- *                        other: failed
+ *                     other: failed
  */
-ble_sts_t     blc_ll_initAclCentralTxFifo(u8 *pTxbuf, int fifo_size, int fifo_number, int conn_number);
+ble_sts_t   blc_ll_initAclCentralTxFifo(u8 *pTxbuf, int fifo_size, int fifo_number, int conn_number);
 
 
 /**
  * @brief      for user to initialize LinkLayer ACL connection RX FIFO.
- *                all connection will share the FIFO.
+ *             all connection will share the FIFO.
  * @param[in]  conn_interval - Set connection interval, unit 1.25ms.
  * @return     status, 0x00:  succeed
- *                        other: failed
+ *                     other: failed
  */
-ble_sts_t    blc_ll_setAclCentralBaseConnectionInterval(conn_inter_t conn_interval);
+ble_sts_t   blc_ll_setAclCentralBaseConnectionInterval(conn_inter_t conn_interval);
 
 
 /**
@@ -66,9 +66,9 @@ ble_sts_t    blc_ll_setAclCentralBaseConnectionInterval(conn_inter_t conn_interv
  * @param[in]  ce_min - information parameters providing the Controller with a hint about the expected minimum length of the connection events.
  * @param[in]  ce_max - information parameters providing the Controller with a hint about the expected maximum length of the connection events.
  * @return     status, 0x00:  succeed
- *                        other: failed
+ *                     other: failed
  */
-ble_sts_t     blc_ll_updateConnection(u16 connHandle, conn_inter_t conn_min, conn_inter_t conn_max, u16 conn_latency, conn_tm_t timeout, u16 ce_min, u16 ce_max);
+ble_sts_t   blc_ll_updateConnection(u16 connHandle, conn_inter_t conn_min, conn_inter_t conn_max, u16 conn_latency, conn_tm_t timeout, u16 ce_min, u16 ce_max);
 
 
 
@@ -77,7 +77,7 @@ ble_sts_t     blc_ll_updateConnection(u16 connHandle, conn_inter_t conn_min, con
  * @param[in]  enable - 1: enable;  0: disable
  * @return     none
  */
-void         blc_ll_customizeConnectionEstablishEvent(int enable);
+void        blc_ll_customizeConnectionEstablishEvent(int enable);
 
 
 

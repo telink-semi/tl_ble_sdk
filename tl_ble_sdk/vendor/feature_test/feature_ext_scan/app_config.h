@@ -28,50 +28,50 @@
 #if (FEATURE_TEST_MODE == TEST_EXT_SCAN)
 
 
-#define ACL_CENTRAL_MAX_NUM                            4 // ACL central maximum number
-#define ACL_PERIPHR_MAX_NUM                            0 // ACL peripheral maximum number
+#define ACL_CENTRAL_MAX_NUM                         4 // ACL central maximum number
+#define ACL_PERIPHR_MAX_NUM                         0 // ACL peripheral maximum number
 
 
 #define APP_LE_EXTENDED_SCAN_EN                    1
 #define APP_LE_EXTENDED_INIT_EN                    1
 
-#define APP_EXT_SCAN_1M                               0x01
+#define APP_EXT_SCAN_1M                            0x01
 #define APP_EXT_SCAN_CODED                         0x02
 #define APP_EXT_SCAN_1M_CODED                      0x04
-#define EXT_SCAN_TEST_MODE                        APP_EXT_SCAN_CODED
+#define EXT_SCAN_TEST_MODE                      APP_EXT_SCAN_CODED
 
 ///////////////////////// Feature Configuration////////////////////////////////////////////////
-#define ACL_PERIPHR_SMP_ENABLE                        1   //1 for smp,  0 no security
-#define ACL_CENTRAL_SMP_ENABLE                        1   //1 for smp,  0 no security
-#define ACL_CENTRAL_SIMPLE_SDP_ENABLE                1   //simple service discovery for ACL central
+#define ACL_PERIPHR_SMP_ENABLE                      1   //1 for smp,  0 no security
+#define ACL_CENTRAL_SMP_ENABLE                      1   //1 for smp,  0 no security
+#define ACL_CENTRAL_SIMPLE_SDP_ENABLE               1   //simple service discovery for ACL central
 
 
-#define BLE_APP_PM_ENABLE                            0
+#define BLE_APP_PM_ENABLE                           0
 
 
-#define APP_DEFAULT_BUFFER_ACL_OCTETS_MTU_SIZE_MINIMUM        1
-#define APP_DEFAULT_HID_BATTERY_OTA_ATTRIBUTE_TABLE            1
+#define APP_DEFAULT_BUFFER_ACL_OCTETS_MTU_SIZE_MINIMUM      1
+#define APP_DEFAULT_HID_BATTERY_OTA_ATTRIBUTE_TABLE         1
 
 
 ///////////////////////// UI Configuration ////////////////////////////////////////////////////
-#define UI_LED_ENABLE                                1
-#define    UI_KEYBOARD_ENABLE                            1
+#define UI_LED_ENABLE                               1
+#define UI_KEYBOARD_ENABLE                          1
 
 ///////////////////////// DEBUG  Configuration ////////////////////////////////////////////////
-#define DEBUG_GPIO_ENABLE                            0
+#define DEBUG_GPIO_ENABLE                           0
 
-#define TLKAPI_DEBUG_ENABLE                            1
-#define TLKAPI_DEBUG_CHANNEL                          TLKAPI_DEBUG_CHANNEL_GSUART
+#define TLKAPI_DEBUG_ENABLE                         1
+#define TLKAPI_DEBUG_CHANNEL                        TLKAPI_DEBUG_CHANNEL_GSUART
 
-#define APP_LOG_EN                                    1
-#define APP_CONTR_EVT_LOG_EN                        1    //controller event
-#define APP_HOST_EVT_LOG_EN                            1
-#define APP_SMP_LOG_EN                                0
-#define APP_SIMPLE_SDP_LOG_EN                        0
-#define APP_PAIR_LOG_EN                                1
-#define APP_KEY_LOG_EN                                1
+#define APP_LOG_EN                                  1
+#define APP_CONTR_EVT_LOG_EN                        1   //controller event
+#define APP_HOST_EVT_LOG_EN                         1
+#define APP_SMP_LOG_EN                              0
+#define APP_SIMPLE_SDP_LOG_EN                       0
+#define APP_PAIR_LOG_EN                             1
+#define APP_KEY_LOG_EN                              1
 
-#define JTAG_DEBUG_DISABLE                            1  //if use JTAG, change this
+#define JTAG_DEBUG_DISABLE                          1  //if use JTAG, change this
 
 
 

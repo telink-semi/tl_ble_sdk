@@ -72,5 +72,20 @@ typedef struct {
  */
 _attribute_text_sec_ int flash_read_mid_uid_with_check_with_device_num(mspi_slave_device_num_e device_num, unsigned int *flash_mid, unsigned char *flash_uid);
 
+/**
+ * @brief       This function is used to enable the four-wire function of flash.
+ * @param[in]   device_num  - the number of slave device.
+ * @param[in]   flash_mid   - the mid of flash.
+ * @return      1: success, 0: error, 2: parameter error, 3: mid is not supported.
+ */
+unsigned char flash_4line_en_with_device_num(mspi_slave_device_num_e device_num, unsigned int flash_mid);
+
+/**
+ * @brief       This function is used to disable the four-wire function of flash.
+ * @param[in]   device_num  - the number of slave device.
+ * @param[in]   flash_mid   - the mid of flash.
+ * @return      1: success, 0: error, 2: parameter error, 3: mid is not supported.
+ */
+unsigned char flash_4line_dis_with_device_num(mspi_slave_device_num_e device_num, unsigned int flash_mid);
 #endif
 

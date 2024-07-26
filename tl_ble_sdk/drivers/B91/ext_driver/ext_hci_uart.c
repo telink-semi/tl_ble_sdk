@@ -26,11 +26,11 @@
 #include "tl_common.h"
 
 #ifndef HCI_UART_EXT_DRIVER_EN
-#define HCI_UART_EXT_DRIVER_EN    0
+#define HCI_UART_EXT_DRIVER_EN  0
 #endif
 
 #ifndef HCI_TR_EN
-#define HCI_TR_EN                0
+#define HCI_TR_EN               0
 #endif
 
 #if (HCI_UART_EXT_DRIVER_EN||HCI_TR_EN)
@@ -38,26 +38,26 @@
  * @brief  UART Select interface
  */
 #ifndef  EXT_HCI_UART_CHANNEL
-#define  EXT_HCI_UART_CHANNEL                  UART1
+#define  EXT_HCI_UART_CHANNEL               UART1
 #endif
 
 #ifndef  EXT_HCI_UART_IRQ
-#define  EXT_HCI_UART_IRQ                      IRQ_UART1
+#define  EXT_HCI_UART_IRQ                   IRQ_UART1
 #endif
 
 #ifndef  EXT_HCI_UART_DMA_CHN_RX
-#define  EXT_HCI_UART_DMA_CHN_RX              DMA2   //uart dma
+#define  EXT_HCI_UART_DMA_CHN_RX            DMA2   //uart dma
 #endif
 
 #ifndef  EXT_HCI_UART_DMA_CHN_TX
-#define  EXT_HCI_UART_DMA_CHN_TX              DMA3
+#define  EXT_HCI_UART_DMA_CHN_TX            DMA3
 #endif
 
 /*** RTS ***/
 #define RTS_INVERT    1 /*!< 0: RTS PIN will change from low to high. !! use for RTS auto mode(default auto mode)*/
 #define RTS_THRESH    5 /*!< RTS trigger threshold. range: 1-16. */
 /*** CTS ***/
-#define STOP_VOLT     1            //0 :Low level stops TX.  1 :High level stops TX.
+#define STOP_VOLT     1         //0 :Low level stops TX.  1 :High level stops TX.
 
 
 
@@ -68,8 +68,8 @@ _attribute_data_retention_sec_ static volatile unsigned char  *ReceAddr;
 
 /**
  * @brief   hci uart initialization
- * @param    none
- * @return    none
+ * @param   none
+ * @return  none
  */
 ext_hci_StatusTypeDef_e ext_hci_uartInit(ext_hci_InitTypeDef * uart)
 {
@@ -145,7 +145,7 @@ _attribute_ram_code_sec_ void ext_hci_irq_handler(void){
      {
          if((uart_get_irq_status(EXT_HCI_UART_CHANNEL,UART_RX_ERR)))
          {
-               uart_clr_irq_status(EXT_HCI_UART_CHANNEL,UART_RXBUF_IRQ_STATUS);
+            uart_clr_irq_status(EXT_HCI_UART_CHANNEL,UART_RXBUF_IRQ_STATUS);
          }
             /************************get the length of receive data****************************/
          unsigned int rev_data_len = uart_get_dma_rev_data_len(EXT_HCI_UART_CHANNEL,EXT_HCI_UART_DMA_CHN_RX);
@@ -156,10 +156,10 @@ _attribute_ram_code_sec_ void ext_hci_irq_handler(void){
          addr[2] = rev_data_len >> 16;
          addr[1] = rev_data_len >> 8;
          addr[0] = rev_data_len ;
-            if(RxCpltCallback != NULL)
-            {
-               RxCpltCallback(NULL);
-            }
+         if(RxCpltCallback != NULL)
+         {
+            RxCpltCallback(NULL);
+         }
       }
 }
 PLIC_ISR_REGISTER(ext_hci_irq_handler, EXT_HCI_UART_IRQ )

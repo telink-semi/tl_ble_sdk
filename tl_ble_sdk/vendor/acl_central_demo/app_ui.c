@@ -30,7 +30,7 @@
 
 
 
-int    central_pairing_enable = 0;
+int central_pairing_enable = 0;
 u16 central_unpair_enable = 0;
 
 u16 central_disconnect_connhandle;   //mark the central connection which is in un_pair disconnection flow
@@ -42,32 +42,32 @@ u16 central_disconnect_connhandle;   //mark the central connection which is in u
 
 /////////////////////////////////////////////////////////////////////
     #define MAX_BTN_SIZE            2
-    #define BTN_VALID_LEVEL            0
+    #define BTN_VALID_LEVEL         0
     #define BTN_PAIR                0x01
-    #define BTN_UNPAIR                0x02
+    #define BTN_UNPAIR              0x02
 
     u32 ctrl_btn[] = {SW1_GPIO, SW2_GPIO};
     u8 btn_map[MAX_BTN_SIZE] = {BTN_PAIR, BTN_UNPAIR};
     /**
-     * @brief     record the result of key detect
+     * @brief   record the result of key detect
      */
-    typedef    struct{
-        u8     cnt;                //count button num
-        u8     btn_press;
-        u8     keycode[MAX_BTN_SIZE];            //6 btn
+    typedef struct{
+        u8  cnt;                //count button num
+        u8  btn_press;
+        u8  keycode[MAX_BTN_SIZE];          //6 btn
     }vc_data_t;
     vc_data_t vc_event;
 
     /**
-     * @brief     record the status of button process
+     * @brief   record the status of button process
      */
     typedef struct{
-        u8  btn_history[4];        //vc history btn save
+        u8  btn_history[4];     //vc history btn save
         u8  btn_filter_last;
-        u8    btn_not_release;
-        u8     btn_new;                    //new btn  flag
+        u8  btn_not_release;
+        u8  btn_new;                    //new btn  flag
     }btn_status_t;
-    btn_status_t     btn_status;
+    btn_status_t    btn_status;
 
     /**
      * @brief      Debounce processing during button detection
@@ -101,7 +101,7 @@ u16 central_disconnect_connhandle;   //mark the central connection which is in u
     u8 vc_detect_button(int read_key)
     {
         u8 btn_changed, i;
-        memset(&vc_event,0,sizeof(vc_data_t));            //clear vc_event
+        memset(&vc_event,0,sizeof(vc_data_t));          //clear vc_event
         //vc_event.btn_press = 0;
 
         for(i=0; i<MAX_BTN_SIZE; i++){
@@ -127,8 +127,8 @@ u16 central_disconnect_connhandle;   //mark the central connection which is in u
     }
 
     /**
-     * @brief        this function is used to detect if button pressed or released.
-     * @param[in]    none
+     * @brief       this function is used to detect if button pressed or released.
+     * @param[in]   none
      * @return      none
      */
     void proc_button (void)
@@ -196,14 +196,14 @@ u16 central_disconnect_connhandle;   //mark the central connection which is in u
 
 #if (UI_KEYBOARD_ENABLE)
 
-_attribute_ble_data_retention_    int     key_not_released;
+_attribute_ble_data_retention_  int     key_not_released;
 
 
-#define CONSUMER_KEY                      1
-#define KEYBOARD_KEY                      2
-#define PAIR_UNPAIR_KEY                  3
+#define CONSUMER_KEY                1
+#define KEYBOARD_KEY                2
+#define PAIR_UNPAIR_KEY             3
 
-_attribute_ble_data_retention_    u8         key_type;
+_attribute_ble_data_retention_  u8      key_type;
 
 /**
  * @brief   Check changed key value.
@@ -284,7 +284,7 @@ void key_change_proc(void)
 
 
 
-_attribute_ble_data_retention_        static u32 keyScanTick = 0;
+_attribute_ble_data_retention_      static u32 keyScanTick = 0;
 
 /**
  * @brief      keyboard task handler
@@ -404,7 +404,7 @@ void    att_keyboard_media (u16 conn, u8 *p)
 #if (APPLICATION_DONGLE)
     usbkb_report_consumer_key(consumer_key);
 #else
-    #if (UI_LED_ENABLE)    //Demo effect: when peripheral send Vol+/Vol- to central, LED GPIO toggle to show the result
+    #if (UI_LED_ENABLE) //Demo effect: when peripheral send Vol+/Vol- to central, LED GPIO toggle to show the result
         if(consumer_key == MKEY_VOL_UP){
             gpio_toggle(GPIO_LED_GREEN);
         }
@@ -417,7 +417,7 @@ void    att_keyboard_media (u16 conn, u8 *p)
 
 
 //////////////// keyboard ///////////////////////////////////////////////////
-kb_data_t        kb_dat_report = {1, 0, {0,0,0,0,0,0} };
+kb_data_t       kb_dat_report = {1, 0, {0,0,0,0,0,0} };
 int keyboard_not_release = 0;
 /**
  * @brief       This function is used to send HID report by USB.
@@ -431,7 +431,7 @@ void    att_keyboard (u16 conn, u8 *p)
     memcpy(&kb_dat_report, p, sizeof(kb_data_t));
 
 #if (APPLICATION_DONGLE)
-    if (kb_dat_report.keycode[0])              //keycode[0]
+    if (kb_dat_report.keycode[0])           //keycode[0]
     {
         kb_dat_report.cnt = 1;  //1 key value
         keyboard_not_release = 1;

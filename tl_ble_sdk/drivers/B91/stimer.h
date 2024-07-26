@@ -21,15 +21,15 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-/**    @page STIMER
+/** @page STIMER
  *
- *    Introduction
- *    ===============
- *    B91 stimer use 16M clock count, have stimer irq.
+ *  Introduction
+ *  ===============
+ *  B91 stimer use 16M clock count, have stimer irq.
  *
- *    API Reference
- *    ===============
- *    Header File: uart.h
+ *  API Reference
+ *  ===============
+ *  Header File: uart.h
  */
 #ifndef STIMER_H_
 #define STIMER_H_
@@ -62,18 +62,18 @@
  * @brief define system clock tick per us/ms/s.
  */
 enum{
-    SYSTEM_TIMER_TICK_1US         = 16,
-    SYSTEM_TIMER_TICK_1MS         = 16000,
-    SYSTEM_TIMER_TICK_1S         = 16000000,
+    SYSTEM_TIMER_TICK_1US       = 16,
+    SYSTEM_TIMER_TICK_1MS       = 16000,
+    SYSTEM_TIMER_TICK_1S        = 16000000,
 
-    SYSTEM_TIMER_TICK_625US      = 10000,  //625*16
-    SYSTEM_TIMER_TICK_1250US     = 20000,  //1250*16
+    SYSTEM_TIMER_TICK_625US     = 10000,  //625*16
+    SYSTEM_TIMER_TICK_1250US    = 20000,  //1250*16
 };
 
 
 /**
  * @brief This function servers to set stimer irq mask.
- * @param[in]    mask - the irq mask.
+ * @param[in]   mask - the irq mask.
  * @return      none.
  */
 static inline void stimer_set_irq_mask(stimer_irq_e mask)
@@ -83,7 +83,7 @@ static inline void stimer_set_irq_mask(stimer_irq_e mask)
 
 /**
  * @brief This function servers to clear stimer irq mask.
- * @param[in]     mask - the irq mask.
+ * @param[in]   mask - the irq mask.
  * @return      none.
  */
 static inline void stimer_clr_irq_mask(stimer_irq_e mask)
@@ -93,7 +93,7 @@ static inline void stimer_clr_irq_mask(stimer_irq_e mask)
 
 /**
  * @brief This function servers to clear stimer irq status.
- * @param[in]     status - the irq status.
+ * @param[in]   status - the irq status.
  * @return      none.
  */
 static inline void stimer_clr_irq_status(stimer_irq_e status)
@@ -103,9 +103,9 @@ static inline void stimer_clr_irq_status(stimer_irq_e status)
 
 /**
  * @brief This function servers to get stimer irq status.
- * @param[in]     status - the irq status.
- * @retval      non-zero   -  the interrupt occurred.
- * @retval      zero  -  the interrupt did not occur.
+ * @param[in]   status - the irq status.
+ * @retval    non-zero   -  the interrupt occurred.
+ * @retval    zero  -  the interrupt did not occur.
  */
 static inline unsigned char stimer_get_irq_status(stimer_irq_e status)
 {

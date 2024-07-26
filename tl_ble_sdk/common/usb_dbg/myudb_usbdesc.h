@@ -25,14 +25,14 @@
 
 #include "drivers.h"
 
-#ifdef        MYUDB_DISABLE
+#ifdef      MYUDB_DISABLE
 #else
-#define MYUDB_ID_VENDOR                    0x248a            // for report
+#define MYUDB_ID_VENDOR                 0x248a          // for report
 #define MYUDB_ID_PRODUCT                0x9218
 #define MYUDB_ID_VERSION                0x0101
-#define MYUDB_STRING_VENDOR                L"Telink"
+#define MYUDB_STRING_VENDOR             L"Telink"
 #define MYUDB_STRING_PRODUCT            L"HCI_VCD Dongle"
-#define MYUDB_STRING_SERIAL                L"TLSR9218"
+#define MYUDB_STRING_SERIAL             L"TLSR9218"
 
 
 ////////////////////////////////////////////////////////
@@ -808,7 +808,7 @@ typedef struct
  */
 #ifndef __GNUC__
 #pragma warning(push)
-#pragma warning(disable:4200)    // none standard zero length array
+#pragma warning(disable:4200)   // none standard zero length array
 #endif
 
 typedef struct
@@ -864,28 +864,28 @@ typedef struct
 ////////////////////////////////////////////////////////////////////////////////////////////////
 #if 1
 
-#define    MYUDB_EDP_IN_HCI                3
-#define    MYUDB_EDP_OUT_HCI                5
-#define    MYUDB_EDP_IN_VCD                8
-#define    MYUDB_EDP_OUT_VCD                6
+#define MYUDB_EDP_IN_HCI                3
+#define MYUDB_EDP_OUT_HCI               5
+#define MYUDB_EDP_IN_VCD                8
+#define MYUDB_EDP_OUT_VCD               6
 
 #else
 
-#define    MYUDB_EDP_IN_HCI                8
-#define    MYUDB_EDP_OUT_HCI                5
-#define    MYUDB_EDP_IN_VCD                3
-#define    MYUDB_EDP_OUT_VCD                6
+#define MYUDB_EDP_IN_HCI                8
+#define MYUDB_EDP_OUT_HCI               5
+#define MYUDB_EDP_IN_VCD                3
+#define MYUDB_EDP_OUT_VCD               6
 
 #endif
 
-#define ENDPOINT_DIR_MASK                    BIT(7)
+#define ENDPOINT_DIR_MASK                   BIT(7)
 #define ENDPOINT_DIR_OUT                    0
 #define ENDPOINT_DIR_IN                     BIT(7)
 #define EP_TYPE_MASK                        3
 #define EP_TYPE_CONTROL                     0
 #define EP_TYPE_ISOCHRONOUS                 1
 #define EP_TYPE_BULK                        2
-#define EP_TYPE_INTERRUPT                    3
+#define EP_TYPE_INTERRUPT                   3
 
 enum PRNT_Descriptor_ClassSubclassProtocol_t
 {

@@ -29,26 +29,26 @@
 
 #define reg_embase_addr             REG_ADDR32(0x140b04)
 
-#define    reg_aes_irq_mask            REG_ADDR32(0x16000c)
+#define reg_aes_irq_mask            REG_ADDR32(0x16000c)
 
-#define reg_aes_irq_status            REG_ADDR32(0x160010)
+#define reg_aes_irq_status          REG_ADDR32(0x160010)
 
-#define reg_aes_clr_irq_status        REG_ADDR32(0x160018)
+#define reg_aes_clr_irq_status      REG_ADDR32(0x160018)
 /**
  *  @brief  Define AES IRQ
  */
 typedef enum{
-    FLD_CRYPT_IRQ        = BIT(7),
+    FLD_CRYPT_IRQ       = BIT(7),
 }aes_irq_e;
 
 
-#define reg_aes_mode                 REG_ADDR32(0x1600b0)
+#define reg_aes_mode                REG_ADDR32(0x1600b0)
 enum{
-    FLD_AES_START    =    BIT(0),
-    FLD_AES_MODE    =    BIT(1),   /**< 0-cipher  1-decipher */
+    FLD_AES_START   =   BIT(0),
+    FLD_AES_MODE    =   BIT(1),   /**< 0-cipher  1-decipher */
 };
 
-#define reg_aes_key(v)                 REG_ADDR32(0x1600b4+(v*4))    // v = 0 1 2 3
+#define reg_aes_key(v)              REG_ADDR32(0x1600b4+(v*4))  // v = 0 1 2 3
 
 #define reg_aes_ptr                 REG_ADDR32(0x1600c4)    //only the lower 16 bits are used.
 

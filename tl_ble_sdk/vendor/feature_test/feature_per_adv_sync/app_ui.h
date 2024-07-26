@@ -28,10 +28,10 @@
 
 #if (FEATURE_TEST_MODE == TEST_PER_ADV_SYNC)
 
-extern     int    central_pairing_enable;
-extern     u16 central_unpair_enable;
+extern  int central_pairing_enable;
+extern  u16 central_unpair_enable;
 
-extern    u16 central_disconnect_connhandle;
+extern  u16 central_disconnect_connhandle;
 
 
 /**

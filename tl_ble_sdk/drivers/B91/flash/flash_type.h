@@ -31,9 +31,9 @@
 #include "flash_mid182085.h"    // PY25Q128H
 
 /**
- * @brief        This function reads the status of flash.
- * @param[in]     cmd    - the cmd of read status.
- * @return         the value of status.
+ * @brief       This function reads the status of flash.
+ * @param[in]   cmd - the cmd of read status.
+ * @return      the value of status.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -47,10 +47,10 @@
 unsigned char flash_read_status(flash_command_e cmd);
 
 /**
- * @brief         This function write the status of flash.
- * @param[in]      type    - the type of status.8 bit or 16 bit.
- * @param[in]      data    - the value of status.
- * @return         none.
+ * @brief       This function write the status of flash.
+ * @param[in]   type    - the type of status.8 bit or 16 bit.
+ * @param[in]   data    - the value of status.
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -64,11 +64,11 @@ unsigned char flash_read_status(flash_command_e cmd);
 void flash_write_status(flash_status_typedef_e type , unsigned short data);
 
 /**
- * @brief         This function serves to read data from the Security Registers of the flash.
+ * @brief       This function serves to read data from the Security Registers of the flash.
  * @param[in]   addr    - the start address of the Security Registers.
- * @param[in]   len        - the length(in byte, must be above 0) of the content to be read.
- * @param[out]  buf        - the starting address of the content to be read.
- * @return         none.
+ * @param[in]   len     - the length(in byte, must be above 0) of the content to be read.
+ * @param[out]  buf     - the starting address of the content to be read.
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -82,11 +82,11 @@ void flash_write_status(flash_status_typedef_e type , unsigned short data);
 void flash_read_otp(unsigned long addr, unsigned long len, unsigned char* buf);
 
 /**
- * @brief         This function serves to write data to the Security Registers of the flash you choose.
+ * @brief       This function serves to write data to the Security Registers of the flash you choose.
  * @param[in]   addr    - the start address of the Security Registers.
- * @param[in]   len        - the length of content to be written.
- * @param[in]   buf        - the starting address of the content to be written.
- * @return         none.
+ * @param[in]   len     - the length of content to be written.
+ * @param[in]   buf     - the starting address of the content to be written.
+ * @return      none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -100,10 +100,10 @@ void flash_read_otp(unsigned long addr, unsigned long len, unsigned char* buf);
 void flash_write_otp(unsigned long addr, unsigned long len, unsigned char *buf);
 
 /**
- * @brief         This function serves to erase the data of the Security Registers that you choose.
+ * @brief       This function serves to erase the data of the Security Registers that you choose.
  * @param[in]   addr    - the address that you want to erase.
- * @return         none.
- * @Attention    Even you choose the middle area of the Security Registers,it will erase the whole area.
+ * @return      none.
+ * @Attention   Even you choose the middle area of the Security Registers,it will erase the whole area.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
@@ -117,10 +117,10 @@ void flash_write_otp(unsigned long addr, unsigned long len, unsigned char *buf);
 void flash_erase_otp(unsigned long addr);
 
 /**
- * @brief         This function is used to write the configure of the flash,P25Q16SU/P25Q32SU/PY25Q128H uses this function.
- * @param[in]   cmd            - the write command.
+ * @brief       This function is used to write the configure of the flash,P25Q16SU/P25Q32SU/PY25Q128H uses this function.
+ * @param[in]   cmd         - the write command.
  * @param[out]  data        - the start address of the data buffer.
- * @return         none.
+ * @return      none.
  * @note        important:  "data" must not reside at flash, such as constant string.If that case, pls copy to memory first before write.
  *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
@@ -135,8 +135,8 @@ void flash_erase_otp(unsigned long addr);
 _attribute_text_sec_ void flash_write_config(flash_command_e cmd,unsigned char data);
 
 /**
- * @brief         This function is used to read the configure of the flash,P25Q16SU/P25Q32SU/PY25Q128H uses this function.
- * @return         the value of configure.
+ * @brief       This function is used to read the configure of the flash,P25Q16SU/P25Q32SU/PY25Q128H uses this function.
+ * @return      the value of configure.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater

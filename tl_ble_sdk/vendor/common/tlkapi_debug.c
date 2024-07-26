@@ -46,7 +46,7 @@ _attribute_ble_data_retention_ my_fifo_t   *tlkapi_print_fifo = NULL;
 //MYFIFO_INIT_IRAM(print_fifo, TLKAPI_DEBUG_FIFO_SIZE, TLKAPI_DEBUG_FIFO_NUM);
 _attribute_iram_noinit_data_ u8   print_fifo_b[TLKAPI_DEBUG_FIFO_SIZE * TLKAPI_DEBUG_FIFO_NUM];
 
-_attribute_ble_data_retention_      my_fifo_t   print_fifo = {
+_attribute_ble_data_retention_    my_fifo_t   print_fifo = {
                                                 TLKAPI_DEBUG_FIFO_SIZE,
                                                 TLKAPI_DEBUG_FIFO_NUM,
                                                 0,
@@ -62,10 +62,10 @@ _attribute_ble_data_retention_      my_fifo_t   print_fifo = {
 
 
 /**
- * @brief          customize USB ID for UDB channel
- *                 user can open more than one USB debug tool on PC with different USB ID
- * @param[in]    cus_usb_id - customized USB ID
- * @return        none
+ * @brief       customize USB ID for UDB channel
+ *              user can open more than one USB debug tool on PC with different USB ID
+ * @param[in]   cus_usb_id - customized USB ID
+ * @return      none
  */
 void tlkapi_debug_customize_usb_id(u16 cus_usb_id)
 {
@@ -182,8 +182,8 @@ void tlkapi_debug_putchar(uint08 byte)
 
 /**
  * @brief       Debug log initialization when MCU power on or wake_up from deepSleep mode
- * @param[in]    none
- * @return        none
+ * @param[in]   none
+ * @return      none
  */
 int tlkapi_debug_init(void)
 {
@@ -243,8 +243,8 @@ int tlkapi_debug_init(void)
 
 /**
  * @brief       Debug log initialization when MCU wake_up from deepSleep_retention mode
- * @param[in]    none
- * @return        none
+ * @param[in]   none
+ * @return      none
  */
 int tlkapi_debug_deepRetn_init(void)
 {
@@ -264,8 +264,8 @@ int tlkapi_debug_deepRetn_init(void)
 
 /**
  * @brief       Debug log process in mainloop, output log form log FIFO if FIFO not empty
- * @param[in]    none
- * @return        none
+ * @param[in]   none
+ * @return      none
  */
 _attribute_ram_code_sec_noinline_
 void tlkapi_debug_handler(void)
@@ -302,10 +302,10 @@ void tlkapi_debug_handler(void)
 
 #endif
 /**
- * @brief          check if debug log busy
- * @param[in]    none
- * @return        1: debug log busy, some log pending in FIFO, not all finish;
- *                 0: debug log empty
+ * @brief       check if debug log busy
+ * @param[in]   none
+ * @return      1: debug log busy, some log pending in FIFO, not all finish;
+ *              0: debug log empty
  */
 bool tlkapi_debug_isBusy(void)
 {
@@ -327,7 +327,7 @@ bool tlkapi_debug_isBusy(void)
 __attribute__((section(".data"))) unsigned char hex_table[] = "0123456789abcdef"; //improve: can not optimized to rodata
 /**
  * @brief   Send debug log to log FIFO, character string and data mixed mode.
- *            attention: here just send log to FIFO, can not output immediately, wait for "tlkapi debug_handler" to output log.
+ *          attention: here just send log to FIFO, can not output immediately, wait for "tlkapi debug_handler" to output log.
 */
 _attribute_ram_code_sec_noinline_
 void tlkapi_send_str_data (char *str, u8 *pData, u32 data_len)
@@ -414,7 +414,7 @@ void tlkapi_send_str_data (char *str, u8 *pData, u32 data_len)
             *pd++ = 0x95;   //special mark: 0xA695
             *pd++ = 0xA6;
             *pd++ = ns;     // string length, 1byte
-            *pd++ = data_len;        // data length, 2 byte
+            *pd++ = data_len;       // data length, 2 byte
             *pd++ = data_len >> 8;
 
             while (ns--)
@@ -478,7 +478,7 @@ void tlkapi_send_str_u8s(char *str, int size, ...)
 }
 
 
-#define SEND_U32S_MAX_NUM                        8
+#define SEND_U32S_MAX_NUM                       8
 
 _attribute_ram_code_sec_noinline_
 void tlkapi_send_str_u32s(char *str, int size, ...)
@@ -541,8 +541,8 @@ __attribute__((used)) int _write(int fd, const unsigned char *buf, int size)
 
 /**
  * @brief       Send debug log to log FIFO, printf mode
- *                attention: here just send log to FIFO, can not output immediately, wait for "tlkapi debug_handler" to output log.
- * @param[in]    format -
+ *              attention: here just send log to FIFO, can not output immediately, wait for "tlkapi debug_handler" to output log.
+ * @param[in]   format -
  * @return
  */
 int tlk_printf(const char *format, ...)

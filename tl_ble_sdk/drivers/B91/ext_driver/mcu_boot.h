@@ -26,12 +26,12 @@
 
 
 /**
- * @brief     Multiple boot address enumeration
+ * @brief   Multiple boot address enumeration
  */
 typedef enum{
-    MULTI_BOOT_ADDR_0x20000     = 0x20000,    //128 K
-    MULTI_BOOT_ADDR_0x40000        = 0x40000,  //256 K
-    MULTI_BOOT_ADDR_0x80000        = 0x80000,  //512 K
+    MULTI_BOOT_ADDR_0x20000     = 0x20000,  //128 K
+    MULTI_BOOT_ADDR_0x40000     = 0x40000,  //256 K
+    MULTI_BOOT_ADDR_0x80000     = 0x80000,  //512 K
 }multi_boot_addr_e;
 
 
@@ -39,13 +39,13 @@ typedef enum{
 
 /* MCU boot relative definition below are used by ota_server.c, sometimes customers may need obtained the source code through authorization
  * so do not hidden these code */
-#define     BOOT_MARK_VALUE_1_BYTE                                0x4B
-#define     BOOT_MARK_VALUE_4_BYTE                                0x544C4E4B
-#define        BOOT_MARK_ADDR                                        0x00020
+#define     BOOT_MARK_VALUE_1_BYTE                              0x4B
+#define     BOOT_MARK_VALUE_4_BYTE                              0x544C4E4B
+#define     BOOT_MARK_ADDR                                      0x00020
 
-#define        FW_SIZE_ADDR                                        0x00018
+#define     FW_SIZE_ADDR                                        0x00018
 
 /* used to check flash protection function consistency between the old and new  firmware when OTA upgrading */
-#define        FIRMWARE_FLASH_PROTECTION_FLAG_ADDR                    0x00015
+#define     FIRMWARE_FLASH_PROTECTION_FLAG_ADDR                 0x00015
 
 #endif /* DRIVERS_B91_EXT_DRIVER_MCU_BOOT_H_ */

@@ -26,10 +26,10 @@
 /**********************************************************************************************************************
  *                                           local macro                                                             *
  *********************************************************************************************************************/
-#define EMI_STATE0                             0x1234
-#define EMI_STATE1                             0x5678
+#define EMI_STATE0                           0x1234
+#define EMI_STATE1                           0x5678
 #define EMI_TX_FIFO_ADDR                     0x14081c
-#define EMI_TX_PKT_PAYLOAD                     37
+#define EMI_TX_PKT_PAYLOAD                   37
 /**
  * @brief This definition is used to set the maximum payload for rx
  * @note  When using it, it should be noted that the packet length sent by tx should not exceed the maximum buffer of rx
@@ -44,7 +44,7 @@
  *       zigbee |   4 byte   |    1 byte     |   N-2(crc_length) byte       |   2 byte   | 8 byte
  *
  */
-#define EMI_RX_MAX_PKT_PAYLOAD                     255
+#define EMI_RX_MAX_PKT_PAYLOAD                   255
 
 /**********************************************************************************************************************
  *                                           global constants                                                        *
@@ -180,7 +180,7 @@ void rf_emi_tx_continue_update_data(rf_mode_e rf_mode,rf_power_level_e power_lev
     reg_rf_ll_ctrl0 = 0x45;   // reset tx/rx state machine
     rf_set_power_level_index_singletone (power_level);
     rf_emi_tx_continue_setup();
-    write_reg8(0x140808, pkt_type);  // 0:pbrs9     1:0xf0     2:0x55
+    write_reg8(0x140808, pkt_type);  // 0:pbrs9     1:0xf0   2:0x55
 }
 
 /**
@@ -200,7 +200,7 @@ unsigned int emi_pn_gen(unsigned int state)
 
 /**
  * @brief      This function serves to continue to run the CD mode..The missing three in the program is because 
- *               the original writing is problematic and will 
+ *             the original writing is problematic and will 
  * @return     none
  */
 void rf_continue_mode_run(void)
@@ -265,7 +265,7 @@ void rf_emi_rx_setup(rf_mode_e mode,signed char rf_chn)
     rf_pn_disable();
     rf_set_chn(rf_chn);//set freq
     if(mode != RF_MODE_ZIGBEE_250K)
-        rf_access_code_comm(EMI_ACCESS_CODE);     //access code
+        rf_access_code_comm(EMI_ACCESS_CODE);   //access code
     rf_set_tx_rx_off();
     rf_set_rxmode();
     delay_us(150);
@@ -515,7 +515,7 @@ void rf_emi_tx_burst_setup(rf_mode_e rf_mode,rf_power_level_e power_level,signed
         default:break;
     }
     if(rf_mode != RF_MODE_ZIGBEE_250K)
-        rf_access_code_comm(EMI_ACCESS_CODE);     //access code
+        rf_access_code_comm(EMI_ACCESS_CODE);   //access code
 
     rf_pn_disable();
     rf_set_power_level (power_level);
@@ -574,6 +574,6 @@ void rf_emi_tx_burst_setup(rf_mode_e rf_mode,rf_power_level_e power_level,signed
  */
 void rf_emi_reset_baseband(void)
 {
-    reg_rst3 &= (~FLD_RST3_ZB);                // reset baseband
-    reg_rst3 |= (FLD_RST3_ZB);                  // clr baseband
+    reg_rst3 &= (~FLD_RST3_ZB);               // reset baseband
+    reg_rst3 |= (FLD_RST3_ZB);                // clr baseband
 }

@@ -23,10 +23,10 @@
  *******************************************************************************************************/
 #pragma once
 
-#include "config/user_config.h"            //   for  __DEBUG__
+#include "config/user_config.h"         //   for  __DEBUG__
 
 #ifndef __DEBUG__
-#define __DEBUG__                    0
+#define __DEBUG__                   0
 #endif
 
 #ifndef __GNUC__
@@ -34,11 +34,11 @@
 #endif
 
 #ifndef __SHOW_TODO__
-#define __SHOW_TODO__                0
+#define __SHOW_TODO__               0
 #endif
 
 #ifndef __SHOW_WARN__
-#define __SHOW_WARN__                0
+#define __SHOW_WARN__               0
 #endif
 
 #if (__DEBUG__)

@@ -65,14 +65,14 @@ typedef struct __attribute__((packed)) {
 /** @Helper to declare a 16-bit UUID inline.
  *  @return Pointer to a generic UUID.
  */
-#define UUID16_DEF(value)            ((uuid_t *)((uuid_t[]) {UUID16_INIT(value)}))
-#define UUID16_CPY(uuid, value)        memcpy((uuid_t *)&uuid, UUID16_DEF(value), 1+ATT_16_UUID_LEN)
+#define UUID16_DEF(value)           ((uuid_t *)((uuid_t[]) {UUID16_INIT(value)}))
+#define UUID16_CPY(uuid, value)     memcpy((uuid_t *)&uuid, UUID16_DEF(value), 1+ATT_16_UUID_LEN)
 
 
 /** @Helper to declare a 128-bit UUID inline.
  *  @return Pointer to a generic UUID.
  */
-#define UUID128_DEF(value...)        ((uuid_t *)((uuid_t[]) {UUID128_INIT(value)}))
+#define UUID128_DEF(value...)       ((uuid_t *)((uuid_t[]) {UUID128_INIT(value)}))
 #define UUID128_CPY(uuid, value)    memcpy((uuid_t *)&uuid, UUID128_DEF(value), 1+ATT_128_UUID_LEN)
 
 

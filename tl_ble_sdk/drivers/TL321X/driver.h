@@ -34,7 +34,8 @@
 
 
 
-#include "lib/include/ske/ske.h"
+#include "lib/include/pke/pke_algorithm.h"
+#include "lib/include/hash/hash_algorithm.h"
 #include "lib/include/ske/ske_algorithm.h"
 
 #include "analog.h"

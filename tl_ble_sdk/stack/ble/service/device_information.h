@@ -25,7 +25,7 @@
 
 
 /**
- * @brief    device_char_uuid Device Information Characteristic UUID
+ * @brief   device_char_uuid Device Information Characteristic UUID
  */
 #define CHARACTERISTIC_UUID_MANU_NAME_STRING                    0x2A29
 #define CHARACTERISTIC_UUID_MODEL_NUM_STRING                    0x2A24

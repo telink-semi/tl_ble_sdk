@@ -28,7 +28,7 @@
 
 
 /**
- * @brief    software PA enable
+ * @brief   software PA enable
  */
 #ifndef PA_ENABLE
 #define PA_ENABLE                           0
@@ -36,14 +36,14 @@
 
 
 /**
- * @brief    GPIO to control PA TX EN, user should set it in app_config.h
+ * @brief   GPIO to control PA TX EN, user should set it in app_config.h
  */
 #ifndef PA_TXEN_PIN
 #define PA_TXEN_PIN                         GPIO_PB2
 #endif
 
 /**
- * @brief    GPIO to control PA RX EN, user should set it in app_config.h
+ * @brief   GPIO to control PA RX EN, user should set it in app_config.h
  */
 #ifndef PA_RXEN_PIN
 #define PA_RXEN_PIN                         GPIO_PB3
@@ -51,15 +51,15 @@
 
 
 /**
- * @brief    PA control type
+ * @brief   PA control type
  */
-#define PA_TYPE_OFF                            0
-#define PA_TYPE_TX_ON                        1
-#define PA_TYPE_RX_ON                        2
+#define PA_TYPE_OFF                         0
+#define PA_TYPE_TX_ON                       1
+#define PA_TYPE_RX_ON                       2
 
 
 /**
- * @brief    software PA control Callback
+ * @brief   software PA control Callback
  */
 typedef void (*rf_pa_callback_t)(int type);
 extern rf_pa_callback_t  blc_rf_pa_cb;
@@ -67,9 +67,9 @@ extern rf_pa_callback_t  blc_rf_pa_cb;
 
 
 /**
- * @brief    RF software PA initialization
- * @param    none
- * @return    none
+ * @brief   RF software PA initialization
+ * @param   none
+ * @return  none
  */
 void rf_pa_init(void);
 

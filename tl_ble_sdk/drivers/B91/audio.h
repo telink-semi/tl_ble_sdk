@@ -21,15 +21,15 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-/**    @page AUDIO
+/** @page AUDIO
  *
- *    Introduction
- *    ===============
- *    audio module consists of 3 parts: audio code, audio in path , and audio out path.
+ *  Introduction
+ *  ===============
+ *  audio module consists of 3 parts: audio code, audio in path , and audio out path.
  *
- *    API Reference
- *    ===============
- *    Header File: audio.h
+ *  API Reference
+ *  ===============
+ *  Header File: audio.h
  */
 #ifndef audio_H
 #define audio_H
@@ -98,14 +98,14 @@ typedef enum{
 }codec_interface_select_e;
 
 typedef enum{
-       BIT_16_MONO,
+    BIT_16_MONO,
     BIT_20_OR_24_MONO ,
     BIT_16_STEREO,
     BIT_20_OR_24_STEREO ,
 }audio_in_mode_e;
 
 typedef enum{
-       BIT_16_MONO_FIFO0 ,
+    BIT_16_MONO_FIFO0 ,
     BIT_20_OR_24_MONO_FIFO0 ,
     BIT_16_STEREO_FIFO0 ,
     BIT_20_OR_24_STEREO_FIFO0 ,
@@ -186,7 +186,7 @@ typedef enum
 typedef struct {
     unsigned char  audio_in_mode;
     unsigned char  audio_out_mode;
-    unsigned char     i2s_data_select;
+    unsigned char   i2s_data_select;
     unsigned char  codec_data_select;
     unsigned char  i2s_codec_m_s_mode;
     unsigned char  in_digital_gain;
@@ -394,7 +394,7 @@ typedef enum{
 The wind noise filter is a 1st order filter.
                    Mode1  -3dB   59Hz
 corner frequency   Mode2  -3dB   117Hz
-                       Mode3  -3dB   235Hz
+                   Mode3  -3dB   235Hz
 */
 typedef enum{
 CODEC_ADC_WNF_INACTIVE,
@@ -429,13 +429,13 @@ typedef struct {
     unsigned short   i2s_lrclk_dac_div;
     unsigned char    i2s_clk_step;
     unsigned char    i2s_clk_mode;
-    unsigned char      i2s_bclk_div;
+    unsigned char    i2s_bclk_div;
 }audio_i2s_clk_config_t;
 /**
- *     @brief      This function serves to set the clock of i2s
- *     @param[in]  step - the dividing factor of step.
- *     @param[in]  mod - the dividing factor of mod.
- *     @return     none
+ *  @brief      This function serves to set the clock of i2s
+ *  @param[in]  step - the dividing factor of step.
+ *  @param[in]  mod - the dividing factor of mod.
+ *  @return     none
  */
 static inline void audio_set_i2s_clk(unsigned char step,unsigned char  mod)
 {
@@ -444,11 +444,11 @@ static inline void audio_set_i2s_clk(unsigned char step,unsigned char  mod)
 }
 
 /**
- *     @brief      This function serves to set the clock of codec
- *     @param[in]  step - the dividing factor of step.
- *     @param[in]  mod - the dividing factor of mod.
- *     @return     none
- *     @attention  codec clock  divider from pll,so pll must be 192M
+ *  @brief      This function serves to set the clock of codec
+ *  @param[in]  step - the dividing factor of step.
+ *  @param[in]  mod - the dividing factor of mod.
+ *  @return     none
+ *  @attention  codec clock  divider from pll,so pll must be 192M
  */
 static inline void audio_set_codec_clk(unsigned char step,unsigned char  mod)
 {
@@ -459,8 +459,8 @@ static inline void audio_set_codec_clk(unsigned char step,unsigned char  mod)
 
 
 /**
- *     @brief      This function serves to set enable i2s clk
- *     @return     none
+ *  @brief      This function serves to set enable i2s clk
+ *  @return     none
  */
 static inline void audio_i2s_clk_en(void)
 {
@@ -468,8 +468,8 @@ static inline void audio_i2s_clk_en(void)
 }
 
 /**
- *     @brief      This function serves to set disable i2s clk.
- *     @return     none
+ *  @brief      This function serves to set disable i2s clk.
+ *  @return     none
  */
 static inline void audio_i2s_clk_dis(void)
 {
@@ -478,8 +478,8 @@ static inline void audio_i2s_clk_dis(void)
 
 
 /**
- *     @brief      This function serves to set disable codec clk
- *     @return     none
+ *  @brief      This function serves to set disable codec clk
+ *  @return     none
  */
 static inline void audio_codec_clk_en(void)
 {
@@ -488,8 +488,8 @@ static inline void audio_codec_clk_en(void)
 
 
 /**
- *     @brief      This function serves to set disable codec clk
- *     @return     none
+ *  @brief      This function serves to set disable codec clk
+ *  @return     none
  */
 static inline void audio_codec_clk_dis(void)
 {
@@ -498,9 +498,9 @@ static inline void audio_codec_clk_dis(void)
 
 
 /**
- *     @brief      This function serves to set the bclk
- *     @param[in]  div  - bclk=i2s_clk/(div*2),if div=0,i2s_clk=bclk.
- *     @return     none
+ *  @brief      This function serves to set the bclk
+ *  @param[in]  div  - bclk=i2s_clk/(div*2),if div=0,i2s_clk=bclk.
+ *  @return     none
  */
 static inline void audio_set_i2s_bclk(unsigned char div)
 {
@@ -508,10 +508,10 @@ static inline void audio_set_i2s_bclk(unsigned char div)
 }
 
 /**
- *     @brief      This function serves to set the lrclk divider.
- *     @param[in]  adc_div - adc_lrclk=bclk/(adc_div)
- *     @param[in]  dac_div - dac_lrclk=bclk/(dac_div)
- *     @return     none
+ *  @brief      This function serves to set the lrclk divider.
+ *  @param[in]  adc_div - adc_lrclk=bclk/(adc_div)
+ *  @param[in]  dac_div - dac_lrclk=bclk/(dac_div)
+ *  @return     none
  */
 static inline void audio_set_lrclk(unsigned short adc_div,unsigned short dac_div)
 {
@@ -522,9 +522,9 @@ static inline void audio_set_lrclk(unsigned short adc_div,unsigned short dac_div
 
 
 /**
- *     @brief      This function serves to set  tx buff length,
- *     @param[in]  len - the length of tx buff
- *     @return     none
+ *  @brief      This function serves to set  tx buff length,
+ *  @param[in]  len - the length of tx buff
+ *  @return     none
  */
 static inline void audio_set_tx_buff_len(unsigned short len)
 {
@@ -532,9 +532,9 @@ static inline void audio_set_tx_buff_len(unsigned short len)
 }
 
 /**
- *     @brief      This function serves to set rx buff length,
- *     @param[in]  len - the length of rx buff
- *     @return     none
+ *  @brief      This function serves to set rx buff length,
+ *  @param[in]  len - the length of rx buff
+ *  @return     none
  */
 static inline void audio_set_rx_buff_len(unsigned short len)
 {
@@ -543,10 +543,10 @@ static inline void audio_set_rx_buff_len(unsigned short len)
 
 
 /**
- *     @brief      This function serves to write codec register by mc.
- *     @param[in]  addr - the address of codec register
- *     @param[in]  data - Data to be written
- *     @return     none
+ *  @brief      This function serves to write codec register by mc.
+ *  @param[in]  addr - the address of codec register
+ *  @param[in]  data - Data to be written
+ *  @return     none
  */
 static inline void audio_write_codec_reg(unsigned char addr,unsigned char  data)
 {
@@ -556,9 +556,9 @@ static inline void audio_write_codec_reg(unsigned char addr,unsigned char  data)
 }
 
 /**
- *     @brief      This function serves to read codec register by mc.
- *     @param[in]  addr - the address of codec register
- *     @return     data
+ *  @brief      This function serves to read codec register by mc.
+ *  @param[in]  addr - the address of codec register
+ *  @return     data
  */
 static inline unsigned char audio_read_codec_reg(unsigned char addr)
 {
@@ -567,9 +567,9 @@ static inline unsigned char audio_read_codec_reg(unsigned char addr)
 }
 
 /**
- *     @brief      This function serves to tx fifo trigger number.
- *     @param[in]  number - the number of dma trigger
- *     @return     none
+ *  @brief      This function serves to tx fifo trigger number.
+ *  @param[in]  number - the number of dma trigger
+ *  @return     none
  */
 static inline void audio_set_fifo_tx_trig_num(unsigned char number)
 {
@@ -578,9 +578,9 @@ static inline void audio_set_fifo_tx_trig_num(unsigned char number)
 }
 
 /**
- *     @brief      This function serves to rx fifo trigger number.
- *     @param[in]  number - the number of dma trigger
- *     @return     none
+ *  @brief      This function serves to rx fifo trigger number.
+ *  @param[in]  number - the number of dma trigger
+ *  @return     none
  */
 static inline void  audio_set_fifo_rx_trig_num(unsigned char number)
 {
@@ -589,10 +589,10 @@ static inline void  audio_set_fifo_rx_trig_num(unsigned char number)
 }
 
 /**
- *     @brief      This function serves to enable or disable i2s clk and codec mc clk .
- *     @param[in]  i2s_clk_en - 1 enable  : 0 disable
- *     @param[in]  mc_clk_en  - 1 enable  : 0 disable
- *     @return     none
+ *  @brief      This function serves to enable or disable i2s clk and codec mc clk .
+ *  @param[in]  i2s_clk_en - 1 enable  : 0 disable
+ *  @param[in]  mc_clk_en  - 1 enable  : 0 disable
+ *  @return     none
  */
 static inline void  audio_clk_en(unsigned char i2s_clk_en,unsigned char mc_clk_en)
 {
@@ -602,9 +602,9 @@ static inline void  audio_clk_en(unsigned char i2s_clk_en,unsigned char mc_clk_e
 
 
 /**
- *     @brief      This function serves to get dma rx buff pointer.
- *     @param[in]  chn - dma channel
- *     @return     none
+ *  @brief      This function serves to get dma rx buff pointer.
+ *  @param[in]  chn - dma channel
+ *  @return     none
  */
 static inline unsigned int audio_get_rx_dma_wptr (dma_chn_e chn)
 {
@@ -612,9 +612,9 @@ static inline unsigned int audio_get_rx_dma_wptr (dma_chn_e chn)
 }
 
 /**
- *     @brief      This function serves to get dma tx buff pointer.
- *     @param[in]  chn - dma channel
- *     @return     none
+ *  @brief      This function serves to get dma tx buff pointer.
+ *  @param[in]  chn - dma channel
+ *  @return     none
  */
 static inline unsigned int audio_get_tx_dma_rptr (dma_chn_e chn)
 {
@@ -719,7 +719,7 @@ static inline void codec_reset(void)
  *
  *                                             CODEC_ADC_WNF_MODE1  -3dB   59Hz
  *  Wind Noise Filter corner frequency         CODEC_ADC_WNF_MODE2  -3dB   117Hz
- *                                               CODEC_ADC_WNF_MODE3  -3dB   235Hz
+ *                                             CODEC_ADC_WNF_MODE3  -3dB   235Hz
  * @return    none
  */
 static inline void audio_set_codec_adc_wnf(adc_wnf_mode_sel_e mode)
@@ -768,9 +768,9 @@ static inline void audio_set_codec_dac_unmute(void)
 }
 
 /**
- *     @brief      This function serves to set adc analog gain.
- *     @param[in]  a_gain - analog  gain value
- *     @return     none
+ *  @brief      This function serves to set adc analog gain.
+ *  @param[in]  a_gain - analog  gain value
+ *  @return     none
  */
 static inline void audio_set_codec_adc_a_gain (codec_in_path_analog_gain_e a_gain )
 {
@@ -819,9 +819,9 @@ static inline void audio_set_codec_dac_d_gain(codec_out_path_digital_gain_e d_ga
 }
 
 /**
- *     @brief      This function serves to set codec supply voltage
- *     @param[in]  volt - the voltage of codec supply.A1 2.8V default,A0 1.8V default.
- *     @return     none
+ *  @brief      This function serves to set codec supply voltage
+ *  @param[in]  volt - the voltage of codec supply.A1 2.8V default,A0 1.8V default.
+ *  @return     none
  *
  */
 void audio_set_codec_supply (codec_volt_supply_e volt);
@@ -847,7 +847,7 @@ void audio_mux_config(audio_flow_e audio_flow, audio_in_mode_e ain0_mode , audio
 /**
  * @brief     This function serves to config codec for dac.
  * @param[in] mode        - select i2s as master or slave
- * @param[in] rate          - audio sampling rate
+ * @param[in] rate        - audio sampling rate
  * @param[in] data_select - codec dac word length
  * @param[in] wreg_mode   - mcu or i2c config codec
  * @return    none
@@ -883,7 +883,7 @@ void audio_codec_set_micbias(power_switch_e en, micbias_work_mode_e micbias_mode
 /**
  * @brief     This function serves to config interface, word length, and m/s .
  * @param[in] i2s_format - interface protocol
- * @param[in] wl            - audio data word length
+ * @param[in] wl         - audio data word length
  * @param[in] m_s        - select i2s as master or slave
  * @param[in] i2s_config_t - the prt of i2s_config_t that configure i2s lr_clk phase and lr_clk swap.
  *  i2s_config_t->i2s_lr_clk_invert_select-lr_clk phase control(in RJ,LJ or i2s modes),in i2s mode(opposite phasing in  RJ,LJ mode), 0=right channel data when lr_clk high ,1=right channel data when lr_clk low.
@@ -898,7 +898,7 @@ void audio_i2s_config(i2s_mode_select_e i2s_format,i2s_data_select_e wl,  i2s_co
 /**
  * @brief     This function serves to set i2s clock and audio sampling rate when i2s as master.
  * @param[in] audio_rate - audio sampling rate
- * @param[in] match         - the match of audio rate.
+ * @param[in] match      - the match of audio rate.
  * @param[in] match_en   - initial must 0, then change rate must 1
  * @return    none
  * @attention i2s clock  divider from pll,sampling rate calculation is based on pll=192M,so pll must be 192M
@@ -923,7 +923,7 @@ void audio_rx_dma_config(dma_chn_e chn,unsigned short * dst_addr,unsigned int da
  * @param[in] dst_addr    - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception.
  *                          and the actual buffer size defined by the user needs to be not smaller than the data_len, otherwise there may be an out-of-bounds problem.
  * @param[in] data_len    - This parameter is used to set the size of the received dma and must be set to a multiple of 4. The maximum value that can be set is 0xFFFFFC.
- * @return       none
+ * @return    none
  */
 void audio_rx_dma_add_list_element(dma_chain_config_t * rx_config,dma_chain_config_t *llpointer ,unsigned short * dst_addr,unsigned int data_len);
 
@@ -1010,7 +1010,7 @@ void audio_i2s_init(pwm_pin_e pwm0_pin, i2c_sda_pin_e sda_pin,i2c_scl_pin_e scl_
  * @param[in] in_buff     - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception.
  *                          and the actual buffer size defined by the user needs to be not smaller than the buff_size, otherwise there may be an out-of-bounds problem.
  * @param[in] buff_size   - This parameter is used to set the size of the received dma and must be set to a multiple of 4. The maximum value that can be set is 0xFFFFFC.
- * @return       none
+ * @return    none
  */
 void audio_rx_dma_chain_init (dma_chn_e chn,unsigned short * in_buff,unsigned int buff_size );
 
@@ -1052,18 +1052,18 @@ void audio_invert_i2s_lr_clk(audio_i2s_lr_clk_invert_e en);
 void audio_set_codec_mic_input_mode (audio_input_mode_select_e input_mode);
 
 /**
- *     @brief      This function serves to set in path digital and analog gain  .
- *     @param[in]  d_gain - digital gain value
- *     @param[in]  a_gain - analog  gain value
- *     @return     none
+ *  @brief      This function serves to set in path digital and analog gain  .
+ *  @param[in]  d_gain - digital gain value
+ *  @param[in]  a_gain - analog  gain value
+ *  @return     none
  */
 void audio_set_codec_in_path_a_d_gain (codec_in_path_digital_gain_e d_gain,codec_in_path_analog_gain_e a_gain );
 
 /**
- *     @brief      This function serves to set out path digital and analog gain  .
- *     @param[in]  d_gain - digital gain value
- *     @param[in]  a_gain - analog  gain value
- *     @return     none
+ *  @brief      This function serves to set out path digital and analog gain  .
+ *  @param[in]  d_gain - digital gain value
+ *  @param[in]  a_gain - analog  gain value
+ *  @return     none
  */
  void audio_set_codec_out_path_a_d_gain (codec_out_path_digital_gain_e d_gain,codec_out_path_analog_gain_e a_gain);
 

@@ -28,10 +28,10 @@
 #include "clock.h"
 
 /**
- * @brief        This function is used to initialize the MDEC module,include clock setting and input IO select.
- * @param[in]    pin    - mdec pin.
- *                       In order to distinguish which pin the data is input from,only one input pin can be selected one time.
- * @return        none.
+ * @brief       This function is used to initialize the MDEC module,include clock setting and input IO select.
+ * @param[in]   pin - mdec pin.
+ *                    In order to distinguish which pin the data is input from,only one input pin can be selected one time.
+ * @return      none.
  */
 void mdec_init(mdec_pin_e pin)
 {
@@ -39,9 +39,9 @@ void mdec_init(mdec_pin_e pin)
 }
 
 /**
- * @brief        This function is used to read the receive data of MDEC module's IO.
- * @param[out]    dat        - The array to store date.
- * @return        1 decode success,  0 decode failure.
+ * @brief       This function is used to read the receive data of MDEC module's IO.
+ * @param[out]  dat     - The array to store date.
+ * @return      1 decode success,  0 decode failure.
  */
 unsigned char mdec_read_dat(unsigned char *dat)
 {

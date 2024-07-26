@@ -21,15 +21,15 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-/**    @page GPIO
+/** @page GPIO
  *
- *    Introduction
- *    ===============
- *    B91 contain two six group gpio(A~F), total 44 gpio pin.
+ *  Introduction
+ *  ===============
+ *  B91 contain two six group gpio(A~F), total 44 gpio pin.
  *
- *    API Reference
- *    ===============
- *    Header File: gpio.h
+ *  API Reference
+ *  ===============
+ *  Header File: gpio.h
  */
 #ifndef DRIVERS_GPIO_H_
 #define DRIVERS_GPIO_H_
@@ -52,7 +52,7 @@
  *********************************************************************************************************************/
 /**
  *  @brief  Define GPIO types
- *  @note    the following two points need to noticed when using PE5 port:
+ *  @note   the following two points need to noticed when using PE5 port:
  *          1. This pin is not recommend to use as wake-up source;
  *          2. Since this pin is output function by default, even if it is configured with pull-up/pull-down retention,
  *          when deep/deep Retention is invoked, it can't maintain high/low level and an abnormal level will occur.
@@ -172,7 +172,7 @@ typedef enum{
  */
 typedef enum {
     GPIO_PIN_UP_DOWN_FLOAT    = 0,
-    GPIO_PIN_PULLUP_1M         = 1,
+    GPIO_PIN_PULLUP_1M      = 1,
     GPIO_PIN_PULLDOWN_100K      = 2,
     GPIO_PIN_PULLUP_10K         = 3,
 }gpio_pull_type_e;
@@ -180,8 +180,8 @@ typedef enum {
 
 typedef enum{
     GPIO_IRQ_MASK_GPIO       =          BIT(0),
-    GPIO_IRQ_MASK_GPIO2RISC0 =             BIT(1),
-    GPIO_IRQ_MASK_GPIO2RISC1 =             BIT(2),
+    GPIO_IRQ_MASK_GPIO2RISC0 =          BIT(1),
+    GPIO_IRQ_MASK_GPIO2RISC1 =          BIT(2),
 }gpio_irq_mask_e;
 
 /**
@@ -191,7 +191,7 @@ typedef enum{
  */
 static inline void gpio_function_en(gpio_pin_e pin)
 {
-    unsigned char    bit = pin & 0xff;
+    unsigned char   bit = pin & 0xff;
     BM_SET(reg_gpio_func(pin), bit);
 }
 
@@ -203,7 +203,7 @@ static inline void gpio_function_en(gpio_pin_e pin)
  */
 static inline void gpio_function_dis(gpio_pin_e pin)
 {
-    unsigned char    bit = pin & 0xff;
+    unsigned char   bit = pin & 0xff;
     BM_CLR(reg_gpio_func(pin), bit);
 }
 
@@ -216,7 +216,7 @@ static inline void gpio_function_dis(gpio_pin_e pin)
  */
 static inline void gpio_set_high_level(gpio_pin_e pin)
 {
-    unsigned char    bit = pin & 0xff;
+    unsigned char   bit = pin & 0xff;
     BM_SET(reg_gpio_out(pin), bit);
 
 }
@@ -229,7 +229,7 @@ static inline void gpio_set_high_level(gpio_pin_e pin)
  */
 static inline void gpio_set_low_level(gpio_pin_e pin)
 {
-    unsigned char    bit = pin & 0xff;
+    unsigned char   bit = pin & 0xff;
     BM_CLR(reg_gpio_out(pin), bit);
 
 }
@@ -256,7 +256,7 @@ static inline void gpio_set_level(gpio_pin_e pin, unsigned char value)
  * @brief     This function read the pin's input/output level.
  * @param[in] pin - the pin needs to read its level.
  * @return    1: the pin's level is high.
- *               0: the pin's level is low.
+ *            0: the pin's level is low.
  */
 static inline _Bool gpio_get_level(gpio_pin_e pin)
 {
@@ -299,7 +299,7 @@ static inline void gpio_toggle(gpio_pin_e pin)
  */
 static inline void gpio_output_en(gpio_pin_e pin)
 {
-    unsigned char    bit = pin & 0xff;
+    unsigned char   bit = pin & 0xff;
     BM_CLR(reg_gpio_oen(pin), bit);
 }
 
@@ -310,7 +310,7 @@ static inline void gpio_output_en(gpio_pin_e pin)
  */
 static inline void gpio_output_dis(gpio_pin_e pin)
 {
-    unsigned char    bit = pin & 0xff;
+    unsigned char   bit = pin & 0xff;
     BM_SET(reg_gpio_oen(pin), bit);
 }
 
@@ -463,7 +463,7 @@ void gpio_set_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_type);
 
 /**
  * @brief     This function set a pin's IRQ_RISC0.
- * @param[in] pin             - the pin needs to enable its IRQ.
+ * @param[in] pin           - the pin needs to enable its IRQ.
  * @param[in] trigger_type  - gpio interrupt type 0  rising edge 1 falling edge 2 high level 3 low level
  * @return    none.
  */
@@ -471,7 +471,7 @@ void gpio_set_gpio2risc0_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_typ
 
 /**
  * @brief     This function set a pin's IRQ_RISC1.
- * @param[in] pin             - the pin needs to enable its IRQ.
+ * @param[in] pin           - the pin needs to enable its IRQ.
  * @param[in] trigger_type  - gpio interrupt type 0  rising edge 1 falling edge 2 high level 3 low level
  * @return    none.
  */

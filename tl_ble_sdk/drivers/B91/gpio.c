@@ -24,12 +24,12 @@
 #include "gpio.h"
 
 /**********************************************************************************************************************
- *                                              local constants                                                       *
+ *                                            local constants                                                       *
  *********************************************************************************************************************/
 
 
 /**********************************************************************************************************************
- *                                               local macro                                                        *
+ *                                              local macro                                                        *
  *********************************************************************************************************************/
 
 
@@ -64,7 +64,7 @@
  */
 void gpio_input_en(gpio_pin_e pin)
 {
-    unsigned char    bit = pin & 0xff;
+    unsigned char   bit = pin & 0xff;
     unsigned short group = pin & 0xf00;
 
     if(group == GPIO_GROUPA || group == GPIO_GROUPB || group == GPIO_GROUPE)
@@ -90,7 +90,7 @@ void gpio_input_en(gpio_pin_e pin)
  */
 void gpio_input_dis(gpio_pin_e pin)
 {
-    unsigned char    bit = pin & 0xff;
+    unsigned char   bit = pin & 0xff;
     unsigned short group = pin & 0xf00;
 
     if(group == GPIO_GROUPA || group == GPIO_GROUPB || group == GPIO_GROUPE)
@@ -134,7 +134,7 @@ void gpio_set_input(gpio_pin_e pin, unsigned char value)
  */
  void gpio_ds_en(gpio_pin_e pin)
 {
-    unsigned char    bit = pin & 0xff;
+    unsigned char   bit = pin & 0xff;
     unsigned short group = pin & 0xf00;
     if(group == GPIO_GROUPC)
     {analog_write_reg8(areg_gpio_pc_ds, analog_read_reg8(areg_gpio_pc_ds)|bit);}
@@ -152,14 +152,14 @@ void gpio_set_input(gpio_pin_e pin, unsigned char value)
   */
   void gpio_ds_dis(gpio_pin_e pin)
  {
-     unsigned char    bit = pin & 0xff;
-     unsigned short group = pin & 0xf00;
-     if(group == GPIO_GROUPC)
-     {analog_write_reg8(areg_gpio_pc_ds, analog_read_reg8(areg_gpio_pc_ds)&(~bit));}
-     else if(group == GPIO_GROUPD)
-     {analog_write_reg8(areg_gpio_pd_ds, analog_read_reg8(areg_gpio_pd_ds)&(~bit));}
-     else
-     {BM_CLR(reg_gpio_ds(pin), bit);}
+    unsigned char   bit = pin & 0xff;
+    unsigned short group = pin & 0xf00;
+    if(group == GPIO_GROUPC)
+    {analog_write_reg8(areg_gpio_pc_ds, analog_read_reg8(areg_gpio_pc_ds)&(~bit));}
+    else if(group == GPIO_GROUPD)
+    {analog_write_reg8(areg_gpio_pd_ds, analog_read_reg8(areg_gpio_pd_ds)&(~bit));}
+    else
+    {BM_CLR(reg_gpio_ds(pin), bit);}
  }
 
 
@@ -177,7 +177,7 @@ void gpio_shutdown(gpio_pin_e pin)
         case GPIO_GROUPA:
             reg_gpio_pa_out &= (~bit);
             reg_gpio_pa_oen |= bit;//disable output
-             reg_gpio_pa_gpio |= bit;
+            reg_gpio_pa_gpio |= bit;
             reg_gpio_pa_ie &= (~bit);//disable input
             break;
         case GPIO_GROUPB:
@@ -237,7 +237,7 @@ void gpio_shutdown(gpio_pin_e pin)
             reg_gpio_pe_oen = 0xff;
 
             //disable input
-            reg_gpio_pa_ie = 0x80;                    //SWS
+            reg_gpio_pa_ie = 0x80;                  //SWS
             reg_gpio_pb_ie = 0x00;
             analog_write_reg8(areg_gpio_pc_ie, 0);
             analog_write_reg8(areg_gpio_pd_ie, 0);
@@ -250,12 +250,12 @@ void gpio_shutdown(gpio_pin_e pin)
 
 /**
  * @brief     This function set a pin's IRQ.
- * @param[in] pin             - the pin needs to enable its IRQ.
+ * @param[in] pin           - the pin needs to enable its IRQ.
  * @param[in] trigger_type  - gpio interrupt type.
- *                               0: rising edge.
- *                               1: falling edge.
- *                               2: high level.
- *                               3: low level.
+ *                            0: rising edge.
+ *                            1: falling edge.
+ *                            2: high level.
+ *                            3: low level.
  * @return    none.
  */
 void gpio_set_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_type)
@@ -291,7 +291,7 @@ void gpio_set_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_type)
 
 /**
  * @brief     This function set a pin's IRQ_RISC0.
- * @param[in] pin             - the pin needs to enable its IRQ.
+ * @param[in] pin           - the pin needs to enable its IRQ.
  * @param[in] trigger_type  - gpio interrupt type 0  rising edge 1 falling edge 2 high level 3 low level.
  * @return    none.
  */
@@ -328,7 +328,7 @@ void gpio_set_gpio2risc0_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_typ
 
 /**
  * @brief     This function set a pin's IRQ_RISC1.
- * @param[in] pin             - the pin needs to enable its IRQ.
+ * @param[in] pin           - the pin needs to enable its IRQ.
  * @param[in] trigger_type  - gpio interrupt type 0  rising edge 1 falling edge 2 high level 3 low level
  * @return    none.
  */
@@ -406,7 +406,7 @@ void gpio_set_up_down_res(gpio_pin_e pin, gpio_pull_type_e up_down_res)
  */
 void gpio_set_pullup_res_30k(gpio_pin_e pin)
 {
-    unsigned char    bit = pin & 0xff;
+    unsigned char   bit = pin & 0xff;
     unsigned short group = pin & 0xf00;
 
     if(group==GPIO_GROUPC)
@@ -426,6 +426,6 @@ void gpio_set_pullup_res_30k(gpio_pin_e pin)
 
 
 /**********************************************************************************************************************
-  *                                            local function implementation                                             *
+  *                                         local function implementation                                             *
   *********************************************************************************************************************/
 

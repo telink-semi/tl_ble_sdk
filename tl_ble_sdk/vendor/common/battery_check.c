@@ -52,9 +52,9 @@ void battery_set_detect_enable (int en)
 
 /**
  * @brief     This function serves to get battery detect status.
- * @param    none
+ * @param   none
  * @return    other: battery detect enable
- *               0: battery detect disable
+ *            0: battery detect disable
  */
 int battery_get_detect_enable (void)
 {
@@ -72,7 +72,7 @@ extern signed char g_adc_vbat_calib_vref_offset;
 
 /**
  * @brief      this function is used for user to initialize battery detect.
- * @param       none
+ * @param      none
  * @return     none
  */
 _attribute_ram_code_ void adc_bat_detect_init(void)
@@ -124,17 +124,32 @@ _attribute_ram_code_ void adc_bat_detect_init(void)
     #else//base mode, gpio channel
         adc_set_diff_input(ADC_INPUT_PIN_CHN>>12, GND);
     #endif
-#elif (MCU_CORE_TYPE == MCU_CORE_TL721X)
+#elif (MCU_CORE_TYPE == MCU_CORE_B92)
+    #if VBAT_CHANNEL_EN//vbat mode, vbat channel
+        g_adc_vref = g_adc_vbat_calib_vref;//set vbat sample calib vref
+        g_adc_vref_offset = g_adc_vbat_calib_vref_offset;
+        adc_init(ADC_VREF_1P2V, ADC_PRESCALE_1, ADC_SAMPLE_FREQ_96K);
+        adc_set_vbat_divider(ADC_VBAT_DIV_1F4);
+        adc_set_diff_input(ADC_VBAT, GND);
+    #else//base mode, gpio channel
+        g_adc_vref = g_adc_gpio_calib_vref;//set gpio sample calib vref
+        g_adc_vref_offset = g_adc_gpio_calib_vref_offset;//set adc_vref_offset as adc_gpio_calib_vref_offset
+        adc_init(ADC_VREF_1P2V, ADC_PRESCALE_1F4, ADC_SAMPLE_FREQ_96K);
+        adc_set_vbat_divider(ADC_VBAT_DIV_OFF);
+        adc_pin_config(ADC_GPIO_MODE, ADC_INPUT_PIN_CHN);
+        adc_set_diff_input(ADC_INPUT_PIN_CHN >> 12, GND);
+    #endif
+#elif (MCU_CORE_TYPE == MCU_CORE_TL721X || MCU_CORE_TYPE == MCU_CORE_TL321X)
          adc_init(NDMA_M_CHN);
 #if VBAT_CHANNEL_EN//vbat mode, vbat channel
          adc_vbat_sample_init(ADC_M_CHANNEL);
 #else//base mode, gpio channel
          adc_gpio_cfg_t adc_gpio_cfg_m =
          {
-                 .v_ref = ADC_VREF_1P2V,
-                 .pre_scale = ADC_PRESCALE_1F8,
-                 .sample_freq = ADC_SAMPLE_FREQ_96K,
-                 .pin = ADC_INPUT_PIN_CHN,
+                .v_ref = ADC_VREF_1P2V,
+                .pre_scale = ADC_PRESCALE_1F8,
+                .sample_freq = ADC_SAMPLE_FREQ_96K,
+                .pin = ADC_INPUT_PIN_CHN,
          };
          adc_gpio_sample_init(ADC_M_CHANNEL,adc_gpio_cfg_m);
 #endif //#if VBAT_CHANNEL_EN//vbat mode, vbat channel
@@ -149,8 +164,8 @@ _attribute_ram_code_ void adc_bat_detect_init(void)
 }
 
 /**
- * @brief        This is battery check function
- * @param[in]    alarm_vol_mv - input battery calibration
+ * @brief       This is battery check function
+ * @param[in]   alarm_vol_mv - input battery calibration
  * @return      0: batt_vol_mv < alarm_vol_mv 1: batt_vol_mv > alarm_vol_mv
  */
 _attribute_ram_code_ int app_battery_power_check(u16 alarm_vol_mv)
@@ -166,7 +181,7 @@ _attribute_ram_code_ int app_battery_power_check(u16 alarm_vol_mv)
     //The sdk is only sampled once, and the user can redesign the filtering algorithm according to the actual application.
     unsigned short adc_misc_data;
     u32 adc_average=0;
-#if (MCU_CORE_TYPE == MCU_CORE_B91)
+#if ((MCU_CORE_TYPE == MCU_CORE_B91) || (MCU_CORE_TYPE == MCU_CORE_B92) )
 #if DCDC_ADC_SOFTWARE_FILTER
     u8 adc_sample_num=6;
     for(int i=0;i<adc_sample_num;i++)
@@ -205,6 +220,8 @@ _attribute_ram_code_ int app_battery_power_check(u16 alarm_vol_mv)
 ////////////////// adc sample data convert to voltage(mv) ////////////////
 #if (MCU_CORE_TYPE == MCU_CORE_B91)
     batt_vol_mv  = (((adc_average * g_adc_vbat_divider * g_adc_pre_scale * g_adc_vref)>>13) + g_adc_vref_offset);
+#elif (MCU_CORE_TYPE == MCU_CORE_B92)
+    batt_vol_mv  = (((adc_average * g_adc_vbat_divider * g_adc_pre_scale * g_adc_vref)>>13) + g_adc_vref_offset);
 #endif
 
 
@@ -224,4 +241,6 @@ _attribute_ram_code_ int app_battery_power_check(u16 alarm_vol_mv)
     }
     return 1;
 }
-#endif
+
+
+#endif //#if (BATT_CHECK_ENABLE)

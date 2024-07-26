@@ -44,16 +44,16 @@ typedef struct{
 
 sdp_info_store_cb_t sdp_info_store_cb = NULL;
 
-int    central_sdp_pending = 0;            // SDP: service discovery
+int central_sdp_pending = 0;            // SDP: service discovery
 
 
 dev_char_info_t  cur_sdp_device;  //current connected device which is in SDP flow
 
 
-main_service_t   main_service = 0;
+main_service_t      main_service = 0;
 
 
-static const  u8 my_OtaUUID[16]                        = WRAPPING_BRACES(TELINK_SPP_DATA_OTA);
+static const  u8 my_OtaUUID[16]                     = WRAPPING_BRACES(TELINK_SPP_DATA_OTA);
 
 
 ble_sts_t  host_att_discoveryService (u16 handle, att_db_uuid16_t *p16, int n16, att_db_uuid128_t *p128, int n128);
@@ -86,21 +86,21 @@ void simple_sdp_register_store_info_callback(sdp_info_store_cb_t cb)
 void app_service_discovery (void)
 {
     att_db_uuid16_t     db16[ATT_DB_UUID16_NUM];
-    att_db_uuid128_t     db128[ATT_DB_UUID128_NUM];
+    att_db_uuid128_t    db128[ATT_DB_UUID128_NUM];
     memset (db16, 0, ATT_DB_UUID16_NUM * sizeof (att_db_uuid16_t));
     memset (db128, 0, ATT_DB_UUID128_NUM * sizeof (att_db_uuid128_t));
 
-    if ( central_sdp_pending && host_att_discoveryService (central_sdp_pending, db16, ATT_DB_UUID16_NUM, db128, ATT_DB_UUID128_NUM) == BLE_SUCCESS)    // service discovery OK
+    if ( central_sdp_pending && host_att_discoveryService (central_sdp_pending, db16, ATT_DB_UUID16_NUM, db128, ATT_DB_UUID128_NUM) == BLE_SUCCESS) // service discovery OK
     {
         cur_sdp_device.char_handle[2] = blm_att_findHandleOfUuid128 (db128, my_OtaUUID);            //OTA
         cur_sdp_device.char_handle[3] = blm_att_findHandleOfUuid16 (db16, CHARACTERISTIC_UUID_REPORT,
-                    HID_REPORT_ID_CONSUME_CONTROL_INPUT | (HID_REPORT_TYPE_INPUT<<8));        //consume report(media key report)
+                    HID_REPORT_ID_CONSUME_CONTROL_INPUT | (HID_REPORT_TYPE_INPUT<<8));      //consume report(media key report)
         cur_sdp_device.char_handle[4] = blm_att_findHandleOfUuid16 (db16, CHARACTERISTIC_UUID_REPORT,
-                    HID_REPORT_ID_KEYBOARD_INPUT | (HID_REPORT_TYPE_INPUT<<8));                //normal key report
+                    HID_REPORT_ID_KEYBOARD_INPUT | (HID_REPORT_TYPE_INPUT<<8));             //normal key report
         cur_sdp_device.char_handle[5] = blm_att_findHandleOfUuid16 (db16, CHARACTERISTIC_UUID_REPORT,
                     HID_REPORT_ID_MOUSE_INPUT | (HID_REPORT_TYPE_INPUT<<8));                //mouse report
-        //cur_sdp_device.char_handle[6] = blm_att_findHandleOfUuid128 (db128, TelinkSppDataServer2ClientUUID);        //BLE Module, SPP Server to Client
-        //cur_sdp_device.char_handle[7] = blm_att_findHandleOfUuid128 (db128, TelinkSppDataClient2ServerUUID);        //BLE Module, SPP Client to Server
+        //cur_sdp_device.char_handle[6] = blm_att_findHandleOfUuid128 (db128, TelinkSppDataServer2ClientUUID);      //BLE Module, SPP Server to Client
+        //cur_sdp_device.char_handle[7] = blm_att_findHandleOfUuid128 (db128, TelinkSppDataClient2ServerUUID);      //BLE Module, SPP Client to Server
 
         /* add the peer device att_handle value to conn_dev_list after service discovery is correctly finished */
         dev_char_info_add_peer_att_handle(&cur_sdp_device);
@@ -136,7 +136,7 @@ void app_register_service (void *p)
 
 
 
-u8    *p_att_response = 0;
+u8  *p_att_response = 0;
 
 volatile u32    host_att_req_busy = 0;
 
@@ -274,7 +274,7 @@ ble_sts_t  host_att_discoveryService (u16 handle, att_db_uuid16_t *p16, int n16,
         dat[6] = ATT_OP_READ_BY_TYPE_REQ;
         if (app_char_discovery(dat, handle, s, 0xffff, (u8 *)&uuid, 2)) // 1s
         {
-            return  GATT_ERR_SERVICE_DISCOVERY_TIMEOUT;            //timeout
+            return  GATT_ERR_SERVICE_DISCOVERY_TIMEOUT;         //timeout
         }
 
         // process response data
@@ -284,7 +284,7 @@ ble_sts_t  host_att_discoveryService (u16 handle, att_db_uuid16_t *p16, int n16,
             break;
         }
 
-        if (p_rsp->datalen == 21)        //uuid128
+        if (p_rsp->datalen == 21)       //uuid128
         {
             u8 *pd = p_rsp->data;
             while(p_rsp->l2capLen > 21){
@@ -334,7 +334,7 @@ ble_sts_t  host_att_discoveryService (u16 handle, att_db_uuid16_t *p16, int n16,
             dat[6] = ATT_OP_FIND_INFORMATION_REQ;
             if (app_find_char_info(dat, handle, p16->handle, 0xffff)) // 1s
             {
-                return  GATT_ERR_SERVICE_DISCOVERY_TIMEOUT;            //timeout
+                return  GATT_ERR_SERVICE_DISCOVERY_TIMEOUT;         //timeout
             }
 
             ble_att_findInfoRsp_t *p_rsp = (ble_att_findInfoRsp_t *) dat;
@@ -345,17 +345,17 @@ ble_sts_t  host_att_discoveryService (u16 handle, att_db_uuid16_t *p16, int n16,
                 while (n > 0)
                 {
                     if ((pd[2]==U16_LO(DECLARATIONS_UUID_CHARACTERISTIC) && pd[3]==U16_HI(DECLARATIONS_UUID_CHARACTERISTIC)) ||
-                        (pd[2]==U16_LO(DECLARATIONS_UUID_PRIMARY_SERVICE) && pd[3]==U16_HI(DECLARATIONS_UUID_PRIMARY_SERVICE))    )
+                        (pd[2]==U16_LO(DECLARATIONS_UUID_PRIMARY_SERVICE) && pd[3]==U16_HI(DECLARATIONS_UUID_PRIMARY_SERVICE))  )
                     {
                         break;
                     }
 
                     if (pd[2]==U16_LO(DESCRIPTOR_UUID_REPORT_REFERENCE) && pd[3]==U16_HI(DESCRIPTOR_UUID_REPORT_REFERENCE))
                     {
-                        //-----------        read attribute ----------------
+                        //-----------       read attribute ----------------
                         dat[6] = ATT_OP_READ_REQ;
                         if(app_read_char_value(dat, handle, pd[0])){
-                            return  GATT_ERR_SERVICE_DISCOVERY_TIMEOUT;            //timeout
+                            return  GATT_ERR_SERVICE_DISCOVERY_TIMEOUT;         //timeout
                         }
 
                         ble_att_readRsp_t *pr = (ble_att_readRsp_t *) dat;
@@ -428,7 +428,7 @@ int dev_char_info_add_peer_att_handle (dev_char_info_t* dev_char_info)
  * @return      0: failed
  *             !0: return flash address
  */
-int        dev_char_info_store_peer_att_handle(dev_char_info_t* pdev_char)
+int     dev_char_info_store_peer_att_handle(dev_char_info_t* pdev_char)
 {
     u8 mark;
     u32 current_flash_adr;
@@ -446,14 +446,14 @@ int        dev_char_info_store_peer_att_handle(dev_char_info_t* pdev_char)
             }
 #endif
 
-//             char_handle[0] :  MIC
-//             char_handle[1] :  Speaker
-//             char_handle[2] :  OTA
-//             char_handle[3] :  Consume Report
-//             char_handle[4] :  Key Report
-//             char_handle[5] :  mouse report
-//             char_handle[6] :  BLE Module, SPP Server to Client
-//             char_handle[7] :  BLE Module, SPP Client to Server
+//           char_handle[0] :  MIC
+//           char_handle[1] :  Speaker
+//           char_handle[2] :  OTA
+//           char_handle[3] :  Consume Report
+//           char_handle[4] :  Key Report
+//           char_handle[5] :  mouse report
+//           char_handle[6] :  BLE Module, SPP Server to Client
+//           char_handle[7] :  BLE Module, SPP Client to Server
             flash_write_page( current_flash_adr + OFFSETOF(dev_att_t, char_handle) + 2*2,  2, (u8 *)&pdev_char->char_handle[2]);   //save OTA att_handle
             flash_write_page( current_flash_adr + OFFSETOF(dev_att_t, char_handle) + 3*2,  2, (u8 *)&pdev_char->char_handle[3]);   //save Consume Report att_handle
             flash_write_page( current_flash_adr + OFFSETOF(dev_att_t, char_handle) + 4*2,  2, (u8 *)&pdev_char->char_handle[4]);   //save Key Report att_handle
@@ -489,7 +489,7 @@ int        dev_char_info_store_peer_att_handle(dev_char_info_t* pdev_char)
  * @return      0: failed
  *             !0: return flash address
  */
-int        dev_char_info_search_peer_att_handle_by_peer_mac(u8 adr_type, u8* addr, dev_att_t* pdev_att)
+int     dev_char_info_search_peer_att_handle_by_peer_mac(u8 adr_type, u8* addr, dev_att_t* pdev_att)
 {
 
 

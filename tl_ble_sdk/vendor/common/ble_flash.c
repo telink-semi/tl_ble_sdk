@@ -31,38 +31,38 @@
  * @brief   BLE parameters on flash
  */
 typedef struct __attribute__((packed)) {
-    u8        cap_frqoffset_en;
-    u8        cap_frqoffset_value;
+    u8      cap_frqoffset_en;
+    u8      cap_frqoffset_value;
 
 }nv_para_t;
 
 
-_attribute_data_retention_     nv_para_t                 blc_nvParam;
+_attribute_data_retention_  nv_para_t               blc_nvParam;
 
 
 /* global variable for some flash sector address, initial value use 2M flash.
  * attention that they will be changed in function "blc readFlashSize_autoConfigCustomFlashSector"  */
-_attribute_data_retention_    u32 flash_sector_mac_address = CFG_ADR_MAC_2M_FLASH;
-_attribute_data_retention_    u32 flash_sector_calibration = CFG_ADR_CALIBRATION_2M_FLASH;
-_attribute_data_retention_    u32 flash_sector_smp_storage = FLASH_ADR_SMP_PAIRING_2M_FLASH;
-_attribute_data_retention_    u32 flash_sector_simple_sdp_att = FLASH_SDP_ATT_ADDRESS_2M_FLASH;
+_attribute_data_retention_  u32 flash_sector_mac_address = CFG_ADR_MAC_2M_FLASH;
+_attribute_data_retention_  u32 flash_sector_calibration = CFG_ADR_CALIBRATION_2M_FLASH;
+_attribute_data_retention_  u32 flash_sector_smp_storage = FLASH_ADR_SMP_PAIRING_2M_FLASH;
+_attribute_data_retention_  u32 flash_sector_simple_sdp_att = FLASH_SDP_ATT_ADDRESS_2M_FLASH;
 
-_attribute_data_retention_    unsigned int  blc_flash_mid = 0;
-_attribute_data_retention_    unsigned int  blc_flash_vendor = 0;
-_attribute_data_retention_    unsigned char blc_flash_capacity;
+_attribute_data_retention_  unsigned int  blc_flash_mid = 0;
+_attribute_data_retention_  unsigned int  blc_flash_vendor = 0;
+_attribute_data_retention_  unsigned char blc_flash_capacity;
 
 
 
 /**
- * @brief        This function is used to read flash mid, get flash vendor, and set flash capacity
- * @param[in]    none
+ * @brief       This function is used to read flash mid, get flash vendor, and set flash capacity
+ * @param[in]   none
  * @return      none
  */
 void blc_flash_read_mid_get_vendor_set_capacity(void)
 {
     /*
-        Flash Type    uid CMD        MID            Company
-        P25Q80U        0x4b        0x146085    PUYA
+        Flash Type  uid CMD     MID         Company
+        P25Q80U     0x4b        0x146085    PUYA
         P25Q16SU    0x4b        0x156085    PUYA
         P25Q32SU    0x4b        0x166085    PUYA
         P25Q128L    0x4b        0x186085    PUYA
@@ -80,10 +80,10 @@ void blc_flash_read_mid_get_vendor_set_capacity(void)
 
 
 /**
- * @brief        This function can automatically recognize the flash size,
- *                 and the system selects different customized sector according
- *                 to different sizes.
- * @param[in]    none
+ * @brief       This function can automatically recognize the flash size,
+ *              and the system selects different customized sector according
+ *              to different sizes.
+ * @param[in]   none
  * @return      none
  */
 void blc_readFlashSize_autoConfigCustomFlashSector(void)
@@ -163,8 +163,8 @@ void blc_readFlashSize_autoConfigCustomFlashSector(void)
 
 
 /**
- * @brief        load customized parameters (from Flash/EFUSE) when MCU power on or wake_up from deepSleep mode
- * @param[in]    none
+ * @brief       load customized parameters (from Flash/EFUSE) when MCU power on or wake_up from deepSleep mode
+ * @param[in]   none
  * @return      none
  */
 void blc_app_loadCustomizedParameters_normal(void)
@@ -225,8 +225,8 @@ void blc_app_loadCustomizedParameters_normal(void)
 
 
 /**
- * @brief        load customized parameters (from SRAM) MCU wake_up from deepSleep_retention mode
- * @param[in]    none
+ * @brief       load customized parameters (from SRAM) MCU wake_up from deepSleep_retention mode
+ * @param[in]   none
  * @return      none
  */
 _attribute_ram_code_
@@ -244,20 +244,20 @@ void blc_app_loadCustomizedParameters_deepRetn(void)
 
 
 /*
- *B91:     VVWWXX 775FD8 YYZZ
+ *B91:  VVWWXX 775FD8 YYZZ
  *B92:  VVWWXX B4CF3C YYZZ
 
  * public_mac:
- *                 B91 : VVWWXX 775FD8
- *                 B92 : VVWWXX B4CF3C
+ *              B91 : VVWWXX 775FD8
+ *              B92 : VVWWXX B4CF3C
  *
  * random_static_mac: VVWWXXYYZZ C0
  */
 /**
- * @brief        This function is used to initialize the MAC address
- * @param[in]    flash_addr - flash address for MAC address
- * @param[in]    mac_public - public address
- * @param[in]    mac_random_static - random static MAC address
+ * @brief       This function is used to initialize the MAC address
+ * @param[in]   flash_addr - flash address for MAC address
+ * @param[in]   mac_public - public address
+ * @param[in]   mac_random_static - random static MAC address
  * @return      none
  */
 _attribute_no_inline_
@@ -317,7 +317,7 @@ void blc_initMacAddress(int flash_addr, u8 *mac_public, u8 *mac_random_static)
     mac_random_static[0] = mac_public[0];
     mac_random_static[1] = mac_public[1];
     mac_random_static[2] = mac_public[2];
-    mac_random_static[5] = 0xC0;             //for random static
+    mac_random_static[5] = 0xC0;            //for random static
 
     if(!rand_mac_byte3_4_read_OK){
         mac_random_static[3] = value_rand[3];

@@ -3,7 +3,7 @@
  *
  * @brief    This is the header file for BLE SDK
  *
- * @author     BLE GROUP
+ * @author   BLE GROUP
  * @date         11,2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
@@ -64,7 +64,7 @@
 #define MSTATUS_XS              0x00018000
 #define MSTATUS_MPRV            0x00020000
 #define MSTATUS_PUM             0x00040000
-#define MSTATUS_MXR                0x00080000
+#define MSTATUS_MXR             0x00080000
 #define MSTATUS_VM              0x1F000000
 #define MSTATUS32_SD            0x80000000
 
@@ -141,21 +141,21 @@ static inline unsigned char mtimer_is_irq_enable(void)
 
 #if (OS_SEPARATE_STACK_SPACE)
 #ifndef configISR_PLIC_STACK_SIZE
-#define configISR_PLIC_STACK_SIZE     1024
+#define configISR_PLIC_STACK_SIZE   1024
 #endif
 extern void entry_irq_all(func_isr_t func, unsigned int src);
 
 #define PLIC_ISR_REGISTER_OS(isr, irq_num)                                                                                                     \
-__attribute__((section(".ram_code")))  __attribute__((noinline)) __attribute__((naked)) void ISR_ENTRY_NAME(irq_num)(void) __attribute__ ((aligned(4)));                      \
+__attribute__((section(".ram_code")))  __attribute__((noinline)) __attribute__((naked)) void ISR_ENTRY_NAME(irq_num)(void) __attribute__ ((aligned(4)));                    \
 void ISR_ENTRY_NAME(irq_num)(void) {                                                                                                        \
-__asm__("c.addi sp,-16");                                                                                                                \
-__asm__("c.swsp    ra,0(sp)");                                                                                                                \
-__asm__("c.swsp    a0,4(sp)");                                                                                                                \
-__asm__("c.swsp    a1,8(sp)");                                                                                                                \
-entry_irq_all(isr,irq_num);                                                                                                                \
-__asm__("c.lwsp    ra,0(sp)");                                                                                                                \
-__asm__("c.lwsp    a0,4(sp)");                                                                                                                \
-__asm__("c.lwsp    a1,8(sp)");                                                                                                                \
+__asm__("c.addi sp,-16");                                                                                                               \
+__asm__("c.swsp ra,0(sp)");                                                                                                             \
+__asm__("c.swsp a0,4(sp)");                                                                                                             \
+__asm__("c.swsp a1,8(sp)");                                                                                                             \
+entry_irq_all(isr,irq_num);                                                                                                             \
+__asm__("c.lwsp ra,0(sp)");                                                                                                             \
+__asm__("c.lwsp a0,4(sp)");                                                                                                             \
+__asm__("c.lwsp a1,8(sp)");                                                                                                             \
 __asm__("c.addi sp,16");                                                                                                                \
 __asm__("mret");                                                                                                                        \
 }

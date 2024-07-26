@@ -28,7 +28,7 @@
 
 #if (FEATURE_TEST_MODE == TEST_L2CAP_COC)
 
-extern     int    central_pairing_enable;
+extern  int central_pairing_enable;
 
 /**
  * @brief      keyboard task handler

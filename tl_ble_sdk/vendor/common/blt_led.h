@@ -29,12 +29,12 @@
 
 
 #ifndef BLT_APP_LED_ENABLE
-#define BLT_APP_LED_ENABLE                0
+#define BLT_APP_LED_ENABLE              0
 #endif
 
 
 /**
- * @brief    Configure the parameters for led event
+ * @brief   Configure the parameters for led event
  */
 typedef struct{
     unsigned short onTime_ms;
@@ -45,7 +45,7 @@ typedef struct{
 } led_cfg_t;
 
 /**
- * @brief    the status of led event
+ * @brief   the status of led event
  */
 typedef struct {
     unsigned char  isOn;
@@ -66,31 +66,31 @@ extern device_led_t device_led;
 #define  DEVICE_LED_BUSY    (device_led.repeatCount)
 
 /**
- * @brief        This function is used to manage led tasks
- * @param[in]    none
+ * @brief       This function is used to manage led tasks
+ * @param[in]   none
  * @return      none
  */
 extern void led_proc(void);
 
 /**
- * @brief        This function is used to initialize device led setting
- * @param[in]    gpio - the GPIO corresponding to device led
- * @param[in]    polarity - 1 for high led on, 0 for low led on
+ * @brief       This function is used to initialize device led setting
+ * @param[in]   gpio - the GPIO corresponding to device led
+ * @param[in]   polarity - 1 for high led on, 0 for low led on
  * @return      none
  */
 extern void device_led_init(u32 gpio,u8 polarity);
 
 /**
- * @brief        This function is used to create new led task
- * @param[in]    led_cfg - Configure the parameters for led event
+ * @brief       This function is used to create new led task
+ * @param[in]   led_cfg - Configure the parameters for led event
  * @return      0 - new led event priority not higher than the not ongoing one
- *                 1 - new led event created successfully
+ *              1 - new led event created successfully
  */
 int device_led_setup(led_cfg_t led_cfg);
 
 /**
- * @brief        This function is used to manage led tasks
- * @param[in]    none
+ * @brief       This function is used to manage led tasks
+ * @param[in]   none
  * @return      none
  */
 static inline void device_led_process(void)

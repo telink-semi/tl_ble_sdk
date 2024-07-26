@@ -68,7 +68,7 @@ unsigned char g_i2c_stop_en=0x20;
 
 /**
  * @brief      The function of this interface is equivalent to that after the user finishes calling the write or read interface, the stop signal is not sent,
- *                and then the write or read command is executed again. The driver defaults that every write or read API will send a stop command at the end
+ *             and then the write or read command is executed again. The driver defaults that every write or read API will send a stop command at the end
  * @param[in]  en - Input parameters.Decide whether to disable the stop function after each write or read interface
  * @return     none
  */
@@ -192,7 +192,7 @@ void i2c_slave_init(unsigned char id)
 {
     reg_i2c_sct0 &= (~FLD_I2C_MASTER); //enable slave mode.
 
-    reg_i2c_id      = id;                   //default eagle slave ID is 0x5a
+    reg_i2c_id    = id;                   //default eagle slave ID is 0x5a
 }
 
 
@@ -225,7 +225,7 @@ unsigned char  i2c_master_write(unsigned char id, unsigned char *data, unsigned 
     {
         if(i2c_get_tx_buf_cnt()<8)
         {
-            reg_i2c_data_buf(cnt % 4) = data[cnt];    //write data
+            reg_i2c_data_buf(cnt % 4) = data[cnt];  //write data
             cnt++;
             if(cnt==1)
             {
@@ -388,7 +388,7 @@ void i2c_slave_set_tx_dma( unsigned char *data, unsigned char len)
  * @param[in]  data - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception.
  *                    and the actual buffer size defined by the user needs to be not smaller than the len, otherwise there may be an out-of-bounds problem.
  * @param[in]  len  - This parameter is used to set the size of the received dma and must be set to a multiple of 4. The maximum value that can be set is 0xFFFFFC.
- * @return        none
+ * @return     none
  */
 void i2c_slave_set_rx_dma(unsigned char *data, unsigned char len)
 {

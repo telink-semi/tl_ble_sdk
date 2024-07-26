@@ -30,7 +30,7 @@
 #include "core.h"
 #include "stimer.h"
 #include "types.h"
-#include "watchdog.h"                //BLE SDK use
+#include "watchdog.h"               //BLE SDK use
 
 _attribute_data_retention_sec_ flash_handler_t flash_read_page = flash_dread;
 _attribute_data_retention_sec_ flash_handler_t flash_write_page = flash_page_program;
@@ -38,7 +38,7 @@ _attribute_data_retention_sec_ flash_handler_t flash_write_page = flash_page_pro
  * note:flash_write_page_encrypt and flash_read_page_decrypt_check should be used in combination,and the check read address is corresponding to the encrypted write.
  */
 _attribute_data_retention_sec_ flash_handler_t flash_write_page_encrypt = flash_page_program_encrypt;
-_attribute_data_retention_sec_ flash_read_check_handler_t flash_read_page_decrypt_check = flash_read_data_decrypt_check;
+_attribute_data_retention_sec_ flash_read_check_handler_t flash_read_page_decrypt_check = flash_dread_decrypt_check;
 
 
 
@@ -98,31 +98,6 @@ _attribute_text_sec_ void flash_erase_sector(unsigned long addr)
 }
 
 /**
- * @brief       This function reads the content from a page to the buf with single mode.
- * @param[in]   addr    - slave base address + the access address of flash.The base address of device0 is 0.
- *                      If there are multiple devices, the base address of other devices is determined by the mspi_slave_device_addr_space_config() function.
- * @param[in]   len     - the length(in byte, must be above 0) of content needs to read out from the page.
- * @param[out]  buf     - the start address of the buffer(ram address).
- * @return      none.
- * @note        cmd:1x, addr:1x, data:1x, dummy:0
- *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
- *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
- *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
- *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
- *              to the specific application and hardware circuit.
- *
- *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
- *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
- *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
- */
-_attribute_text_sec_ void flash_read_data(unsigned long addr, unsigned long len, unsigned char *buf)
-{
-    DISABLE_BTB;
-    flash_mspi_read_ram(FLASH_READ_CMD,addr, buf,len);
-    ENABLE_BTB;
-}
-
-/**
  * @brief       This function reads the content from a page to the buf with dual read mode.
  * @param[in]   addr    - slave base address + the access address of flash.The base address of device0 is 0.
  *                      If there are multiple devices, the base address of other devices is determined by the mspi_slave_device_addr_space_config() function.
@@ -170,33 +145,6 @@ _attribute_text_sec_ void flash_4read(unsigned long addr, unsigned long len, uns
     DISABLE_BTB;
     flash_mspi_read_ram(FLASH_X4READ_CMD, addr,  buf,len);
     ENABLE_BTB;
-}
-
-/**
- * @brief       This function serves to decrypt the read data from the flash at the specified address and compare it with the plain text in single mode.
- * @param[in]   addr        - slave base address + the access address of flash.The base address of device0 is 0.
- *                          If there are multiple devices, the base address of other devices is determined by the mspi_slave_device_addr_space_config() function.
- * @param[in]   plain_len   - the length(in byte, must be above 0) of content needs to read out from the page.
- * @param[out]  plain_buf   - the start address of the plain buffer(ram address).
- * @return      0: check pass; 1: check fail.
- * @note        cmd:1x, addr:1x, data:1x, dummy:0
- *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
- *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
- *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
- *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
- *              to the specific application and hardware circuit.
- *
- *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
- *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
- *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
- */
-_attribute_text_sec_ unsigned char  flash_read_data_decrypt_check(unsigned long addr,unsigned long plain_len,unsigned char* plain_buf)
-{
-    unsigned char check_data=0;
-    DISABLE_BTB;
-    check_data = flash_mspi_read_decrypt_check_ram(FLASH_READ_CMD,addr,plain_buf,plain_len);
-    ENABLE_BTB;
-    return check_data;
 }
 
 /**

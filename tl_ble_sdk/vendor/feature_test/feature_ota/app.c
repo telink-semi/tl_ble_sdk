@@ -35,7 +35,7 @@
 #if (FEATURE_TEST_MODE == TEST_OTA)
 
 
-int    central_smp_pending = 0;         // SMP: security & encryption;
+int central_smp_pending = 0;        // SMP: security & encryption;
 
 
 
@@ -46,14 +46,14 @@ int    central_smp_pending = 0;         // SMP: security & encryption;
 
 
 const u8    tbl_advData[] = {
-     4,  DT_COMPLETE_LOCAL_NAME,                 'o','t','a',
-     2,     DT_FLAGS,                                 0x05,                     // BLE limited discoverable mode and BR/EDR not supported
+     4,  DT_COMPLETE_LOCAL_NAME,                'o','t','a',
+     2,  DT_FLAGS,                              0x05,                   // BLE limited discoverable mode and BR/EDR not supported
      3,  DT_APPEARANCE,                         0x80, 0x01,             // 384, Generic Remote Control, Generic category
-     5,  DT_INCOMPLETE_LIST_16BIT_SERVICE_UUID,    0x12, 0x18, 0x0F, 0x18,    // incomplete list of service class UUIDs (0x1812, 0x180F)
+     5,  DT_INCOMPLETE_LIST_16BIT_SERVICE_UUID, 0x12, 0x18, 0x0F, 0x18, // incomplete list of service class UUIDs (0x1812, 0x180F)
 };
 
 const u8    tbl_scanRsp [] = {
-     4,  DT_COMPLETE_LOCAL_NAME,                 'o','t','a',
+     4,  DT_COMPLETE_LOCAL_NAME,                'o','t','a',
 };
 
 /**
@@ -68,7 +68,7 @@ int app_le_adv_report_event_handle(u8 *p)
 
 
     /*********************** Central Create connection demo: Key press or ADV pair packet triggers pair  ********************/
-    if(central_smp_pending ){      //if previous connection SMP not finish, can not create a new connection
+    if(central_smp_pending ){    //if previous connection SMP not finish, can not create a new connection
         return 1;
     }
     if (central_disconnect_connhandle){ //one ACL connection central role is in un_pair disconnection flow, do not create a new one
@@ -151,14 +151,14 @@ int app_le_connection_complete_event_handle(u8 *p)
  */
 int     app_disconnect_event_handle(u8 *p)
 {
-    hci_disconnectionCompleteEvt_t    *pDisConn = (hci_disconnectionCompleteEvt_t *)p;
+    hci_disconnectionCompleteEvt_t  *pDisConn = (hci_disconnectionCompleteEvt_t *)p;
     tlkapi_send_string_data(APP_CONTR_EVT_LOG_EN, "[APP][EVT] disconnect event", &pDisConn->connHandle, 3);
 
     //terminate reason
-    if(pDisConn->reason == HCI_ERR_CONN_TIMEOUT){      //connection timeout
+    if(pDisConn->reason == HCI_ERR_CONN_TIMEOUT){   //connection timeout
 
     }
-    else if(pDisConn->reason == HCI_ERR_REMOTE_USER_TERM_CONN){      //peer device send terminate command on link layer
+    else if(pDisConn->reason == HCI_ERR_REMOTE_USER_TERM_CONN){     //peer device send terminate command on link layer
 
     }
     else if(pDisConn->reason == HCI_ERR_CONN_TERM_BY_LOCAL_HOST){
@@ -232,7 +232,7 @@ int app_le_connection_update_complete_event_handle(u8 *p)
  */
 int app_controller_event_callback (u32 h, u8 *p, int n)
 {
-    if (h &HCI_FLAG_EVENT_BT_STD)        //Controller HCI event
+    if (h &HCI_FLAG_EVENT_BT_STD)       //Controller HCI event
     {
         u8 evtCode = h & 0xff;
 
@@ -246,19 +246,19 @@ int app_controller_event_callback (u32 h, u8 *p, int n)
             u8 subEvt_code = p[0];
 
             //------hci le event: le connection complete event---------------------------------
-            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE)    // connection complete
+            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE)  // connection complete
             {
                 app_le_connection_complete_event_handle(p);
             }
             //--------hci le event: le adv report event ----------------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT)    // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT)  // ADV packet
             {
                 //after controller is set to scan state, it will report all the adv packet it received by this event
 
                 app_le_adv_report_event_handle(p);
             }
             //------hci le event: le connection update complete event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE)    // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE)  // connection update
             {
                 app_le_connection_update_complete_event_handle(p);
             }
@@ -266,7 +266,7 @@ int app_controller_event_callback (u32 h, u8 *p, int n)
             {
                 hci_le_dataLengthChangeEvt_t *pLen = (hci_le_dataLengthChangeEvt_t *)p;
                 tlkapi_printf(APP_CONTR_EVT_LOG_EN,"[APP][EVT] Data_Length_Change handle:%04X maxRxOct:%04X maxTxOct:%04X", \
-                      pLen->connHandle,    pLen->maxRxOct,pLen->maxTxOct   );
+                    pLen->connHandle,   pLen->maxRxOct,pLen->maxTxOct   );
 
             }
         }
@@ -349,7 +349,7 @@ int app_host_event_callback (u32 h, u8 *para, int n)
         {
           gap_gatt_mtuSizeExchangeEvt_t *pEvt = (gap_gatt_mtuSizeExchangeEvt_t *)para;
           tlkapi_printf(APP_CONTR_EVT_LOG_EN,"[APP][EVT] GAP_EVT_ATT_EXCHANGE_MTU handle:%04X peer_MTU:%04X effective_MTU:%04X", \
-                      pEvt->connHandle,    pEvt->peer_MTU,pEvt->effective_MTU  );
+                      pEvt->connHandle, pEvt->peer_MTU,pEvt->effective_MTU  );
 
         }
         break;
@@ -385,7 +385,7 @@ int app_gatt_data_handler (u16 connHandle, u8 *pkt)
         dev_char_info_t* dev_info = dev_char_info_search_by_connhandle (connHandle);
         if(dev_info)
         {
-            //-------    user process ------------------------------------------------
+            //-------   user process ------------------------------------------------
             if(pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI)
             {
 
@@ -463,8 +463,8 @@ int app_gatt_data_handler (u16 connHandle, u8 *pkt)
 ///////////////////////////////////////////
 
 /**
- * @brief        user initialization when MCU power on or wake_up from deepSleep mode
- * @param[in]    none
+ * @brief       user initialization when MCU power on or wake_up from deepSleep mode
+ * @param[in]   none
  * @return      none
  */
 _attribute_no_inline_ void user_init_normal(void)
@@ -537,9 +537,9 @@ _attribute_no_inline_ void user_init_normal(void)
 
     //bluetooth low energy(LE) event
     blc_hci_le_setEventMask_cmd(        HCI_LE_EVT_MASK_CONNECTION_COMPLETE  \
-                                    |    HCI_LE_EVT_MASK_ADVERTISING_REPORT \
+                                    |   HCI_LE_EVT_MASK_ADVERTISING_REPORT \
                                     |   HCI_LE_EVT_MASK_CONNECTION_UPDATE_COMPLETE \
-                                    |    HCI_LE_EVT_MASK_DATA_LENGTH_CHANGE);
+                                    |   HCI_LE_EVT_MASK_DATA_LENGTH_CHANGE);
 
 
     u8 error_code = blc_contr_checkControllerInitialization();
@@ -564,7 +564,7 @@ _attribute_no_inline_ void user_init_normal(void)
     blc_gap_init();
 
     /* L2CAP data buffer Initialization */
-    blc_l2cap_initAclCentralBuffer(app_cen_l2cap_rx_buf, CENTRAL_L2CAP_BUFF_SIZE, NULL,    0);
+    blc_l2cap_initAclCentralBuffer(app_cen_l2cap_rx_buf, CENTRAL_L2CAP_BUFF_SIZE, NULL, 0);
     blc_l2cap_initAclPeripheralBuffer(app_per_l2cap_rx_buf, PERIPHR_L2CAP_BUFF_SIZE, app_per_l2cap_tx_buf, PERIPHR_L2CAP_BUFF_SIZE);
 
     blc_att_setCentralRxMtuSize(CENTRAL_ATT_RX_MTU); ///must be placed after "blc_gap_init"
@@ -597,9 +597,9 @@ _attribute_no_inline_ void user_init_normal(void)
 
     //host(GAP/SMP/GATT/ATT) event process: register host event callback and set event mask
     blc_gap_registerHostEventHandler( app_host_event_callback );
-    blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN             |  \
-                          GAP_EVT_MASK_SMP_PAIRING_SUCCESS           |  \
-                          GAP_EVT_MASK_SMP_PAIRING_FAIL                |  \
+    blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN            |  \
+                          GAP_EVT_MASK_SMP_PAIRING_SUCCESS          |  \
+                          GAP_EVT_MASK_SMP_PAIRING_FAIL             |  \
                           GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE    |  \
                           GAP_EVT_MASK_ATT_EXCHANGE_MTU);
     //////////// Host Initialization  End /////////////////////////
@@ -630,8 +630,8 @@ _attribute_no_inline_ void user_init_normal(void)
 
 
 /**
- * @brief        user initialization when MCU wake_up from deepSleep_retention mode
- * @param[in]    none
+ * @brief       user initialization when MCU wake_up from deepSleep_retention mode
+ * @param[in]   none
  * @return      none
  */
 void user_init_deepRetn(void)

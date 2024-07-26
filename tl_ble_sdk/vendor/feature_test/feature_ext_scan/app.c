@@ -35,7 +35,7 @@
 #if (FEATURE_TEST_MODE == TEST_EXT_SCAN)
 
 
-int    central_smp_pending = 0;         // SMP: security & encryption;
+int central_smp_pending = 0;        // SMP: security & encryption;
 
 
 /**
@@ -54,13 +54,13 @@ int app_le_ext_adv_report_event_handle(u8 *p, int evt_data_len)
     extAdvEvt_info_t *pExtAdvInfo = NULL;
     /*********************** Central Create connection demo: Key press or ADV pair packet triggers pair  ********************/
     #if (ACL_CENTRAL_SMP_ENABLE)
-        if(central_smp_pending){      //if previous connection SMP not finish, can not create a new connection
+        if(central_smp_pending){     //if previous connection SMP not finish, can not create a new connection
             return 1;
         }
     #endif
 
     #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
-        if(central_sdp_pending){      //if previous connection SDP not finish, can not create a new connection
+        if(central_sdp_pending){     //if previous connection SDP not finish, can not create a new connection
             return 1;
         }
     #endif
@@ -121,7 +121,7 @@ int app_le_ext_adv_report_event_handle(u8 *p, int evt_data_len)
         if(conn_adv_flag)
         {
                 /*********************** Central Create connection demo: Key press or ADV pair packet triggers pair  ********************/
-                if(central_smp_pending ){      //if previous connection SMP not finish, can not create a new connection
+                if(central_smp_pending ){    //if previous connection SMP not finish, can not create a new connection
                     return 1;
                 }
 
@@ -202,17 +202,17 @@ int app_le_enhanced_connection_complete_event_handle(u8 *p)
                 cur_sdp_device.peer_adrType = pConnEvt->peerAddrType;
                 memcpy(cur_sdp_device.peer_addr, pConnEvt->peerAddr, 6);
 
-                u8    temp_buff[sizeof(dev_att_t)];
+                u8  temp_buff[sizeof(dev_att_t)];
                 dev_att_t *pdev_att = (dev_att_t *)temp_buff;
 
                 /* att_handle search in flash, if success, load char_handle directly from flash, no need SDP again */
                 if( dev_char_info_search_peer_att_handle_by_peer_mac(pConnEvt->peerAddrType, pConnEvt->peerAddr, pdev_att) ){
-                    //cur_sdp_device.char_handle[1] =                                     //Speaker
-                    cur_sdp_device.char_handle[2] = pdev_att->char_handle[2];            //OTA
-                    cur_sdp_device.char_handle[3] = pdev_att->char_handle[3];            //consume report
-                    cur_sdp_device.char_handle[4] = pdev_att->char_handle[4];            //normal key report
-                    //cur_sdp_device.char_handle[6] =                                    //BLE Module, SPP Server to Client
-                    //cur_sdp_device.char_handle[7] =                                    //BLE Module, SPP Client to Server
+                    //cur_sdp_device.char_handle[1] =                                   //Speaker
+                    cur_sdp_device.char_handle[2] = pdev_att->char_handle[2];           //OTA
+                    cur_sdp_device.char_handle[3] = pdev_att->char_handle[3];           //consume report
+                    cur_sdp_device.char_handle[4] = pdev_att->char_handle[4];           //normal key report
+                    //cur_sdp_device.char_handle[6] =                                   //BLE Module, SPP Server to Client
+                    //cur_sdp_device.char_handle[7] =                                   //BLE Module, SPP Client to Server
 
                     /* add the peer device att_handle value to conn_dev_list */
                     dev_char_info_add_peer_att_handle(&cur_sdp_device);
@@ -224,7 +224,7 @@ int app_le_enhanced_connection_complete_event_handle(u8 *p)
                     #if (ACL_CENTRAL_SMP_ENABLE)
                          //service discovery initiated after SMP done, trigger it in "GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE" event callBack.
                     #else
-                         app_register_service(&app_service_discovery);     //No SMP, service discovery can initiated now
+                         app_register_service(&app_service_discovery);  //No SMP, service discovery can initiated now
                     #endif
                 }
             #endif
@@ -243,14 +243,14 @@ int app_le_enhanced_connection_complete_event_handle(u8 *p)
  */
 int     app_disconnect_event_handle(u8 *p)
 {
-    hci_disconnectionCompleteEvt_t    *pDisConn = (hci_disconnectionCompleteEvt_t *)p;
+    hci_disconnectionCompleteEvt_t  *pDisConn = (hci_disconnectionCompleteEvt_t *)p;
     tlkapi_printf(APP_CONTR_EVT_LOG_EN,"app Disconnect event connHandle:%04X reason:%02X",pDisConn->connHandle,pDisConn->reason);
 
     //terminate reason
-    if(pDisConn->reason == HCI_ERR_CONN_TIMEOUT){      //connection timeout
+    if(pDisConn->reason == HCI_ERR_CONN_TIMEOUT){   //connection timeout
 
     }
-    else if(pDisConn->reason == HCI_ERR_REMOTE_USER_TERM_CONN){      //peer device send terminate command on link layer
+    else if(pDisConn->reason == HCI_ERR_REMOTE_USER_TERM_CONN){     //peer device send terminate command on link layer
 
     }
     //central host disconnect( blm_ll_disconnect(current_connHandle, HCI_ERR_REMOTE_USER_TERM_CONN) )
@@ -298,7 +298,7 @@ int     app_disconnect_event_handle(u8 *p)
  */
 int app_controller_event_callback (u32 h, u8 *p, int n)
 {
-    if (h &HCI_FLAG_EVENT_BT_STD)        //Controller HCI event
+    if (h &HCI_FLAG_EVENT_BT_STD)       //Controller HCI event
     {
         u8 evtCode = h & 0xff;
 
@@ -312,23 +312,23 @@ int app_controller_event_callback (u32 h, u8 *p, int n)
             u8 subEvt_code = p[0];
 
             //------hci le event: le enhanced_connection complete event---------------------------------
-            if (subEvt_code == HCI_SUB_EVT_LE_ENHANCED_CONNECTION_COMPLETE)    // connection complete
+            if (subEvt_code == HCI_SUB_EVT_LE_ENHANCED_CONNECTION_COMPLETE) // connection complete
             {
                 app_le_enhanced_connection_complete_event_handle(p);
             }
             //------hci le event: LE extended advertising report event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_EXTENDED_ADVERTISING_REPORT)    // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_EXTENDED_ADVERTISING_REPORT) // ADV packet
             {
                 app_le_ext_adv_report_event_handle(p, n);
             }
             //------hci le event: le connection update complete event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE)    // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE)  // connection update
             {
                 hci_le_connectionUpdateCompleteEvt_t *pUpt = (hci_le_connectionUpdateCompleteEvt_t *)p;
                 tlkapi_printf(APP_CONTR_EVT_LOG_EN,"app connect update complete handle:%04X  connInterval:%04X  connLatency::%04X Timeout:%04X",
                         pUpt->connHandle,pUpt->connInterval,pUpt->connLatency,pUpt->supervisionTimeout);
             }
-            else if (subEvt_code == HCI_SUB_EVT_LE_DATA_LENGTH_CHANGE)    // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_DATA_LENGTH_CHANGE)  // connection update
             {
                 hci_le_dataLengthChangeEvt_t *pEvt = (hci_le_dataLengthChangeEvt_t *) p;
                 tlkapi_printf(APP_CONTR_EVT_LOG_EN,"app data length change  handle:%04X  maxRxOct:%04X  maxTxOct:%04X",
@@ -462,10 +462,10 @@ int app_host_event_callback (u32 h, u8 *para, int n)
 
 
 
-#define            HID_HANDLE_CONSUME_REPORT            25
-#define            HID_HANDLE_KEYBOARD_REPORT            29
-#define            AUDIO_HANDLE_MIC                    52
-#define            OTA_HANDLE_DATA                        48
+#define         HID_HANDLE_CONSUME_REPORT           25
+#define         HID_HANDLE_KEYBOARD_REPORT          29
+#define         AUDIO_HANDLE_MIC                    52
+#define         OTA_HANDLE_DATA                     48
 
 /**
  * @brief      BLE GATT data handler call-back.
@@ -491,12 +491,12 @@ int app_gatt_data_handler (u16 connHandle, u8 *pkt)
         dev_char_info_t* dev_info = dev_char_info_search_by_connhandle (connHandle);
         if(dev_info)
         {
-            //-------    user process ------------------------------------------------
+            //-------   user process ------------------------------------------------
             u16 attHandle = pAtt->handle;
 
             if(pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI)  //peripheral handle notify
             {
-                    //---------------    consumer key --------------------------
+                    //---------------   consumer key --------------------------
                 #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
                     if(attHandle == dev_info->char_handle[3])  // Consume Report In (Media Key)
                 #else
@@ -505,7 +505,7 @@ int app_gatt_data_handler (u16 connHandle, u8 *pkt)
                     {
                         att_keyboard_media (connHandle, pAtt->dat);
                     }
-                    //---------------    keyboard key --------------------------
+                    //---------------   keyboard key --------------------------
                 #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
                     else if(attHandle == dev_info->char_handle[4])     // Key Report In
                 #else
@@ -588,8 +588,8 @@ int app_gatt_data_handler (u16 connHandle, u8 *pkt)
 ///////////////////////////////////////////
 
 /**
- * @brief        user initialization when MCU power on or wake_up from deepSleep mode
- * @param[in]    none
+ * @brief       user initialization when MCU power on or wake_up from deepSleep mode
+ * @param[in]   none
  * @return      none
  */
 _attribute_no_inline_ void user_init_normal(void)
@@ -698,7 +698,7 @@ _attribute_no_inline_ void user_init_normal(void)
     blc_gap_init();
 
     /* L2CAP data buffer Initialization */
-    blc_l2cap_initAclCentralBuffer(app_cen_l2cap_rx_buf, CENTRAL_L2CAP_BUFF_SIZE, NULL,    0);
+    blc_l2cap_initAclCentralBuffer(app_cen_l2cap_rx_buf, CENTRAL_L2CAP_BUFF_SIZE, NULL, 0);
     blc_l2cap_initAclPeripheralBuffer(app_per_l2cap_rx_buf, PERIPHR_L2CAP_BUFF_SIZE, app_per_l2cap_tx_buf, PERIPHR_L2CAP_BUFF_SIZE);
 
     blc_att_setCentralRxMtuSize(CENTRAL_ATT_RX_MTU); ///must be placed after "blc_gap_init"
@@ -734,9 +734,9 @@ _attribute_no_inline_ void user_init_normal(void)
 
     //host(GAP/SMP/GATT/ATT) event process: register host event callback and set event mask
     blc_gap_registerHostEventHandler( app_host_event_callback );
-    blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN             |  \
-                          GAP_EVT_MASK_SMP_PAIRING_SUCCESS           |  \
-                          GAP_EVT_MASK_SMP_PAIRING_FAIL                |  \
+    blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN            |  \
+                          GAP_EVT_MASK_SMP_PAIRING_SUCCESS          |  \
+                          GAP_EVT_MASK_SMP_PAIRING_FAIL             |  \
                           GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE);
     //////////// Host Initialization  End /////////////////////////
 
@@ -777,8 +777,8 @@ _attribute_no_inline_ void user_init_normal(void)
 
 
 /**
- * @brief        user initialization when MCU wake_up from deepSleep_retention mode
- * @param[in]    none
+ * @brief       user initialization when MCU wake_up from deepSleep_retention mode
+ * @param[in]   none
  * @return      none
  */
 void user_init_deepRetn(void)

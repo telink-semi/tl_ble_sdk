@@ -30,11 +30,11 @@
 
 /**
  * @brief      for user to initialize legacy scanning module
- *                notice that only one module can be selected between legacy scanning module and extended scanning module
- * @param       none
+ *             notice that only one module can be selected between legacy scanning module and extended scanning module
+ * @param      none
  * @return     none
  */
-void         blc_ll_initLegacyScanning_module(void);
+void        blc_ll_initLegacyScanning_module(void);
 
 
 /**
@@ -46,17 +46,17 @@ void         blc_ll_initLegacyScanning_module(void);
  * @param[in]  scan_fp - Scanning_Filter_Policy
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
-ble_sts_t     blc_ll_setScanParameter (scan_type_t scan_type, scan_inter_t scan_interval, scan_wind_t scan_window, own_addr_type_t  ownAddrType, scan_fp_type_t scan_fp);
+ble_sts_t   blc_ll_setScanParameter (scan_type_t scan_type, scan_inter_t scan_interval, scan_wind_t scan_window, own_addr_type_t  ownAddrType, scan_fp_type_t scan_fp);
 
 
 /**
- * @brief       enable or disable legacy scanning.
+ * @brief      enable or disable legacy scanning.
  * @param[in]  scan_enable
  * @param[in]  filter_duplicate - controls whether the Link Layer should filter out
- *                                   duplicate advertising reports (Filtering_Enabled) to the Host,
+ *                                duplicate advertising reports (Filtering_Enabled) to the Host,
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
-ble_sts_t     blc_ll_setScanEnable (scan_en_t scan_enable, dupFilter_en_t filter_duplicate);
+ble_sts_t   blc_ll_setScanEnable (scan_en_t scan_enable, dupFilter_en_t filter_duplicate);
 
 
 

@@ -34,7 +34,7 @@ typedef enum{
 }scan_en_strtg_t;
 
 
-void         blc_ll_configScanEnableStrategy (scan_en_strtg_t scanStrategy);
+void        blc_ll_configScanEnableStrategy (scan_en_strtg_t scanStrategy);
 
 
 #endif /* SCAN_H_ */

@@ -53,8 +53,7 @@
  * [Bit0]: If this bit is 1, it means that reboot has occurred.
  * [Bit1]: If this bit is 1, it means that the software calls the function sys_reboot() when the crystal oscillator does not start up normally.
  * [Bit2]: If this bit is 1, it means that the pm_sleep_wakeup function failed to clear the pm wake flag bit when using the deep wake source, and the software called sys_reboot().
- * [Bit3~6]: These bits are used by the driver and cannot be used by the customer.
- * [Bit7]: The bootrom is used.
+ * [Bit3~7]: These bits are used by the driver and cannot be used by the customer.
  */
 #define PM_ANA_REG_POWER_ON_CLR_BUF0    0x3a // initial value 0x00.
 #define PM_ANA_REG_POWER_ON_CLR_BUF1    0x3b // initial value 0x00.
@@ -122,6 +121,8 @@ typedef enum {
     WAKEUP_STATUS_INUSE_ALL         = FLD_WAKEUP_STATUS_INUSE_ALL,
 
     STATUS_GPIO_ERR_NO_ENTER_PM     = BIT(8), /**<Bit8 is used to determine whether the wake source is normal.*/
+    STATUS_EXCEED_MAX               = BIT(27),
+    STATUS_EXCEED_MIN               = BIT(28),
     STATUS_CLEAR_FAIL               = BIT(29),
     STATUS_ENTER_SUSPEND            = BIT(30),
 }pm_suspend_wakeup_status_e;
@@ -173,6 +174,15 @@ typedef enum {
     VDD_ISO         =   0x05,
     VDD_RAM         =   0x06,
 }pm_vol_mux_sel_e;
+
+/**
+ * @brief Selection of optimization options
+ *
+ */
+typedef enum{
+    PM_OPTIMIZE_O2      = 0,
+    PM_OPTIMIZE_OS      = 1,
+}pm_optimize_sel_e;
 
 /**
  * @brief   early wakeup time
@@ -282,6 +292,14 @@ void pm_set_wakeup_time_param(pm_r_delay_cycle_s param);
  * @note        Those parameters will be lost after reboot or deep sleep, so it required to be reconfigured.
  */
 void pm_set_xtal_stable_timer_param(unsigned int delay_us, unsigned int loopnum);
+
+/**
+ * @brief       This function is used to configure data about code runtime updates when os optimization options are used.
+ * @param[in]   optimization - Currently selected optimization options. O2 or Os.
+ * @return      none.
+ * @note        Those parameters will be lost after reboot or deep sleep, so it required to be reconfigured.
+ */
+void pm_set_cfg_for_os_compile_opt(pm_optimize_sel_e optimization);
 
 /**
  * @brief       This function serves to set baseband/usb/npe power on/off before suspend sleep,If power

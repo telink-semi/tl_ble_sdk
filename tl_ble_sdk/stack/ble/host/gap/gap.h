@@ -40,12 +40,12 @@ typedef enum {
 #define GAP_ADTYPE_LMP_BIT37_BIT                          0x04
 
 #define GAP_APPEARANCE_UNKNOWN                               0x0000 //!< Unknown
-#define GAP_APPEARANCE_EARBUD                                  0x0941 // Earbud
-#define GAP_APPEARANCE_HEADSET                                  0x0942 // Headset
-#define GAP_APPEARANCE_HEADPHONES                              0x0943 // Headphones
+#define GAP_APPEARANCE_EARBUD                                 0x0941 // Earbud
+#define GAP_APPEARANCE_HEADSET                                0x0942 // Headset
+#define GAP_APPEARANCE_HEADPHONES                             0x0943 // Headphones
 
-#define GAP_APPEARANCE_GENERIC_HID                              0x0300
-#define GAP_APPEARANCE_HID_KEYBOARD                          0x03C1
+#define GAP_APPEARANCE_GENERIC_HID                            0x0300
+#define GAP_APPEARANCE_HID_KEYBOARD                       0x03C1
 #define GAP_APPEARANCE_HID_MOUSE                              0x03C2
 
 
@@ -62,7 +62,7 @@ u8          blc_gap_setSingleServerDataPendingTime_upon_ClientCmd(u16 connHandle
  *            i.e  in num_10ms*10ms after service discovery, notify/indication will fail.
  * @param     num_10ms.unit is *10ms. for example if num_10ms = 30, that indicate 30*10 = 300ms.
  */
-void         blc_att_setServerDataPendingTime_upon_ClientCmd(u16 num_10ms);
+void        blc_att_setServerDataPendingTime_upon_ClientCmd(u16 num_10ms);
 
 
 /**
@@ -76,10 +76,10 @@ void        blc_gap_mtuAutoExgDisable(u16 connHandle);
 
 /**
  * @brief      this  function is used to initialize GAP
- * @param       none
+ * @param      none
  * @return     none
  */
-void         blc_gap_init(void);
+void        blc_gap_init(void);
 
 
 
@@ -87,9 +87,9 @@ void         blc_gap_init(void);
 
 /**
 * @brief      this function is used check if any host initialization incorrect.
-*               attention: this function must be called after all host Initialization finished.
+*             attention: this function must be called after all host Initialization finished.
 * @param      none
 * @return     status - 0x00:  succeed, no error
-*                          other: error code
+*                      other: error code
 */
- init_err_t    blc_host_checkHostInitialization(void);
+ init_err_t blc_host_checkHostInitialization(void);

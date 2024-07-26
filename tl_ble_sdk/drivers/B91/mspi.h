@@ -29,12 +29,12 @@
 
 
 /**
- * @brief     Data line mode of mspi
+ * @brief   Data line mode of mspi
  */
 typedef enum{
     MSPI_SINGLE_LINE    = 0x00,
-    MSPI_DUAL_LINE        = 0x04,
-    MSPI_QUAD_LINE        = 0x0c,
+    MSPI_DUAL_LINE      = 0x04,
+    MSPI_QUAD_LINE      = 0x0c,
 }mspi_data_line_e;
 
 
@@ -80,7 +80,7 @@ _attribute_ram_code_sec_ static inline void mspi_fm_write_en(void){
 
 /**
  * @brief     This function is used to configure mspi for several-line communication mode.
- * @param[in] line    - several-line communication mode.
+ * @param[in] line  - several-line communication mode.
  * @return    none.
  */
 _attribute_ram_code_sec_ static inline void mspi_fm_data_line(mspi_data_line_e line){
@@ -104,50 +104,50 @@ _attribute_ram_code_sec_ static inline void mspi_low(void){
 }
 
 /**
- * @brief        This function servers to gets the spi data.
- * @return        the spi data.
+ * @brief       This function servers to gets the spi data.
+ * @return      the spi data.
  */
 _attribute_ram_code_sec_ static inline unsigned char mspi_get(void){
     return reg_mspi_data;
 }
 
 /**
- * @brief        This function servers to write the spi.
- * @param[in]    c    - the char need to be write.
- * @return        none.
+ * @brief       This function servers to write the spi.
+ * @param[in]   c   - the char need to be write.
+ * @return      none.
  */
 _attribute_ram_code_sec_ static inline void mspi_write(unsigned char c){
     reg_mspi_data = c;
 }
 
 /**
- * @brief        This function servers to control the write.
- * @param[in]    c    - need to be write.
- * @return        none.
+ * @brief       This function servers to control the write.
+ * @param[in]   c   - need to be write.
+ * @return      none.
  */
 _attribute_ram_code_sec_ static inline void mspi_fm_write(unsigned char c){
     reg_mspi_fm = c;
 }
 
 /**
- * @brief        This function servers to spi read.
- * @return        read result.
+ * @brief       This function servers to spi read.
+ * @return      read result.
  */
 _attribute_ram_code_sec_ static inline unsigned char mspi_read(void){
-    mspi_write(0);        // dummy, issue clock
+    mspi_write(0);      // dummy, issue clock
     mspi_wait();
     return mspi_get();
 }
 
 /**
- * @brief        This function serves to Stop XIP operation before flash.
- * @return        none.
+ * @brief       This function serves to Stop XIP operation before flash.
+ * @return      none.
  */
 _attribute_ram_code_sec_ static inline void mspi_stop_xip(void)
 {
     mspi_wait();    //wait xip busy=0
     mspi_high();    //mspi_cn=1, stop xip read
-    while(gpio_get_level(GPIO_PF3) == 0);    //wait cn=1
+    while(gpio_get_level(GPIO_PF3) == 0);   //wait cn=1
 }
 
 

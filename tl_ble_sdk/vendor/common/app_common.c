@@ -31,7 +31,7 @@
  * @brief      This function is check If IRK(local IRK or peer IRK) valid
  * @param[in]  pIrk - pointer to IRK(local IRK or peer IRK)
  * @return     1: IRK valid
- *                0: IRK invalid
+ *             0: IRK invalid
  */
 int blc_app_isIrkValid(u8* pIrk)
 {

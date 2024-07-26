@@ -51,7 +51,17 @@
 //#define MEM_VOLATILE volatile
 
 
+//#define CONFIG_UNIT_TEST
 
+//C keyword static, keep it by default, or define it empty just for some testing.
+#ifdef CONFIG_UNIT_TEST
+#define FLAG_STATIC
+#else
+#define FLAG_STATIC   static   //default
+#endif
+
+
+#define SUPPORT_STATIC_ANALYSIS
 
 
 

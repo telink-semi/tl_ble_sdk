@@ -70,5 +70,19 @@ typedef struct {
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
 _attribute_text_sec_ int flash_read_mid_uid_with_check( unsigned int *flash_mid ,unsigned char *flash_uid);
+
+/**
+ * @brief       This function is used to enable the four-wire function of flash.
+ * @param[in]   flash_mid   - the mid of flash.
+ * @return      1: success, 0: error, 2: parameter error, 3: mid is not supported.
+ */
+unsigned char flash_4line_en(unsigned int flash_mid);
+
+/**
+ * @brief       This function is used to disable the four-wire function of flash.
+ * @param[in]   flash_mid   - the mid of flash.
+ * @return      1: success, 0: error, 2: parameter error, 3: mid is not supported.
+ */
+unsigned char flash_4line_dis(unsigned int flash_mid);
 #endif
 

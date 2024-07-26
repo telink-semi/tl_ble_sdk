@@ -35,3 +35,7 @@
 #ifndef BOARD_321X_EVK_C1T331A20
 #define BOARD_321X_EVK_C1T331A20                        0x331A20
 #endif
+
+#ifndef BOARD_321X_EVK_C1T335A20
+#define BOARD_321X_EVK_C1T335A20                        0x335A20
+#endif

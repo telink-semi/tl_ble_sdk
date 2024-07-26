@@ -32,9 +32,9 @@
 /**
   * @brief  Define hci UART chn (uart_num_e)
   */
-#define     EXT_HCI_UART0          0
-#define     EXT_HCI_UART1        1
-#define        EXT_HCI_UART2         2
+#define     EXT_HCI_UART0       0
+#define     EXT_HCI_UART1       1
+#define     EXT_HCI_UART2       2
 
 /**
   * @brief extend UART HCI  Complete Callback
@@ -75,8 +75,8 @@ typedef enum
 
 /**
  * @brief   hci uart initialization
- * @param    none
- * @return    none
+ * @param   none
+ * @return  none
  */
 ext_hci_StatusTypeDef_e ext_hci_uartInit(ext_hci_InitTypeDef * uart);
 

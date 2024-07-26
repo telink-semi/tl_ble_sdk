@@ -27,63 +27,63 @@
 
 /*
  * attention: user can not change any code in this file,
- *               these are hardware feature !!!
+ *            these are hardware feature !!!
  */
 
 
 
 /*
-    Flash Type    uid CMD        MID            Company
-    P25Q80U        0x4b        0x146085    PUYA
+    Flash Type  uid CMD     MID         Company
+    P25Q80U     0x4b        0x146085    PUYA
     P25Q16SU    0x4b        0x156085    PUYA
     P25Q32SU    0x4b        0x166085    PUYA
     PY25Q128H   0x4b        0x182085    PUYA
  */
 #define FLASH_P25Q80U_SUPPORT_EN                                1
-#define FLASH_P25Q16SU_SUPPORT_EN                                1
-#define FLASH_P25Q32SU_SUPPORT_EN                                1
-#define FLASH_P25Q128H_SUPPORT_EN                                1
+#define FLASH_P25Q16SU_SUPPORT_EN                               1
+#define FLASH_P25Q32SU_SUPPORT_EN                               1
+#define FLASH_P25Q128H_SUPPORT_EN                               1
 
 
 
 
 /**
- * @brief    Public Device Address Company ID for this chip
+ * @brief   Public Device Address Company ID for this chip
  */
-#define PDA_COMPANY_ID                                            0xD85F77    //B91
+#define PDA_COMPANY_ID                                          0xD85F77    //B91
 
 
 
 /**
- * @brief    MAC address burning on EFUSE
+ * @brief   MAC address burning on EFUSE
  */
-#define BUILT_IN_MAC_ON_EFUSE                                    0
+#define BUILT_IN_MAC_ON_EFUSE                                   0
 
 
 
 
 /**
- * @brief    Hardware secure boot
- *             doing firmware signature verification when MCU boot
+ * @brief   Hardware secure boot
+ *          doing firmware signature verification when MCU boot
  */
-#define HARDWARE_SECURE_BOOT_SUPPORT_EN                            0
+#define HARDWARE_SECURE_BOOT_SUPPORT_EN                         0
 
 /**
- * @brief    Hardware firmware encryption
+ * @brief   Hardware firmware encryption
  */
-#define HARDWARE_FIRMWARE_ENCRYPTION_SUPPORT_EN                    0
+#define HARDWARE_FIRMWARE_ENCRYPTION_SUPPORT_EN                 0
 
 /**
- * @brief    Hardware secure debug
+ * @brief   Hardware secure debug
  */
 #define HARDWARE_SECURE_DEBUG_SUPPORT_EN                        0
 
 
 
 /**
- * @brief    support multiple priority interrupt
+ * @brief   support multiple priority interrupt
  */
-#define    MCU_SUPPORT_MULTI_PRIORITY_IRQ                            1
+#define MCU_SUPPORT_MULTI_PRIORITY_IRQ                          1
 
 
 #endif /* DRIVERS_B91_EXT_DRIVER_MCU_CONFIG_H_ */

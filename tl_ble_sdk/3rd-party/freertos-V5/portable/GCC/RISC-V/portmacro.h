@@ -49,15 +49,15 @@ extern "C" {
 
 /* Type definitions. */
 #if __riscv_xlen == 64
-    #define portSTACK_TYPE            uint64_t
-    #define portBASE_TYPE            int64_t
-    #define portUBASE_TYPE            uint64_t
-    #define portMAX_DELAY             ( TickType_t ) 0xffffffffffffffffUL
-    #define portPOINTER_SIZE_TYPE     uint64_t
+    #define portSTACK_TYPE          uint64_t
+    #define portBASE_TYPE           int64_t
+    #define portUBASE_TYPE          uint64_t
+    #define portMAX_DELAY           ( TickType_t ) 0xffffffffffffffffUL
+    #define portPOINTER_SIZE_TYPE   uint64_t
 #elif __riscv_xlen == 32
-    #define portSTACK_TYPE    uint32_t
-    #define portBASE_TYPE    int32_t
-    #define portUBASE_TYPE    uint32_t
+    #define portSTACK_TYPE  uint32_t
+    #define portBASE_TYPE   int32_t
+    #define portUBASE_TYPE  uint32_t
     #define portMAX_DELAY ( TickType_t ) 0xffffffffUL
 #else
     #error Assembler did not define __riscv_xlen
@@ -71,10 +71,10 @@ typedef portUBASE_TYPE TickType_t;
 
 /* Legacy type definitions. */
 #define portCHAR        char
-#define portFLOAT        float
-#define portDOUBLE        double
+#define portFLOAT       float
+#define portDOUBLE      double
 #define portLONG        long
-#define portSHORT        short
+#define portSHORT       short
 
 /* 32-bit tick type on a 32-bit architecture, so reads of the tick count do
 not need to be guarded with a critical section. */
@@ -83,12 +83,12 @@ not need to be guarded with a critical section. */
 
 /* Architecture specifics. */
 #define portSTACK_GROWTH            ( -1 )
-#define portTICK_PERIOD_MS            ( ( TickType_t ) 1000 / configTICK_RATE_HZ )
+#define portTICK_PERIOD_MS          ( ( TickType_t ) 1000 / configTICK_RATE_HZ )
 #ifdef __riscv64
     #error This is the RV32 port that has not yet been adapted for 64.
-    #define portBYTE_ALIGNMENT            16
+    #define portBYTE_ALIGNMENT          16
 #else
-    #define portBYTE_ALIGNMENT            16
+    #define portBYTE_ALIGNMENT          16
 #endif
 /*-----------------------------------------------------------*/
 
@@ -104,16 +104,16 @@ extern void xPortYield(void);
 
 
 /* Critical section management. */
-#define portCRITICAL_NESTING_IN_TCB                    1
+#define portCRITICAL_NESTING_IN_TCB                 1
 extern void vTaskEnterCritical( void );
 extern void vTaskExitCritical( void );
 
-#define portSET_INTERRUPT_MASK_FROM_ISR()                         core_interrupt_disable()
+#define portSET_INTERRUPT_MASK_FROM_ISR()                       core_interrupt_disable()
 #define portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedStatusValue ) core_restore_interrupt(uxSavedStatusValue)
 #define portDISABLE_INTERRUPTS()    __asm volatile( "csrc mstatus, 8" )
-#define portENABLE_INTERRUPTS()        __asm volatile( "csrs mstatus, 8" )
+#define portENABLE_INTERRUPTS()     __asm volatile( "csrs mstatus, 8" )
 #define portENTER_CRITICAL()    vTaskEnterCritical()
-#define portEXIT_CRITICAL()        vTaskExitCritical()
+#define portEXIT_CRITICAL()     vTaskExitCritical()
 
 /*-----------------------------------------------------------*/
 
@@ -158,9 +158,9 @@ not necessary for to use this port.  They are defined so the common demo files
 
 /*-----------------------------------------------------------*/
 
-#define portNOP() __asm volatile     ( " nop " )
+#define portNOP() __asm volatile    ( " nop " )
 
-#define portINLINE    __inline
+#define portINLINE  __inline
 
 #ifndef portFORCE_INLINE
     #define portFORCE_INLINE inline __attribute__(( always_inline))

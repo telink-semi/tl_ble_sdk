@@ -25,8 +25,8 @@
 #define BLT_FW_SIGN_H_
 
 /**
- * @brief        This function is used to check digital signature of firmware
- * @param[in]    none
+ * @brief       This function is used to check digital signature of firmware
+ * @param[in]   none
  * @return      none
  */
 void blt_firmware_signature_check(void);

@@ -36,31 +36,31 @@
 
 
 ///////////////////////// Feature Configuration////////////////////////////////////////////////
-#define SMP_TEST_NOT_SUPPORT    0    /* LE_Security_Mode_1_Level_1: No authentication, no encryption    */
-#define SMP_TEST_LEGACY_JW        1    /* LE_Security_Mode_1_Level_2: Legacy JustWorks                    */
-#define SMP_TEST_LESC_JW        5    /* LE_Security_Mode_1_Level_2: LESC JustWorks                      */
-#define SMP_TEST_LEGACY_PKI        2    /* LE_Security_Mode_1_Level_3: Legacy Passkey Entry input          */
-#define SMP_TEST_LEGACY_PKD        3    /* LE_Security_Mode_1_Level_3: Legacy Passkey Entry display        */
-#define SMP_TEST_LEGACY_OOB        4    /* LE_Security_Mode_1_Level_3: Legacy Out of Band                  */
-#define SMP_TEST_LESC_PKI        6    /* LE_Security_Mode_1_Level_4: LESC Passkey Entry input            */
-#define SMP_TEST_LESC_PKD        7    /* LE_Security_Mode_1_Level_4: LESC Passkey Entry display          */
-#define SMP_TEST_LESC_NC        8    /* LE_Security_Mode_1_Level_4: LESC Numeric Comparison             */
-#define SMP_TEST_LESC_OOB        9    /* LE_Security_Mode_1_Level_4: LESC Out of Band                    */
+#define SMP_TEST_NOT_SUPPORT    0   /* LE_Security_Mode_1_Level_1: No authentication, no encryption    */
+#define SMP_TEST_LEGACY_JW      1   /* LE_Security_Mode_1_Level_2: Legacy JustWorks                    */
+#define SMP_TEST_LESC_JW        5   /* LE_Security_Mode_1_Level_2: LESC JustWorks                      */
+#define SMP_TEST_LEGACY_PKI     2   /* LE_Security_Mode_1_Level_3: Legacy Passkey Entry input          */
+#define SMP_TEST_LEGACY_PKD     3   /* LE_Security_Mode_1_Level_3: Legacy Passkey Entry display        */
+#define SMP_TEST_LEGACY_OOB     4   /* LE_Security_Mode_1_Level_3: Legacy Out of Band                  */
+#define SMP_TEST_LESC_PKI       6   /* LE_Security_Mode_1_Level_4: LESC Passkey Entry input            */
+#define SMP_TEST_LESC_PKD       7   /* LE_Security_Mode_1_Level_4: LESC Passkey Entry display          */
+#define SMP_TEST_LESC_NC        8   /* LE_Security_Mode_1_Level_4: LESC Numeric Comparison             */
+#define SMP_TEST_LESC_OOB       9   /* LE_Security_Mode_1_Level_4: LESC Out of Band                    */
 
 
-#define SMP_TEST_MODE            SMP_TEST_LESC_OOB//SMP_TEST_NOT_SUPPORT
+#define SMP_TEST_MODE           SMP_TEST_LESC_OOB//SMP_TEST_NOT_SUPPORT
 
 
 #if (SMP_TEST_MODE >= SMP_TEST_LESC_JW)
-#define APP_SMP_SC_EN            1
+#define APP_SMP_SC_EN           1
 #else
-#define APP_SMP_SC_EN            0
+#define APP_SMP_SC_EN           0
 #endif
 
 #if (SMP_TEST_MODE == SMP_TEST_LEGACY_JW || SMP_TEST_MODE == SMP_TEST_LESC_JW)
-#define APP_MITM_EN                0
+#define APP_MITM_EN             0
 #else
-#define APP_MITM_EN                1
+#define APP_MITM_EN             1
 #endif
 
 
@@ -83,11 +83,11 @@ typedef struct{
 
 }AppScOobCtrl_t;
 
-_attribute_ble_data_retention_    AppScOobCtrl_t    appScOobCtrl;
+_attribute_ble_data_retention_  AppScOobCtrl_t  appScOobCtrl;
 
 #endif
 
-_attribute_ble_data_retention_        int    central_smp_pending = 0;         // SMP: security & encryption;
+_attribute_ble_data_retention_      int central_smp_pending = 0;        // SMP: security & encryption;
 
 __attribute__((aligned(4))) typedef struct{
     u8  dat[256];
@@ -98,27 +98,27 @@ __attribute__((aligned(4))) typedef struct{
 AppCtrl_t appCtrl;
 
 /**
- * @brief    BLE Advertising data
+ * @brief   BLE Advertising data
  */
 const u8    tbl_advData[] = {
-     12,  DT_COMPLETE_LOCAL_NAME,                 'f','e','a','t','u','r','e','_','s','m','p',
-     2,     DT_FLAGS,                                 0x05,                     // BLE limited discoverable mode and BR/EDR not supported
+     12,  DT_COMPLETE_LOCAL_NAME,               'f','e','a','t','u','r','e','_','s','m','p',
+     2,  DT_FLAGS,                              0x05,                   // BLE limited discoverable mode and BR/EDR not supported
      3,  DT_APPEARANCE,                         0x80, 0x01,             // 384, Generic Remote Control, Generic category
-     5,  DT_INCOMPLETE_LIST_16BIT_SERVICE_UUID,    0x12, 0x18, 0x0F, 0x18,    // incomplete list of service class UUIDs (0x1812, 0x180F)
+     5,  DT_INCOMPLETE_LIST_16BIT_SERVICE_UUID, 0x12, 0x18, 0x0F, 0x18, // incomplete list of service class UUIDs (0x1812, 0x180F)
 };
 
 /**
- * @brief    BLE Scan Response Packet data
+ * @brief   BLE Scan Response Packet data
  */
 const u8    tbl_scanRsp [] = {
-     12, DT_COMPLETE_LOCAL_NAME,                 'f','e','a','t','u','r','e','_','s','m','p',
+     12, DT_COMPLETE_LOCAL_NAME,                'f','e','a','t','u','r','e','_','s','m','p',
 };
 
 
 #if APP_MITM_EN
 __attribute__((aligned(4))) typedef struct{
     unsigned int    len;        // data max 252
-    unsigned char    data[sizeof(smp_sc_oob_data_t)];
+    unsigned char   data[sizeof(smp_sc_oob_data_t)];
 } uart_data_t;
 
 /*! UART transport pin define */
@@ -282,7 +282,7 @@ int app_le_adv_report_event_handle(u8 *p)
 
 
     /*********************** Central Create connection demo: Key press or ADV pair packet triggers pair  ********************/
-    if(central_smp_pending){      //if previous connection SMP & SDP not finish, can not create a new connection
+    if(central_smp_pending){     //if previous connection SMP & SDP not finish, can not create a new connection
         return 1;
     }
 
@@ -363,14 +363,14 @@ int app_le_connection_complete_event_handle(u8 *p)
  */
 int     app_disconnect_event_handle(u8 *p)
 {
-    hci_disconnectionCompleteEvt_t    *pDisConn = (hci_disconnectionCompleteEvt_t *)p;
+    hci_disconnectionCompleteEvt_t  *pDisConn = (hci_disconnectionCompleteEvt_t *)p;
     BLT_APP_LOG("app Disconnect event connHandle:%04X reason:%02X",pDisConn->connHandle,pDisConn->reason);
 
     //terminate reason
-    if(pDisConn->reason == HCI_ERR_CONN_TIMEOUT){      //connection timeout
+    if(pDisConn->reason == HCI_ERR_CONN_TIMEOUT){   //connection timeout
 
     }
-    else if(pDisConn->reason == HCI_ERR_REMOTE_USER_TERM_CONN){      //peer device send terminate command on link layer
+    else if(pDisConn->reason == HCI_ERR_REMOTE_USER_TERM_CONN){     //peer device send terminate command on link layer
 
     }
     //central host disconnect( blm_ll_disconnect(current_connHandle, HCI_ERR_REMOTE_USER_TERM_CONN) )
@@ -419,7 +419,7 @@ int     app_disconnect_event_handle(u8 *p)
 int app_controller_event_callback (u32 h, u8 *p, int n)
 {
     (void)n; //unused, remove warning
-    if (h &HCI_FLAG_EVENT_BT_STD)        //Controller HCI event
+    if (h &HCI_FLAG_EVENT_BT_STD)       //Controller HCI event
     {
         u8 evtCode = h & 0xff;
 
@@ -433,19 +433,19 @@ int app_controller_event_callback (u32 h, u8 *p, int n)
             u8 subEvt_code = p[0];
 
             //------hci le event: le connection complete event---------------------------------
-            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE)    // connection complete
+            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE)  // connection complete
             {
                 app_le_connection_complete_event_handle(p);
             }
             //--------hci le event: le adv report event ----------------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT)    // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT)  // ADV packet
             {
                 //after controller is set to scan state, it will report all the adv packet it received by this event
 
                 app_le_adv_report_event_handle(p);
             }
             //------hci le event: le connection update complete event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE)    // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE)  // connection update
             {
 
             }
@@ -479,7 +479,7 @@ int app_host_event_callback (u32 h, u8 *para, int n)
             //This event is triggered when Periphr rcv pair req or Central rcv pair rsp
             gap_smp_pairingBeginEvt_t *p = (gap_smp_pairingBeginEvt_t *)para;
             /*
-             *     JustWorks = 0, PK_Init_Display_Resp_Input = 1, PK_Resp_Display_Init_Input = 2, PK_BOTH_INPUT = 3,OOB_Authentication = 4, Numeric_Comparison = 5,
+             *  JustWorks = 0, PK_Init_Display_Resp_Input = 1, PK_Resp_Display_Init_Input = 2, PK_BOTH_INPUT = 3,OOB_Authentication = 4, Numeric_Comparison = 5,
              */
             tlkapi_send_string_data(APP_SMP_LOG_EN, "[APP][SMP] Pairing begin", &p->tk_method, 1);
         }
@@ -588,7 +588,7 @@ int app_host_event_callback (u32 h, u8 *para, int n)
 
         if(appScOobCtrl.scoob_remote_used && !appScOobCtrl.scoob_remote_geted){
             tlkapi_printf(APP_SMP_LOG_EN, "[APP][SMP] SC OOB not receive remote data, waiting");
-//            blc_smp_cancel_auth(appScOobCtrl.acl_handle);
+//          blc_smp_cancel_auth(appScOobCtrl.acl_handle);
 
             /* Waiting SC OOB remote data from UART */
             appScOobCtrl.scoob_remote_waiting = TRUE;
@@ -632,10 +632,10 @@ int app_host_event_callback (u32 h, u8 *para, int n)
 
 
 
-#define            HID_HANDLE_CONSUME_REPORT            25
-#define            HID_HANDLE_KEYBOARD_REPORT            29
-#define            AUDIO_HANDLE_MIC                    52
-#define            OTA_HANDLE_DATA                        48
+#define         HID_HANDLE_CONSUME_REPORT           25
+#define         HID_HANDLE_KEYBOARD_REPORT          29
+#define         AUDIO_HANDLE_MIC                    52
+#define         OTA_HANDLE_DATA                     48
 
 /**
  * @brief      BLE GATT data handler call-back.
@@ -652,7 +652,7 @@ int app_gatt_data_handler (u16 connHandle, u8 *pkt)
         dev_char_info_t* dev_info = dev_char_info_search_by_connhandle (connHandle);
         if(dev_info)
         {
-            //-------    user process ------------------------------------------------
+            //-------   user process ------------------------------------------------
             if(pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI)  //peripheral handle notify
             {
 
@@ -701,8 +701,8 @@ int app_gatt_data_handler (u16 connHandle, u8 *pkt)
 ///////////////////////////////////////////
 
 /**
- * @brief        user initialization when MCU power on or wake_up from deepSleep mode
- * @param[in]    none
+ * @brief       user initialization when MCU power on or wake_up from deepSleep mode
+ * @param[in]   none
  * @return      none
  */
 _attribute_no_inline_ void user_init_normal(void)
@@ -776,7 +776,7 @@ _attribute_no_inline_ void user_init_normal(void)
 
     //bluetooth low energy(LE) event
     blc_hci_le_setEventMask_cmd(        HCI_LE_EVT_MASK_CONNECTION_COMPLETE  \
-                                    |    HCI_LE_EVT_MASK_ADVERTISING_REPORT \
+                                    |   HCI_LE_EVT_MASK_ADVERTISING_REPORT \
                                     |   HCI_LE_EVT_MASK_CONNECTION_UPDATE_COMPLETE);
 
 
@@ -802,7 +802,7 @@ _attribute_no_inline_ void user_init_normal(void)
     blc_gap_init();
 
     /* L2CAP data buffer Initialization */
-    blc_l2cap_initAclCentralBuffer(app_cen_l2cap_rx_buf, CENTRAL_L2CAP_BUFF_SIZE, NULL,    0);
+    blc_l2cap_initAclCentralBuffer(app_cen_l2cap_rx_buf, CENTRAL_L2CAP_BUFF_SIZE, NULL, 0);
     blc_l2cap_initAclPeripheralBuffer(app_per_l2cap_rx_buf, PERIPHR_L2CAP_BUFF_SIZE, app_per_l2cap_tx_buf, PERIPHR_L2CAP_BUFF_SIZE);
 
     blc_att_setCentralRxMtuSize(CENTRAL_ATT_RX_MTU); ///must be placed after "blc_gap_init"
@@ -831,15 +831,15 @@ _attribute_no_inline_ void user_init_normal(void)
         user_master_host_pairing_management_init();         //Telink referenced pairing&bonding without standard pairing in BLE Spec
     #endif
 
-#if   (SMP_TEST_MODE == SMP_TEST_NOT_SUPPORT)    //LE_Security_Mode_1_Level_1 --- No_Encryption
+#if   (SMP_TEST_MODE == SMP_TEST_NOT_SUPPORT)   //LE_Security_Mode_1_Level_1 --- No_Encryption
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_1);
-#elif (SMP_TEST_MODE == SMP_TEST_LEGACY_JW)        //LE_Security_Mode_1_Level_2 --- LG_JUST_WORKS
+#elif (SMP_TEST_MODE == SMP_TEST_LEGACY_JW)     //LE_Security_Mode_1_Level_2 --- LG_JUST_WORKS
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_2);
     blc_smp_setSecurityParameters(Bondable_Mode, 0, LE_Legacy_Pairing,    0, 0, IO_CAPABILITY_NO_INPUT_NO_OUTPUT);
-#elif (SMP_TEST_MODE == SMP_TEST_LESC_JW)        //LE_Security_Mode_1_Level_2 --- LG_JUST_WORKS/SC_JUST_WORKS
+#elif (SMP_TEST_MODE == SMP_TEST_LESC_JW)       //LE_Security_Mode_1_Level_2 --- LG_JUST_WORKS/SC_JUST_WORKS
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_2);
     blc_smp_setSecurityParameters(Bondable_Mode, 0, LE_Secure_Connection, 0, 0, IO_CAPABILITY_NO_INPUT_NO_OUTPUT);
-    blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
+    blc_smp_setEcdhDebugMode(debug_mode);
 #elif (SMP_TEST_MODE == SMP_TEST_LEGACY_PKD)    //LE_Security_Mode_1_Level_3 --- LG_PASSKEY_ENTRY_DISPLAY
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_3);
     blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Legacy_Pairing,    0, 0, IO_CAPABILITY_DISPLAY_ONLY);
@@ -850,25 +850,25 @@ _attribute_no_inline_ void user_init_normal(void)
 #elif (SMP_TEST_MODE == SMP_TEST_LEGACY_OOB)    //LE_Security_Mode_1_Level_3 --- LG_OOB
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_3);
     blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Legacy_Pairing,    1, 0, IO_CAPABILITY_KEYBOARD_ONLY);
-#elif (SMP_TEST_MODE == SMP_TEST_LESC_PKD)        //LE_Security_Mode_1_Level_4 --- SC_PASSKEY_ENTRY_DISPLAY
+#elif (SMP_TEST_MODE == SMP_TEST_LESC_PKD)      //LE_Security_Mode_1_Level_4 --- SC_PASSKEY_ENTRY_DISPLAY
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_4);
     blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Secure_Connection, 0, 0, IO_CAPABILITY_DISPLAY_ONLY);
-    blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
+    blc_smp_setEcdhDebugMode(debug_mode);
     blc_smp_setDefaultPinCode(123456);
-#elif (SMP_TEST_MODE == SMP_TEST_LESC_NC)        //LE_Security_Mode_1_Level_4 --- SC_PASSKEY_ENTRY_DISPLAY/SC_NUMERIC_COMPARISON
+#elif (SMP_TEST_MODE == SMP_TEST_LESC_NC)       //LE_Security_Mode_1_Level_4 --- SC_PASSKEY_ENTRY_DISPLAY/SC_NUMERIC_COMPARISON
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_4);
     blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Secure_Connection, 0, 0, IO_CAPABILITY_DISPLAY_YES_NO);
-    blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
+    blc_smp_setEcdhDebugMode(debug_mode);
     blc_smp_setDefaultPinCode(123456);
-#elif (SMP_TEST_MODE == SMP_TEST_LESC_PKI)        //LE_Security_Mode_1_Level_4 --- SC_PASSKEY_ENTRY_INPUT
+#elif (SMP_TEST_MODE == SMP_TEST_LESC_PKI)      //LE_Security_Mode_1_Level_4 --- SC_PASSKEY_ENTRY_INPUT
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_4);
     blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Secure_Connection, 0, 0, IO_CAPABILITY_KEYBOARD_ONLY);
-    blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
+    blc_smp_setEcdhDebugMode(debug_mode);
     blc_smp_enableKeypress(1);
-#elif (SMP_TEST_MODE == SMP_TEST_LESC_OOB)        //LE_Security_Mode_1_Level_4 --- SC_OOB
+#elif (SMP_TEST_MODE == SMP_TEST_LESC_OOB)      //LE_Security_Mode_1_Level_4 --- SC_OOB
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_4);
     blc_smp_setSecurityParameters(Bondable_Mode, 0, LE_Secure_Connection, 0, 0, IO_CAPABILITY_NO_INPUT_NO_OUTPUT);
-    blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
+    blc_smp_setEcdhDebugMode(debug_mode);
 
     /* if use remote SC OOB data */
     appScOobCtrl.acl_handle = 0;
@@ -895,21 +895,21 @@ _attribute_no_inline_ void user_init_normal(void)
 
     //host(GAP/SMP/GATT/ATT) event process: register host event callback and set event mask
     blc_gap_registerHostEventHandler( app_host_event_callback );
-    blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN             |
-                          GAP_EVT_MASK_SMP_PAIRING_SUCCESS           |
-                          GAP_EVT_MASK_SMP_PAIRING_FAIL                |
+    blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN            |
+                          GAP_EVT_MASK_SMP_PAIRING_SUCCESS          |
+                          GAP_EVT_MASK_SMP_PAIRING_FAIL             |
                           GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE    |
                           GAP_EVT_MASK_SMP_TK_DISPLAY               |
                         #if (SMP_TEST_MODE == SMP_TEST_LESC_NC)
-                          GAP_EVT_MASK_SMP_TK_NUMERIC_COMPARE        |
+                          GAP_EVT_MASK_SMP_TK_NUMERIC_COMPARE       |
                         #endif
                         #if (SMP_TEST_MODE == SMP_TEST_LEGACY_OOB)
                           GAP_EVT_MASK_SMP_TK_REQUEST_OOB           |
                         #endif
                         #if (SMP_TEST_MODE == SMP_TEST_LESC_OOB)
-                          GAP_EVT_MASK_SMP_REQUEST_SCOOB_DATA        |
+                          GAP_EVT_MASK_SMP_REQUEST_SCOOB_DATA       |
                         #elif (SMP_TEST_MODE == SMP_TEST_LESC_PKI)
-                          GAP_EVT_MASK_SMP_KEYPRESS_NOTIFY            |
+                          GAP_EVT_MASK_SMP_KEYPRESS_NOTIFY          |
                         #endif
                           GAP_EVT_MASK_SMP_TK_REQUEST_PASSKEY);
     //////////// Host Initialization  End /////////////////////////
@@ -942,8 +942,8 @@ _attribute_no_inline_ void user_init_normal(void)
 
 
 /**
- * @brief        user initialization when MCU wake_up from deepSleep_retention mode
- * @param[in]    none
+ * @brief       user initialization when MCU wake_up from deepSleep_retention mode
+ * @param[in]   none
  * @return      none
  */
 void user_init_deepRetn(void)

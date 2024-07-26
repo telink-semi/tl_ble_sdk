@@ -4,9 +4,9 @@
  * @brief   This is the boot file for TL721X
  *
  * @author  Driver Group
- * @date    2023
+ * @date    2024
  *
- * @par     Copyright (c) 2023, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2024, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@
 
 .extern pm_retention_register_recover
 
-//According to the current internal seal flash model of B91m, the maximum time between the flash awakening and the operating flash is 20us, which leaves some margin and is set to 25us.
+//According to the current internal seal flash model of Telink RISC-V MCU, the maximum time between the flash awakening and the operating flash is 20us, which leaves some margin and is set to 25us.
 //When adding flash later, if tRES1 is greater than 25us, this waiting time needs to be updated. (flash tRES1, which can be viewed in the comments of the variable flash_support_mid.)
 //(add by weihua.zhang 20230811)
 #define EFUSE_LOAD_AND_FLASH_WAKEUP_LOOP_NUM        320 //25us
@@ -99,19 +99,19 @@ _RESET_ENTRY:
 
 
 /* used to check flash protection function consistency between the old and new  firmware when OTA upgrading */
-#if    APP_FLASH_PROTECTION_ENABLE
+#if APP_FLASH_PROTECTION_ENABLE
     .org 0x15    //correspond to "FIRMWARE_FLASH_PROTECTION_FLAG_ADDR" in mcu_boot.h
     .byte (0x5A)
 #endif
 
 /* used to check firmware encryption function consistency between the old and new  firmware when OTA upgrading */
-#if    APP_HW_FIRMWARE_ENCRYPTION_ENABLE
+#if APP_HW_FIRMWARE_ENCRYPTION_ENABLE
     .org 0x16    //correspond to "FIRMWARE_ENCRYPTION_FLAG_ADDR" in mcu_boot.h
     .byte (0x5A)
 #endif
 
 /* used to check secure boot function consistency between the old and new  firmware when OTA upgrading */
-#if    APP_HW_SECURE_BOOT_ENABLE
+#if APP_HW_SECURE_BOOT_ENABLE
     .org 0x17        //correspond to "SECURE_BOOT_FLAG_ADDR" in mcu_boot.h
     .byte (0x5A)
  #endif
@@ -127,7 +127,6 @@ _RESET_ENTRY:
 /* in the original configuration, set bit[22] to 1, enable timeout:
  * when xip reaches a certain time without fetching instructions, cs will not be pulled down, saving power consumption.
  */
-//  .word (0x034020A8)          //READ:    cmd:1x, addr:1x, data:1x, dummy cycle:0
     .word (0x3b4097a9)          //DREAD:   cmd:1x, addr:1x, data:2x, dummy cycle:8
 //  .word (0xeb4493ba)          //X4READ:  cmd:1x, addr:4x, data:4x, dummy cycle:6
 
@@ -273,33 +272,10 @@ _ZERO_BSS:
     la     t2, _BSS_VMA_START
     la     t3, _BSS_VMA_END
 _ZERO_BSS_BEGIN:
-    bleu   t3, t2, _ZERO_AES
-    sw     t0, 0(t2)
-    addi   t2, t2, 4
-    j      _ZERO_BSS_BEGIN
-
-    /* Zero .aes section in sram */
-_ZERO_AES:
-    lui    t0, 0
-    la     t2, _AES_VMA_START
-    la     t3, _AES_VMA_END
-_ZERO_AES_BEGIN:
-    bleu   t3, t2, _ZERO_IRAM_BSS
-    sw     t0, 0(t2)
-    addi   t2, t2, 4
-    j      _ZERO_AES_BEGIN
-
-    /* Zero .iram_bss section in sram */
-_ZERO_IRAM_BSS:
-    lui    t0, 0
-    la     t2, _IRAM_BSS_VMA_START
-    la     t3, _IRAM_BSS_VMA_END
-_ZERO_IRAM_BSS_BEGIN:
     bleu   t3, t2, _FILL_STK
     sw     t0, 0(t2)
     addi   t2, t2, 4
-    j      _ZERO_IRAM_BSS_BEGIN
-
+    j      _ZERO_BSS_BEGIN
 
     /* Fill the remaining section in sram */
 _FILL_STK:
@@ -430,12 +406,6 @@ _MSPI_WAIT_1:
     addi    t0, t0, 0x790
     li      t1, 0x06
     sb      t1, 0x78c(t0)       //xip_disable       :0xA3FFFF1c = 0x06
-    lui     t0, 0x80140
-    addi    t0, t0, 0x790
-    li      t1, 0x3f
-    sb      t1, 0x4d1(t0)       //mspi ie enable    :0x80140c61 = 0x3f
-    lui     t0, 0xA3FFF
-    addi    t0, t0, 0x790
     li      t2, 0x00
     sb      t2, 0x77c(t0)       //mspi_ctrl1        :0xA3FFFF0c = 0x00
     li      t2, 0x80
@@ -484,21 +454,10 @@ _IZERO_BSS:
     la     t2, _BSS_VMA_START
     la     t3, _BSS_VMA_END
 _IZERO_BSS_BEGIN:
-    bleu   t3, t2, _IZERO_AES
-    sw     t0, 0(t2)
-    addi   t2, t2, 4
-    j      _IZERO_BSS_BEGIN
-
-    /* Zero .aes section in sram */
-_IZERO_AES:
-    lui    t0, 0
-    la     t2, _AES_VMA_START
-    la     t3, _AES_VMA_END
-_IZERO_AES_BEGIN:
     bleu   t3, t2, _IFILL_STK
     sw     t0, 0(t2)
     addi   t2, t2, 4
-    j      _IZERO_AES_BEGIN
+    j      _IZERO_BSS_BEGIN
 
     /* Fill the remaining section in sram */
 _IFILL_STK:

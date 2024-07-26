@@ -33,14 +33,14 @@
 
 
 
-_attribute_ble_data_retention_    blt_soft_timer_t    blt_timer;
+_attribute_ble_data_retention_  blt_soft_timer_t    blt_timer;
 
 
 /**
- * @brief        This function is used to Sort the timers according
- *                 to the time of the timed task, so as to trigger the
- *                 timers in turn
- * @param[in]    none
+ * @brief       This function is used to Sort the timers according
+ *              to the time of the timed task, so as to trigger the
+ *              timers in turn
+ * @param[in]   none
  * @return      none
  */
 int  blt_soft_timer_sort(void)
@@ -74,11 +74,11 @@ int  blt_soft_timer_sort(void)
 
 
 /**
- * @brief        This function is used to add new software timer task
- * @param[in]    func - callback function for software timer task
- * @param[in]    interval_us - the interval for software timer task
+ * @brief       This function is used to add new software timer task
+ * @param[in]   func - callback function for software timer task
+ * @param[in]   interval_us - the interval for software timer task
  * @return      0 - timer task is full, add fail
- *                 1 - create successfully
+ *              1 - create successfully
  */
 int blt_soft_timer_add(blt_timer_callback_t func, u32 interval_us)
 {
@@ -86,7 +86,7 @@ int blt_soft_timer_add(blt_timer_callback_t func, u32 interval_us)
     u32 now = clock_time();
 
     if(blt_timer.currentNum >= MAX_TIMER_NUM){  //timer full
-        return     0;
+        return  0;
     }
     else{
         blt_timer.timer[blt_timer.currentNum].cb = func;
@@ -105,12 +105,12 @@ int blt_soft_timer_add(blt_timer_callback_t func, u32 interval_us)
 
 
 /**
- * @brief        Timer tasks are originally ordered. When deleting, it will
- *                 be overwritten forward, so the order will not be destroyed
- *                 and there is no need to reorder
- * @param[in]    index - the index for some software timer task
+ * @brief       Timer tasks are originally ordered. When deleting, it will
+ *              be overwritten forward, so the order will not be destroyed
+ *              and there is no need to reorder
+ * @param[in]   index - the index for some software timer task
  * @return      0 - delete fail
- *                 other - delete successfully
+ *              other - delete successfully
  */
 int  blt_soft_timer_delete_by_index(u8 index)
 {
@@ -129,10 +129,10 @@ int  blt_soft_timer_delete_by_index(u8 index)
 }
 
 /**
- * @brief        This function is used to delete timer tasks
- * @param[in]    func - callback function for software timer task
+ * @brief       This function is used to delete timer tasks
+ * @param[in]   func - callback function for software timer task
  * @return      0 - delete fail
- *                 1 - delete successfully
+ *              1 - delete successfully
  */
 int     blt_soft_timer_delete(blt_timer_callback_t func)
 {
@@ -166,11 +166,11 @@ int     blt_soft_timer_delete(blt_timer_callback_t func)
 
 
 /**
- * @brief        This function is used to manage software timer tasks
- * @param[in]    type - the type for trigger
+ * @brief       This function is used to manage software timer tasks
+ * @param[in]   type - the type for trigger
  * @return      none
  */
-void      blt_soft_timer_process(int type)
+void    blt_soft_timer_process(int type)
 {
     if(type == CALLBACK_ENTRY){ //callback trigger
 
@@ -234,11 +234,11 @@ void      blt_soft_timer_process(int type)
 }
 
 /**
- * @brief        This function is used to register the call back for pm_appWakeupLowPowerCb
- * @param[in]    none
+ * @brief       This function is used to register the call back for pm_appWakeupLowPowerCb
+ * @param[in]   none
  * @return      none
  */
-void     blt_soft_timer_init(void)
+void    blt_soft_timer_init(void)
 {
     blc_pm_registerAppWakeupLowPowerCb(blt_soft_timer_process);
 }

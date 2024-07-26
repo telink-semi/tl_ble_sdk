@@ -26,12 +26,12 @@
 #include "compiler.h"
 #include "stimer.h"
 /**********************************************************************************************************************
- *                                              local constants                                                       *
+ *                                            local constants                                                       *
  *********************************************************************************************************************/
 
 
 /**********************************************************************************************************************
- *                                               local macro                                                        *
+ *                                              local macro                                                        *
  *********************************************************************************************************************/
 
 
@@ -47,34 +47,34 @@
 
 
 dma_config_t analog_tx_dma_config={
-    .dst_req_sel         = DMA_REQ_ALGM_TX,    /* < tx req  */
-    .src_req_sel         = 0,
-    .dst_addr_ctrl        = DMA_ADDR_FIX,
-    .src_addr_ctrl         = DMA_ADDR_INCREMENT, /* < increment */
-    .dstmode             = DMA_HANDSHAKE_MODE,    /* < handshake */
+    .dst_req_sel        = DMA_REQ_ALGM_TX,    /* < tx req  */
+    .src_req_sel        = 0,
+    .dst_addr_ctrl      = DMA_ADDR_FIX,
+    .src_addr_ctrl      = DMA_ADDR_INCREMENT, /* < increment */
+    .dstmode            = DMA_HANDSHAKE_MODE,   /* < handshake */
     .srcmode            = DMA_NORMAL_MODE,
-    .dstwidth             = DMA_CTR_WORD_WIDTH,
-    .srcwidth             = DMA_CTR_WORD_WIDTH,
+    .dstwidth           = DMA_CTR_WORD_WIDTH,
+    .srcwidth           = DMA_CTR_WORD_WIDTH,
     .src_burst_size     = 0,    /* < must 0 */
     .read_num_en        = 0,
-    .priority             = 0,
-    .write_num_en        = 0,
-    .auto_en             = 0,       /* < must 0 */
+    .priority           = 0,
+    .write_num_en       = 0,
+    .auto_en            = 0,    /* < must 0 */
 };
 dma_config_t analog_rx_dma_config={
-    .dst_req_sel         = 0,//tx req
-    .src_req_sel         = DMA_REQ_ALGM_RX,
-    .dst_addr_ctrl         = DMA_ADDR_INCREMENT,
-    .src_addr_ctrl         = DMA_ADDR_FIX,
-    .dstmode             = DMA_NORMAL_MODE,
-    .srcmode             = DMA_HANDSHAKE_MODE,
-    .dstwidth             = DMA_CTR_WORD_WIDTH,    /* < must word */
-    .srcwidth             = DMA_CTR_WORD_WIDTH,    /* < must word */
+    .dst_req_sel        = 0,//tx req
+    .src_req_sel        = DMA_REQ_ALGM_RX,
+    .dst_addr_ctrl      = DMA_ADDR_INCREMENT,
+    .src_addr_ctrl      = DMA_ADDR_FIX,
+    .dstmode            = DMA_NORMAL_MODE,
+    .srcmode            = DMA_HANDSHAKE_MODE,
+    .dstwidth           = DMA_CTR_WORD_WIDTH,   /* < must word */
+    .srcwidth           = DMA_CTR_WORD_WIDTH,   /* < must word */
     .src_burst_size     = 0,
-    .read_num_en         = 0,
-    .priority             = 0,
-    .write_num_en         = 0,
-    .auto_en             = 0,//must 0
+    .read_num_en        = 0,
+    .priority           = 0,
+    .write_num_en       = 0,
+    .auto_en            = 0,//must 0
 };
 /**********************************************************************************************************************
  *                                              local variable                                                     *
@@ -140,7 +140,7 @@ _attribute_ram_code_sec_noinline_ void analog_write_reg16(unsigned char addr, un
 {
     unsigned int r=core_interrupt_disable();
     reg_ana_addr = addr;
-    reg_ana_addr_data16     = data;
+    reg_ana_addr_data16  = data;
     reg_ana_ctrl = (FLD_ANA_CYC | FLD_ANA_RW);
     analog_wait();
     core_restore_interrupt(r);
@@ -193,7 +193,7 @@ _attribute_ram_code_sec_noinline_ void analog_write_reg32(unsigned char addr, un
 {
     unsigned int r=core_interrupt_disable();
     reg_ana_addr = addr;
-    reg_ana_addr_data32    = data;
+    reg_ana_addr_data32 = data;
     reg_ana_ctrl = (FLD_ANA_CYC | FLD_ANA_RW);
     analog_wait();
     core_restore_interrupt(r);
@@ -359,11 +359,11 @@ void analog_write_buff_dma(dma_chn_e chn, unsigned char addr, unsigned char * pd
  * @param[in]  chn - the dma channel.
  * @param[in]  addr - address need to be read from.
  * @param[in]  *pdat - the buffer need to be put data.
- *                note: The size of array pdat must be a multiple of 4.
- *                        For example, if you just need read 5 byte by dma, you should
- *                        define the size of array pdat to be greater than 8 other than 5.
- *                        Because the dma would return 4 byte data every time, 5 byte is
- *                        not enough to store them.
+ *             note: The size of array pdat must be a multiple of 4.
+ *                  For example, if you just need read 5 byte by dma, you should
+ *                  define the size of array pdat to be greater than 8 other than 5.
+ *                  Because the dma would return 4 byte data every time, 5 byte is
+ *                  not enough to store them.
  * @param[in]  len - the length of read data.
  * @return     none.
  */
@@ -387,17 +387,17 @@ void analog_read_buff_dma(dma_chn_e chn, unsigned char addr, unsigned char *pdat
  * @brief      This function write buffer to analog register by dma channel.
  * @param[in]  chn  - the dma channel.
  * @param[in]  pdat - the buffer(addr & data) ptr need to be write,
- *                note: The array pdat should look like this,
- *                |  pdat     |            |        |
- *                |  :------  | :----------|  :---- |
- *                |  pdat[0]  |   address  |  0x3a  |
- *                |  pdat[1]  |    data    |  0x11  |
- *                |  pdat[2]  |   address  |  0x3b  |
- *               |  pdat[3]  |    data    |  0x22  |
- *               |  ......   |            |        |
- *                 It means write data 0x11 to address 0x3a,
- *                          write data 0x22 to address 0x3b,
- *                          ......
+ *             note: The array pdat should look like this,
+ *             |  pdat     |            |        |
+ *             |  :------  | :----------|  :---- |
+ *             |  pdat[0]  |   address  |  0x3a  |
+ *             |  pdat[1]  |    data    |  0x11  |
+ *             |  pdat[2]  |   address  |  0x3b  |
+ *             |  pdat[3]  |    data    |  0x22  |
+ *             |  ......   |            |        |
+ *              It means write data 0x11 to address 0x3a,
+ *                       write data 0x22 to address 0x3b,
+ *                       ......
  * @param[in]  len - the length of read data.
  * @return     none.
  */
@@ -422,7 +422,7 @@ void analog_write_addr_data_dma(dma_chn_e chn, void *pdat, int len)
 }
 
 /**********************************************************************************************************************
-  *                                            local function implementation                                             *
+  *                                         local function implementation                                             *
   *********************************************************************************************************************/
 /**
  * @brief      This function serves to judge whether analog write/read is busy .

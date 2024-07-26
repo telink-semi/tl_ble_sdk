@@ -26,11 +26,11 @@
 
 
 
-extern     int    central_pairing_enable;
-extern     u16 central_unpair_enable;
+extern  int central_pairing_enable;
+extern  u16 central_unpair_enable;
 
-extern    u16 central_disconnect_connhandle;
-extern    int key_not_released;
+extern  u16 central_disconnect_connhandle;
+extern  int key_not_released;
 
 /**
  * @brief      keyboard task handler

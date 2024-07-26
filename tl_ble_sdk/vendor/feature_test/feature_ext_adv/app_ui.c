@@ -37,14 +37,14 @@
 
 #if (UI_KEYBOARD_ENABLE)
 
-_attribute_ble_data_retention_    int     key_not_released;
+_attribute_ble_data_retention_  int     key_not_released;
 
 
-#define CONSUMER_KEY                      1
-#define KEYBOARD_KEY                      2
-#define PAIR_UNPAIR_KEY                  3
+#define CONSUMER_KEY                1
+#define KEYBOARD_KEY                2
+#define PAIR_UNPAIR_KEY             3
 
-_attribute_ble_data_retention_    u8         key_type;
+_attribute_ble_data_retention_  u8      key_type;
 
 /**
  * @brief   Check changed key value.
@@ -55,7 +55,7 @@ void key_change_proc(void)
 {
 
     u8 key0 = kb_event.keycode[0];
-//    u8 key_buf[8] = {0,0,0,0,0,0,0,0};
+//  u8 key_buf[8] = {0,0,0,0,0,0,0,0};
 
     key_not_released = 1;
     if (kb_event.cnt == 2)   //two key press
@@ -132,7 +132,7 @@ void key_change_proc(void)
 
 
 
-_attribute_ble_data_retention_        static u32 keyScanTick = 0;
+_attribute_ble_data_retention_      static u32 keyScanTick = 0;
 
 /**
  * @brief      keyboard task handler

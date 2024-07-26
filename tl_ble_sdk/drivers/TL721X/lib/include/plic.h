@@ -73,7 +73,25 @@
  *               }
  *               PLIC_ISR_REGISTER(stimer_irq_handler, IRQ_SYSTIMER)
  *              @endcode
- *
+ *    - Saving and disabling global interrupts and restoring global interrupts example.
+ *        -# Saving and disabling global interrupts example:
+ *            @code
+ *            void global_interrupts_save_and_disable(void)
+ *            {
+ *                g_mstatus_value = core_interrupt_disable();
+ *                g_mie_value     = core_mie_disable(FLD_MIE_MSIE | FLD_MIE_MTIE | FLD_MIE_MEIE);
+ *                plic_all_interrupt_save_and_disable();
+ *            }
+ *            @endcode
+ *        -# Restoring global interrupts example:
+ *            @code
+ *            void global_interrupts_restore(void)
+ *            {
+ *                plic_all_interrupt_restore();
+ *                core_mie_restore(g_mie_value);
+ *                core_restore_interrupt(g_mstatus_value);
+ *            }
+ *            @endcode
  */
 #ifndef INTERRUPT_H
 #define INTERRUPT_H
@@ -262,7 +280,7 @@ static inline void plic_set_pending(unsigned int src)
  *          If this interface is called in an interrupt service routine, the hardware has threshold in-stack and out-stack behaviors, \n
  *          the out-stack overwrites the set threshold value.
  */
- //BLE SDK use: in IRQ _attribute_ram_code_sec_
+ //BLE SDK use
 static inline  _attribute_ram_code_sec_ void plic_set_threshold(irq_threshold_e threshold)
 {
     /*The priority number in the threshold register will be saved to a preempted priority stack and the new priority number of the claimed interrupt will be written to the threshold register.
@@ -386,5 +404,19 @@ _attribute_ram_code_sec_ void plic_isr(func_isr_t func, unsigned int src);
  *          - When global interrupt is enabled, the application does not need to call this interface, the hardware and interrupt service routine handle interrupt requests.
  */
 _attribute_ram_code_sec_noinline_ int plic_clr_all_request(void);
+
+/**
+ * @brief      This function serves to save and disable all PLIC interrupt sources.
+ * @return     none
+ * @note       plic_all_interrupt_save_and_disable and plic_all_interrupt_restore must be used in pairs.
+ */
+void plic_all_interrupt_save_and_disable(void);
+
+/**
+ * @brief      This function serves to restore and all PLIC interrupt sources.
+ * @return     none
+ * @note       plic_all_interrupt_save_and_disable and plic_all_interrupt_restore must be used in pairs.
+ */
+void plic_all_interrupt_restore(void);
 
 #endif

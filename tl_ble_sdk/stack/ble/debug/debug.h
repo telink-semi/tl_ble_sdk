@@ -29,26 +29,26 @@
  *  @brief stack log
  */
 typedef enum {
-    STK_LOG_NONE                 = 0,
+    STK_LOG_NONE                = 0,
 
-    STK_LOG_LL_CMD                 = BIT(0),
+    STK_LOG_LL_CMD              = BIT(0),
 
-    STK_LOG_ATT_RX                 = BIT(5),
-    STK_LOG_ATT_TX                 = BIT(6),
+    STK_LOG_ATT_RX              = BIT(5),
+    STK_LOG_ATT_TX              = BIT(6),
 
-    STK_LOG_SMP_LTK                = BIT(10),
+    STK_LOG_SMP_LTK             = BIT(10),
 
-    STK_LOG_PRF_CS                = BIT(12),
+    STK_LOG_PRF_CS              = BIT(12),
 
     STK_LOG_OTA_FLOW            = BIT(15),
     STK_LOG_OTA_DATA            = BIT(16),
 
-    STK_LOG_HCI_CS                = BIT(20),
+    STK_LOG_HCI_CS              = BIT(20),
 
-    STK_LOG_LL_RX                 = BIT(26),
-    STK_LOG_LL_TX                 = BIT(27),
+    STK_LOG_LL_RX               = BIT(26),
+    STK_LOG_LL_TX               = BIT(27),
 
-    STK_LOG_ALL                     = 0xFFFFFFFF,
+    STK_LOG_ALL                 = 0xFFFFFFFF,
 }stk_log_msk_t;
 
 

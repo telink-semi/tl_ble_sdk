@@ -35,42 +35,42 @@
  *
  * 0 ~ (ACL_CENTRAL_MAX_NUM - 1) is for ACL Central,  ACL_CENTRAL_MAX_NUM ~ (ACL_CENTRAL_MAX_NUM + ACL_PERIPHR_MAX_NUM - 1) s for ACL Peripheral
  *
- * e.g.    ACL_CENTRAL_MAX_NUM    ACL_PERIPHR_MAX_NUM          ACL Central              ACL Peripheral
- *                0                          1                     none                conn_dev_list[0]
- *                0                          2                     none                conn_dev_list[0..1]
- *                0                          3                     none                conn_dev_list[0..2]
- *                0                          4                     none                conn_dev_list[0..3]
+ * e.g.    ACL_CENTRAL_MAX_NUM  ACL_PERIPHR_MAX_NUM       ACL Central             ACL Peripheral
+ *                0                     1                    none               conn_dev_list[0]
+ *                0                     2                    none               conn_dev_list[0..1]
+ *                0                     3                    none               conn_dev_list[0..2]
+ *                0                     4                    none               conn_dev_list[0..3]
  *
- *                1                         0                conn_dev_list[0]               none
- *                1                          1                conn_dev_list[0]        conn_dev_list[1]
- *                1                          2                conn_dev_list[0]        conn_dev_list[1..2]
- *                1                          3                conn_dev_list[0]        conn_dev_list[1..3]
- *                1                          4                conn_dev_list[0]        conn_dev_list[1..4]
+ *                1                     0               conn_dev_list[0]               none
+ *                1                     1               conn_dev_list[0]        conn_dev_list[1]
+ *                1                     2               conn_dev_list[0]        conn_dev_list[1..2]
+ *                1                     3               conn_dev_list[0]        conn_dev_list[1..3]
+ *                1                     4               conn_dev_list[0]        conn_dev_list[1..4]
  *
- *                2                          0                conn_dev_list[0..1]               none
- *                2                          1                conn_dev_list[0..1]        conn_dev_list[2]
- *                2                          2                conn_dev_list[0..1]        conn_dev_list[2..3]
- *                2                          3                conn_dev_list[0..1]        conn_dev_list[2..4]
- *                2                          4                conn_dev_list[0..1]        conn_dev_list[2..5]
+ *                2                     0               conn_dev_list[0..1]            none
+ *                2                     1               conn_dev_list[0..1]     conn_dev_list[2]
+ *                2                     2               conn_dev_list[0..1]     conn_dev_list[2..3]
+ *                2                     3               conn_dev_list[0..1]     conn_dev_list[2..4]
+ *                2                     4               conn_dev_list[0..1]     conn_dev_list[2..5]
  *
- *                3                          0                conn_dev_list[0..2]               none
- *                3                          1                conn_dev_list[0..2]        conn_dev_list[3]
- *                3                          2                conn_dev_list[0..2]        conn_dev_list[3..4]
- *                3                          3                conn_dev_list[0..2]        conn_dev_list[3..5]
- *                3                          4                conn_dev_list[0..2]        conn_dev_list[3..6]
+ *                3                     0               conn_dev_list[0..2]            none
+ *                3                     1               conn_dev_list[0..2]     conn_dev_list[3]
+ *                3                     2               conn_dev_list[0..2]     conn_dev_list[3..4]
+ *                3                     3               conn_dev_list[0..2]     conn_dev_list[3..5]
+ *                3                     4               conn_dev_list[0..2]     conn_dev_list[3..6]
  *
- *                4                          0                conn_dev_list[0..3]               none
- *                4                          1                conn_dev_list[0..3]        conn_dev_list[4]
- *                4                          2                conn_dev_list[0..3]        conn_dev_list[4..5]
- *                4                          3                conn_dev_list[0..3]        conn_dev_list[4..6]
- *                4                          4                conn_dev_list[0..3]        conn_dev_list[4..7]
+ *                4                     0               conn_dev_list[0..3]            none
+ *                4                     1               conn_dev_list[0..3]     conn_dev_list[4]
+ *                4                     2               conn_dev_list[0..3]     conn_dev_list[4..5]
+ *                4                     3               conn_dev_list[0..3]     conn_dev_list[4..6]
+ *                4                     4               conn_dev_list[0..3]     conn_dev_list[4..7]
  */
-_attribute_ble_data_retention_    dev_char_info_t    conn_dev_list[DEVICE_CHAR_INFO_MAX_NUM];
+_attribute_ble_data_retention_  dev_char_info_t conn_dev_list[DEVICE_CHAR_INFO_MAX_NUM];
 
 
 
-_attribute_ble_data_retention_    u8 acl_conn_central_num = 0;   //current ACL Central number in connection state
-_attribute_ble_data_retention_    u8 acl_conn_periphr_num = 0;   //current ACL Peripheral number in connection state
+_attribute_ble_data_retention_  u8 acl_conn_central_num = 0;   //current ACL Central number in connection state
+_attribute_ble_data_retention_  u8 acl_conn_periphr_num = 0;   //current ACL Peripheral number in connection state
 
 
 
@@ -364,8 +364,8 @@ bool    dev_char_info_is_connection_state_by_conn_handle(u16 connhandle)
  * @brief       Get ACL connection role by connection handle.
  * @param[in]   connhandle       - connection handle.
  * @return      0: ACL_ROLE_CENTRAL
- *                 1: ACL_ROLE_PERIPHERAL
- *                 2: connection handle invalid
+ *              1: ACL_ROLE_PERIPHERAL
+ *              2: connection handle invalid
  */
 int dev_char_get_conn_role_by_connhandle (u16 connhandle)
 {
@@ -386,8 +386,8 @@ int dev_char_get_conn_role_by_connhandle (u16 connhandle)
 /**
  * @brief       Get ACL connection index by connection handle.
  * @param[in]   connhandle       - connection handle.
- * @return      0xFF:       no connection index match
- *                 others:   connection index
+ * @return      0xFF:     no connection index match
+ *              others:   connection index
  */
 int dev_char_get_conn_index_by_connhandle (u16 connhandle)
 {

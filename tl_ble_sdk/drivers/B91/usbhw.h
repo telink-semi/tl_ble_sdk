@@ -21,15 +21,15 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-/**    @page USBHW
+/** @page USBHW
  *
- *    Introduction
- *    ===============
- *    USB hard ware .
+ *  Introduction
+ *  ===============
+ *  USB hard ware .
  *
- *    API Reference
- *    ===============
- *    Header File: usbhw.h
+ *  API Reference
+ *  ===============
+ *  Header File: usbhw.h
  */
 
 #pragma once
@@ -195,8 +195,8 @@ static inline void usbhw_clr_irq_mask( usb_irq_mask_e mask)
 /**
  * @brief     This function servers to get usb irq status.
  * @param[in]  status -the  irq status of usb.
- * @retval      non-zero   -  the interrupt occurred.
- * @retval      zero  -  the interrupt did not occur.
+ * @retval    non-zero   -  the interrupt occurred.
+ * @retval    zero  -  the interrupt did not occur.
  */
 static inline unsigned char  usbhw_get_irq_status(usb_irq_status_e status)
 {
@@ -213,14 +213,14 @@ static inline void usbhw_clr_irq_status(usb_irq_status_e status)
     /** the reg_usb_irq_mask register mask and status are in the same register
      * enum
      * {
-     *      FLD_USB_IRQ_RESET_MASK   =     BIT(0),
-     *      FLD_USB_IRQ_250US_MASK      =     BIT(1),
-     *      FLD_USB_IRQ_SUSPEND_MASK =     BIT(2),
-     *      FLD_USB_IRQ_RESET_LVL     =     BIT(3),
-     *      FLD_USB_IRQ_250US_LVL     =     BIT(4),
-     *      FLD_USB_IRQ_RESET_O      =     BIT(5),
-     *      FLD_USB_IRQ_250US_O         =     BIT(6),
-     *      FLD_USB_IRQ_SUSPEND_O     =     BIT(7),
+     *      FLD_USB_IRQ_RESET_MASK   =  BIT(0),
+     *      FLD_USB_IRQ_250US_MASK   =  BIT(1),
+     *      FLD_USB_IRQ_SUSPEND_MASK =  BIT(2),
+     *      FLD_USB_IRQ_RESET_LVL    =  BIT(3),
+     *      FLD_USB_IRQ_250US_LVL    =  BIT(4),
+     *      FLD_USB_IRQ_RESET_O      =  BIT(5),
+     *      FLD_USB_IRQ_250US_O      =  BIT(6),
+     *      FLD_USB_IRQ_SUSPEND_O    =  BIT(7),
      * };
      * Flags can only be cleared with |=, not by direct assignment. */
     reg_usb_irq_mask|=status; 
@@ -324,16 +324,16 @@ static inline void usbhw_set_printer_threshold(unsigned char th) {
 
 enum {
     USB_EDP_PRINTER_IN = 8,     // default hw buf len = 64
-    USB_EDP_MOUSE = 2,            // default hw buf len = 8
+    USB_EDP_MOUSE = 2,          // default hw buf len = 8
     USB_EDP_KEYBOARD_IN = 1,    // default hw buf len = 8
-    USB_EDP_IN = 3,                // default hw buf len = 16
-    USB_EDP_AUDIO_IN = 4,        // default hw buf len = 64
+    USB_EDP_IN = 3,             // default hw buf len = 16
+    USB_EDP_AUDIO_IN = 4,       // default hw buf len = 64
     USB_EDP_PRINTER_OUT = 5,    // default hw buf len = 64
     USB_EDP_SPEAKER = 6,        // default hw buf len = 16
     USB_EDP_MIC = 7,            // default hw buf len = 16
-    USB_EDP_MS_IN = 4,        // mass storage
+    USB_EDP_MS_IN = 4,      // mass storage
     USB_EDP_MS_OUT = 5,
-    USB_EDP_SOMATIC_IN = USB_EDP_AUDIO_IN,        //  when USB_SOMATIC_ENABLE, USB_EDP_PRINTER_OUT disable
+    USB_EDP_SOMATIC_IN = USB_EDP_AUDIO_IN,      //  when USB_SOMATIC_ENABLE, USB_EDP_PRINTER_OUT disable
     USB_EDP_SOMATIC_OUT = USB_EDP_PRINTER_OUT,
     USB_EDP_CDC_IN = 4,
     USB_EDP_CDC_OUT = 5,
@@ -345,7 +345,7 @@ enum {
     USB_HID_MOUSE           = 1,
     USB_HID_KB_MEDIA        = 3,// media
     USB_HID_KB_SYS          = 4,// system : power,sleep,wakeup
-    USB_HID_SOMATIC            = 5,// somatic sensor,  may have many report ids
+    USB_HID_SOMATIC         = 5,// somatic sensor,  may have many report ids
 };
 
 

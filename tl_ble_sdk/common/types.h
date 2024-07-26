@@ -24,27 +24,27 @@
 #pragma once
 #include <stdbool.h>
 
-typedef unsigned char         u8;
+typedef unsigned char       u8;
 typedef signed char         s8;
-typedef unsigned short         u16;
-typedef signed short         s16;
+typedef unsigned short      u16;
+typedef signed short        s16;
 typedef int                 s32;
-typedef unsigned int         u32;
-typedef long long             s64;
-typedef unsigned long long     u64;
+typedef unsigned int        u32;
+typedef long long           s64;
+typedef unsigned long long  u64;
 
 
-typedef unsigned char         uint8_t;
-typedef unsigned short         uint16_t;
+typedef unsigned char       uint8_t;
+typedef unsigned short      uint16_t;
 
-typedef unsigned char         uint08;
-typedef unsigned short         uint16;
+typedef unsigned char        uint08;
+typedef unsigned short       uint16;
 typedef unsigned int         uint32;
-typedef unsigned long long     uint64;
+typedef unsigned long long   uint64;
 
 
 #ifndef NULL
-#define NULL     0
+#define NULL    0
 #endif
 
 #ifndef __cplusplus
@@ -52,21 +52,21 @@ typedef unsigned long long     uint64;
 //typedef u8 bool;
 
 #ifndef FALSE
-#define FALSE     0
+#define FALSE   0
 #endif
 #ifndef TRUE
-#define TRUE     (!FALSE)
+#define TRUE    (!FALSE)
 #endif
 
 //#define false     FALSE
-//#define true     TRUE
+//#define true  TRUE
 
 #endif
 
 // There is no way to directly recognise whether a typedef is defined
 // http://stackoverflow.com/questions/3517174/how-to-check-if-a-datatype-is-defined-with-typedef
 #ifdef __GNUC__
-typedef    u16    wchar_t;
+typedef u16 wchar_t;
 #endif
 
 #ifndef WIN32

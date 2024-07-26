@@ -35,6 +35,7 @@
 #include "i2c_reg.h"
 #include "mspi_reg.h"
 #include "rf_reg.h"
+#include "pke_reg.h"
 #include "plic_reg.h"
 #include "plic_sw_reg.h"
 #include "plmt_reg.h"

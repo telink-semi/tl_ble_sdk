@@ -30,11 +30,11 @@
 
 /**
  * @brief      for user to initialize legacy initiating module
- *                notice that only one module can be selected between legacy initiating module and extended initiating module
- * @param       none
+ *             notice that only one module can be selected between legacy initiating module and extended initiating module
+ * @param      none
  * @return     none
  */
-void         blc_ll_initLegacyInitiating_module(void);
+void        blc_ll_initLegacyInitiating_module(void);
 
 
 
@@ -54,7 +54,7 @@ void         blc_ll_initLegacyInitiating_module(void);
  * @param[in]  ce_max - informative parameters providing the Controller with the expected maximum length of the connection events.
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
-ble_sts_t     blc_ll_createConnection( scan_inter_t scanInter, scan_wind_t scanWindow, init_fp_t fp, u8 peerAdrType, u8 *peerAddr, own_addr_type_t ownAdrType,
+ble_sts_t   blc_ll_createConnection( scan_inter_t scanInter, scan_wind_t scanWindow, init_fp_t fp, u8 peerAdrType, u8 *peerAddr, own_addr_type_t ownAdrType,
                                      conn_inter_t conn_min,  conn_inter_t conn_max, u16 conn_latency, conn_tm_t timeout, u16 ce_min,   u16 ce_max );
 
 

@@ -43,9 +43,9 @@
 
 #define configCLINT_BASE_ADDRESS        0x00000000
 
-#define configCPU_CLOCK_HZ                        ( 32000UL )        //  fixed for andes MTIME CLOCK
-#define configUSE_TICKLESS_IDLE                    1
-#define configTICK_RATE_HZ                        ( ( TickType_t ) 500 )
+#define configCPU_CLOCK_HZ                      ( 32000UL )     //  fixed for andes MTIME CLOCK
+#define configUSE_TICKLESS_IDLE                 1
+#define configTICK_RATE_HZ                      ( ( TickType_t ) 500 )
 #define configUSE_PREEMPTION                    1
 #define configMAX_PRIORITIES                    ( 7 )
 #ifdef CFG_SIMU
@@ -53,61 +53,61 @@
 #else
 #define configMINIMAL_STACK_SIZE                ( 256 )
 #endif
-#define configMAX_TASK_NAME_LEN                    ( 16 )
-#define configUSE_16_BIT_TICKS                    0
-#define configIDLE_SHOULD_YIELD                    0
+#define configMAX_TASK_NAME_LEN                 ( 16 )
+#define configUSE_16_BIT_TICKS                  0
+#define configIDLE_SHOULD_YIELD                 0
 #define configUSE_TASK_NOTIFICATIONS            1
-#define configUSE_MUTEXES                        1
-#define configUSE_RECURSIVE_MUTEXES                1
-#define configUSE_COUNTING_SEMAPHORES            1
-#define configQUEUE_REGISTRY_SIZE                10
+#define configUSE_MUTEXES                       1
+#define configUSE_RECURSIVE_MUTEXES             1
+#define configUSE_COUNTING_SEMAPHORES           1
+#define configQUEUE_REGISTRY_SIZE               10
 #define configUSE_QUEUE_SETS                    0
 
 /* Memory allocation definitions. */
-#define configSUPPORT_STATIC_ALLOCATION            1
+#define configSUPPORT_STATIC_ALLOCATION         1
 #define configSUPPORT_DYNAMIC_ALLOCATION        1
 #ifndef configTOTAL_HEAP_SIZE
-#define configTOTAL_HEAP_SIZE                    ( ( size_t ) ( 24 * 1024 ) )
+#define configTOTAL_HEAP_SIZE                   ( ( size_t ) ( 24 * 1024 ) )
 #endif
 
 /* Hook function definitions. */
-#define configUSE_IDLE_HOOK                        1
-#define configUSE_TICK_HOOK                        0
-#define configCHECK_FOR_STACK_OVERFLOW            0
+#define configUSE_IDLE_HOOK                     1
+#define configUSE_TICK_HOOK                     0
+#define configCHECK_FOR_STACK_OVERFLOW          0
 #define configUSE_MALLOC_FAILED_HOOK            0
-#define configUSE_DAEMON_TASK_STARTUP_HOOK        0
+#define configUSE_DAEMON_TASK_STARTUP_HOOK      0
 
 /* Run time and task stats gathering definitions. */
-#define configUSE_APPLICATION_TASK_TAG            0
-#define configGENERATE_RUN_TIME_STATS            0
-#define configUSE_TRACE_FACILITY                1        // Awareness debugging used
+#define configUSE_APPLICATION_TASK_TAG          0
+#define configGENERATE_RUN_TIME_STATS           0
+#define configUSE_TRACE_FACILITY                1       // Awareness debugging used
 #define configUSE_STATS_FORMATTING_FUNCTIONS    0
 
 /* Co-routine definitions. */
-#define configUSE_CO_ROUTINES                     0
+#define configUSE_CO_ROUTINES                   0
 #define configMAX_CO_ROUTINE_PRIORITIES         ( 2 )
 
 /* Software timer definitions. */
 #define configUSE_TIMERS                        1
-#define configTIMER_TASK_PRIORITY                ( configMAX_PRIORITIES - 1 )
+#define configTIMER_TASK_PRIORITY               ( configMAX_PRIORITIES - 1 )
 #define configTIMER_QUEUE_LENGTH                5
 #define configTIMER_TASK_STACK_DEPTH            ( configMINIMAL_STACK_SIZE * 2 )
 
-#define configISR_STACK_SIZE_WORDS                256
+#define configISR_STACK_SIZE_WORDS              256
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
 #define INCLUDE_vTaskPrioritySet                1
-#define INCLUDE_uxTaskPriorityGet                1
-#define INCLUDE_vTaskDelete                        1
-#define INCLUDE_vTaskCleanUpResources            1
+#define INCLUDE_uxTaskPriorityGet               1
+#define INCLUDE_vTaskDelete                     1
+#define INCLUDE_vTaskCleanUpResources           1
 #define INCLUDE_vTaskSuspend                    1
-#define INCLUDE_vTaskDelayUntil                    1
-#define INCLUDE_vTaskDelay                        1
-#define INCLUDE_xTaskGetCurrentTaskHandle        1
-#define INCLUDE_xTimerPendFunctionCall            1
-#define INCLUDE_eTaskGetState                    1
-#define INCLUDE_xTaskAbortDelay                    1
-#define INCLUDE_xTaskGetHandle                    1
+#define INCLUDE_vTaskDelayUntil                 1
+#define INCLUDE_vTaskDelay                      1
+#define INCLUDE_xTaskGetCurrentTaskHandle       1
+#define INCLUDE_xTimerPendFunctionCall          1
+#define INCLUDE_eTaskGetState                   1
+#define INCLUDE_xTaskAbortDelay                 1
+#define INCLUDE_xTaskGetHandle                  1
 #define INCLUDE_xSemaphoreGetMutexHolder        1
 
 /* The size of the global output buffer that is available for use when there
@@ -118,7 +118,7 @@ command interpreter running. */
 /* The buffer into which output generated by FreeRTOS+CLI is placed.  This must
 be at least big enough to contain the output of the task-stats command, as the
 example implementation does not include buffer overlow checking. */
-#define configCOMMAND_INT_MAX_OUTPUT_SIZE        2096
+#define configCOMMAND_INT_MAX_OUTPUT_SIZE       2096
 #define configINCLUDE_QUERY_HEAP_COMMAND        1
 
 #define configTASK_NOTIFICATION_ARRAY_ENTRIES   1
@@ -176,7 +176,7 @@ provided in this demo can be extended to save even more power. */
 /* Record the highest address of stack. */
 #if(configHSP_ENABLE == 1 )
 #ifndef configRECORD_STACK_HIGH_ADDRESS
-#define configRECORD_STACK_HIGH_ADDRESS        1
+#define configRECORD_STACK_HIGH_ADDRESS     1
 #endif
 #endif
 

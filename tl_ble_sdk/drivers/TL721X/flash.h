@@ -60,12 +60,13 @@
 typedef enum{
     //The command called by the flash_mspi_read_ram() function.
 /*
- * FLASH_READ_CMD/FLASH_DREAD_CMD/FLASH_X4READ_CMD/FLASH_X8READ_CMD,bit[22] Set to 1:
+ * FLASH_DREAD_CMD/FLASH_X4READ_CMD/FLASH_X8READ_CMD,bit[22] Set to 1:
  * the configuration of flash xip in the S file refers to the read cmd here, bit[22] is invalid in the interface configuration;
  * In xip configuration, bit[22] is timeout enable (the function of this bit: when xip reaches a certain time without taking instructions,
- * cs will not be pulled down, saving power consumption).
+ * cs will not be pulled down, saving power consumption).(added by shuaixing.zhai 20240428)
+ * attention: The maximum frequency of some flash single line reads may be smaller than the mspi frequency configured by the chip, it is not recommended to use the function of single line reads,
+ * if you have to use it, please refer to the flash datasheet to ensure that the maximum frequency of flash single line reads is larger than the mspi frequency configured by the chip.(added by xiaobin.huang 20240717)
  */
-    FLASH_READ_CMD                             = 0x034020a8,
     FLASH_DREAD_CMD                            = 0x3b4097a9,
     FLASH_X4READ_CMD                           = 0xeb4493ba,
     FLASH_READ_SECURITY_REGISTERS_CMD          = 0x480097a8,
@@ -227,26 +228,6 @@ static inline void flash_change_rw_func(flash_handler_t read, flash_handler_t wr
 _attribute_text_sec_ void flash_erase_sector(unsigned long addr);
 
 /**
- * @brief       This function reads the content from a page to the buf with single mode.
- * @param[in]   addr    - slave base address + the access address of flash.The base address of device0 is 0.
- *                      If there are multiple devices, the base address of other devices is determined by the mspi_slave_device_addr_space_config() function.
- * @param[in]   len     - the length(in byte, must be above 0) of content needs to read out from the page.
- * @param[out]  buf     - the start address of the buffer(ram address).
- * @return      none.
- * @note        cmd:1x, addr:1x, data:1x, dummy:0
- *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
- *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
- *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
- *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
- *              to the specific application and hardware circuit.
- *
- *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
- *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
- *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
- */
-_attribute_text_sec_ void flash_read_data(unsigned long addr, unsigned long len, unsigned char *buf);
-
-/**
  * @brief       This function reads the content from a page to the buf with dual read mode.
  * @param[in]   addr    - slave base address + the access address of flash.The base address of device0 is 0.
  *                      If there are multiple devices, the base address of other devices is determined by the mspi_slave_device_addr_space_config() function.
@@ -285,26 +266,6 @@ _attribute_text_sec_ void flash_dread(unsigned long addr, unsigned long len, uns
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
 _attribute_text_sec_ void flash_4read(unsigned long addr, unsigned long len, unsigned char *buf);
-
-/**
- * @brief       This function serves to decrypt the read data from the flash at the specified address and compare it with the plain text in single mode.
- * @param[in]   addr        - slave base address + the access address of flash.The base address of device0 is 0.
- *                          If there are multiple devices, the base address of other devices is determined by the mspi_slave_device_addr_space_config() function.
- * @param[in]   plain_len   - the length(in byte, must be above 0) of content needs to read out from the page.
- * @param[out]  plain_buf   - the start address of the plain buffer(ram address).
- * @return      0: check pass; 1: check fail.
- * @note        cmd:1x, addr:1x, data:1x, dummy:0
- *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
- *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
- *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
- *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
- *              to the specific application and hardware circuit.
- *
- *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
- *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
- *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
- */
-_attribute_text_sec_ unsigned char  flash_read_data_decrypt_check(unsigned long addr,unsigned long plain_len,unsigned char* plain_buf);
 
 /**
  * @brief       This function serves to decrypt the read data from the flash at the specified address and compare it with the plain text in dual read mode.
