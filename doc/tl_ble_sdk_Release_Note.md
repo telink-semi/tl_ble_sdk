@@ -37,8 +37,8 @@
      - Supported TL321X A1 chip.
      - Added TL321X power mode parameters in API `sys_init`, and the default configuration is `DCDC_1P25_LDO_1P8`.
      - Updated the early wake-up time in deep retention mode of TLSR921X/TL721X/TL321X.
-   * Changed TL721X default clock setting to `PLL_240M_CCLK_48M_HCLK_48M_PCLK_48M_MSPI_48M`.
-   * Changed TL321X default clock setting to `PLL_192M_CCLK_48M_HCLK_48M_PCLK_48M_MSPI_48M`.
+   * Changed TL721X default system clock setting to 48MHz.
+   * Changed TL321X default system clock setting to 48MHz.
    * Changed TL721X default power mode to `DCDC_0P94_DCDC_1P8`.
   
 ### Features
@@ -181,8 +181,8 @@
      - TL321X支持A1芯片。
      - TL321X在API`sys_init`中增加供电模式参数，默认配置为`DCDC_1P25_LDO_1P8`。
 	 - 更新TLSR921X/TL721X/TL321X deep retention模式下的提前唤醒时间。
-   * TL721X 默认时钟设置更改为`PLL_240M_CCLK_48M_HCLK_48M_PCLK_48M_MSPI_48M`。
-   * TL321X 默认时钟设置更改为`PLL_192M_CCLK_48M_HCLK_48M_PCLK_48M_MSPI_48M`。
+   * TL721X 默认系统时钟设置更改为48MHz。
+   * TL321X 默认系统时钟设置更改为48MHz。
    * TL721X 默认供电模式修改为`DCDC_0P94_DCDC_1P8`。
 
 ### Features
