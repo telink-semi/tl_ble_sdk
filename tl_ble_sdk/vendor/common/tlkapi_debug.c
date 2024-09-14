@@ -471,9 +471,6 @@ void tlkapi_send_str_data (char *str, u8 *pData, u32 data_len)
     tlkapi_print_fifo->wptr++;
 
     irq_restore(r);
-    #if (BLE_APP_PM_ENABLE)
-    blc_pm_setSleepMask(PM_SLEEP_DISABLE); // Must not sleep when there is log data to send
-    #endif
 #endif
 }
 
@@ -569,9 +566,6 @@ __attribute__((used)) int _write(int fd, const unsigned char *buf, int size)
         *pd++ = 0;
     }
     tlkapi_print_fifo->wptr ++;
-    #if (BLE_APP_PM_ENABLE)
-    blc_pm_setSleepMask(PM_SLEEP_DISABLE); // Must not sleep when there is log data to send
-    #endif
     return size;
 #endif
 }
@@ -656,9 +650,6 @@ int tlk_printf(const char *format, ...)
     }
 
     tlkapi_print_fifo->wptr ++;
-    #if (BLE_APP_PM_ENABLE)
-    blc_pm_setSleepMask(PM_SLEEP_DISABLE); // Must not sleep when there is log data to send
-    #endif
     return ret;
 #endif
 }
