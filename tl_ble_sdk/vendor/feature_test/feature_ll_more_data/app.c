@@ -192,9 +192,7 @@ int app_le_adv_report_event_handle(u8 *p)
         central_auto_connect = blc_smp_searchBondingPeripheralDevice_by_PeerMacAddress(pa->adr_type, pa->mac);
     #endif
 
-    u8 dst_mac[3] = {0x97, 0x97, 0x97};
-    bool mac_match = !memcmp(dst_mac, pa->mac+3, 3);
-    if((central_auto_connect || user_manual_pairing) && mac_match){
+    if(central_auto_connect || user_manual_pairing){
 
         /* send create connection command to Controller, trigger it switch to initiating state. After this command, Controller
          * will scan all the ADV packets it received but not report to host, to find the specified device(mac_adr_type & mac_adr),

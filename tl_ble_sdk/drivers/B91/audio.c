@@ -41,7 +41,7 @@ audio_i2s_codec_config_t audio_i2s_codec_config=
    .codec_data_select       =CODEC_BIT_16_DATA,
    .i2s_codec_m_s_mode      =I2S_M_CODEC_S,
    .in_digital_gain         =CODEC_IN_D_GAIN_0_DB,
-   .in_analog_gain          =CODEC_IN_A_GAIN_16_DB, //BLE SDK use: default 16dB
+   .in_analog_gain          =CODEC_IN_A_GAIN_0_DB,
    .out_digital_gain        =CODEC_OUT_D_GAIN_0_DB,
    .out_analog_gain         =CODEC_OUT_A_GAIN_0_DB,
    .mic_input_mode_select   =DIFF_ENDED_INPUT,//0 single-ended input, 1 differential input
@@ -280,6 +280,7 @@ void audio_codec_active(void)
     audio_clk_en(0, 1);
     reg_audio_codec_vic_ctr = FLD_AUDIO_CODEC_SLEEP_ANALOG; /* active analog sleep mode */
     while (!(reg_audio_codec_stat_ctr & FLD_AUDIO_CODEC_PON_ACK)); /* wait codec can be configured */
+    addr_audio_codec_cr_ck &= ~FLD_AUDIO_CODEC_MCLK_FREQ; /* set codec MCLK 12M, if not set, the default value is also 12M */
     BM_CLR(reg_audio_codec_vic_ctr, FLD_AUDIO_CODEC_SLEEP_ANALOG); /* disable sleep mode */
 }
 
@@ -528,6 +529,7 @@ void audio_init(audio_flow_mode_e flow_mode,audio_sample_rate_e rate,audio_chann
     audio_clk_en(1,1);
     reg_audio_codec_vic_ctr=FLD_AUDIO_CODEC_SLEEP_ANALOG;//active analog sleep mode
     while(!(reg_audio_codec_stat_ctr&FLD_AUDIO_CODEC_PON_ACK));//wait codec can be configured
+    addr_audio_codec_cr_ck &= ~FLD_AUDIO_CODEC_MCLK_FREQ;//set codec MCLK 12M, if not set, the default value is also 12M
     if(flow_mode<BUF_TO_LINE_OUT)
     {
         audio_codec_adc_config(audio_i2s_codec_config.i2s_codec_m_s_mode,(flow_mode%3),rate,audio_i2s_codec_config.codec_data_select,MCU_WREG);
@@ -730,11 +732,14 @@ void audio_codec_adc_config(i2s_codec_m_s_mode_e mode,audio_input_mode_e in_mode
         {
             if(!audio_i2s_invert_config.i2s_data_invert_select)
             {
-                BM_CLR(reg_audio_codec_adc12_ctr,FLD_AUDIO_CODEC_ADC1_SB);/*active adc1 channel,mono.*/
+                reg_audio_codec_adc12_ctr = (reg_audio_codec_adc12_ctr & ~(FLD_AUDIO_CODEC_ADC1_SB))
+                                            | FLD_AUDIO_CODEC_ADC2_SB; /*active adc1 channel,mono.*/
+
             }
             else
             {
-                BM_CLR(reg_audio_codec_adc12_ctr,FLD_AUDIO_CODEC_ADC2_SB);/*active adc2 channel,mono.*/
+                reg_audio_codec_adc12_ctr = (reg_audio_codec_adc12_ctr & ~(FLD_AUDIO_CODEC_ADC2_SB))
+                                            | FLD_AUDIO_CODEC_ADC1_SB; /*active adc2 channel,mono.*/
             }
         }
         else
@@ -745,6 +750,7 @@ void audio_codec_adc_config(i2s_codec_m_s_mode_e mode,audio_input_mode_e in_mode
 
         if (in_mode==AMIC_INPUT)
         {
+        reg_audio_dmic_12 &= ~(FLD_AUDIO_CODEC_ADC_DMIC_SEL2 | FLD_AUDIO_CODEC_ADC_DMIC_SEL1);
         /*Microphone 1 input selection ,Microphone biasing active,Single-ended input,MICBIAS1 output=2.08V,*/
         reg_audio_codec_mic1_ctr= MASK_VAL( FLD_AUDIO_CODEC_MIC1_SEL, 0,\
                                         FLD_AUDIO_CODEC_MICBIAS1_SB, 0, \
@@ -767,9 +773,14 @@ void audio_codec_adc_config(i2s_codec_m_s_mode_e mode,audio_input_mode_e in_mode
 
         else if(in_mode==LINE_INPUT)
         {
-            reg_audio_codec_mic1_ctr= MASK_VAL(FLD_AUDIO_CODEC_MIC_DIFF1, audio_i2s_codec_config.mic_input_mode_select);
+            reg_audio_dmic_12 &= ~(FLD_AUDIO_CODEC_ADC_DMIC_SEL2 | FLD_AUDIO_CODEC_ADC_DMIC_SEL1);
+            reg_audio_codec_mic1_ctr = MASK_VAL(FLD_AUDIO_CODEC_MIC1_SEL, 0,\
+                                        FLD_AUDIO_CODEC_MICBIAS1_SB, 0, \
+                                        FLD_AUDIO_CODEC_MIC_DIFF1, audio_i2s_codec_config.mic_input_mode_select,\
+                                        FLD_AUDIO_CODEC_MICBIAS1_V, 0);
 
-            reg_audio_codec_mic2_ctr= MASK_VAL(FLD_AUDIO_CODEC_MIC_DIFF2, audio_i2s_codec_config.mic_input_mode_select);
+            reg_audio_codec_mic2_ctr = MASK_VAL(FLD_AUDIO_CODEC_MIC2_SEL, 0,\
+                                        FLD_AUDIO_CODEC_MIC_DIFF2, audio_i2s_codec_config.mic_input_mode_select);
 
             audio_set_codec_adc_a_gain(audio_i2s_codec_config.in_analog_gain);
         }

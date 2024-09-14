@@ -73,7 +73,38 @@
  *               }
  *               PLIC_ISR_REGISTER(stimer_irq_handler, IRQ_SYSTIMER)
  *              @endcode
- *
+ *    - Saving and disabling global interrupts and restoring global interrupts example.
+ *        -# Saving and disabling global interrupts example:
+ *            @code
+ *            void global_interrupts_save_and_disable(void)
+ *            {
+ *                g_mstatus_value = core_interrupt_disable();
+ *                g_mie_value     = core_mie_disable(FLD_MIE_MSIE | FLD_MIE_MTIE | FLD_MIE_MEIE);
+ *                plic_all_interrupt_save_and_disable();
+ *            }
+ *            @endcode
+ *        -# Restoring global interrupts example:
+ *            @code
+ *            void global_interrupts_restore(void)
+ *            {
+ *                plic_all_interrupt_restore();
+ *                core_mie_restore(g_mie_value);
+ *                core_restore_interrupt(g_mstatus_value);
+ *            }
+ *            @endcode
+ *    - WFI Example.
+ *      # Before entering WFI, set the wakeup source and turn off unneeded interrupts:
+ *          @code
+ *          plic_irqs_preprocess_for_wfi(1, FLD_MIE_MEIE); // disable all interrupts except MEIE.
+ *          plic_interrupt_enable(IRQ_SYSTIMER); // stimer wakeup.
+ *          core_entry_wfi_mode(); // enter wfi.
+ *          @endcode
+ *      # After WFI wakeup, clear the corresponding interrupt flag bit and restore other interrupts:
+ *          @code
+ *          core_entry_wfi_mode();
+ *          stimer_clr_irq_status(FLD_SYSTEM_IRQ); // clear stimer irq status.
+ *          plic_irqs_postprocess_for_wfi(); // restore interrupts.
+ *          @endcode
  */
 
 #ifndef  INTERRUPT_H
@@ -401,6 +432,7 @@ static inline void plic_interrupt_complete(unsigned int src)
  * @note
  *          - For vector interrupt, the hardware will automatically claim an interrupt, in general, the software does not need to claim.
  *          - plic_interrupt_claim() and plic_interrupt_complete() must be used in pairs.
+ *          - If the corresponding interrupt has never been enabled, claim does not get the corresponding interrupt ID, and the interface returns 0.
  */
 static inline  unsigned int plic_interrupt_claim(void)
 {
@@ -461,5 +493,42 @@ _attribute_ram_code_sec_ void plic_isr(func_isr_t func, unsigned int src);
  *          - When global interrupt is enabled, the application does not need to call this interface, the hardware and interrupt service routine handle interrupt requests.
  */
 _attribute_ram_code_sec_ int plic_clr_all_request(void);
+
+/**
+ * @brief      This function serves to save and disable all PLIC interrupt sources.
+ * @return     none
+ * @note       plic_all_interrupt_save_and_disable and plic_all_interrupt_restore must be used in pairs.
+ */
+void plic_all_interrupt_save_and_disable(void);
+
+/**
+ * @brief      This function serves to restore and all PLIC interrupt sources.
+ * @return     none
+ * @note       plic_all_interrupt_save_and_disable and plic_all_interrupt_restore must be used in pairs.
+ */
+void plic_all_interrupt_restore(void);
+
+/**
+ * @brief      This function serves to save and disable interrupts, including the MIE bit of the MSTATUS register(depends on the first parameter,regardless of whether the global interrupt is enabled or not.), \n
+ *             MSIE, MTIE, and MEIE bits of the MIE register, and all PLIC interrupt sources.
+ * @param[in]  flag - Global interrupt disable flag, 1: disable, 0: not disable.
+ * @param[in]  mie - MSIE, MTIE, and MEIE Which one wakes up WFI.
+ * @note
+ *  - When the core is awoken by the taken interrupt and global interrupts enable, it will resume and start to execute from the corresponding interrupt service routine.
+ *  - When the core is awoken by the pending interrupt and global interrupts disable, it will resume and start to execute from the instruction after the WFI instruction.
+ *  - plic_irqs_preprocess_for_wfi and plic_irqs_postprocess_for_wfi must be used in pairs.
+ */
+void plic_irqs_preprocess_for_wfi(unsigned char flag, mie_e mie);
+
+/**
+ * @brief      This function serves to restore interrupts, including the MIE bit of the MSTATUS register, \n
+ *             MSIE, MTIE, and MEIE bits of the MIE register, and all PLIC interrupt sources.
+ * @return     none
+ * @note
+ *  - Make sure that the status flag of the corresponding interrupt is cleared before calling this interface.
+ *  - This function will enable PLIC interrupt so this interface cannot be called from the interrupt service routine.
+ *  - plic_irqs_preprocess_for_wfi and plic_irqs_postprocess_for_wfi must be used in pairs.
+ */
+void plic_irqs_postprocess_for_wfi(void);
 
 #endif

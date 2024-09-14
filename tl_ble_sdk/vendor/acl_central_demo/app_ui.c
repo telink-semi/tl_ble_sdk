@@ -399,11 +399,7 @@ void proc_central_role_unpair(void)
 void    att_keyboard_media (u16 conn, u8 *p)
 {
     (void)conn;
-    u16 consumer_key = p[0] | p[1]<<8;
 
-#if (APPLICATION_DONGLE)
-    usbkb_report_consumer_key(consumer_key);
-#else
     #if (UI_LED_ENABLE) //Demo effect: when peripheral send Vol+/Vol- to central, LED GPIO toggle to show the result
         if(consumer_key == MKEY_VOL_UP){
             gpio_toggle(GPIO_LED_GREEN);
@@ -412,7 +408,6 @@ void    att_keyboard_media (u16 conn, u8 *p)
             gpio_toggle(GPIO_LED_BLUE);
         }
     #endif
-#endif
 }
 
 
@@ -430,16 +425,4 @@ void    att_keyboard (u16 conn, u8 *p)
     (void)conn;
     memcpy(&kb_dat_report, p, sizeof(kb_data_t));
 
-#if (APPLICATION_DONGLE)
-    if (kb_dat_report.keycode[0])           //keycode[0]
-    {
-        kb_dat_report.cnt = 1;  //1 key value
-        keyboard_not_release = 1;
-    }
-    else{
-        kb_dat_report.cnt = 0;  //key release
-        keyboard_not_release = 0;
-    }
-    usbkb_hid_report((kb_data_t *) &kb_dat_report);
-#endif
 }

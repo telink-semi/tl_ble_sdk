@@ -31,6 +31,8 @@
 
 #define _attribute_text_sec_                    __attribute__((section(".text")))
 
+#define _attribute_flash_code_sec_noinline_     __attribute__((section(".flash_code"))) __attribute__((noinline))
+
 #define _attribute_aes_data_sec_                __attribute__((section(".aes_data")))
 
 #define _attribute_aligned_(s)                  __attribute__((aligned(s)))
@@ -63,7 +65,7 @@
 #define _attribute_iram_noinit_data_    __attribute__((section(".iram_noinit_data")))
 #define _attribute_iram_bss_            __attribute__((section(".iram_bss")))
 
-
+#define _attribute_flash_code_sec_noinline_     __attribute__((section(".flash_code"))) __attribute__((noinline))
 
 #if (BLC_PM_DEEP_RETENTION_MODE_EN)
     #define _attribute_data_retention_sec_          __attribute__((section(".retention_data")))

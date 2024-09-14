@@ -146,26 +146,6 @@ enum{
     FLD_BB_DMA_TX_SIZE_IDX      =   BIT_RNG(22,23),
 };
 
-
-#define reg_bb_dma_rx_wptr              REG_ADDR8(BB_DMA_BASE_ADDR+0xf4)
-#define reg_bb_dma_tx_wptr              REG_ADDR8(BB_DMA_BASE_ADDR+0x100)
-
-enum{
-    FLD_BB_DMA_WPTR_MASK =          BIT_RNG(0,4),
-};
-
-
-#define reg_bb_dma_rx_rptr              REG_ADDR8(BB_DMA_BASE_ADDR+0xf5)
-#define reg_bb_dma_tx_rptr              REG_ADDR8(BB_DMA_BASE_ADDR+0x101)
-enum{
-    FLD_BB_DMA_RPTR_MASK =          BIT_RNG(0,4),
-    FLD_BB_DMA_RPTR_SET =           BIT(5),
-    FLD_BB_DMA_RPTR_NEXT =          BIT(6),
-    FLD_BB_DMA_RPTR_CLR =           BIT(7),
-};
-
-
-
 #define reg_rf_bb_auto_ctrl             REG_ADDR8(0x17090c)
 enum{
     FLD_RF_TX_MULTI_EN                  =   BIT(0),
@@ -184,7 +164,17 @@ enum{
 #define reg_rf_dma_rx_rptr              REG_ADDR8(0x1708f5)
 
 #define reg_rf_dma_tx_rptr(i)           REG_ADDR8(0x170901 + (i << 1))
+enum{
+    FLD_BB_DMA_RPTR_MASK =          BIT_RNG(0,4),
+    FLD_BB_DMA_RPTR_SET =           BIT(5),
+    FLD_BB_DMA_RPTR_NEXT =          BIT(6),
+    FLD_BB_DMA_RPTR_CLR =           BIT(7),
+};
+
 #define reg_rf_dma_tx_wptr(i)           REG_ADDR8(0x170900 + (i << 1))
+enum{
+    FLD_BB_DMA_WPTR_MASK =          BIT_RNG(0,4),
+};
 
 #define reg_rf_dma_tx_rptr1(i)          REG_ADDR8(0x170919 + (i << 1))
 #define reg_rf_dma_tx_wptr1(i)          REG_ADDR8(0x170918 + (i << 1))

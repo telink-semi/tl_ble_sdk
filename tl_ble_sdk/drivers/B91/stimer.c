@@ -22,6 +22,9 @@
  *
  *******************************************************************************************************/
 #include "stimer.h"
+
+unsigned int g_track_32kcnt=16;
+
 /**
  * @brief     This function performs to set delay time by us.
  * @param[in] microsec - need to delay.

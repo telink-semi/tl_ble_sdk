@@ -195,7 +195,7 @@ int dev_char_get_conn_index_by_connhandle (u16 connhandle);
 
 /* compatible with previous released SDK */
 #define conn_master_num acl_conn_central_num
-#define conn_slave_num  acl_conn_central_num
+#define conn_slave_num  acl_conn_periphr_num
 
 
 #endif /* APP_DEVICE_H_ */

@@ -154,6 +154,6 @@ void        blc_pm_registerAppWakeupLowPowerCb(pm_appWakeupLowPower_callback_t c
  * @param   none
  * @return  none
  */
-void    blc_ll_enOsPowerManagement_module(void);
+void        blc_ll_enOsPowerManagement_module(void);
 
 #endif /* LL_PM_H_ */

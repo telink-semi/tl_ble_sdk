@@ -52,6 +52,7 @@ enum{
 #define areg_aon_0x08           0x08
 enum{
     FLD_PD_VDD_RAM              = BIT(6),//power down of supply to ram
+    //RSVD
     FLD_PD_VDD_DCORE            = BIT(7),//power down the supply to dcore
 };
 
@@ -65,7 +66,66 @@ enum{
 };
 
 #define areg_aon_0x0c           0x0c
+#define areg_aon_0x0e           0x0e
 #define areg_aon_0x0f           0x0f
+
+/**
+ * Customers cannot use analog register 0x35 because driver and chip functions are occupied, details are as follows:
+ * [Bit0]: If this bit is 1, it means that reboot or power on has occurred. If this bit is 0, it means that sleep has occurred.
+ * [Bit1~7]: These bits are used by the driver and cannot be used by the customer.
+ */
+#define PM_ANA_REG_WD_CLR_BUF0          0x35 // initial value 0xff.
+enum{
+    POWERON_FLAG                 = BIT(0),
+};
+
+/**
+ * Customers cannot use analog register 0x3a because driver and chip functions are occupied, details are as follows:
+ * [Bit0]: If this bit is 1, it means that reboot has occurred.
+ * REBOOT_MANUAL, it means that manually invoke the reboot interface.
+ * REBOOT_XTAL_UNSTABLE, it means that the software calls the function sys_reboot() when the crystal oscillator does not start up normally.
+ * REBOOT_PM_CLR_PLIC_REQUEST_FAIL, it means that the pm_sleep_wakeup function failed to clear the PM wake flag bit when using the deep wake source, and the software called sys_reboot().
+ * Bit0 has been used and can no longer be used, any combination of other bits can be used.
+ */
+#define PM_ANA_REG_POWER_ON_CLR_BUF0    0x3a // initial value 0x00.
+typedef enum{
+    REBOOT_FLAG                   = BIT(0),
+    SW_REBOOT_REASON              = BIT_RNG(1,7),
+}pm_poweron_clr_buf0_e;
+
+//Since there are only 7 bits, this enumeration ranges from 0 to 127.
+typedef enum{
+    APPLIC_INTERFACE              = 0x00,
+    XTAL_UNSTABLE                 = 0x01,
+    PM_CLR_PLIC_REQUEST_FAIL      = 0x02,
+    WAIT_TIMEOUT                  = 0x03,
+}pm_sw_reboot_reason_e;
+
+#define areg_aon_0x3d           0x3d
+
+#define areg_aon_0x3e           0x3e
+
+#define areg_aon_0x4b           0x4b
+
+#define areg_aon_0x4c           0x4c
+enum{
+    FLD_PD_32K_RC               = BIT(0),
+    FLD_PD_32K_XTAL             = BIT(1),
+//    FLD_PD_RSVD_BIT2            = BIT(2),
+    FLD_PD_24M_XTAL             = BIT(3),
+    FLD_PD_LOGIC                = BIT(4),
+    FLD_PD_DCDC                 = BIT(5),
+    FLD_PD_VBUS_LDO             = BIT(6),
+    FLD_PD_ANA_BBPLL_TEMP_LDO   = BIT(7),
+    FLD_PD_LPC                  = BIT(8),
+//    FLD_PD_RSVD_BIT9            = BIT(9),
+    FLD_PD_UVLO_IB              = BIT(10),////Cannot be turned off during sleep.
+    FLD_PD_VBUS_SW              = BIT(11),
+//    FLD_PD_RSVD_BIT12           = BIT(12),
+//    FLD_PD_RSVD_BIT13           = BIT(13),
+    FLD_PD_SEQUENCE_EN          = BIT(14),
+    FLD_PD_ISOLATION            = BIT(15),
+};
 
 #define areg_aon_0x4e           0x4e
 enum{
@@ -88,8 +148,18 @@ typedef enum {
     FLD_WAKEUP_STATUS_CORE          = BIT(1),
     FLD_WAKEUP_STATUS_TIMER         = BIT(2),
     FLD_WAKEUP_STATUS_COMPARATOR    = BIT(3),
-    FLD_WAKEUP_STATUS_ALL           = 0x0f,
+
+    //To clear all wake sources, the parameter of this interface is usually FLD_WAKEUP_STATUS_ALL
+    //instead of FLD_WAKEUP_STATUS_INUSE_ALL.
+    FLD_WAKEUP_STATUS_ALL           = 0xff,
+
+    //After the wake source is obtained, &WAKEUP_STATUS_INUSE_ALL is needed to determine
+    //whether the wake source in use has been cleared, because some of the wake sources
+    //that are not in use may have been set up.
+    FLD_WAKEUP_STATUS_INUSE_ALL     = 0x0f,
 }pm_wakeup_status_e;
+
+#define areg_aon_0x65           0x65
 
 #define areg_aon_0x69           0x69
 
@@ -103,6 +173,14 @@ typedef enum{
     //RSVD
     FLD_PG_CLK_EN               = BIT(7),//enable change power sequence clk
 }pm_pd_module_e;
+
+#define areg_aon_0x7e           0x7e
+
+#define areg_aon_0x7f           0x7f
+enum{
+    FLD_BOOTFROMBROM            = BIT(0),
+    FLD_PAD_FILTER_EN           = BIT(5),
+};
 
 
 #endif

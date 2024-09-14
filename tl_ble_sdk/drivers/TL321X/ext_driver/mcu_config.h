@@ -76,12 +76,12 @@
  * @brief   Hardware secure boot
  *          doing firmware signature verification when MCU boot
  */
-#define HARDWARE_SECURE_BOOT_SUPPORT_EN                         0
+#define HARDWARE_SECURE_BOOT_SUPPORT_EN                         1
 
 /**
  * @brief   Hardware firmware encryption
  */
-#define HARDWARE_FIRMWARE_ENCRYPTION_SUPPORT_EN                 0
+#define HARDWARE_FIRMWARE_ENCRYPTION_SUPPORT_EN                 1
 
 /**
  * @brief   Hardware secure debug

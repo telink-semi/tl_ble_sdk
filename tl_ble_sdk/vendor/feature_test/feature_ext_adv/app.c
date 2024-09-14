@@ -42,7 +42,7 @@ _attribute_ble_data_retention_      int central_smp_pending = 0;        // SMP: 
 
 /*********************************** Extended ADV data buffer allocation, Begin ************************************/
 
-_attribute_iram_bss_            u8  app_extAdvSetParam_buf[ADV_SET_PARAM_LENGTH * APP_EXT_ADV_SETS_NUMBER];
+_attribute_ble_data_retention_  u8  app_extAdvSetParam_buf[ADV_SET_PARAM_LENGTH * APP_EXT_ADV_SETS_NUMBER];
 
 _attribute_iram_noinit_data_    u8  app_extAdvData_buf[APP_EXT_ADV_DATA_LENGTH * APP_EXT_ADV_SETS_NUMBER];
 

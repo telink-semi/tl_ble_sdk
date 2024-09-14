@@ -109,7 +109,7 @@ void s7816_init(uart_num_e uart_num,s7816_clock_e clock,int f,int d)
     {
         s7816_set_clk(0x02);
     }
-    uart_reset(uart_num);
+    uart_hw_fsm_reset(uart_num);
     uart_cal_div_and_bwpc(baud, 24*1000*1000, &div, &bwpc);
     uart_init(uart_num, div, bwpc, UART_PARITY_EVEN, UART_STOP_BIT_ONE);//7816 protocol stipulate the parity bit should be even.
 }

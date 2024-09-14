@@ -51,26 +51,21 @@
  */
 #define APP_FLASH_PROTECTION_ENABLE                 1
 
-///////////////////////// UI Configuration ////////////////////////////////////////////////////
-/// B91:
-///     EVK: C1T213A20
-///     Dongle: C1T213A3
-/// B92:
-///     EVK: C1T266A20
-#define HW_EVK                                      1
-#define HW_DONGLE                                   2
 
-#define HARDWARE_BOARD_SELECT                       HW_EVK
-
-#if(HARDWARE_BOARD_SELECT == HW_EVK)
-    #define UI_KEYBOARD_ENABLE                      1
-    #define UI_BUTTON_ENABLE                        0
-#elif(HARDWARE_BOARD_SELECT == HW_DONGLE)
-    #define UI_KEYBOARD_ENABLE                      0
-    #define UI_BUTTON_ENABLE                        1
+/////////////////////// Board Select Configuration ///////////////////////////////
+#if (MCU_CORE_TYPE == MCU_CORE_B91)
+    #define BOARD_SELECT                                BOARD_951X_EVK_C1T213A20
+#elif (MCU_CORE_TYPE == MCU_CORE_B92)
+    #define BOARD_SELECT                                BOARD_952X_EVK_C1T266A20
+#elif (MCU_CORE_TYPE == MCU_CORE_TL721X)
+    #define BOARD_SELECT                                BOARD_721X_EVK_C1T315A20
+#elif (MCU_CORE_TYPE == MCU_CORE_TL321X)
+    #define BOARD_SELECT                                BOARD_321X_EVK_C1T331A20 //BOARD_321X_EVK_C1T335A20
 #endif
-#define UI_LED_ENABLE                               1
-#define APPLICATION_DONGLE                          0
+
+
+///////////////////////// UI Configuration ////////////////////////////////////////////////////
+
 
 ///////////////////////// DEBUG  Configuration ////////////////////////////////////////////////
 #define DEBUG_GPIO_ENABLE                       0
@@ -87,61 +82,6 @@
 #define APP_KEY_LOG_EN                              1
 
 #define JTAG_DEBUG_DISABLE                          1  //if use JTAG, change this
-
-
-/**
- *  @brief  GPIO definition for Button
- */
-#if (UI_BUTTON_ENABLE)
-    #define SW1_GPIO                GPIO_PB2
-    #define SW2_GPIO                GPIO_PB3
-    #define PB2_FUNC                AS_GPIO
-    #define PB3_FUNC                AS_GPIO
-    #define PB2_INPUT_ENABLE        1
-    #define PB3_INPUT_ENABLE        1
-    #define PULL_WAKEUP_SRC_PB2     PM_PIN_PULLUP_10K
-    #define PULL_WAKEUP_SRC_PB3     PM_PIN_PULLUP_10K
-#endif
-
-
-/**
- *  @brief  GPIO definition for dongle USB
- */
-#if(APPLICATION_DONGLE)
-    #define ID_VENDOR               0x248a          // for report
-    #define ID_PRODUCT_BASE         0x880c          //AUDIO_HOGP
-    #define STRING_VENDOR           L"Telink"
-    #define STRING_PRODUCT          L"BLE Master Dongle"
-    #define STRING_SERIAL           L"TLSR9"
-
-    //////////////////// Audio /////////////////////////////////////
-    #define MIC_RESOLUTION_BIT      16
-    #define MIC_SAMPLE_RATE         16000
-    #define MIC_CHANNEL_COUNT       1
-    #define MIC_ENCODER_ENABLE      0
-
-    #define SPK_RESOLUTION_BIT      16
-    #define SPK_SAMPLE_RATE         48000
-    #define SPK_CHANNEL_COUNT       2
-
-    #define PA5_FUNC                AS_USB_DM
-    #define PA6_FUNC                AS_USB_DP
-    #define PA5_INPUT_ENABLE        1
-    #define PA6_INPUT_ENABLE        1
-
-    #define USB_PRINTER_ENABLE      1
-    #define USB_SPEAKER_ENABLE      0
-
-    #define AUDIO_HOGP              0
-
-    #define USB_MIC_ENABLE          1
-    #define USB_MOUSE_ENABLE        1
-    #define USB_KEYBOARD_ENABLE     1
-    #define USB_SOMATIC_ENABLE      0   //  when USB_SOMATIC_ENABLE, USB_EDP_PRINTER_OUT disable
-    #define USB_CUSTOM_HID_REPORT   1
-#endif
-
-
 
 
 /////////////////// DEEP SAVE FLG //////////////////////////////////

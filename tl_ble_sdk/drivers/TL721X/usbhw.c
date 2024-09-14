@@ -22,7 +22,6 @@
  *
  *******************************************************************************************************/
 #include <stddef.h>
-#include <wchar.h>
 #include "usbhw.h"
 
 /**
@@ -36,6 +35,7 @@ void usbhw_init(void)
     BM_SET(reg_rst0, FLD_RST0_USB);
     BM_SET(reg_clk_en0, FLD_CLK0_USB_EN);
 
+    clock_bbpll_config(PLL_CLK);
     write_reg8(SC_BASE_ADDR + 0x3b, sys_clk.pll_clk / 48); // Split the PLL clock to the USB clock
 }
 
@@ -125,3 +125,42 @@ void usbhw_ep_map_en(usb_ep_map_sel_e map_en)
     }
 }
 
+/**
+ * @brief      This function serves to set dp_through_swire function.
+ * @param[in]  dp_through_swire - 1: swire_usb_en 0: swire_usb_dis
+ * @return     none.
+ */
+void dp_through_swire_en(bool dp_through_swire)
+{
+    if (dp_through_swire)
+    {
+        write_reg8(0x100c01, (read_reg8(0x100c01) | BIT(7))); // BIT(7) = 1 : swire_usb_en
+    }
+    else
+    {
+        write_reg8(0x100c01, (read_reg8(0x100c01) & ~BIT(7))); // BIT(7) = 0 : swire_usb_dis
+    }
+}
+
+/**
+ * @brief      This function serves to set GPIO MUX function as DP and DM pin of USB.
+ * @param[in]  dp_through_swire - 1: swire_usb_en 0: swire_usb_dis
+ * @return     none.
+ * @note       1. Configure usb_set_pin(0) , there are some risks, please refer to the startup.S file about DP_THROUGH_SWIRE_DIS
+ *                for detailed description (by default dp_through_swire is disabled). Configure usb_set_pin(1) to enable dp_through_swire again.
+ *             2. When dp_through_swire is enabled, Swire and USB applications do not affect each other.
+ */
+void usb_set_pin(bool dp_through_swire)
+{
+    reg_gpio_func_mux(GPIO_PA5) = 0x00; /* DM */
+    reg_gpio_func_mux(GPIO_PA6) = 0x00; /* DP */
+    gpio_function_dis(GPIO_PA5 | GPIO_PA6);
+    gpio_input_en(GPIO_PA5 | GPIO_PA6); /* DP/DM must set input enable */
+    usb_dp_pullup_en(1);
+    /*                                      Note
+     * If you want to enable the dp_through_swire function, there are the following considerations:
+     * 1.configure dp_through_swire_en(1).
+     * 2.keep DM high (external hardware burning EVK has pull-up function, no software configuration is needed).
+     */
+    dp_through_swire_en(dp_through_swire);
+}

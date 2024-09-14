@@ -62,16 +62,19 @@ static inline void aes_wait_done(void);
  *                                         global function implementation                                             *
  *********************************************************************************************************************/
 /**
- * @brief     This function refer to encrypt/decrypt to set key and data. AES module register must be used by word.
- *              All data need Little endian.
- * @param[in] key  - the key of encrypt/decrypt.
- * @param[in] data - the data which to do encrypt/decrypt. The address is 32 bits, but only the lower 16 bits are used.
+ * @brief     This function refer to set key and data for encryption/decryption. 
+ * @param[in] key  - the key of encrypt/decrypt, big--endian.
+ * @param[in] data - the data which to do encrypt/decrypt, big--endian. 
  * @return    none.
- * @note      reg_embase_addr (32bit) +reg_aes_ptr (16bit) is the actual access address.
- *            reg_aes_ptr is only 16bit, so access space is only 64K. Adjusting reg_embase_addr changes the initial address of 64K.
+ * @note      The AES module register must be used by word and the key and data lengths must be 16 bytes.
  */
 void aes_set_key_data(unsigned char *key, unsigned char* data)
 {
+    /*
+        The reg_aes_ptr register is 32 bits, but only the lower 16 bits can be used. The actual access address is obtained by 
+        reg_embase_addr (32bit) + reg_aes_ptr (16bit) which means the accessible space is only 64K.
+        The reg_embase_addr can adjust by call aes_set_em_base_addr().
+    */
     unsigned int temp;
     reg_embase_addr = aes_base_addr;  //set the embase addr
     for (unsigned char i = 0; i < 4; i++) {
@@ -85,9 +88,9 @@ void aes_set_key_data(unsigned char *key, unsigned char* data)
 }
 
 /**
- * @brief     This function refer to encrypt/decrypt to get result. AES module register must be used by word.
- * @param[in] result - the result of encrypt/decrypt, Little endian.
- * @return    none.
+ * @brief      This function refer to encrypt/decrypt to get result. AES module register must be used by word.
+ * @param[out] result - the result of encrypt/decrypt, big--endian.
+ * @return     none.
  */
 void aes_get_result(unsigned char *result)
 {
@@ -99,17 +102,15 @@ void aes_get_result(unsigned char *result)
 }
 
 /**
- * @brief     This function refer to encrypt. AES module register must be used by word, all data need big endian.
- * @param[in] key       - the key of encrypt.
- * @param[in] plaintext - the plaintext of encrypt.
- * @param[in] result    - the result of encrypt.
- * @return    none
+ * @brief      This function servers to perform aes_128 encryption for 16-Byte input data with specific 16-Byte key.
+ * @param[in]  key       - the key of encrypt, big--endian.
+ * @param[in]  plaintext - the plaintext of encrypt, big--endian.
+ * @param[out] result    - the result of encrypt, big--endian.
+ * @return     none
  */
 int aes_encrypt(unsigned char *key, unsigned char* plaintext, unsigned char *result)
 {
-
-    //set the key
-    aes_set_key_data(key, plaintext);
+    aes_set_key_data(key, plaintext);    //set the key
 
     aes_set_mode(AES_ENCRYPT_MODE);      //cipher mode
 
@@ -121,12 +122,12 @@ int aes_encrypt(unsigned char *key, unsigned char* plaintext, unsigned char *res
 }
 
 /**
- * @brief     This function refer to encrypt when BT is connected. AES module register must be used by word, all data need big endian.
- * @param[in] key       - the key of encrypt.
- * @param[in] plaintext - the plaintext of encrypt.
- * @param[in] result    - the result of encrypt.
- * @return    none
- * @note      Invoking this interface avoids the risk of AES conflicts when BT is connected.
+ * @brief      This function servers to perform aes_128 encryption for 16-Byte input data with specific 16-Byte key when BT is connected.
+ * @param[in]  key       - the key of encrypt, big--endian.
+ * @param[in]  plaintext - the plaintext of encrypt, big--endian.
+ * @param[out] result    - the result of encrypt, big--endian.
+ * @return     none
+ * @note       Invoking this interface avoids the risk of AES conflicts when BT is connected.
  */
 int aes_encrypt_bt_en(unsigned char* key, unsigned char* plaintext, unsigned char *result)
 {
@@ -175,16 +176,15 @@ int aes_encrypt_bt_en(unsigned char* key, unsigned char* plaintext, unsigned cha
 }
 
 /**
- * @brief     This function refer to decrypt. AES module register must be used by word.all data need big endian.
- * @param[in] key         - the key of decrypt.
- * @param[in] decrypttext - the text of decrypt.
- * @param[in] result      - the result of decrypt.
- * @return    none.
+ * @brief      This function servers to perform aes_128 decryption for 16-Byte input data with specific 16-Byte key.
+ * @param[in]  key         - the key of decrypt, big--endian.
+ * @param[in]  decrypttext - the text of decrypt, big--endian.
+ * @param[out] result      - the result of decrypt, big--endian.
+ * @return     none.
  */
 int aes_decrypt(unsigned char *key, unsigned char* decrypttext, unsigned char *result)
 {
-    //set the key
-    aes_set_key_data(key, decrypttext);
+    aes_set_key_data(key, decrypttext);  //set the key
 
     aes_set_mode(AES_DECRYPT_MODE);      //decipher mode
 
@@ -196,12 +196,12 @@ int aes_decrypt(unsigned char *key, unsigned char* decrypttext, unsigned char *r
 }
 
 /**
- * @brief     This function refer to decrypt when BT is connected. AES module register must be used by word.all data need big endian.
- * @param[in] key         - the key of decrypt.
- * @param[in] decrypttext - the text of decrypt.
- * @param[in] result      - the result of decrypt.
- * @return    none.
- * @note      Invoking this interface avoids the risk of AES conflicts when BT is connected.
+ * @brief      This function servers to perform aes_128 decryption for 16-Byte input data with specific 16-Byte key when BT is connected.
+ * @param[in]  key         - the key of decrypt, big--endian.
+ * @param[in]  decrypttext - the text of decrypt, big--endian.
+ * @param[out] result      - the result of decrypt, big--endian.
+ * @return     none.
+ * @note       Invoking this interface avoids the risk of AES conflicts when BT is connected.
  */
 int aes_decrypt_bt_en(unsigned char* key, unsigned char* plaintext, unsigned char *result)
 {
@@ -249,9 +249,6 @@ int aes_decrypt_bt_en(unsigned char* key, unsigned char* plaintext, unsigned cha
     return 0;
 }
 
-/**********************************************************************************************************************
-  *                                         local function implementation                                             *
-  *********************************************************************************************************************/
 /**
  * @brief     This function refer to set the em base address.
  * @param[in] addr - The range of em base address that can be set is the address space of DLM and ILM, which can view the Memory Map of datasheets.
@@ -266,6 +263,9 @@ void aes_set_em_base_addr(unsigned int addr){
     embase_offset = convert_ram_addr_bus2cpu(addr);
 }
 
+/**********************************************************************************************************************
+  *                                         local function implementation                                             *
+  *********************************************************************************************************************/
 /**
  * @brief     This function refer to wait aes crypt done.
  * @return    none.

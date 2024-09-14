@@ -24,7 +24,7 @@
 #ifndef DRIVERS_TL321X_DRIVER_EXT_EXT_PM_H_
 #define DRIVERS_TL321X_DRIVER_EXT_EXT_PM_H_
 
-#include "../lib/include/pm.h"
+#include "../lib/include/pm/pm.h"
 #include "types.h"
 
 

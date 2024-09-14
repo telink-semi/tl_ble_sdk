@@ -37,6 +37,10 @@
 #include "reg_include/register.h"
 #include "analog.h"
 #include "gpio.h"
+#include <stdbool.h>
+
+/* For compatibility, usb_set_pin_en() is equivalent to usb_set_pin(1), configure the usb pin and enable the dp_through_swire function.*/
+#define usb_set_pin_en()    usb_set_pin(1)
 
 typedef enum
 {
@@ -52,7 +56,39 @@ typedef enum
     USB_IRQ_SUSPEND_STATUS =BIT(7),
 }usb_irq_status_e;
 
+typedef enum {
+    USB_EDP8_IN         = 8,
+    USB_EDP1_IN         = 1,
+    USB_EDP2_IN         = 2,
+    USB_EDP3_IN         = 3,
+    USB_EDP4_IN         = 4,
+    USB_EDP5_OUT        = 5,
+    USB_EDP6_OUT        = 6,
+    USB_EDP7_IN         = 7,
+    USB_EDP_PRINTER_IN = 8,     // default hw buf len = 64
+    USB_EDP_MOUSE = 2,          // default hw buf len = 8
+    USB_EDP_KEYBOARD_IN = 1,    // default hw buf len = 8
+    USB_EDP_IN = 3,             // default hw buf len = 16
+    USB_EDP_AUDIO_IN = 4,       // default hw buf len = 64
+    USB_EDP_PRINTER_OUT = 5,    // default hw buf len = 64
+    USB_EDP_SPEAKER = 6,        // default hw buf len = 16
+    USB_EDP_MIC = 7,            // default hw buf len = 16
+    USB_EDP_MS_IN = 4,      // mass storage
+    USB_EDP_MS_OUT = 5,
+    USB_EDP_SOMATIC_IN = USB_EDP_AUDIO_IN,      //  when USB_SOMATIC_ENABLE, USB_EDP_PRINTER_OUT disable
+    USB_EDP_SOMATIC_OUT = USB_EDP_PRINTER_OUT,
+    USB_EDP_CDC_IN = 4,
+    USB_EDP_CDC_OUT = 5,
+}usb_ep_index;
 
+// #defined in the standard spec
+enum {
+    USB_HID_AUDIO           = 2,
+    USB_HID_MOUSE           = 1,
+    USB_HID_KB_MEDIA        = 3,// media
+    USB_HID_KB_SYS          = 4,// system : power,sleep,wakeup
+    USB_HID_SOMATIC         = 5,// somatic sensor,  may have many report ids
+};
 
 /**
  * @brief     This function servers to set ed8 to fifo mode.
@@ -133,6 +169,18 @@ static inline int usbhw_is_ctrl_ep_busy(void) {
  */
 static inline void usbhw_reset_ep_ptr(unsigned int ep) {
     reg_usb_ep_ptr(ep) = 0;
+}
+
+
+/**
+ * @brief     This function servers to set the buffer address of data endpoint.
+ * @param[in] ep - select the data endpoint.
+ * @param[in] addr - data endpoint buffer address.
+ * @return    none.
+ */
+static inline void usbhw_set_ep_addr(usb_ep_index ep, unsigned char addr)
+{
+    reg_usb_ep_buf_addr(ep) = addr & 0xff;
 }
 
 /**
@@ -322,32 +370,15 @@ static inline void usbhw_set_printer_threshold(unsigned char th) {
     reg_usb_ep8_send_thres = th;
 }
 
-enum {
-    USB_EDP_PRINTER_IN = 8,     // default hw buf len = 64
-    USB_EDP_MOUSE = 2,          // default hw buf len = 8
-    USB_EDP_KEYBOARD_IN = 1,    // default hw buf len = 8
-    USB_EDP_IN = 3,             // default hw buf len = 16
-    USB_EDP_AUDIO_IN = 4,       // default hw buf len = 64
-    USB_EDP_PRINTER_OUT = 5,    // default hw buf len = 64
-    USB_EDP_SPEAKER = 6,        // default hw buf len = 16
-    USB_EDP_MIC = 7,            // default hw buf len = 16
-    USB_EDP_MS_IN = 4,      // mass storage
-    USB_EDP_MS_OUT = 5,
-    USB_EDP_SOMATIC_IN = USB_EDP_AUDIO_IN,      //  when USB_SOMATIC_ENABLE, USB_EDP_PRINTER_OUT disable
-    USB_EDP_SOMATIC_OUT = USB_EDP_PRINTER_OUT,
-    USB_EDP_CDC_IN = 4,
-    USB_EDP_CDC_OUT = 5,
-};
-
-// #defined in the standard spec
-enum {
-    USB_HID_AUDIO           = 2,
-    USB_HID_MOUSE           = 1,
-    USB_HID_KB_MEDIA        = 3,// media
-    USB_HID_KB_SYS          = 4,// system : power,sleep,wakeup
-    USB_HID_SOMATIC         = 5,// somatic sensor,  may have many report ids
-};
-
+/**
+ * @brief     This function servers to set in endpoint buffer max size(except 7 aiso mode).
+ * @param[in] max_size - in endpoint max size.
+ * @return    none.
+ */
+static inline void usbhw_set_eps_max_size(unsigned int max_size)
+{
+    reg_usb_ep_max_size = max_size >> 3;
+}
 
 /**
  * @brief      This function disables the manual interrupt
@@ -424,16 +455,18 @@ static inline void usb_power_on(unsigned char en)
 }
 
 /**
- * @brief      This function serves to set GPIO MUX function as DP and DM pin of USB
+ * @brief      This function serves to set dp_through_swire function.
+ * @param[in]  dp_through_swire - 1: swire_usb_en 0: swire_usb_dis
  * @return     none.
  */
-static inline void usb_set_pin_en(void)
-{
-    reg_gpio_func_mux(GPIO_PA5)=reg_gpio_func_mux(GPIO_PA5)&(~BIT_RNG(2,3));
-    gpio_function_dis(GPIO_PA5);
-    reg_gpio_func_mux(GPIO_PA6)=reg_gpio_func_mux(GPIO_PA6)&(~BIT_RNG(4,5));
-    gpio_function_dis(GPIO_PA6);
-    gpio_input_en(GPIO_PA5|GPIO_PA6);//DP/DM must set input enable
-    usb_dp_pullup_en (1);
-    write_reg8(0x100c01, (read_reg8(0x100c01) | BIT(7)));   //swire_usb_en
-}
+void dp_through_swire_en(bool dp_through_swire);
+
+/**
+ * @brief      This function serves to set GPIO MUX function as DP and DM pin of USB.
+ * @param[in]  dp_through_swire - 1: swire_usb_en 0: swire_usb_dis
+ * @return     none.
+ * @note       1. Configure usb_set_pin(0) , there are some risks, please refer to the startup.S file about DP_THROUGH_SWIRE_DIS
+ *                for detailed description (by default dp_through_swire is disabled). Configure usb_set_pin(1) to enable dp_through_swire again.
+ *             2. When dp_through_swire is enabled, Swire and USB applications do not affect each other.
+ */
+void usb_set_pin(bool dp_through_swire);

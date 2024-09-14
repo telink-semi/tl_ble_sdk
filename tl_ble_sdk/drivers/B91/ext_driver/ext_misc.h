@@ -24,8 +24,6 @@
 #ifndef DRIVERS_B91_EXT_MISC_H_
 #define DRIVERS_B91_EXT_MISC_H_
 
-#include "nds_intrinsic.h"
-
 #include "../analog.h"
 #include "../dma.h"
 #include "../gpio.h"

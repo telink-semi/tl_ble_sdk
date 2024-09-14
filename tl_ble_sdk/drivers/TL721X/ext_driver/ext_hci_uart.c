@@ -22,7 +22,7 @@
  *
  *******************************************************************************************************/
 #include "ext_hci_uart.h"
-#include "clock.h"
+#include "lib/include/clock.h"
 #include "tl_common.h"
 
 

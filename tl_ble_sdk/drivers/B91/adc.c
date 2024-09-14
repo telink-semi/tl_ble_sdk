@@ -296,20 +296,6 @@ void adc_gpio_sample_init(adc_input_pin_def_e pin,adc_ref_vol_e v_ref,adc_pre_sc
     adc_pin_config(ADC_GPIO_MODE, pin);
     adc_set_diff_input(pin >> 12, GND);
 }
-/**
- * @brief This function servers to initialized ADC temperature sensor.When the reference voltage is set to 1.2V, and
- * at the same time, the division factor is set to 1 the most accurate.
- * @return     none.
- * @attention Temperature sensor suggested initial setting are Vref = 1.2V, pre_scale = 1.
- *          The user don't need to change it.
- */
-void adc_temperature_sample_init(void)
-{
-    adc_init(ADC_VREF_1P2V, ADC_PRESCALE_1, ADC_SAMPLE_FREQ_96K);
-    adc_set_diff_input(ADC_TEMPSENSORP_EE, ADC_TEMPSENSORN_EE);
-    adc_set_vbat_divider(ADC_VBAT_DIV_OFF);
-    adc_temp_sensor_power_on();
-}
 
 /**
  * @brief This function servers to set ADC configuration with internal Vbat channel for ADC supply voltage sampling.
@@ -406,6 +392,22 @@ unsigned short adc_calculate_voltage(unsigned short adc_code)
         return (((adc_code * g_adc_vbat_divider * g_adc_pre_scale * g_adc_vref)>>13) + g_adc_vref_offset);
     }
 }
+
+#if INTERNAL_TEST_FUNC_EN
+/**
+ * @brief This function servers to initialized ADC temperature sensor.When the reference voltage is set to 1.2V, and
+ * at the same time, the division factor is set to 1 the most accurate.
+ * @return     none.
+ * @attention Temperature sensor suggested initial setting are Vref = 1.2V, pre_scale = 1.
+ *          The user don't need to change it.
+ */
+void adc_temperature_sample_init(void)
+{
+    adc_init(ADC_VREF_1P2V, ADC_PRESCALE_1, ADC_SAMPLE_FREQ_96K);
+    adc_set_diff_input(ADC_TEMPSENSORP_EE, ADC_TEMPSENSORN_EE);
+    adc_set_vbat_divider(ADC_VBAT_DIV_OFF);
+    adc_temp_sensor_power_on();
+}
 /**
  * @brief This function serves to calculate temperature from temperature sensor adc sample code.
  * @param[in]   adc_code            - the temperature sensor adc sample code.
@@ -419,5 +421,6 @@ unsigned short adc_calculate_temperature(unsigned short adc_code)
     //adc_temp_value = 564 - ((adc_code * 819)>>13)
     return 564 - ((adc_code * 819)>>13);
 }
+#endif
 
 

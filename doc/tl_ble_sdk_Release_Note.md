@@ -1,3 +1,283 @@
+## V4.0.4.2(PR)
+
+### Version
+
+* SDK Version: tl_ble_sdk V4.0.4.2
+* Chip Version: 
+  - TLSR921X(B91): 			A2
+  - TLSR922X/TLSR952X(B92): A3/A4
+  - TL721X: 				A1
+  - TL321X:					A1
+* Hardware EVK Version:
+  - TLSR921X: 				C1T213A20_V1.3
+  - TLSR952X: 				C1T266A20_V1.3
+  - TL721X: 				C1T314A20_V1.0
+  - TL321X: 				C1T331A20_V1.0/C1T335A20_V1.0
+* Platform Version: 
+  - TLSR921X: 				tl_platform_sdk V3.2.0
+  - TLSR922X/TLSR952X: 		tl_platform_sdk V3.2.0
+  - TL721X: 				tl_platform_sdk V3.2.0
+  - TL321X: 				tl_platform_sdk V3.2.0
+* Toolchain Version:
+  - TLSR921X: 				TL32 ELF MCULIB V5F GCC7.4  (IDE: [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/Telink_IoT_Studio/))
+  - TLSR922X/TLSR952X: 		TL32 ELF MCULIB V5F GCC12.2 (IDE: [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/Telink_IoT_Studio/))
+  - TL721X: 				TL32 ELF MCULIB V5F GCC12.2 (IDE: [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/Telink_IoT_Studio/))
+  - TL321X: 				TL32 ELF MCULIB V5  GCC12.2 (IDE: [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/Telink_IoT_Studio/)) 
+
+  
+### Note
+   * TL721X and TL321X do not support USB debug logs currently.
+
+### Bug Fixes
+* **BLE general function**
+  - Fixed the auxiliary packet broadcast exception in the feature_ext_adv demo. 
+
+### BREAKING CHANGES 	
+   * All chips synchronized driver tl_platform_sdk V3.2.0.
+     - Supported TL321X A1 chip.
+     - Added TL321X power mode parameters in API `sys_init`, and the default configuration is `DCDC_1P25_LDO_1P8`.
+     - Updated the early wake-up time in deep retention mode of TLSR921X/TL721X/TL321X.
+   * Changed TL721X default clock setting to `PLL_240M_CCLK_48M_HCLK_48M_PCLK_48M_MSPI_48M`.
+   * Changed TL321X default clock setting to `PLL_192M_CCLK_48M_HCLK_48M_PCLK_48M_MSPI_48M`.
+   * Changed TL721X default power mode to `DCDC_0P94_DCDC_1P8`.
+  
+### Features
+* **Chip**
+  - Added support for the TLSR922X/TLSR952X chip.
+* **BLE general function** 
+  - Added Secure Boot for TL321X/TL721X.
+* **Others**
+  - Added sequence number of the debug log to verify its integrity and consistency.
+  - Deleted the invalid API `blc_flash_set_4line_read_write`. Users can call the API `ble_flash_4line_enable` to enable Flash 4-line mode.
+
+### Refactoring
+   * N/A
+   
+### Performance Improvements
+   * N/A
+
+### Known issues
+   * Currently, for demos that support the ACL central role, the **CCLK** must be at least 48MHz. These demos will support 32MHz **CCLK** in the next version.
+   
+### Flash
+* TLSR921X
+  - P25Q80U
+  - P25Q16SU
+* TLSR952X
+  - P25Q80U
+  - P25Q16SU
+* TL721X
+  - P25Q16SU
+* TL321X
+  - P25Q80U
+  - P25Q16SU
+
+### CodeSize
+* TLSR921X
+  - Compiling acl_central_demo
+    - Flash bin size: 99.54 KB
+	- IRAM size: 52.51 KB
+	- DRAM size: 0.26 KB
+  - Compiling acl_connection_demo
+	- Flash bin size: 126.82 KB 
+	- IRAM size: 66.94 KB
+	- DRAM size: 4.35 KB
+  - Compiling acl_peripheral_demo
+	- Flash bin size: 105.96 KB
+	- IRAM size: 54.01 KB
+	- DRAM size: 0.24 KB
+
+* TLSR922X/TLSR952X
+  - Compiling acl_central_demo
+	- Flash bin size: 102.61 KB
+	- IRAM size: 55.69 KB
+	- DRAM size: 0.31 KB
+  - Compiling acl_connection_demo
+	- Flash bin size: 129.96 KB 
+	- IRAM size: 70.06 KB
+	- DRAM size: 4.65 KB
+  - Compiling acl_peripheral_demo
+	- Flash bin size: 114.25 KB
+	- IRAM size: 60.81 KB
+	- DRAM size: 3.07 KB 
+
+* TL721X
+  - Compiling acl_central_demo
+    - Flash bin size: 97.9KB
+    - IRAM size: 53.2KB
+	- DRAM size: 0KB
+  - Compiling acl_connection_demo
+    - Flash bin size:  124.8KB
+    - IRAM size: 71.6KB
+	- DRAM size: 0KB
+  - Compiling acl_peripheral_demo
+    - Flash bin size:  108.6KB
+    - IRAM size: 60.6KB
+	- DRAM size: 0KB
+
+* TL321X
+  - Compiling acl_central_demo
+    - Flash bin size: 97.3KB
+    - IRAM size: 51.5KB
+    - DRAM size: 0.3KB
+  - Compiling acl_connection_demo
+    - Flash bin size:124.1KB 
+    - IRAM size: 65.3KB
+    - DRAM size: 4.6KB
+  - Compiling acl_peripheral_demo
+    - Flash bin size: 107.8KB
+    - IRAM size: 55.8KB
+    - DRAM size: 3.0KB 
+
+
+
+
+
+
+### 版本
+
+* SDK Version: tl_ble_sdk V4.0.4.2
+* Chip Version: 
+  - TLSR921X(B91): 			A2
+  - TLSR922X/TLSR952X(B92): A3/A4
+  - TL721X: 				A1
+  - TL321X:					A1
+* Hardware EVK Version:
+  - TLSR921X: 				C1T213A20_V1.3
+  - TLSR952X: 				C1T266A20_V1.3
+  - TL721X: 				C1T314A20_V1.0
+  - TL321X: 				C1T331A20_V1.0/C1T335A20_V1.0
+* Platform Version: 
+  - TLSR921X: 				tl_platform_sdk V3.2.0
+  - TLSR922X/TLSR952X: 		tl_platform_sdk V3.2.0
+  - TL721X: 				tl_platform_sdk V3.2.0
+  - TL321X: 				tl_platform_sdk V3.2.0
+* Toolchain Version:
+  - TLSR921X: 				TL32 ELF MCULIB V5F GCC7.4  (IDE: [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/Telink_IoT_Studio/)) 
+  - TLSR922X/TLSR952X: 		TL32 ELF MCULIB V5F GCC12.2 (IDE: [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/Telink_IoT_Studio/)) 
+  - TL721X: 				TL32 ELF MCULIB V5F GCC12.2 (IDE: [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/Telink_IoT_Studio/)) 
+  - TL321X: 				TL32 ELF MCULIB V5  GCC12.2 (IDE: [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/Telink_IoT_Studio/)) 
+
+### Hardware
+* TLSR921X
+  - C1T213A20_V1.3
+* TLSR952X
+  - C1T266A20_V1.3
+* TL721X
+  - C1T314A20_V1.0
+* TL321X
+  - C1T331A20_V1.0
+  - C1T335A20_V1.0
+  
+### Note
+   * TL721X/TL321X当前不支持USB调试log。
+
+### Bug Fixes
+* **BLE通用功能**
+   - 修复feature_ext_adv demo辅助包广播异常。
+
+### BREAKING CHANGES 	
+   * 所有芯片同步driver tl_platform_sdk V3.2.0。
+     - TL321X支持A1芯片。
+     - TL321X在API`sys_init`中增加供电模式参数，默认配置为`DCDC_1P25_LDO_1P8`。
+	 - 更新TLSR921X/TL721X/TL321X deep retention模式下的提前唤醒时间。
+   * TL721X 默认时钟设置更改为`PLL_240M_CCLK_48M_HCLK_48M_PCLK_48M_MSPI_48M`。
+   * TL321X 默认时钟设置更改为`PLL_192M_CCLK_48M_HCLK_48M_PCLK_48M_MSPI_48M`。
+   * TL721X 默认供电模式修改为`DCDC_0P94_DCDC_1P8`。
+
+### Features
+* **Chip**
+  - 增加对TLSR922X/TLSR952X芯片的支持。
+* **BLE通用功能** 
+  - TL321X/TL721X增加Secure Boot功能。
+* **Others**
+  - 增加Debug Log序号打印来验证日志的完整性和一致性。
+  - 删除无效API `blc_flash_set_4line_read_write`，用户可调用API `ble_flash_4line_enable`使能4线模式。
+
+### Refactoring
+   * N/A
+
+### Performance Improvements
+   * N/A
+
+### Known issues
+   * 对于支持ACL central功能的demo，系统时钟(**CCLK**)至少需设置为48MHz，下个版本将支持32MHz系统时钟(**CCLK**)。
+
+### Flash
+* TLSR921X
+  - P25Q80U
+  - P25Q16SU
+* TLSR952X
+  - P25Q80U
+  - P25Q16SU
+* TL721X
+  - P25Q16SU
+* TL321X
+  - P25Q80U
+  - P25Q16SU
+
+### CodeSize
+* TLSR921X
+  - 编译 acl_central_demo
+	- Flash bin size: 99.54 KB
+	- IRAM size: 52.51 KB
+	- DRAM size: 0.26 KB
+  - 编译 acl_connection_demo
+	- Flash bin size: 126.82 KB 
+	- IRAM size: 66.94 KB
+	- DRAM size: 4.35 KB
+  - 编译 acl_peripheral_demo
+	- Flash bin size: 105.96 KB
+	- IRAM size: 54.01 KB
+	- DRAM size: 0.24 KB
+
+* TLSR922X/TLSR952X
+  - 编译 acl_central_demo
+	- Flash bin size: 102.61 KB
+	- IRAM size: 55.69 KB
+	- DRAM size: 0.31 KB
+  - 编译 acl_connection_demo
+	- Flash bin size: 129.96 KB 
+	- IRAM size: 70.06 KB
+	- DRAM size: 4.65 KB
+  - 编译 acl_peripheral_demo
+	- Flash bin size: 114.25 KB
+	- IRAM size: 60.81 KB
+	- DRAM size: 3.07 KB 
+
+* TL721X
+  - 编译 acl_central_demo
+    - Flash bin size: 97.9KB
+    - IRAM size: 53.2KB
+	- DRAM size: 0KB
+  - 编译 acl_connection_demo
+    - Flash bin size:  124.8KB
+    - IRAM size: 71.6KB
+	- DRAM size: 0KB
+  - 编译 acl_peripheral_demo
+    - Flash bin size:  108.6KB
+    - IRAM size: 60.6KB
+	- DRAM size: 0KB
+
+* TL321X
+  - 编译 acl_central_demo
+    - Flash bin size: 97.3KB
+    - IRAM size: 51.5KB
+    - DRAM size: 0.3KB
+  - 编译 acl_connection_demo
+    - Flash bin size:124.1KB 
+    - IRAM size: 65.3KB
+    - DRAM size: 4.6KB
+  - 编译 acl_peripheral_demo
+    - Flash bin size: 107.8KB
+    - IRAM size: 55.8KB
+    - DRAM size: 3.0KB 
+
+
+
+
+
+
 ## V4.0.4.1
 
 ### Version

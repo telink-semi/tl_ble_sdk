@@ -35,7 +35,7 @@
 #define APP_EXT_ADV_SETS_NUMBER         1   //user set value
 #define APP_EXT_ADV_DATA_LENGTH         1024 //2048//1664//1024   //user set value
 #define APP_EXT_SCANRSP_DATA_LENGTH     1024 //2048//1664//1024   //user set value
-_attribute_iram_bss_            u8  app_extAdvSetParam_buf[ADV_SET_PARAM_LENGTH * APP_EXT_ADV_SETS_NUMBER];
+_attribute_ble_data_retention_  u8  app_extAdvSetParam_buf[ADV_SET_PARAM_LENGTH * APP_EXT_ADV_SETS_NUMBER];
 _attribute_iram_noinit_data_    u8  app_extAdvData_buf[APP_EXT_ADV_DATA_LENGTH * APP_EXT_ADV_SETS_NUMBER];
 _attribute_iram_noinit_data_    u8  app_extScanRspData_buf[APP_EXT_SCANRSP_DATA_LENGTH * APP_EXT_ADV_SETS_NUMBER];
 
@@ -45,7 +45,7 @@ _attribute_iram_noinit_data_    u8  app_extScanRspData_buf[APP_EXT_SCANRSP_DATA_
 #define APP_PERID_ADV_SETS_NUMBER       1   //1//EBQ test need to change it to the supported value
 #define APP_PERID_ADV_DATA_LENGTH       100 //1024
 
-_attribute_iram_bss_            u8  app_peridAdvSet_buffer[PERD_ADV_PARAM_LENGTH * APP_PERID_ADV_SETS_NUMBER];
+_attribute_ble_data_retention_  u8  app_peridAdvSet_buffer[PERD_ADV_PARAM_LENGTH * APP_PERID_ADV_SETS_NUMBER];
 _attribute_iram_noinit_data_    u8  app_peridAdvData_buffer[APP_PERID_ADV_DATA_LENGTH * APP_PERID_ADV_SETS_NUMBER];
 /*********************************** Periodic ADV data buffer allocation, End** ************************************/
 

@@ -48,7 +48,7 @@
 #define SMP_TEST_LESC_OOB       9   /* LE_Security_Mode_1_Level_4: LESC Out of Band                    */
 
 
-#define SMP_TEST_MODE           SMP_TEST_LESC_OOB//SMP_TEST_NOT_SUPPORT
+#define SMP_TEST_MODE           SMP_TEST_NOT_SUPPORT//SMP_TEST_NOT_SUPPORT
 
 
 #if (SMP_TEST_MODE >= SMP_TEST_LESC_JW)
@@ -158,7 +158,6 @@ void UART_Init(u8 *rxBuf, u32 byteNum)
     uart_set_tx_dma_config(UART_ID, UART_DMA_CHN_TX);
 
     uart_set_irq_mask(UART_ID, UART_RXDONE_MASK);
-    //uart_set_irq_mask(UART0, UART_TXDONE_MASK);
     plic_interrupt_enable(IRQ_UART0);
     core_interrupt_enable();
 
@@ -185,10 +184,10 @@ _attribute_ram_code_sec_ void uart0_irq_handler(void)
     /************************get the length of receive data****************************/
         #if (MCU_CORE_TYPE == MCU_CORE_B91)
             if(((reg_uart_status1(UART_ID) & FLD_UART_RBCNT) % 4)==0){
-                rev_data_len = 4 * (0xffffff - reg_dma_size(UART_DMA_CHN_RX));
+                rev_data_len = uart_get_dma_rev_data_len(UART_ID,UART_DMA_CHN_RX);
             }
             else{
-                rev_data_len = 4 * (0xffffff - reg_dma_size(UART_DMA_CHN_RX)-1) + (reg_uart_status1(UART_ID) & FLD_UART_RBCNT) % 4;
+                rev_data_len = uart_get_dma_rev_data_len(UART_ID,UART_DMA_CHN_RX);
             }
         #elif (MCU_CORE_TYPE == MCU_CORE_B92)
             rev_data_len = uart_get_dma_rev_data_len(UART_ID,UART_DMA_CHN_RX);
@@ -839,7 +838,7 @@ _attribute_no_inline_ void user_init_normal(void)
 #elif (SMP_TEST_MODE == SMP_TEST_LESC_JW)       //LE_Security_Mode_1_Level_2 --- LG_JUST_WORKS/SC_JUST_WORKS
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_2);
     blc_smp_setSecurityParameters(Bondable_Mode, 0, LE_Secure_Connection, 0, 0, IO_CAPABILITY_NO_INPUT_NO_OUTPUT);
-    blc_smp_setEcdhDebugMode(debug_mode);
+    blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
 #elif (SMP_TEST_MODE == SMP_TEST_LEGACY_PKD)    //LE_Security_Mode_1_Level_3 --- LG_PASSKEY_ENTRY_DISPLAY
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_3);
     blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Legacy_Pairing,    0, 0, IO_CAPABILITY_DISPLAY_ONLY);
@@ -853,22 +852,22 @@ _attribute_no_inline_ void user_init_normal(void)
 #elif (SMP_TEST_MODE == SMP_TEST_LESC_PKD)      //LE_Security_Mode_1_Level_4 --- SC_PASSKEY_ENTRY_DISPLAY
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_4);
     blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Secure_Connection, 0, 0, IO_CAPABILITY_DISPLAY_ONLY);
-    blc_smp_setEcdhDebugMode(debug_mode);
+    blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
     blc_smp_setDefaultPinCode(123456);
 #elif (SMP_TEST_MODE == SMP_TEST_LESC_NC)       //LE_Security_Mode_1_Level_4 --- SC_PASSKEY_ENTRY_DISPLAY/SC_NUMERIC_COMPARISON
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_4);
     blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Secure_Connection, 0, 0, IO_CAPABILITY_DISPLAY_YES_NO);
-    blc_smp_setEcdhDebugMode(debug_mode);
+    blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
     blc_smp_setDefaultPinCode(123456);
 #elif (SMP_TEST_MODE == SMP_TEST_LESC_PKI)      //LE_Security_Mode_1_Level_4 --- SC_PASSKEY_ENTRY_INPUT
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_4);
     blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Secure_Connection, 0, 0, IO_CAPABILITY_KEYBOARD_ONLY);
-    blc_smp_setEcdhDebugMode(debug_mode);
+    blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
     blc_smp_enableKeypress(1);
 #elif (SMP_TEST_MODE == SMP_TEST_LESC_OOB)      //LE_Security_Mode_1_Level_4 --- SC_OOB
     blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_4);
     blc_smp_setSecurityParameters(Bondable_Mode, 0, LE_Secure_Connection, 0, 0, IO_CAPABILITY_NO_INPUT_NO_OUTPUT);
-    blc_smp_setEcdhDebugMode(debug_mode);
+    blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
 
     /* if use remote SC OOB data */
     appScOobCtrl.acl_handle = 0;

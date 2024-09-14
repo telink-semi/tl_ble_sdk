@@ -21,6 +21,7 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
+
 #ifndef VENDOR_COMMON_BOARDS_TL321X_C1T331A20_H_
 #define VENDOR_COMMON_BOARDS_TL321X_C1T331A20_H_
 

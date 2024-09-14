@@ -46,14 +46,14 @@
  *******************************************************************************************************/
 
 
-
 /**
  * @brief these analog register can store data in deep sleep mode or deep sleep with SRAM retention mode.
  *        Reset these analog registers by watchdog, software reboot (sys_reboot()), RESET Pin, power cycle
  */
 /**
- * Customers cannot use [bit0] of analog register 0x38 because driver and chip functions are occupied, details are as follows:
+ * Customers cannot use analog register 0x38 because driver and chip functions are occupied, details are as follows:
  * [Bit0]: If this bit is 1, it means that reboot or power on has occurred. If this bit is 0, it means that sleep has occurred.
+ * [Bit1~7]: These bits are used by the driver and cannot be used by the customer.
  */
 #define PM_ANA_REG_WD_CLR_BUF0          0x38 // initial value 0xff.
 
@@ -62,11 +62,12 @@
  *        Reset these analog registers only by power cycle,RESET Pin
  */
 /**
- * Customers cannot use [bit0],[bit1],[bit2] of analog register 0x39 because driver and chip functions are occupied, details are as follows:
+ * Customers cannot use analog register 0x39 because driver and chip functions are occupied, details are as follows:
  * [Bit0]: If this bit is 1, it means that reboot has occurred. This bit will be 1 for any reboot caused by any reason.
- * [Bit1]: If this bit is 1, it means that a deep sleep has occurred after reboot. After reboot, there will be a deep to resolve clock problem,
+ * [Bit1]: If this bit is 1, it means that a deep sleep has occurred after reboot. After reboot, there will be a deep to resolve clock problem, 
  *          so this bit is used to distinguish between regular deep and deep after reboot.
  * [Bit2]: If this bit is 1, it means that the software calls the function sys_reboot() when the crystal oscillator does not start up normally.
+ * [Bit3~7]: These bits are used by the driver and cannot be used by the customer.
  */
 #define PM_ANA_REG_POWER_ON_CLR_BUF0    0x39 // initial value 0x00
 #define PM_ANA_REG_POWER_ON_CLR_BUF1    0x3a // initial value 0x00
@@ -142,6 +143,7 @@ typedef enum {
      WAKEUP_STATUS_CORE             = BIT(2),
      WAKEUP_STATUS_PAD              = BIT(3),
      WAKEUP_STATUS_MDEC             = BIT(4),
+     WAKEUP_STATUS_ALL              = 0xff,
 
      STATUS_GPIO_ERR_NO_ENTER_PM    = BIT(8), /**<Bit8 is used to determine whether the wake source is normal.*/
      STATUS_ENTER_SUSPEND           = BIT(30),
@@ -155,6 +157,7 @@ typedef enum {
  */
 typedef enum{
     MCU_STATUS_POWER_ON             = BIT(0),   /**< power on or reset pin */
+    //BIT(1) RSVD
     MCU_STATUS_REBOOT_BACK          = BIT(2),   /**<
                                                      1.if clock src is PAD or PLL, and hclk = 1/2cclk, use reboot may cause problem,
                                                        sys_init() will determine that if reboot comes back, it will deep(MCU_STATUS_REBOOT_DEEP_BACK),
@@ -251,6 +254,26 @@ static inline pm_wakeup_status_e pm_get_wakeup_src(void)
 }
 
 /**
+ * @brief       This function serves to clear the wakeup bit.
+ * @param[in]   status  - the interrupt status that needs to be cleared.
+ * @return      none.
+ */
+static inline void pm_clr_irq_status(pm_wakeup_status_e status)
+{
+    analog_write_reg8(0x64, status);/*add by weihua.zhang, confirmed by jianzhi.chen*/
+}
+
+/**
+ * @brief       This function serves to set the wakeup source.
+ * @param[in]   wakeup_src  - wake up source select.
+ * @return      none.
+ */
+static inline void pm_set_wakeup_src(pm_sleep_wakeup_src_e wakeup_src)
+{
+    analog_write_reg8(0x4b, wakeup_src);
+}
+
+/**
  * @brief       This function configures a GPIO pin as the wakeup pin.
  * @param[in]   pin - the pin needs to be configured as wakeup pin.
  * @param[in]   pol - the wakeup polarity of the pad pin(0: low-level wakeup, 1: high-level wakeup).
@@ -265,6 +288,19 @@ void pm_set_gpio_wakeup (gpio_pin_e pin, pm_gpio_wakeup_level_e pol, int en);
  * @return      none.
  */
 void pm_set_wakeup_time_param(pm_r_delay_cycle_s param);
+
+/**
+ * @brief       This function is used in applications where the crystal oscillator is relatively slow to start.
+ *              When the start-up time is very slow, you can call this function to avoid restarting caused
+ *              by insufficient crystal oscillator time (it is recommended to leave a certain margin when setting).
+ * @param[in]   delay_us - This time setting is related to the parameter nopnum, which is about the execution time of the for loop
+ *                          in the ramcode(default value: 200).
+ * @param[in]   loopnum - The time for the crystal oscillator to stabilize is approximately: loopnum*40us(default value: loopnum=10).
+ * @param[in]   nopnum - The number of for loops used to wait for the crystal oscillator to stabilize after suspend wakes up.
+ *                       for(i = 0; i < nopnum; i++){ _asm_("tnop"); }(default value: Flash=250).
+ * @return      none.
+ */
+void pm_set_xtal_stable_timer_param(unsigned int delay_us, unsigned int loopnum, unsigned int nopnum);
 
 /**
  * @brief       This function is used to determine the stability of the crystal oscillator.
@@ -306,6 +342,7 @@ _attribute_ram_code_sec_noinline_ void pm_stimer_recover(void);
                                       If the wakeup_tick_type is PM_TICK_32K, then wakeup_tick is converted to 32K. The range of tick that can be set is approximately:
                                       64~0xffffffff, and the corresponding sleep time is approximately: 2ms~37hours.It cannot go to sleep normally when it exceeds this range.
  * @return      indicate whether the cpu is wake up successful.
+ * @attention   Must ensure that all GPIOs cannot be floating status before going to sleep to prevent power leakage.
  */
 _attribute_text_sec_ int pm_sleep_wakeup(pm_sleep_mode_e sleep_mode,  pm_sleep_wakeup_src_e wakeup_src, pm_wakeup_tick_type_e wakeup_tick_type, unsigned int  wakeup_tick);
 
@@ -334,8 +371,14 @@ _attribute_ram_code_sec_noinline_ void pm_32k_rc_offset_init(void);
 void pm_set_suspend_power_cfg(pm_suspend_power_cfg_e value, unsigned char on_off);
 
 /**
+ * @brief       this function serves to clear all irq status.
+ * @return      Indicates whether clearing irq status was successful.
+ */
+_attribute_ram_code_sec_noinline_ unsigned char pm_clr_all_irq_status(void);
+
+/**
  * @brief       This function serves to reboot system.
- * @return      none
+ * @return      none 
  */
 _always_inline void sys_reset_all(void)
 {

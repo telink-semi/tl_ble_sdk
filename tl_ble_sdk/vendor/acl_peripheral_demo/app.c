@@ -682,12 +682,15 @@ _attribute_no_inline_ void user_init_normal(void)
             blc_pm_setDeepsleepRetentionEnable(PM_DeepRetn_Enable);
             blc_pm_setDeepsleepRetentionThreshold(95);
 
+            /*!< early wakeup time with a threshold of approxiamtely 30us. */
             #if(MCU_CORE_TYPE == MCU_CORE_B91)
-                blc_pm_setDeepsleepRetentionEarlyWakeupTiming(450);
+                blc_pm_setDeepsleepRetentionEarlyWakeupTiming(530);
+            #elif(MCU_CORE_TYPE == MCU_CORE_B92)
+                blc_pm_setDeepsleepRetentionEarlyWakeupTiming(1100);
             #elif(MCU_CORE_TYPE == MCU_CORE_TL321X)
-                blc_pm_setDeepsleepRetentionEarlyWakeupTiming(580);//96M--550us, 32M--578us
+                blc_pm_setDeepsleepRetentionEarlyWakeupTiming(460);
             #elif(MCU_CORE_TYPE == MCU_CORE_TL721X)
-                blc_pm_setDeepsleepRetentionEarlyWakeupTiming(890);
+                blc_pm_setDeepsleepRetentionEarlyWakeupTiming(560);
             #endif
         #else
             blc_pm_setDeepsleepRetentionEnable(PM_DeepRetn_Disable);

@@ -28,11 +28,11 @@
 
 #include "types.h"
 #include "../compatibility_pack/cmpt.h"
-#include "../analog.h"
+#include "../lib/include/analog.h"
 #include "../adc.h"
 #include "../gpio.h"
-#include "../stimer.h"
-#include "../lib/include/pm.h"
+#include "../lib/include/stimer.h"
+#include "../lib/include/pm/pm.h"
 #include "lib/include/rf/rf_common.h"
 #include "../lib/include/trng/trng.h"
 #include <stdbool.h>
@@ -129,9 +129,9 @@ void gpio_setup_up_down_resistor(gpio_pin_e gpio, gpio_pull_type up_down);
  */
 void rf_drv_ble_init(void);
 
-#define RF_POWER_P3dBm   RF_POWER_INDEX_P3p21dBm
-#define RF_POWER_P0dBm   RF_POWER_INDEX_P0p03dBm
-#define RF_POWER_P9dBm   RF_POWER_INDEX_P8p99dBm
+#define RF_POWER_P3dBm   RF_POWER_INDEX_P2p99dBm
+#define RF_POWER_P0dBm   RF_POWER_INDEX_N0p07dBm
+#define RF_POWER_P9dBm   RF_POWER_INDEX_P8p95dBm
 
 #if RF_THREE_CHANNEL_CALIBRATION
 

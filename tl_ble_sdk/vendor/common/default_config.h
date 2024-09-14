@@ -294,6 +294,8 @@
 
     #if (MCU_CORE_TYPE == MCU_CORE_B91)
         #define BOARD_SELECT                                BOARD_951X_EVK_C1T213A20
+    #elif (MCU_CORE_TYPE == MCU_CORE_B92)
+        #define BOARD_SELECT                                BOARD_952X_EVK_C1T266A20
     #elif (MCU_CORE_TYPE == MCU_CORE_TL721X)
         #define BOARD_SELECT                                BOARD_721X_EVK_C1T315A20
     #elif (MCU_CORE_TYPE == MCU_CORE_TL321X)
@@ -303,28 +305,15 @@
     #endif
 #endif
 
-#if ( BOARD_SELECT == BOARD_951X_EVK_C1T213A20)
-    #include "boards/B91_C1T213A20.h"
-#elif ( BOARD_SELECT == BOARD_721X_EVK_C1T315A20)
-    #include "boards/TL721X_C1T315A20.h"
-#elif ( BOARD_SELECT == BOARD_321X_EVK_C1T331A20)
-    #include "boards/TL321X_C1T331A20.h"
-#elif ( BOARD_SELECT == BOARD_321X_EVK_C1T335A20)
-    #include "boards/TL321X_C1T335A20.h"
-#endif
-
 
 #ifndef UI_KEYBOARD_ENABLE
 #define UI_KEYBOARD_ENABLE                              0
 #endif
 
+
 #ifndef LED_ON_LEVEL
 #define LED_ON_LEVEL                                    1
 #endif
-
-
-
-
 
 
 #ifndef DEBUG_GPIO_ENABLE
@@ -332,7 +321,17 @@
 #endif
 
 
-
+#if ( BOARD_SELECT == BOARD_951X_EVK_C1T213A20)
+    #include "boards/B91_C1T213A20.h"
+#elif ( BOARD_SELECT == BOARD_952X_EVK_C1T266A20)
+    #include "boards/B92_C1T266A20.h"
+#elif ( BOARD_SELECT == BOARD_721X_EVK_C1T315A20)
+    #include "boards/TL721X_C1T315A20.h"
+#elif ( BOARD_SELECT == BOARD_321X_EVK_C1T331A20)
+    #include "boards/TL321X_C1T331A20.h"
+#elif ( BOARD_SELECT == BOARD_321X_EVK_C1T335A20)
+    #include "boards/TL321X_C1T335A20.h"
+#endif
 
 
 #if (DEBUG_GPIO_ENABLE)

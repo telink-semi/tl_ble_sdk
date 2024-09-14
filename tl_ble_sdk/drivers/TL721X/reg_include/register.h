@@ -27,6 +27,7 @@
 #include "gpio_reg.h"
 #include "soc.h"
 #include "analog_reg.h"
+#include "audio_reg.h"
 #include "timer_reg.h"
 #include "dma_reg.h"
 #include "usb_reg.h"
@@ -48,4 +49,5 @@
 #include "plmt_reg.h"
 #include "analog_afe3v_reg.h"
 #include "analog_afe1v_reg.h"
+#include "ir_learn_reg.h"
 #endif

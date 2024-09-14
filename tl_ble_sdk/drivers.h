@@ -26,5 +26,4 @@
 #include "driver.h"
 #include "ext_driver/driver_ext.h"
 #include "types.h"
-
 #include "common/assert.h"

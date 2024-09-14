@@ -108,7 +108,7 @@ int cpu_long_sleep_wakeup_32k_rc(pm_sleep_mode_e sleep_mode,  pm_sleep_wakeup_sr
  * @param[in]  none.
  * @return     1- yes , 0- no.
  */
-static inline int pm_is_MCU_deepRetentionWakeup(void)
+__INLINE int pm_is_MCU_deepRetentionWakeup(void)
 {
     return (g_pm_status_info.mcu_status & MCU_STATUS_DEEPRET_BACK);
 }
@@ -118,7 +118,7 @@ static inline int pm_is_MCU_deepRetentionWakeup(void)
  * @param[in]  none.
  * @return     1- yes , 0- no.
  */
-static inline int pm_is_deepPadWakeup(void)
+__INLINE int pm_is_deepPadWakeup(void)
 {
     return g_pm_status_info.is_pad_wakeup;
 }

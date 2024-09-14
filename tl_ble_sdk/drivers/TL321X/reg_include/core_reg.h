@@ -24,6 +24,13 @@
 #ifndef CORE_REG_H
 #define CORE_REG_H
 
+/* If using Andes toolchain, this Macro is defined in it's toolchain */
+/* If using std gcc toolchain, this core register(not standard risc-v core register)
+    should be defined here. */
+#ifdef STD_GCC
+#define mmisc_ctl  0x7D0
+#endif
+
 typedef enum
 {
   /* User Trap Setup */

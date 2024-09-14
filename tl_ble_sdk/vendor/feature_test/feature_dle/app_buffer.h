@@ -48,9 +48,7 @@
  * 1. should be in range of 27 ~ 251
  * 2. for CIS peripheral, receive ll_cis_req(36Byte), must be equal to or greater than 36
  */
-#if (DLE_LENGTH_SELECT == DLE_LENGTH_27_BYTES)
-    #define ACL_CONN_MAX_RX_OCTETS          27
-#elif (DLE_LENGTH_SELECT == DLE_LENGTH_52_BYTES)
+#if (DLE_LENGTH_SELECT == DLE_LENGTH_52_BYTES)
     #define ACL_CONN_MAX_RX_OCTETS          52
 #elif (DLE_LENGTH_SELECT == DLE_LENGTH_56_BYTES)
     #define ACL_CONN_MAX_RX_OCTETS          56

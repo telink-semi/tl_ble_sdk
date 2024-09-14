@@ -32,7 +32,6 @@
 #define ACL_PERIPHR_MAX_NUM                         4 // ACL peripheral maximum number
 
 ////////////////////////////////////// DLE Length select ///////////////////////////////////////
-#define DLE_LENGTH_27_BYTES                         0
 #define DLE_LENGTH_52_BYTES                         1
 #define DLE_LENGTH_56_BYTES                         2
 #define DLE_LENGTH_100_BYTES                        3

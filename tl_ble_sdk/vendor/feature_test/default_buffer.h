@@ -149,6 +149,6 @@ extern  u8 app_per_l2cap_tx_buf[]; //ACL Peripheral L2cap TX data buffer
 
 
 
-#endif /* DEFAULT_BUFFER_H_ */
+#endif /* APP_DEFAULT_BUFFER_ACL_OCTETS_MTU_SIZE_MINIMUM */
 
-#endif
+#endif /* DEFAULT_BUFFER_H_ */

@@ -31,7 +31,7 @@
  * @brief   software PA enable
  */
 #ifndef PA_ENABLE
-#define PA_ENABLE                           1
+#define PA_ENABLE                           0
 #endif
 
 

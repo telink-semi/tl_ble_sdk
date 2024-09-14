@@ -26,8 +26,6 @@
 
 #include "types.h"
 #include "vendor/common/user_config.h"
-#include "core.h"
-#include "stimer.h"
 #include "driver.h"
 #include "ext_driver/ext_pm.h"
 #include "compatibility_pack/cmpt.h"

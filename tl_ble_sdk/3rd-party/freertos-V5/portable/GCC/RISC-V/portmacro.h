@@ -29,7 +29,6 @@
 #ifndef PORTMACRO_H
 #define PORTMACRO_H
 
-#include "core.h"
 #include "driver.h"
 
 #ifdef __cplusplus

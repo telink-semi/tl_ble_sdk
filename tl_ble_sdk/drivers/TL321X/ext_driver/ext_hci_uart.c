@@ -22,7 +22,17 @@
  *
  *******************************************************************************************************/
 #include "ext_hci_uart.h"
-#include "clock.h"
+#include "lib/include/clock.h"
+
+
+#ifndef HCI_UART_EXT_DRIVER_EN
+#define HCI_UART_EXT_DRIVER_EN  0
+#endif
+
+#ifndef HCI_TR_EN
+#define HCI_TR_EN               0
+#endif
+
 
 #if (HCI_UART_EXT_DRIVER_EN||HCI_TR_EN)
 /**

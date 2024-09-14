@@ -25,6 +25,7 @@
 
 
 #define CHIP_TYPE_B91       1
+#define CHIP_TYPE_B92       2
 #define CHIP_TYPE_TL721X    5
 #define CHIP_TYPE_TL321X    6
 
@@ -38,17 +39,17 @@
 
 
 #define MCU_CORE_B91        1
+#define MCU_CORE_B92        2
 #define MCU_CORE_TL721X     5
 #define MCU_CORE_TL321X     6
 
 
 #if(CHIP_TYPE == CHIP_TYPE_B91)
     #define MCU_CORE_TYPE   MCU_CORE_B91
+#elif(CHIP_TYPE == CHIP_TYPE_B92)
+    #define MCU_CORE_TYPE   MCU_CORE_B92
 #elif(CHIP_TYPE == CHIP_TYPE_TL721X)
     #define MCU_CORE_TYPE   MCU_CORE_TL721X
 #elif(CHIP_TYPE == CHIP_TYPE_TL321X)
     #define MCU_CORE_TYPE   MCU_CORE_TL321X
 #endif
-
-
-

@@ -98,7 +98,7 @@
 		<link>
 			<name>boot</name>
 			<type>2</type>
-			<locationURI>PARENT-2-PROJECT_LOC/boot</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/boot/TL321X</locationURI>
 		</link>
 		<link>
 			<name>common</name>
@@ -113,7 +113,7 @@
 		<link>
 			<name>drivers</name>
 			<type>2</type>
-			<locationURI>PARENT-2-PROJECT_LOC/drivers</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/drivers/TL321X</locationURI>
 		</link>
 		<link>
 			<name>drivers.h</name>

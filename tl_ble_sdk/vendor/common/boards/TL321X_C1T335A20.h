@@ -21,12 +21,11 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
+
 #ifndef VENDOR_COMMON_BOARDS_TL321X_C1T335A20_H_
 #define VENDOR_COMMON_BOARDS_TL321X_C1T335A20_H_
 
 
-#undef BATT_CHECK_ENABLE
-#define BATT_CHECK_ENABLE                       0
 
 /**
  *  @brief  Keyboard Configuration
@@ -140,7 +139,7 @@
         /**     The battery voltage sample range is 1.8~3.5V    **/
     #else
         /**     if the battery voltage > 3.6V, should take some external voltage divider    **/
-        #define ADC_INPUT_PIN_CHN               ADC_GPIO_PA0
+        #define ADC_INPUT_PIN_CHN               ADC_GPIO_PD0
     #endif
 #endif
 

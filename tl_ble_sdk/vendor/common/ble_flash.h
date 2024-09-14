@@ -201,14 +201,6 @@ void blc_app_loadCustomizedParameters_deepRetn(void);
  */
 void blc_initMacAddress(int flash_addr, u8 *mac_public, u8 *mac_random_static);
 
-/**
- * @brief       This function is used to set the use of four lines when reading and writing flash.
- * @param[in]   flash_mid   - the mid of flash.
- * @return      1: success, 0: error, 2: mid is not supported.
- */
-
-unsigned char blc_flash_set_4line_read_write(unsigned int flash_mid);
-
 
 
 

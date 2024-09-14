@@ -374,9 +374,9 @@ void clock_init(sys_pll_clk_e pll,
                 sys_hclk_div_to_pclk_e pclk_div,
                 sys_pll_div_to_mspi_clk_e mspi_clk_div)
 {
-    __asm__("csrci  mmisc_ctl,8");  //disable BTB
+    DISABLE_BTB;
     clock_init_ram(pll, src, cclk_div, hclk_div, pclk_div, mspi_clk_div);
-    __asm__("csrsi  mmisc_ctl,8");  //enable BTB
+    ENABLE_BTB;
 }
 
 

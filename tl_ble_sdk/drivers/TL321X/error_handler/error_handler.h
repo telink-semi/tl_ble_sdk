@@ -25,7 +25,7 @@
 #define ERROR_HANDLER_H_
 
 #include "lib/include/sys.h"
-#include "clock.h"
+#include "lib/include/clock.h"
 
 /**********************************************************************************************************************
  *                                           global variable                                                             *
@@ -58,7 +58,8 @@ typedef enum {
     DRV_API_ERROR_TIMEOUT_RC_32K_CAL        = 0x02,
     DRV_API_ERROR_TIMEOUT_MSPI_WAIT         = 0x03,
     DRV_API_ERROR_TIMEOUT_ANALOG_WAIT       = 0x04,
-    DRV_API_ERROR_TIMEOUT_ANA_TX_BUFCNT     = 0x05, 
+    DRV_API_ERROR_TIMEOUT_ANA_TX_BUFCNT     = 0x05,
+    DRV_API_ERROR_TIMEOUT_EFUSE_WAIT        = 0x06,
 } drv_api_error_code_e;
 
 /**********************************************************************************************************************

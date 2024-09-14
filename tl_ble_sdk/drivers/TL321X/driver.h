@@ -27,18 +27,16 @@
 
 
 #include "lib/include/plic.h"
-#include "lib/include/pm.h"
+#include "lib/include/pm/pm.h"
 #include "lib/include/rf/rf_common.h"
 #include "lib/include/sys.h"
 #include "lib/include/trng/trng_algorithm.h"
-
-
-
 #include "lib/include/pke/pke_algorithm.h"
-#include "lib/include/hash/hash_algorithm.h"
 #include "lib/include/ske/ske_algorithm.h"
 
-#include "analog.h"
+#include "lib/include/emi.h"
+#include "lib/include/efuse.h"
+#include "lib/include/analog.h"
 #include "dma.h"
 #include "gpio.h"
 #include "i2c.h"
@@ -48,16 +46,17 @@
 #include "flash.h"
 #include "usbhw.h"
 #include "watchdog.h"
-#include "core.h"
+#include "lib/include/core.h"
 
 #include "uart.h"
-#include "stimer.h"
+#include "lib/include/stimer.h"
 
-#include "clock.h"
-#include "mspi.h"
+#include "lib/include/clock.h"
+#include "lib/include/mspi.h"
 #include "adc.h"
 #include "qdec.h"
 #include "plic_sw.h"
 #include "plmt.h"
 #include "flash/flash_type.h"
 #include "flash/flash_common.h"
+#include "ir_learn.h"

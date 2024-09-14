@@ -140,4 +140,17 @@ ble_sts_t   blc_att_setPeripheralRxMtuSize(u16 per_mtu_size);
  *              other: fail
  */
 ble_sts_t   blc_att_requestMtuSizeExchange (u16 connHandle, u16 mtu_size);
-
+/**
+ * @brief      This function is used to set reject of write request. If enable, return of ATT write callback will take effect.  Error codes refer to Core Spec.
+ * @param[in]  WriteReqReject_en - 0: Disable;
+ *                                 1: Enable.
+ * @return     none.
+ */
+void        blc_att_enableWriteReqReject (u8 WriteReqReject_en);
+/**
+ * @brief      This function is used to set reject of read request. If enable, return of ATT read callback will take effect.  Error codes refer to Core Spec.
+ * @param[in]  ReadReqReject_en - 0: Disable;
+ *                                1: Enable.
+ * @return     none.
+ */
+void        blc_att_enableReadReqReject (u8 ReadReqReject_en);

@@ -22,8 +22,9 @@
  *
  *******************************************************************************************************/
 #include "adc.h"
+#include "audio.h"
 #include "compiler.h"
-#include "stimer.h"
+#include "lib/include/stimer.h"
 #define  ADC_CHN_CNT          3
 /**
  * Note: When the reference voltage is configured to 1.2V, the calculated ADC voltage value is closest to the actual voltage value using 1175 as the coefficient default.
@@ -34,6 +35,8 @@ _attribute_data_retention_sec_ signed char g_adc_vref_offset[ADC_CHN_CNT];//ADC 
 
 volatile unsigned char g_adc_pre_scale[ADC_CHN_CNT];
 volatile unsigned char g_adc_vbat_divider[ADC_CHN_CNT];
+unsigned char g_adc_rx_fifo_index=0;
+unsigned char g_channel_cnt=0;
 
 dma_chn_e adc_dma_chn;
 dma_config_t adc_rx_dma_config=
@@ -64,10 +67,10 @@ static inline void adc_reset(void)
 {
     reg_rst3 &= (~FLD_RST3_SARADC );
     reg_rst3 |=FLD_RST3_SARADC;
-
+    adc_clr_rx_index();
 }
 /**
- * @brief      This function enable adc source clock: Pad_24M
+ * @brief      This function enable adc source clock: xtal_24M
  * @return     none
  */
 static inline void adc_clk_en(void)
@@ -150,6 +153,9 @@ static inline void adc_set_state_length(adc_sample_chn_e chn,unsigned short r_ma
 /**
  * @brief   This function is used to enable the transmission of data from the adc's M channel, L channel, and R channel to the sar adc rxfifo.
  * @return  none
+ * @note    -# In DMA mode, must enable this function.
+ *          -# In NDMA mode, if this function is not enabled, the adc code can only be read from the registers, but it will lead to the problem of repeatedly getting the same adc code when calling adc_get_code() several times,
+ *             if this function is enabled, the adc code can be read from the rx fifo, and this problem can be avoided, so it is also must enable it.
  */
 static inline void adc_all_chn_data_to_fifo_en(void)
 {
@@ -166,12 +172,12 @@ static inline void adc_all_chn_data_to_fifo_dis(void)
 }
 /**
  * @brief       This function is used to set the scan channel cnt.
- * @param[in]   channel_num - scan_cnt=channel_num*2
+ * @param[in]   chn_cnt - range:1-3
  * @return      none
  */
-static inline void adc_set_scan_chn_cnt(unsigned char channel_num)
+static inline void adc_set_scan_chn_cnt(unsigned char chn_cnt)
 {
-    reg_adc_config0=((reg_adc_config0 & (~FLD_SCANT_MAX)) | ((channel_num * 2)<< 4));
+    reg_adc_config0=((reg_adc_config0 & (~FLD_SCANT_MAX)) | ((chn_cnt * 2)<< 4));//scan_cnt = chn_cnt*2
 }
 /**
  * @brief       This function is used to enable the data weighted average algorithm function to improve ADC performance.
@@ -198,23 +204,41 @@ static inline void adc_dig_clk_dis(void)
 static inline void adc_dig_clk_en(void)
 {
     reg_adc_config2 |= FLD_CLK_EN;
-
 }
 /**
- * @brief      This function open temperature sensor power.
+ * @brief      This function serves to stop the state machine at the beginning of the M channel and not start sampling.
  * @return     none
  */
-static inline void adc_temp_sensor_power_on(void)
+static inline void adc_set_scan_chn_dis(void)
 {
-    analog_write_reg8(areg_temp_sensor_ctrl, (analog_read_reg8(areg_temp_sensor_ctrl)&(~FLD_TEMP_SENSOR_POWER_DOWN)));
+    /**
+     * FLD_SCANT_MAX cannot be configured to 0, because 0 is the RNG channel, if RNG is not enabled (default is not enabled), the state machine will not stop at the RNG channel after setting 0, it will not stop.
+     */
+    reg_adc_config0=((reg_adc_config0 & (~FLD_SCANT_MAX)) | (1<< 4));
 }
 /**
- * @brief      This function close temperature sensor power.
+ * @brief    This function is used to power on sar_adc.
+ * @return   none.
+ * @note     -# User need to wait >30us after adc_power_on() for ADC to be stable.
+ *           -# If you calling adc_power_off(), because all analog circuits of ADC are turned off after adc_power_off(),
+ *            it is necessary to wait >30us after re-adc_power_on() for ADC to be stable.
+ */
+void adc_power_on(void)
+{
+    /**
+     * adc_set_scan_chn_dis() must be called to stop the state machine at the beginning of the M channel and not start sampling.
+     */
+    adc_set_scan_chn_dis();
+    analog_write_reg8(areg_adc_pga_ctrl, (analog_read_reg8(areg_adc_pga_ctrl)&(~FLD_SAR_ADC_POWER_DOWN)));
+    adc_dig_clk_en();
+}
+/**
+ * @brief      This function is used to power off sar_adc.
  * @return     none
  */
-static inline void adc_temp_sensor_power_off(void)
+void adc_power_off(void)
 {
-    analog_write_reg8(areg_temp_sensor_ctrl, (analog_read_reg8(areg_temp_sensor_ctrl)|FLD_TEMP_SENSOR_POWER_DOWN));
+    analog_write_reg8(areg_adc_pga_ctrl, (analog_read_reg8(areg_adc_pga_ctrl)|FLD_SAR_ADC_POWER_DOWN));
 }
 /**
  * @brief This function is used to set IO port for ADC supply or ADC IO port voltage sampling.
@@ -260,6 +284,7 @@ void adc_set_diff_pin(adc_sample_chn_e chn,adc_input_pin_e p_pin, adc_input_pin_
  * @param[in]  chn - enum variable of ADC sample channel.
  * @param[in]  v_ref - enum variable of ADC reference voltage.
  * @return none
+ * @note       adc_set_ref_voltage does not take effect immediately after configuration, it needs to be delayed 30us after calling adc_dig_clk_en().
  */
 static void adc_set_ref_voltage(adc_sample_chn_e chn,adc_ref_vol_e v_ref)
 {
@@ -310,6 +335,7 @@ static inline void adc_set_scale_factor(adc_sample_chn_e chn,adc_pre_scale_e pre
  * @param[in]  chn - enum variable of ADC sample channel
  * @param[in]  vbat_div - enum variable of Vbat division factor.
  * @return     none
+ * @note       adc_set_vbat_divider() does not take effect immediately after configuration, it needs to be delayed 30us after calling adc_dig_clk_en().
  */
 void adc_set_vbat_divider(adc_sample_chn_e chn,adc_vbat_div_e vbat_div)
 {
@@ -335,7 +361,6 @@ static inline void adc_ana_read_en(void)
  * @attention Many features are configured in adc_init function. But some features
  *      such as adc digital clk, adc analog clk, resolution, we think better to set as default value,
  *      and user don't need to change them in most use cases.
- * @TODO  In DMA/NMDA mode, the first code sampled after power on is an exception and needs to be discarded.
  */
 void adc_init(adc_chn_cnt_e channel_cnt)
 {
@@ -345,16 +370,22 @@ void adc_init(adc_chn_cnt_e channel_cnt)
     adc_set_clk();//set adc digital clk to 24MHz and adc analog clk to 4MHz
     adc_set_resolution(ADC_RES12);//default adc_resolution set as 12bit ,BIT(11) is sign bit
     adc_data_weighted_average_en();//enabled by default to improve ADC performance.
-    adc_set_scan_chn_cnt(channel_cnt & 0x0f);
-    if(channel_cnt & 0xf0)//DMA_mode
+    if(NDMA_M_CHN == channel_cnt)
     {
-        adc_all_chn_data_to_fifo_en();
-    }else{
+        adc_all_chn_data_to_fifo_dis();
         reg_adc_config2 &= ~FLD_RX_DMA_ENABLE;//In NDMA mode,RX DMA needs to be disabled.
-        adc_ana_read_en();
-        adc_dig_clk_en();
+        reg_adc_config2 |= FLD_SAR_RX_INTERRUPT_ENABLE;//SAR_RX_INTERRUPT must be enabled to call adc_get_irq_status() to get adc irq status.
     }
+    /**
+     * The set and capture of RNG channel are configured to 0 by default, and the actual state machine scanning time of RNG channel is the maximum time(about 25us),
+     * and by configuring both of them to 1 (the minimum scanning time), the state machine scanning time of RNG channel is only (1+1)/24M=83ns,
+     * which enables the state machine to enter into the set state of the M channel faster, and prevents the first code of M channel abnormality.
+     */
+    reg_adc_rng_set_state = 0x01;
+    reg_adc_rng_capture_state = 0x01;
+    g_channel_cnt = channel_cnt;
 }
+
 /**
  * @brief This function is used to configure the channel of the ADC.
  * @param[in]  chn -the channel to be configured.
@@ -411,6 +442,23 @@ void adc_vbat_sample_init(adc_sample_chn_e chn)
     adc_chn_config(chn, chn_cfg);
 
 }
+#if INTERNAL_TEST_FUNC_EN
+/**
+ * @brief      This function open temperature sensor power.
+ * @return     none
+ */
+static inline void adc_temp_sensor_power_on(void)
+{
+    analog_write_reg8(areg_temp_sensor_ctrl, (analog_read_reg8(areg_temp_sensor_ctrl)&(~FLD_TEMP_SENSOR_POWER_DOWN)));
+}
+/**
+ * @brief      This function close temperature sensor power.
+ * @return     none
+ */
+static inline void adc_temp_sensor_power_off(void)
+{
+    analog_write_reg8(areg_temp_sensor_ctrl, (analog_read_reg8(areg_temp_sensor_ctrl)|FLD_TEMP_SENSOR_POWER_DOWN));
+}
 /**
  * @brief This function is used to initialize the ADC for Temperature Sensor sampling.
  * @param[in]  chn -structure for configuring ADC channel.
@@ -431,6 +479,20 @@ void adc_temp_init(adc_sample_chn_e chn)
     adc_chn_config(chn, chn_cfg);
     adc_temp_sensor_power_on();
 }
+/**
+ * @brief This function serves to calculate temperature from temperature sensor adc sample code.
+ * @param[in]   adc_code            - the temperature sensor adc sample code.
+ * @return      adc_temp_value      - the temperature value.
+ * @attention   Temperature and adc_code are linearly related. We test four chips between -40~130 (Celsius) and got an average relationship:
+ *          Temp =  564 - ((adc_code * 819)>>11),when Vref = 1.2V, pre_scale = 1.
+ */
+unsigned short adc_calculate_temperature(unsigned short adc_code)
+{
+    //////////////// adc sample data convert to temperature(Celsius) ////////////////
+    //adc_temp_value = 564 - ((adc_code * 819)>>11)
+    return 564 - ((adc_code * 819)>>11);
+}
+#endif
 /**
  * @brief This function serves to calculate voltage from adc sample code.
  * @param[in]   chn - enum variable of ADC sample channel.
@@ -454,36 +516,10 @@ unsigned short adc_calculate_voltage(adc_sample_chn_e chn,unsigned short adc_cod
     }
 }
 
-/**
- * @brief This function serves to calculate temperature from temperature sensor adc sample code.
- * @param[in]   adc_code            - the temperature sensor adc sample code.
- * @return      adc_temp_value      - the temperature value.
- * @attention   Temperature and adc_code are linearly related. We test four chips between -40~130 (Celsius) and got an average relationship:
- *          Temp =  564 - ((adc_code * 819)>>11),when Vref = 1.2V, pre_scale = 1.
- */
-unsigned short adc_calculate_temperature(unsigned short adc_code)
-{
-    //////////////// adc sample data convert to temperature(Celsius) ////////////////
-    //adc_temp_value = 564 - ((adc_code * 819)>>11)
-    return 564 - ((adc_code * 819)>>11);
-}
-
 
 /**********************************************************************************************************************
  *                                                DMA only interface                                                  *
  **********************************************************************************************************************/
-/**
- * @brief       This function sets the threshold that triggers the dma to start carrying data from the rxfifo.
- * @param[in]   trig_num -trigger threshold.
- * @return      none
- * @note        When configured to 0, the dma starts to move data when the data saved in the rxfio is > 0.
- *              The threshold is recalculated after the dma has finished moving.
- *              It is recommended to configure it to 0, and the user does not need to change it.
- */
-static inline void adc_set_dma_trig_num(unsigned char trig_num)
-{
-    reg_adc_rxfifo_trig_num = ((reg_adc_rxfifo_trig_num & (~FLD_RXFIFO_TRIG_NUM)) | trig_num);
-}
 /**
  * @brief      This function serves to configure adc_dma_chn channel.
  * @param[in]  chn - the DMA channel
@@ -494,19 +530,16 @@ void adc_set_dma_config(dma_chn_e chn)
     adc_dma_chn = chn;
     reg_adc_config2 = FLD_RX_DMA_ENABLE;
     dma_config(chn, &adc_rx_dma_config);
-    dma_clr_irq_mask(adc_dma_chn,TC_MASK|ERR_MASK|ABT_MASK);
-    dma_set_irq_mask(adc_dma_chn, TC_MASK);
     reg_dma_llp(adc_dma_chn) = 0;
     /*
      * Configuration differs from TL751X for the following reasons:
-     * #1 The TL751X's RX FIFO is stored in WORD units, and a setting of 0 indicates that a DMA request is sent to the DMA when the data in the RX FIFO is greater than 0 WORD units of data (i.e., 1 WORD).
-     * #2 Because the TL721X's RX FIFO is stored in HALF WORD units and the DMA is configured to transfer data by WORD,
-     *    it is necessary to set trigger number to 1 to indicate that if the data in the RX FIFO is greater than 1 HALF WORD unit of data (i.e., 1 WORD),
-     *    it will send a DMA request to the DMA to prevent the RX FIFO from not yet being full of 1 WORD,
-     *    it will be transferred away by the DMA by WORD, resulting in data misalignment when using multiple channels.
+     * The TL751X's RX FIFO is stored in WORD units.
+     * The TL721X's RX FIFO is stored in HALF WORD units.
      */
-    adc_set_dma_trig_num(1);//Default value is 1, users should not change.
+    adc_set_rx_fifo_trig_cnt(1);//Default value is 1, users should not change.
+    adc_all_chn_data_to_fifo_en();
 }
+
 /**
  * @brief     The adc starts sampling in DMA mode.
  * @param[in] adc_data_buf  - Pointer to data buffer, it must be 4-bytes aligned address
@@ -518,68 +551,41 @@ void adc_set_dma_config(dma_chn_e chn)
  *            so the arrangement after dma handling is also M: L: R.
  * @return    none
  */
-static void adc_start_sample_dma(unsigned short *adc_data_buf,unsigned int data_byte_len)
+void adc_start_sample_dma(unsigned short *adc_data_buf,unsigned int data_byte_len)
 {
     dma_set_address(adc_dma_chn,SAR_ADC_FIFO,(unsigned int)adc_data_buf);
     dma_set_size(adc_dma_chn,data_byte_len,DMA_WORD_WIDTH);
     /*
-     * dma_chn_en() must be in front of adc_dig_clk_en() to prevent mis-ordering of multi-channel sampling data when using multiple channels.
+     * dma_chn_en() must be in front of adc_set_scan_chn_cnt() to prevent mis-ordering of multi-channel sampling data when using multiple channels.
      */
     dma_chn_en(adc_dma_chn);
-    adc_dig_clk_en();
+    adc_set_scan_chn_cnt(g_channel_cnt & 0x0f);
 }
 /**
- * @brief     This function serves to get adc DMA sample status.
+ * @brief     This function serves to get adc DMA irq status.
  * @return    0: the sample is in progress.
  *            !0: the sample is finished.
  * @note      The code is placed in the ram code section, in order to shorten the time.
  */
-_attribute_ram_code_sec_noinline_ unsigned char adc_get_sample_status_dma(void)
+_attribute_ram_code_sec_noinline_ unsigned char adc_get_irq_status_dma(void)
 {
     return (dma_get_tc_irq_status(1<<adc_dma_chn));
 }
 /**
- * @brief     This function serves to clear adc DMA sample status.
+ * @brief     This function serves to clear adc DMA irq status.
  * @return    none
  * @note      The code is placed in the ram code section, in order to shorten the time.
  */
-_attribute_ram_code_sec_noinline_ void adc_clr_sample_status_dma(void)
+_attribute_ram_code_sec_noinline_ void adc_clr_irq_status_dma(void)
 {
     /*
-     * adc_dig_clk_dis() must be called when DMA is finished to prevent mis-ordering of multi-channel sampling data when using multiple channels.
+     * adc_set_scan_chn_dis() must be called when DMA is finished to stop the state machine at the beginning of the M channel to prevent mis-ordering of multi-channel sampling data when using multiple channels.
      */
-    adc_dig_clk_dis();
+    adc_set_scan_chn_dis();
     dma_chn_dis(adc_dma_chn);
     dma_clr_tc_irq_status(1<<adc_dma_chn);
 }
-/**
- * @brief This function serves to start adc sample and get raw adc sample code.
- * @param[in]  sample_buffer - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception
- *             and the actual buffer size defined by the user needs to be not smaller than the sample_num, otherwise there may be an out-of-bounds problem.
- * @param[in]  sample_num     - This parameter is used to set the size of the received dma and must be set to a multiple of 4. The maximum value that can be set is 0xFFFFFC.
- * @return     none
- * @note       The code is placed in the ram code section, in order to shorten the time.
- */
-_attribute_ram_code_sec_noinline_ void adc_get_code_dma(unsigned short *sample_buffer, unsigned short sample_num)
-{
-    adc_start_sample_dma((unsigned short *)sample_buffer, sample_num<<1);
-    /******wait for adc sample finish********/
-    while(!adc_get_sample_status_dma());
-    /******clear adc sample finished status********/
-    adc_clr_sample_status_dma();
-    /******get adc sample data and sort these data ********/
-    for(int i=0;i<sample_num;i++)
-    {
-        if(sample_buffer[i] & BIT(11))
-        {  //12 bit resolution, BIT(11) is sign bit, 1 means negative voltage in differential_mode
-            sample_buffer[i] = 0;
-        }
-        else
-        {
-            sample_buffer[i] = (sample_buffer[i] & 0x7ff);  //BIT(10..0) is valid adc code
-        }
-    }
-}
+
 /**********************************************************************************************************************
  *                                                NDMA only interface                                                 *
  **********************************************************************************************************************/
@@ -594,19 +600,42 @@ static inline unsigned char adc_get_m_chn_valid_status(void)
     return (analog_read_reg8(areg_m_chn_data_valid_status) & FLD_M_CHN_DATA_VALID_STATUS);
 }
 /**
- * @brief This function serves to directly get an adc sample code from analog registers.
+ * @brief This function serves to directly get an adc sample code from fifo.
  * @return  adc_code    - the adc sample code.
- * @note   If you want to get the sampling results twice in succession,
- *         must ensure that the sampling interval is more than 2 times the sampling period.
  */
 unsigned short adc_get_code(void)
 {
-    unsigned short adc_code;
-    while(!adc_get_m_chn_valid_status());
-    /******Lock ADC code in analog register ********/
-    analog_write_reg8(areg_adc_data_sample_control,analog_read_reg8(areg_adc_data_sample_control) | FLD_NOT_SAMPLE_ADC_DATA);
-    adc_code = analog_read_reg16(areg_adc_misc_l);
-    analog_write_reg8(areg_adc_data_sample_control,analog_read_reg8(areg_adc_data_sample_control) & (~FLD_NOT_SAMPLE_ADC_DATA));
-
+    unsigned short adc_code=0;
+    /**
+     * Change the way to get adc code from read areg_adc_misc to read rx fifo, to solve the problem that the valid status is 1 for a long time
+     * due to the slow change of valid status in adc_get_m_chn_valid_status(), which leads to fetching the same code repeatedly.(Confirmed by qiangkai.xu, added by xiaobin.huang at 20240903)
+     */
+    if(!g_adc_rx_fifo_index)
+    {
+        adc_code = reg_adc_rxfifo_dat(g_adc_rx_fifo_index);
+        g_adc_rx_fifo_index = 1;
+    }else{
+        adc_code = reg_adc_rxfifo_dat(g_adc_rx_fifo_index);
+        g_adc_rx_fifo_index = 0;
+    }
     return adc_code;
+}
+
+/**
+ * @brief   This function is used to enable the transmission of data from the adc's M channel, L channel, and R channel to the sar adc rxfifo.
+ * @return  none
+ */
+void adc_start_sample_nodma(void)
+{
+    adc_all_chn_data_to_fifo_en();
+    adc_set_scan_chn_cnt(1);
+}
+/**
+ * @brief   This function is used to disable the transmission of data from the adc's M channel, L channel, and R channel to the sar adc rxfifo and clear rx fifo cnt and g_adc_rx_fifo_index.
+ * @return  none
+ */
+void adc_stop_sample_nodma(void)
+{
+    adc_all_chn_data_to_fifo_dis();
+    adc_clr_rx_fifo_cnt();
 }

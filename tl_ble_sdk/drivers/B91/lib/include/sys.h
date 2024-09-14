@@ -68,14 +68,17 @@
  *********************************************************************************************************************/
 
 /**
- * @brief:  Whether to close the internal capacitor.
- * @note:   The corresponding parameters must be configured according to the circuit, otherwise,
- *          it may result in the parallel connection of two capacitors or no capacitors,
- *          which may lead to inaccurate crystal frequency, slow crystal oscillation, and reset issues.
+ * @brief:  External 24M crystal using internal or external capacitors
+ * @note:   If the software configuration and hardware board does not match,
+ *          it may lead to the following problems:
+ *          crystal clock frequency is not allowed,  slow crystal vibration caused by the chip reset, etc.
  */
 typedef enum{
-    INTERNAL_CAP_XTAL24M = 0, //Use an external 24M crystal and internal capacitors,turn on internal capacitance.
-    EXTERNAL_CAP_XTAL24M = 1, //Use an external 24M crystal and external capacitors,turn off internal capacitance.
+    INTERNAL_CAP_XTAL24M = 0, /**<    Use the chip's internal crystal capacitors,
+                                 <p>  hardware boards can not have 24M crystal matching capacitors */
+    EXTERNAL_CAP_XTAL24M = 1, /**<    Use an external crystal capacitor,
+                                 <p>  the hardware board needs to have a matching capacitor for the 24M crystal,
+                                 <p>  the program will turn off the chip's internal capacitor */
 }cap_typedef_e;
 
 /**
@@ -90,14 +93,14 @@ typedef enum{
  * @brief   This enumeration is used to select whether VBAT can be greater than 3.6V.
  */
 typedef enum{
-    VBAT_MAX_VALUE_GREATER_THAN_3V6 = 0x00,     /**  VBAT may be greater than 3.6V.
+    VBAT_MAX_VALUE_GREATER_THAN_3V6 = 0x00,     /**  VBAT must be greater than 2.2V. VBAT may be greater than 3.6V.
                                                 <p>  In this configuration the bypass is closed
                                                 <p>  and the VBAT voltage passes through an LDO to supply power to the chip.
                                                 <p>  The voltage of the GPIO pin (V_ioh) is the voltage after VBAT passes through the LDO (V_ldo),
                                                 <p>  and the maximum value is about 3.3V floating 10% (V_ldoh).
-                                                <p>  When VBAT > V_ldoh, <p>V_ioh = V_ldo = V_ldoh.
-                                                <p>  When VBAT < V_ldoh, <p>V_ioh = V_ldo = VBAT */
-    VBAT_MAX_VALUE_LESS_THAN_3V6    = BIT(3),   /**  VBAT must be below 3.6V.
+                                                <p>  When VBAT > V_ldoh, <p>V_ioh = V_ldo = V_ldoh(no load).
+                                                <p>  When VBAT < V_ldoh, <p>V_ioh = V_ldo = VBAT(no load) */
+    VBAT_MAX_VALUE_LESS_THAN_3V6    = BIT(3),   /**  VBAT must be below 3.6V. VBAT may be below 2.2V.
                                                 <p>  In this configuration bypass is turned on.vbat is directly supplying power to the chip
                                                 <p>  V_ioh(the output voltage of GPIO)= VBAT */
 }vbat_type_e;
@@ -129,17 +132,18 @@ _attribute_text_sec_ void sys_reboot(void);
 
 /**
  * @brief       This function serves to initialize system.
- * @param[in]   power_mode  - power mode(LDO/DCDC/LDO_DCDC)
+ * @param[in]   power_mode - power mode(LDO/DCDC/LDO_DCDC)
  * @param[in]   vbat_v      - This parameter is used to determine whether the VBAT voltage can be greater than 3.6V.
  * @param[in]   cap     - This parameter is used to determine whether to close the internal capacitor.
  * @return      none
- * @note        For crystal oscillator with slow start-up or poor quality, after calling this function,
+ * @note        For crystal oscillator with slow start-up or poor quality, after calling this function, 
  *              a reboot will be triggered(whether a reboot has occurred can be judged by using PM_ANA_REG_POWER_ON_CLR_BUF0[bit2]).
- *              For the case where the crystal oscillator used is very slow to start-up, you can call the pm_set_xtal_stable_timer_param interface
+ *              For the case where the crystal oscillator used is very slow to start-up, you can call the pm_set_xtal_stable_timer_param interface 
  *              to adjust the waiting time for the crystal oscillator to start before calling the sys_init interface.
  *              When this time is adjusted to meet the crystal oscillator requirements, it will not reboot.
  */
 void sys_init(power_mode_e power_mode, vbat_type_e vbat_v, cap_typedef_e cap);
+
 /**
  * @brief      This function performs a series of operations of writing digital or analog registers
  *             according to a command table

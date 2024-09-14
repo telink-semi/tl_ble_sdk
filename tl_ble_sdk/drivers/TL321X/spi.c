@@ -22,7 +22,7 @@
  *
  *******************************************************************************************************/
 #include "spi.h"
-#include "clock.h"
+#include "lib/include/clock.h"
 
 static unsigned char s_gspi_tx_dma_chn;
 static unsigned char s_gspi_master_rx_dma_chn;
@@ -358,11 +358,12 @@ void spi_master_init(spi_sel_e spi_sel,unsigned short div_clock, spi_mode_type_e
 {
     reg_rst1 |= FLD_RST1_GSPI;
     reg_clk_en1 |= FLD_CLK1_GSPI_EN;
-    if (div_clock > 255)//GSPI clock source select pll_clk when div_clock <= 255,select xtl 24m when div_clock > 255.
+    if (div_clock > 255) {//GSPI clock source select pll_clk when div_clock <= 255,select xtl 24m when div_clock > 255.
+        clock_bbpll_config(PLL_CLK);
         reg_gspi_clk_set = ((FLD_GSPI_CLK_MOD&(unsigned char)(div_clock*24/(sys_clk.pll_clk)))|(1<<8));
-    else
+    } else {
         reg_gspi_clk_set = ((FLD_GSPI_CLK_MOD&(unsigned char)div_clock)|(2<<8));
-
+    }
     reg_spi_ctrl3(spi_sel)  |= (FLD_SPI_MASTER_MODE|FLD_SPI_AUTO_HREADY_EN);//master
     reg_spi_ctrl3(spi_sel) = ((reg_spi_ctrl3(spi_sel) & (~FLD_SPI_WORK_MODE)) | (mode << 2));// select SPI mode, support four modes.
     spi_rx_irq_trig_cnt(spi_sel,4);//default gspi burst1(N=1) ,rx_fifo trig_cnt=4*N=4.
@@ -546,7 +547,7 @@ drv_api_status_e spi_master_send_cmd(spi_sel_e spi_sel, unsigned char cmd)
  */
 drv_api_status_e spi_write(spi_sel_e spi_sel, unsigned char *data, unsigned int len)
 {
-    unsigned char word_len = len >> 2;
+    unsigned int word_len = len >> 2;
     unsigned char single_len = len & 3;
 
     //The tx _fifo depth of the gspi is 8 bytes. When the remaining size in the tx_fifo is not less than 4 bytes, the MCU will move the data according to the word length.
@@ -582,7 +583,7 @@ drv_api_status_e spi_write(spi_sel_e spi_sel, unsigned char *data, unsigned int 
  */
 drv_api_status_e spi_read(spi_sel_e spi_sel, unsigned char *data, unsigned int len)
 {
-    unsigned char word_len = len >> 2;
+    unsigned int word_len = len >> 2;
     unsigned char single_len = len & 3;
     //When the data size in rx_fifo is not less than 4 bytes, the MCU moves the data according to the word length.
     for (unsigned int i = 0; i < word_len; i++)

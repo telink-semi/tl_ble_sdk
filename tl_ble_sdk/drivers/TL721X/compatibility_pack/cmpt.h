@@ -24,7 +24,7 @@
 #ifndef DRIVERS_CMPT_H_
 #define DRIVERS_CMPT_H_
 #include "../gpio.h"
-#include "../stimer.h"
+#include "lib/include/stimer.h"
 
 /**********************************************************************************************************************
  *                                         global constants                                                           *

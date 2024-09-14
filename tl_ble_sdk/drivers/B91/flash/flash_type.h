@@ -25,10 +25,10 @@
 #define __FLASH_TYPE_H__
 
 #include "flash.h"
-#include "flash_mid146085.h"    // P25Q80U
-#include "flash_mid156085.h"    // P25Q16SU
-#include "flash_mid166085.h"    // P25Q32SU
-#include "flash_mid182085.h"    // PY25Q128H
+#include "internal_flash/flash_mid146085.h" // P25Q80U
+#include "internal_flash/flash_mid156085.h" // P25Q16SU
+#include "internal_flash/flash_mid166085.h" // P25Q32SU
+#include "external_flash/flash_mid182085.h" // PY25Q128H
 
 /**
  * @brief       This function reads the status of flash.

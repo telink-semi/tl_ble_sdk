@@ -428,18 +428,18 @@ void app_ext_adv_set_test(void)
 
         case APP_LEGACY_CON_EXT_NCON_EXT_SCAN_EXT_CON:
         {
-            //adv_set 1: Extended, Connectable_scannable
+            //adv_set 1: Extended, Connectable, Undirected
             //adv_set 2: Extended, None_Connectable_None_Scannable undirected, with auxiliary packet
             //adv_set 3: Extended, Scannable, Undirected
-            //adv_set 4: Extended, Connectable, Undirected
+            //adv_set 4: Extended, None_Connectable_None_Scannable, Directed
             for(int i=0;i<1024;i++){
                 testAdvData[i]=i;
                 testScanRspData[i]=i;
             }
             blc_ll_initChannelSelectionAlgorithm_2_feature();
             blc_ll_setDefaultConnCodingIndication(CODED_PHY_PREFER_S8);
-            //adv_set 1: Extended, Connectable_scannable
-            tlkapi_printf(APP_LOG_EN,"adv_set 1: Extended, Connectable_scannable");
+            //adv_set 1: Extended, Connectable, Undirected
+            tlkapi_printf(APP_LOG_EN,"adv_set 1: Extended, Connectable, Undirected");
             blc_ll_setExtAdvParam( ADV_HANDLE0,         ADV_EVT_PROP_EXTENDED_CONNECTABLE_UNDIRECTED,                   ADV_INTERVAL_50MS,          ADV_INTERVAL_100MS,
                                    BLT_ENABLE_ADV_ALL,  OWN_ADDRESS_PUBLIC,                                             BLE_ADDR_PUBLIC,                NULL,
                                    ADV_FP_NONE,         TX_POWER_3dBm,                                                  BLE_PHY_1M,                     0,
@@ -464,8 +464,9 @@ void app_ext_adv_set_test(void)
             blc_ll_setExtAdvData    ( ADV_HANDLE2,  1024, testAdvData);
             blc_ll_setExtScanRspData( ADV_HANDLE2,  1024, testScanRspData);
 
-            tlkapi_printf(APP_LOG_EN,"adv_set 4: Extended, Connectable, Undirected");
-            blc_ll_setExtAdvParam( ADV_HANDLE3,         ADV_EVT_PROP_EXTENDED_CONNECTABLE_UNDIRECTED,                   ADV_INTERVAL_50MS,          ADV_INTERVAL_100MS,
+            // adv_set 4: Extended, None_Connectable_None_Scannable, Directed
+            tlkapi_printf(APP_LOG_EN,"adv_set 4: Extended, None_Connectable_None_Scannable, Directed");
+            blc_ll_setExtAdvParam( ADV_HANDLE3,         ADV_EVT_PROP_EXTENDED_NON_CONNECTABLE_NON_SCANNABLE_DIRECTED,   ADV_INTERVAL_50MS,          ADV_INTERVAL_100MS,
                                    BLT_ENABLE_ADV_ALL,  OWN_ADDRESS_PUBLIC,                                             BLE_ADDR_PUBLIC,                NULL,
                                    ADV_FP_NONE,         TX_POWER_3dBm,                                                  BLE_PHY_1M,                     0,
                                    BLE_PHY_2M,          ADV_SID_3,                                                      0);

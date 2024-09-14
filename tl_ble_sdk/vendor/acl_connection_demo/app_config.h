@@ -65,6 +65,8 @@
 /////////////////////// Board Select Configuration ///////////////////////////////
 #if (MCU_CORE_TYPE == MCU_CORE_B91)
     #define BOARD_SELECT                                BOARD_951X_EVK_C1T213A20
+#elif (MCU_CORE_TYPE == MCU_CORE_B92)
+    #define BOARD_SELECT                                BOARD_952X_EVK_C1T266A20
 #elif (MCU_CORE_TYPE == MCU_CORE_TL721X)
     #define BOARD_SELECT                                BOARD_721X_EVK_C1T315A20
 #elif (MCU_CORE_TYPE == MCU_CORE_TL321X)

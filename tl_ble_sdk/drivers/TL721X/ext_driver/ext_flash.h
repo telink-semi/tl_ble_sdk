@@ -25,7 +25,7 @@
 #ifndef DRIVERS_TL721X_EXT_DRIVER_EXT_FLASH_H_
 #define DRIVERS_TL721X_EXT_DRIVER_EXT_FLASH_H_
 
-#include "../mspi.h"
+#include "../driver.h"
 
 /**
 * @brief Select the number of the slave device.(mspi_slave_device_num_e)

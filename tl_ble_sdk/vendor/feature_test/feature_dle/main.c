@@ -58,6 +58,38 @@ _attribute_ram_code_ void stimer_irq_handler(void)
     DBG_CHN15_LOW;
 }
 PLIC_ISR_REGISTER(stimer_irq_handler, IRQ_SYSTIMER)
+
+
+/**
+ * @brief      application system initialization
+ * @param[in]  none.
+ * @return     none.
+ */
+__INLINE void blc_app_system_init(void)
+{
+    #if (MCU_CORE_TYPE == MCU_CORE_B91)
+        sys_init(DCDC_1P4_LDO_1P8, VBAT_MAX_VALUE_GREATER_THAN_3V6,INTERNAL_CAP_XTAL24M);
+        CCLK_48M_HCLK_48M_PCLK_24M;
+    #elif (MCU_CORE_TYPE == MCU_CORE_B92)
+        sys_init(DCDC_1P4_LDO_2P0, VBAT_MAX_VALUE_GREATER_THAN_3V6, GPIO_VOLTAGE_3V3, INTERNAL_CAP_XTAL24M);
+        wd_32k_stop();
+        CCLK_48M_HCLK_48M_PCLK_24M;
+    #elif (MCU_CORE_TYPE == MCU_CORE_TL721X)
+        sys_init(DCDC_0P94_DCDC_1P8,VBAT_MAX_VALUE_GREATER_THAN_3V6,INTERNAL_CAP_XTAL24M);
+        gpio_set_up_down_res(GPIO_SWS, GPIO_PIN_PULLUP_1M);
+        wd_32k_stop();
+        wd_stop();
+        PLL_240M_CCLK_48M_HCLK_48M_PCLK_48M_MSPI_48M;
+    #elif(MCU_CORE_TYPE == MCU_CORE_TL321X)
+        sys_init(DCDC_1P25_LDO_1P8, VBAT_MAX_VALUE_GREATER_THAN_3V6, INTERNAL_CAP_XTAL24M);
+        gpio_set_up_down_res(GPIO_SWS, GPIO_PIN_PULLUP_1M);
+        wd_32k_stop();
+        wd_stop();
+        PLL_192M_CCLK_48M_HCLK_24M_PCLK_24M_MSPI_48M;
+    #endif
+}
+
+
 /**
  * @brief       This is main function
  * @param[in]   none
@@ -70,26 +102,8 @@ _attribute_ram_code_ int main(void)
        (2). For B91 only: even no power management */
     blc_pm_select_internal_32k_crystal();
 
-    #if (MCU_CORE_TYPE == MCU_CORE_B91)
-        sys_init(DCDC_1P4_LDO_1P8, VBAT_MAX_VALUE_GREATER_THAN_3V6,INTERNAL_CAP_XTAL24M);
-        CCLK_32M_HCLK_32M_PCLK_16M;
-    #elif (MCU_CORE_TYPE == MCU_CORE_B92)
-        sys_init(DCDC_1P4_LDO_2P0, VBAT_MAX_VALUE_GREATER_THAN_3V6, GPIO_VOLTAGE_3V3);
-        wd_32k_stop();
-        CCLK_32M_HCLK_32M_PCLK_16M;
-    #elif (MCU_CORE_TYPE == MCU_CORE_TL721X)
-        sys_init(LDO_0P94_LDO_1P8,VBAT_MAX_VALUE_GREATER_THAN_3V6,INTERNAL_CAP_XTAL24M);
-        gpio_set_up_down_res(GPIO_SWS, GPIO_PIN_PULLUP_1M);
-        wd_32k_stop();
-        wd_stop();
-        PLL_240M_CCLK_120M_HCLK_60M_PCLK_60M_MSPI_48M;
-    #elif(MCU_CORE_TYPE == MCU_CORE_TL321X)
-        sys_init(VBAT_MAX_VALUE_GREATER_THAN_3V6, INTERNAL_CAP_XTAL24M);
-        gpio_set_up_down_res(GPIO_SWS, GPIO_PIN_PULLUP_1M);
-        wd_32k_stop();
-        wd_stop();
-        PLL_192M_CCLK_96M_HCLK_48M_PCLK_24M_MSPI_48M;
-    #endif
+
+    blc_app_system_init();
 
     /* detect if MCU is wake_up from deep retention mode */
     int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();  //MCU deep retention wakeUp

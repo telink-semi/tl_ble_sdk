@@ -147,7 +147,12 @@ _attribute_ram_code_ void adc_bat_detect_init(void)
          adc_gpio_cfg_t adc_gpio_cfg_m =
          {
                 .v_ref = ADC_VREF_1P2V,
+            #if (MCU_CORE_TYPE == MCU_CORE_TL721X)
                 .pre_scale = ADC_PRESCALE_1F8,
+            #endif
+            #if (MCU_CORE_TYPE == MCU_CORE_TL321X)
+                .pre_scale = ADC_PRESCALE_1F4,
+            #endif
                 .sample_freq = ADC_SAMPLE_FREQ_96K,
                 .pin = ADC_INPUT_PIN_CHN,
          };
@@ -159,8 +164,10 @@ _attribute_ram_code_ void adc_bat_detect_init(void)
     //note: this setting must be set after all other settings
     adc_power_on();
 
-    //wait at least 2 sample cycle(f = 96K, T = 10.4us)
-    sleep_us(25);
+    /* wait at least 2 sample cycle(f = 96K, T = 10.4us),
+     * delay 30 us to ensure the stability
+     */
+    sleep_us(30);
 }
 
 /**
@@ -225,8 +232,14 @@ _attribute_ram_code_ int app_battery_power_check(u16 alarm_vol_mv)
 #endif
 
 
-#elif ( (MCU_CORE_TYPE == MCU_CORE_TL721X) || (MCU_CORE_TYPE == MCU_CORE_TL321X) )
-    adc_average = adc_get_code();
+#elif((MCU_CORE_TYPE == MCU_CORE_TL721X) || (MCU_CORE_TYPE == MCU_CORE_TL321X))
+
+    adc_start_sample_nodma();
+    sleep_us(30);
+    if(adc_get_rxfifo_cnt() > 0)
+        adc_average = adc_get_code();
+    else    return 1;   /*!< error code, return 1. */
+
     if(adc_average & BIT(11)){ //12 bit resolution, BIT(11) is sign bit, 1 means negative voltage in differential_mode
         adc_average=0;
     }
@@ -234,6 +247,7 @@ _attribute_ram_code_ int app_battery_power_check(u16 alarm_vol_mv)
         adc_average &= 0x7FF;  //BIT(10..0) is valid adc code
     }
     batt_vol_mv = adc_calculate_voltage(ADC_M_CHANNEL, adc_average);
+
 #endif
 
     if(batt_vol_mv < alarm_vol_mv){

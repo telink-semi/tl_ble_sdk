@@ -30,7 +30,9 @@
 #include "lib/include/rf/rf_private.h"
 #include "lib/include/rf/rf_zigbee.h"
 #include "gpio.h"
-#include "stimer.h"
+#include "lib/include/stimer.h"
+
+#define rf_set_power_level_index_singletone(power_level)    rf_set_power_level_singletone(power_level)
 /**********************************************************************************************************************
  *                                         RF  global macro                                                           *
  *********************************************************************************************************************/
@@ -227,59 +229,59 @@ typedef enum {
  */
 typedef enum {
      /*VBAT*/
-     RF_POWER_P10p73dBm  = 63, /**<  10.7 dbm */
-     RF_POWER_P10p51dBm  = 61, /**<  10.5 dbm */
-     RF_POWER_P10p04dBm  = 57, /**<  10.0 dbm */
-     RF_POWER_P9p54dBm  = 53, /**<  9.5 dbm */
-     RF_POWER_P8p99dBm  = 49, /**<  9.0 dbm */
-     RF_POWER_P8p52dBm  = 46, /**<  8.5 dbm */
-     RF_POWER_P8p03dBm  = 43, /**<  8.0 dbm */
-     RF_POWER_P7p49dBm  = 40, /**<  7.5 dbm */
-     RF_POWER_P7p31dBm  = 39, /**<  7.3 dbm */
-     RF_POWER_P7p11dBm  = 38, /**<  7.1 dbm */
-     RF_POWER_P6p91dBm  = 37, /**<  6.9 dbm */
-     RF_POWER_P6p70dBm  = 36, /**<  6.7 dbm */
-     RF_POWER_P6p49dBm  = 35, /**<  6.5 dbm */
-     RF_POWER_P6p03dBm  = 33, /**<  6.0 dbm */
-     RF_POWER_P5p54dBm  = 31, /**<  5.5 dbm */
-     RF_POWER_P5p02dBm  = 29, /**<  5.0 dbm */
-     RF_POWER_P4p47dBm  = 27, /**<  4.5 dbm */
-     RF_POWER_P3p86dBm  = 25, /**<  3.8 dbm */
-     RF_POWER_P3p21dBm  = 23, /**<  3.2 dbm */
-     RF_POWER_P2p85dBm  = 22, /**<  2.9 dbm */
-     RF_POWER_P2p47dBm  = 21, /**<  2.5 dbm */
+     RF_POWER_P11p33dBm  = 63, /**<  11.3 dbm */
+     RF_POWER_P11p16dBm  = 61, /**<  11.1 dbm */
+     RF_POWER_P10p78dBm  = 57, /**<  10.8 dbm */
+     RF_POWER_P10p56dBm  = 55, /**<  10.5 dbm */
+     RF_POWER_P9p97dBm  = 50, /**<  10.0 dbm */
+     RF_POWER_P9p50dBm  = 47, /**<  9.5 dbm */
+     RF_POWER_P8p95dBm  = 43, /**<  9.0 dbm */
+     RF_POWER_P8p48dBm  = 40, /**<  8.5 dbm */
+     RF_POWER_P8p03dBm  = 38, /**<  8.0 dbm */
+     RF_POWER_P7p61dBm  = 36, /**<  7.6 dbm */
+     RF_POWER_P7p19dBm  = 34, /**<  7.2 dbm */
+     RF_POWER_P6p97dBm  = 33, /**<  7.0 dbm */
+     RF_POWER_P6p48dBm  = 31, /**<  6.5 dbm */
+     RF_POWER_P5p97dBm  = 29, /**<  6.0 dbm */
 
      /*VANT*/
-     RF_POWER_P1p90dBm  = BIT(7) | 63,   /**<   1.9 dbm */
-     RF_POWER_P1p47dBm  = BIT(7) | 59,   /**<   1.5 dbm */
-     RF_POWER_P1p00dBm  = BIT(7) | 55,   /**<   1.0 dbm */
-     RF_POWER_P0p74dBm  = BIT(7) | 53,   /**<   0.7 dbm */
-     RF_POWER_P0p47dBm  = BIT(7) | 51,   /**<   0.4 dbm */
-     RF_POWER_P0p19dBm  = BIT(7) | 49,   /**<   0.2 dbm */
-     RF_POWER_P0p03dBm  = BIT(7) | 48,   /**<   0.0 dbm */
-     RF_POWER_N0p13dBm  = BIT(7) | 47,   /**<  -0.2 dbm */
-     RF_POWER_N0p30dBm  = BIT(7) | 46,   /**<  -0.3 dbm */
-     RF_POWER_N0p44dBm  = BIT(7) | 45,   /**<  -0.7 dbm */
-     RF_POWER_N0p96dBm  = BIT(7) | 42,   /**<  -1.0 dbm */
-     RF_POWER_N1p50dBm  = BIT(7) | 39,   /**<  -1.5 dbm */
-     RF_POWER_N2p12dBm  = BIT(7) | 36,   /**<  -2.1 dbm */
-     RF_POWER_N2p55dBm  = BIT(7) | 34,   /**<  -2.6 dbm */
-     RF_POWER_N3p02dBm  = BIT(7) | 32,   /**<  -3.0 dbm */
-     RF_POWER_N3p52dBm  = BIT(7) | 30,   /**<  -3.5 dbm */
-     RF_POWER_N4p06dBm  = BIT(7) | 28,   /**<  -4.0 dbm */
-     RF_POWER_N4p64dBm  = BIT(7) | 26,   /**<  -4.6 dbm */
-     RF_POWER_N5p59dBm  = BIT(7) | 23,   /**<  -5.6 dbm */
-     RF_POWER_N6p72dBm  = BIT(7) | 20,   /**<  -6.7 dbm */
-     RF_POWER_N7p57dBm  = BIT(7) | 18,   /**<  -7.6 dbm */
-     RF_POWER_N8p52dBm  = BIT(7) | 16,   /**<  -8.5 dbm */
-     RF_POWER_N10p28dBm = BIT(7) | 13,   /**<  -10.3 dbm */
-     RF_POWER_N11p67dBm = BIT(7) | 11,   /**<  -11.7 dbm */
-     RF_POWER_N14p37dBm  = BIT(7) | 8,   /**<  -14.4 dbm */
-     RF_POWER_N16p82dBm  = BIT(7) | 6,   /**<  -16.8 bm */
-     RF_POWER_N20p25dBm  = BIT(7) | 4,   /**<  -20.3 dbm */
-     RF_POWER_N26p20dBm  = BIT(7) | 2,   /**<  -26.2 dbm */
-     RF_POWER_N31p73dBm  = BIT(7) | 1,   /**<  -31.7 dbm */
-     RF_POWER_N50p24dBm  = BIT(7) | 0,   /**<  -50.2 dbm */
+     RF_POWER_P5p79dBm  = BIT(7) | 63,   /**<   5.8 dbm */
+     RF_POWER_P5p54dBm  = BIT(7) | 59,   /**<   5.5 dbm */
+     RF_POWER_P5p25dBm  = BIT(7) | 55,   /**<   5.2 dbm */
+     RF_POWER_P5p09dBm  = BIT(7) | 53,   /**<   5.1 dbm */
+     RF_POWER_P5p00dBm  = BIT(7) | 52,   /**<   5.0 dbm */
+     RF_POWER_P4p73dBm  = BIT(7) | 49,   /**<   4.7 dbm */
+     RF_POWER_P4p52dBm  = BIT(7) | 47,   /**<   4.5 dbm */
+     RF_POWER_P4p05dBm  = BIT(7) | 43,   /**<   4.0 dbm */
+     RF_POWER_P3p49dBm  = BIT(7) | 39,   /**<   3.5 dbm */
+     RF_POWER_P2p99dBm  = BIT(7) | 36,   /**<   3.0 dbm */
+     RF_POWER_P2p45dBm  = BIT(7) | 33,   /**<   2.5 dbm */
+     RF_POWER_P2p03dBm  = BIT(7) | 31,   /**<   2.0 dbm */
+     RF_POWER_P1p53dBm  = BIT(7) | 29,   /**<   1.5 dbm */
+     RF_POWER_P1p33dBm  = BIT(7) | 28,   /**<   1.3 dbm */
+     RF_POWER_P1p09dBm  = BIT(7) | 27,   /**<   1.0 dbm */
+     RF_POWER_P0p55dBm  = BIT(7) | 25,   /**<   0.5 dbm */
+     RF_POWER_P0p25dBm  = BIT(7) | 24,   /**<   0.2 dbm */
+     RF_POWER_N0p07dBm  = BIT(7) | 23,   /**<   0.0 dbm */
+     RF_POWER_N0p41dBm  = BIT(7) | 22,   /**<   -0.4 dbm */
+     RF_POWER_N0p72dBm  = BIT(7) | 21,   /**<   -0.7 dbm */
+     RF_POWER_N1p10dBm  = BIT(7) | 20,   /**<   -1.0 dbm */
+     RF_POWER_N1p49dBm  = BIT(7) | 19,   /**<   -1.5 dbm */
+     RF_POWER_N2p21dBm  = BIT(7) | 17,   /**<  -2.1 dbm */
+     RF_POWER_N2p80dBm  = BIT(7) | 16,   /**<  -2.8 dbm */
+     RF_POWER_N3p21dBm  = BIT(7) | 15,   /**<  -3.2 dbm */
+     RF_POWER_N4p41dBm  = BIT(7) | 13,   /**<  -4.4 dbm */
+     RF_POWER_N5p07dBm  = BIT(7) | 12,   /**<  -5.0 dbm */
+     RF_POWER_N5p73dBm  = BIT(7) | 11,   /**<  -5.7 dbm */
+     RF_POWER_N6p53dBm  = BIT(7) | 10,   /**<  -6.5 dbm */
+     RF_POWER_N7p33dBm  = BIT(7) | 9,   /**<  -7.3 dbm */     
+     RF_POWER_N8p32dBm  = BIT(7) | 8,   /**<  -8.3 dbm */
+     RF_POWER_N9p45dBm  = BIT(7) | 7,   /**<  -9.5 dbm */
+     RF_POWER_N10p77dBm  = BIT(7) | 6,   /**<  -10.7 dbm */
+     RF_POWER_N14p13dBm  = BIT(7) | 4,   /**<  -14.1 dbm */
+     RF_POWER_N20p01dBm  = BIT(7) | 2,   /**<  -20.0 dbm */
+     RF_POWER_N25p53dBm  = BIT(7) | 1,   /**<  -25.5 dbm */
+     RF_POWER_N48p75dBm  = BIT(7) | 0,   /**<  -48.8 dbm */
 } rf_power_level_e;
 
 /**
@@ -289,60 +291,61 @@ typedef enum {
  *           (3)There will be some differences in the energy values tested between different chips.
  */
 typedef enum {
-      /*VBAT*/
-     RF_POWER_INDEX_P10p73dBm  = 63, /**<  10.7 dbm */
-     RF_POWER_INDEX_P10p51dBm  = 61, /**<  10.5 dbm */
-     RF_POWER_INDEX_P10p04dBm  = 57, /**<  10.0 dbm */
-     RF_POWER_INDEX_P9p54dBm  = 53, /**<  9.5 dbm */
-     RF_POWER_INDEX_P8p99dBm  = 49, /**<  9.0 dbm */
-     RF_POWER_INDEX_P8p52dBm  = 46, /**<  8.5 dbm */
-     RF_POWER_INDEX_P8p03dBm  = 43, /**<  8.0 dbm */
-     RF_POWER_INDEX_P7p49dBm  = 40, /**<  7.5 dbm */
-     RF_POWER_INDEX_P7p31dBm  = 39, /**<  7.3 dbm */
-     RF_POWER_INDEX_P7p11dBm  = 38, /**<  7.1 dbm */
-     RF_POWER_INDEX_P6p91dBm  = 37, /**<  6.9 dbm */
-     RF_POWER_INDEX_P6p70dBm  = 36, /**<  6.7 dbm */
-     RF_POWER_INDEX_P6p49dBm  = 35, /**<  6.5 dbm */
-     RF_POWER_INDEX_P6p03dBm  = 33, /**<  6.0 dbm */
-     RF_POWER_INDEX_P5p54dBm  = 31, /**<  5.5 dbm */
-     RF_POWER_INDEX_P5p02dBm  = 29, /**<  5.0 dbm */
-     RF_POWER_INDEX_P4p47dBm  = 27, /**<  4.5 dbm */
-     RF_POWER_INDEX_P3p86dBm  = 25, /**<  3.8 dbm */
-     RF_POWER_INDEX_P3p21dBm  = 23, /**<  3.2 dbm */
-     RF_POWER_INDEX_P2p85dBm  = 22, /**<  2.9 dbm */
-     RF_POWER_INDEX_P2p47dBm  = 21, /**<  2.5 dbm */
+     /*VBAT*/
+     RF_POWER_INDEX_P11p33dBm, /**<  11.3 dbm */
+     RF_POWER_INDEX_P11p16dBm, /**<  11.1 dbm */
+     RF_POWER_INDEX_P10p78dBm, /**<  10.8 dbm */
+     RF_POWER_INDEX_P10p56dBm, /**<  10.5 dbm */
+     RF_POWER_INDEX_P9p97dBm, /**<  10.0 dbm */
+     RF_POWER_INDEX_P9p50dBm, /**<  9.5 dbm */
+     RF_POWER_INDEX_P8p95dBm, /**<  9.0 dbm */
+     RF_POWER_INDEX_P8p48dBm, /**<  8.5 dbm */
+     RF_POWER_INDEX_P8p03dBm, /**<  8.0 dbm */
+     RF_POWER_INDEX_P7p61dBm, /**<  7.6 dbm */
+     RF_POWER_INDEX_P7p19dBm, /**<  7.2 dbm */
+     RF_POWER_INDEX_P6p97dBm, /**<  7.0 dbm */
+     RF_POWER_INDEX_P6p48dBm, /**<  6.5 dbm */
+     RF_POWER_INDEX_P5p97dBm, /**<  6.0 dbm */
 
      /*VANT*/
-     RF_POWER_INDEX_P1p90dBm  = BIT(7) | 63,   /**<   1.9 dbm */
-     RF_POWER_INDEX_P1p47dBm  = BIT(7) | 59,   /**<   1.5 dbm */
-     RF_POWER_INDEX_P1p00dBm  = BIT(7) | 55,   /**<   1.0 dbm */
-     RF_POWER_INDEX_P0p74dBm  = BIT(7) | 53,   /**<   0.7 dbm */
-     RF_POWER_INDEX_P0p47dBm  = BIT(7) | 51,   /**<   0.4 dbm */
-     RF_POWER_INDEX_P0p19dBm  = BIT(7) | 49,   /**<   0.2 dbm */
-     RF_POWER_INDEX_P0p03dBm  = BIT(7) | 48,   /**<   0.0 dbm */
-     RF_POWER_INDEX_N0p13dBm  = BIT(7) | 47,   /**<  -0.2 dbm */
-     RF_POWER_INDEX_N0p30dBm  = BIT(7) | 46,   /**<  -0.3 dbm */
-     RF_POWER_INDEX_N0p44dBm  = BIT(7) | 45,   /**<  -0.7 dbm */
-     RF_POWER_INDEX_N0p96dBm  = BIT(7) | 42,   /**<  -1.0 dbm */
-     RF_POWER_INDEX_N1p50dBm  = BIT(7) | 39,   /**<  -1.5 dbm */
-     RF_POWER_INDEX_N2p12dBm  = BIT(7) | 36,   /**<  -2.1 dbm */
-     RF_POWER_INDEX_N2p55dBm  = BIT(7) | 34,   /**<  -2.6 dbm */
-     RF_POWER_INDEX_N3p02dBm  = BIT(7) | 32,   /**<  -3.0 dbm */
-     RF_POWER_INDEX_N3p52dBm  = BIT(7) | 30,   /**<  -3.5 dbm */
-     RF_POWER_INDEX_N4p06dBm  = BIT(7) | 28,   /**<  -4.0 dbm */
-     RF_POWER_INDEX_N4p64dBm  = BIT(7) | 26,   /**<  -4.6 dbm */
-     RF_POWER_INDEX_N5p59dBm  = BIT(7) | 23,   /**<  -5.6 dbm */
-     RF_POWER_INDEX_N6p72dBm  = BIT(7) | 20,   /**<  -6.7 dbm */
-     RF_POWER_INDEX_N7p57dBm  = BIT(7) | 18,   /**<  -7.6 dbm */
-     RF_POWER_INDEX_N8p52dBm  = BIT(7) | 16,   /**<  -8.5 dbm */
-     RF_POWER_INDEX_N10p28dBm = BIT(7) | 13,   /**<  -10.3 dbm */
-     RF_POWER_INDEX_N11p67dBm = BIT(7) | 11,   /**<  -11.7 dbm */
-     RF_POWER_INDEX_N14p37dBm  = BIT(7) | 8,   /**<  -14.4 dbm */
-     RF_POWER_INDEX_N16p82dBm  = BIT(7) | 6,   /**<  -16.8 bm */
-     RF_POWER_INDEX_N20p25dBm  = BIT(7) | 4,   /**<  -20.3 dbm */
-     RF_POWER_INDEX_N26p20dBm  = BIT(7) | 2,   /**<  -26.2 dbm */
-     RF_POWER_INDEX_N31p73dBm  = BIT(7) | 1,   /**<  -31.7 dbm */
-     RF_POWER_INDEX_N50p24dBm  = BIT(7) | 0,   /**<  -50.2 dbm */
+     RF_POWER_INDEX_P5p79dBm,   /**<   5.8 dbm */
+     RF_POWER_INDEX_P5p54dBm,   /**<   5.5 dbm */
+     RF_POWER_INDEX_P5p25dBm,   /**<   5.2 dbm */
+     RF_POWER_INDEX_P5p09dBm,   /**<   5.1 dbm */
+     RF_POWER_INDEX_P5p00dBm,   /**<   5.0 dbm */
+     RF_POWER_INDEX_P4p73dBm,   /**<   4.7 dbm */
+     RF_POWER_INDEX_P4p52dBm,   /**<   4.5 dbm */
+     RF_POWER_INDEX_P4p05dBm,   /**<   4.0 dbm */
+     RF_POWER_INDEX_P3p49dBm,   /**<   3.5 dbm */
+     RF_POWER_INDEX_P2p99dBm,   /**<   3.0 dbm */
+     RF_POWER_INDEX_P2p45dBm,   /**<   2.5 dbm */
+     RF_POWER_INDEX_P2p03dBm,   /**<   2.0 dbm */
+     RF_POWER_INDEX_P1p53dBm,   /**<   1.5 dbm */
+     RF_POWER_INDEX_P1p33dBm,   /**<   1.3 dbm */
+     RF_POWER_INDEX_P1p09dBm,   /**<   1.0 dbm */
+     RF_POWER_INDEX_P0p55dBm,   /**<   0.5 dbm */
+     RF_POWER_INDEX_P0p25dBm,   /**<   0.2 dbm */
+     RF_POWER_INDEX_N0p07dBm,   /**<   0.0 dbm */
+     RF_POWER_INDEX_N0p41dBm,   /**<   -0.4 dbm */
+     RF_POWER_INDEX_N0p72dBm,   /**<   -0.7 dbm */
+     RF_POWER_INDEX_N1p10dBm,   /**<   -1.0 dbm */
+     RF_POWER_INDEX_N1p49dBm,   /**<   -1.5 dbm */
+     RF_POWER_INDEX_N2p21dBm,   /**<  -2.1 dbm */
+     RF_POWER_INDEX_N2p80dBm,   /**<  -2.8 dbm */
+     RF_POWER_INDEX_N3p21dBm,   /**<  -3.2 dbm */
+     RF_POWER_INDEX_N4p41dBm,   /**<  -4.4 dbm */
+     RF_POWER_INDEX_N5p07dBm,   /**<  -5.0 dbm */
+     RF_POWER_INDEX_N5p73dBm,   /**<  -5.7 dbm */
+     RF_POWER_INDEX_N6p53dBm,   /**<  -6.5 dbm */
+     RF_POWER_INDEX_N7p33dBm,   /**<  -7.3 dbm */     
+     RF_POWER_INDEX_N8p32dBm,   /**<  -8.3 dbm */
+     RF_POWER_INDEX_N9p45dBm,   /**<  -9.5 dbm */
+     RF_POWER_INDEX_N10p77dBm,   /**<  -10.7 dbm */
+     RF_POWER_INDEX_N14p13dBm,   /**<  -14.1 dbm */
+     RF_POWER_INDEX_N20p01dBm,   /**<  -20.0 dbm */
+     RF_POWER_INDEX_N25p53dBm,   /**<  -25.5 dbm */
+     RF_POWER_INDEX_N48p75dBm,   /**<  -48.8 dbm */
+
 } rf_power_level_index_e;
 
 
@@ -413,6 +416,16 @@ enum{
     BB_TIMER_TICK_1MS       = 8000,
     BB_TIMER_TICK_1S        = 8000000,
 };
+
+/**
+ * @brief Define RX performance modes, RF_RX_LOW_POWER and RF_RX_HIGH_PERFORMANCE
+ * @note  Defaults to RF_RX_LOW_POWER for A1.
+ *        RF_RX_HIGH_PERFORMANCE mode can improve performance by 1dBm, but the rx power consumption will increase
+ */
+typedef enum{
+    RF_RX_LOW_POWER           = 0,
+    RF_RX_HIGH_PERFORMANCE    = 1,
+}rf_rx_performance_e;
 
 /**********************************************************************************************************************
  *                                         RF global constants                                                        *
@@ -804,6 +817,16 @@ static inline unsigned char rf_get_rx_wptr(void)
 }
 
 /**
+ * @brief     This function is used to select the rx performance mode.
+ * @param[in] rx_performance - rx performance mode.
+ * @return    none.
+ * @note      There are two types of RX performance modes, RF_RX_LOW_POWER and RF_RX_HIGH_PERFORMANCE
+ *            The default is RF_RX_LOW_POWER, and in this mode, the rx performance can reach -96dBm
+ *            RF_RX_HIGH_PERFORMANCE mode can improve performance by 1dBm, but the rx power consumption will increase
+ */
+void rf_rx_performance_mode(rf_rx_performance_e rx_performance);
+
+/**
  * @brief      This function serves to initiate information of RF.
  * @return     none.
  */
@@ -929,7 +952,19 @@ int rf_set_trx_state(rf_status_e rf_status, signed char rf_channel);
  * @param[in]   value   - The value of internal cap which you want to set.
  * @return      none.
  */
-void rf_update_internal_cap(unsigned char value);
+static _always_inline void rf_update_internal_cap(unsigned char value)
+{
+    analog_write_reg8(0x8a, (analog_read_reg8(0x8a)&0xc0)|(value&0x3f));
+}
+
+/**
+ * @brief       This function serves to close internal cap;
+ * @return      none.
+ */
+static _always_inline void rf_turn_off_internal_cap(void)
+{
+    analog_write_reg8(0x8a, analog_read_reg8(0x8a)|0x80);
+}
 
 /**
  * @brief       This function serve to change the length of preamble.
@@ -1133,7 +1168,7 @@ void rf_set_acc_match_threshold(unsigned char bit_len);
  * @note       This function requires setting reset zb, rstl_bb, and rst_mdm.
  *             It is used to clear RF related state machines, IRQ states, and digital internal logic states.
  */
-void rf_clr_dig_logic_state(void);
+_attribute_ram_code_sec_noinline_ void rf_clr_dig_logic_state(void);
 
 /**
  * @brief      This function is used to restore the rf related registers to their default values.
@@ -1142,7 +1177,7 @@ void rf_clr_dig_logic_state(void);
  *             (2)After calling this interface, the tick of bb timer will be reset to zero.
  *             (3)After calling this interface, RF DMA configurations need to be reconfigured.
  */
-void rf_reset_register_value(void);
+_attribute_ram_code_sec_noinline_ void rf_reset_register_value(void);
 
 /**
  *  @brief      This function is used to set the tx fast_settle calibration value.
@@ -1161,5 +1196,13 @@ void rf_tx_fast_settle_update_cal_val(rf_tx_fast_settle_time_e tx_settle_time,un
  *  @return     none
 */
 void rf_rx_fast_settle_update_cal_val(rf_rx_fast_settle_time_e rx_settle_time,unsigned char chn);
+
+
+/**
+ * @brief          This function is mainly used to set the energy when sending a single carrier.
+ * @param[in]    level        - The slice corresponding to the energy value.
+ * @return         none.
+ */
+void rf_set_power_level_singletone(rf_power_level_e level);
 
 #endif

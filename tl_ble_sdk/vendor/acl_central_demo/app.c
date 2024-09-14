@@ -686,23 +686,6 @@ _attribute_no_inline_ void user_init_normal(void)
 //////////////////////////// basic hardware Initialization  End //////////////////////////////////
 
 
-    #if (APPLICATION_DONGLE)
-        //set USB ID
-        REG_ADDR8(0x1401f4) = 0x65;
-        REG_ADDR16(0x1401fe) = 0x08d0;
-        REG_ADDR8(0x1401f4) = 0x00;
-
-        //////////////// config USB ISO IN/OUT interrupt /////////////////
-        reg_usb_ep_irq_mask = BIT(7);           //audio in interrupt enable
-        plic_interrupt_enable(IRQ_USB_ENDPOINT);
-        plic_set_priority(IRQ_USB_ENDPOINT, 1);
-        reg_usb_ep6_buf_addr = 0x80;
-        reg_usb_ep7_buf_addr = 0x60;
-        reg_usb_ep_max_size = (256 >> 3);
-
-        usb_dp_pullup_en (1);  //open USB enum
-    #endif
-
 //////////////////////////// BLE stack Initialization  Begin //////////////////////////////////
 
     u8  mac_public[6];
@@ -894,11 +877,6 @@ int main_idle_loop (void)
 
 
     proc_central_role_unpair();
-
-    #if (APPLICATION_DONGLE)
-        usb_handle_irq();
-    #endif
-
 
     return 0; //must return 0 due to SDP flow
 }

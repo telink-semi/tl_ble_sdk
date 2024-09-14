@@ -35,6 +35,8 @@
 #ifndef DP_THROUGH_SWIRE_DIS
 #define DP_THROUGH_SWIRE_DIS      1
 #endif
+.extern gpio_shutdown_flashcode_for_asm
+.extern gpio_shutdown_ramcode_for_asm
 
 //According to the current internal seal flash model of Telink RISC-V MCU, the maximum time between the flash awakening and the operating flash is 20us, which leaves some margin and is set to 25us.
 //When adding flash later, if tRES1 is greater than 25us, this waiting time needs to be updated. (flash tRES1, which can be viewed in the comments of the variable flash_support_mid.)
@@ -93,6 +95,7 @@ _RESET_ENTRY:
     .align 2
 
 _START:
+
 #if 0
     // add debug, PB4 output 1
     lui     t0, 0x80140
@@ -139,6 +142,12 @@ _START:
     /* Initialize stack pointer */
     la     t0, _STACK_TOP
     mv     sp, t0
+
+#if 1
+    /* gpio shutdown to decrease current. for power on or deep this function was in flash code segment. */
+    la     t0, gpio_shutdown_flashcode_for_asm
+    jalr   t0
+#endif
 
 #ifdef __nds_execit
     /* Initialize EXEC.IT table */
@@ -279,6 +288,7 @@ _IRESET_ENTRY:
 
     .org 0x22
 _ISTART:
+
 #if 0
     // add debug, PB4 output 1
     lui     t0, 0x80140
@@ -313,9 +323,22 @@ _ISTART:
     la     gp, __global_pointer$
     .option pop
 
+#if DP_THROUGH_SWIRE_DIS
+    lui     t0, 0x80100
+    addi    t0 , t0 , 0x700
+    li      t1, 0x40
+    sb      t1, 0x501(t0)  //0x80100c01 -> 0x40  <7>: 0 swire_usb_dis <6>:read-only bit
+#endif
+
     /* Initialize stack pointer */
     la     t0, _STACK_TOP
     mv     sp, t0
+
+#if 1
+    /* gpio shutdown to decrease current. for retention this function was in ram segment which can be called early. */
+    la     t0, gpio_shutdown_ramcode_for_asm
+    jalr   t0
+#endif
 
 #ifdef __nds_execit
     /* Initialize EXEC.IT table */

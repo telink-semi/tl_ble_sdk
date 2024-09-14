@@ -24,14 +24,14 @@
 #ifndef DRIVERS_TL721X_EXT_MISC_H_
 #define DRIVERS_TL721X_EXT_MISC_H_
 
-#include "nds_intrinsic.h"
+
 
 #include "types.h"
 #include "../compatibility_pack/cmpt.h"
-#include "../analog.h"
+#include "../lib/include/analog.h"
 #include "../adc.h"
 #include "../gpio.h"
-#include "../stimer.h"
+#include "../lib/include/stimer.h"
 #include "../lib/include/pm/pm.h"
 #include "lib/include/rf/rf_common.h"
 #include "../lib/include/trng/trng.h"

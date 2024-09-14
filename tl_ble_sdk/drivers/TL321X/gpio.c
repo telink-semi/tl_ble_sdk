@@ -126,12 +126,10 @@ void gpio_set_input(gpio_pin_e pin, unsigned char value)
 
 /**
  * @brief      This function servers to set the specified GPIO as high resistor.
- * @param[in]  pin  - select the specified GPIO, GPIOI GPIOJ group is not included in GPIO_ALL.
+ *             To prevent power leakage, you need to call gpio_shutdown(GPIO_ALL) (set all gpio to high resistance, except SWS and MSPI.)
+ *             as front as possible in the program, and then initialize the corresponding GPIO according to the actual using situation.
+ * @param[in]  pin  - select the specified GPIO.
  * @return     none.
- * @note       -# gpio_shutdown(GPIO_ALL) is a debugging method only and is not recommended for use in applications.
- *             -# gpio_shutdown(GPIO_ALL) set all GPIOs to high impedance except SWS and MSPI.
- *             -# If you want to use JTAG/USB in active state, or wake up the MCU with a specific pin,
- *                you can enable the corresponding pin after calling gpio_shutdown(GPIO_ALL).
  */
 void gpio_shutdown(gpio_pin_e pin)
 {
@@ -140,13 +138,11 @@ void gpio_shutdown(gpio_pin_e pin)
     switch(group)
     {
         case GPIO_GROUPA:
+            reg_gpio_pa_ie &= (~bit);//disable input
             reg_gpio_pa_oen |= bit;//disable output
-            reg_gpio_pa_gpio |= (bit&0x7f);
-            reg_gpio_pa_ie &= ((~bit)|0x80);//disable input
+            reg_gpio_pa_gpio |= bit;//enable GPIO function
             break;
         case GPIO_GROUPB:
-            reg_gpio_pb_oen |= bit;
-            reg_gpio_pb_gpio |= bit;
             if((pin == GPIO_PB4) || (pin == GPIO_PB5) || (pin == GPIO_PB6) || (pin == GPIO_PB7))
             {
                 analog_write_reg8(areg_gpio_pb_ie, analog_read_reg8(areg_gpio_pb_ie)&(~bit));
@@ -155,38 +151,39 @@ void gpio_shutdown(gpio_pin_e pin)
             {
                 reg_gpio_pb_ie &= (~bit);
             }
+            reg_gpio_pb_oen |= bit;
+            reg_gpio_pb_gpio |= bit;
             break;
         case GPIO_GROUPC:
+            analog_write_reg8(areg_gpio_pc_ie, analog_read_reg8(areg_gpio_pc_ie) & (~bit));
             reg_gpio_pc_oen |= bit;
             reg_gpio_pc_gpio |= bit;
-            analog_write_reg8(areg_gpio_pc_ie, analog_read_reg8(areg_gpio_pc_ie) & (~bit));
             break;
         case GPIO_GROUPD:
+            reg_gpio_pd_ie &= (~bit);
             reg_gpio_pd_oen |= bit;
             reg_gpio_pd_gpio |= bit;
-            reg_gpio_pd_ie &= (~bit);
             break;
-
         case GPIO_GROUPE:
+            reg_gpio_pe_ie &= (~bit);
             reg_gpio_pe_oen |= bit;
             reg_gpio_pe_gpio |= bit;
-            reg_gpio_pe_ie &= (~bit);
             break;
         case GPIO_GROUPF:
+            reg_gpio_pf_ie &= (~bit);
             reg_gpio_pf_oen |= bit;
             reg_gpio_pf_gpio |= bit;
-            reg_gpio_pf_ie &= (~bit);
             break;
 
         case GPIO_ALL:
         {
-            //as gpio
-            reg_gpio_pa_gpio = 0x7f;
-            reg_gpio_pb_gpio = 0xff;
-            reg_gpio_pc_gpio = 0xff;
-            reg_gpio_pd_gpio = 0xff;
-            reg_gpio_pe_gpio = 0xff;
-            // reg_gpio_pf_gpio = 0xff;
+            //disable input
+            reg_gpio_pa_ie = 0x80;//except SWS
+            reg_gpio_pb_ie &= 0xf0;
+            analog_write_reg8(areg_gpio_pb_ie, (analog_read_reg8(areg_gpio_pb_ie) & 0x0f));
+            analog_write_reg8(areg_gpio_pc_ie, 0);
+            reg_gpio_pd_ie = 0x00;
+            reg_gpio_pe_ie = 0x00;
 
             //output disable
             reg_gpio_pa_oen = 0xff;
@@ -194,16 +191,13 @@ void gpio_shutdown(gpio_pin_e pin)
             reg_gpio_pc_oen = 0xff;
             reg_gpio_pd_oen = 0xff;
             reg_gpio_pe_oen = 0xff;
-            // reg_gpio_pf_oen = 0xff;
 
-            //disable input
-            reg_gpio_pa_ie = 0x80;  //SWS input is enabled
-            reg_gpio_pb_ie &= 0xf0;
-            analog_write_reg8(areg_gpio_pb_ie, (analog_read_reg8(areg_gpio_pb_ie) & 0x0f));
-            analog_write_reg8(areg_gpio_pc_ie, 0);
-            reg_gpio_pd_ie = 0x00;
-            reg_gpio_pe_ie = 0x00;
-            // reg_gpio_pf_ie = 0x00;
+            //as gpio
+            reg_gpio_pa_gpio = 0x7f;//except SWS
+            reg_gpio_pb_gpio = 0xff;
+            reg_gpio_pc_gpio = 0xff;
+            reg_gpio_pd_gpio = 0xff;
+            reg_gpio_pe_gpio = 0xff;
         }
     }
 }
@@ -304,6 +298,127 @@ void gpio_set_probe_clk_function(gpio_func_pin_e pin, probe_clk_sel_e sel_clk)
     reg_probe_clk_sel= (reg_probe_clk_sel & 0xe0) | sel_clk;    //probe_clk_sel_e
     gpio_set_mux_function(pin, DBG_PROBE_CLK);              //sel probe_clk function
     gpio_function_dis((gpio_pin_e)pin);
+}
+
+/**
+ * @brief      This function servers to shut down all the GPIO when power on or wakeup from deep sleep.
+ * @return     none.
+ * @note       This function called by .S file to shutdown all the GPIO input which can decrease the current early.
+ *             If this C function is called in the S file, it needs to be called after setting sp.
+ */
+_attribute_flash_code_sec_noinline_ void gpio_shutdown_flashcode_for_asm(void)
+{
+    //disable input
+    reg_gpio_pa_ie = 0x80;                  //SWS
+    reg_gpio_pb_ie &= 0xf0;
+
+    reg_gpio_pd_ie = 0x00;
+    reg_gpio_pe_ie = 0x00;
+
+    reg_rst1 |= FLD_RST1_ALGM;
+    reg_clk_en1 |= FLD_CLK1_ALGM_EN;
+
+    reg_ana_len = 1;
+    reg_ana_addr = 0xbd;
+    reg_ana_data(0) = 0x00;
+    while(!(reg_ana_buf_cnt & FLD_ANA_TX_BUFCNT));
+    reg_ana_ctrl = (FLD_ANA_CYC | FLD_ANA_RW);
+    while(reg_ana_ctrl & FLD_ANA_BUSY);
+    reg_ana_ctrl =0x00;
+
+    reg_ana_len = 1;
+    reg_ana_addr = 0xbf;
+    reg_ana_data(0) = 0x00;
+    while(!(reg_ana_buf_cnt & FLD_ANA_TX_BUFCNT));
+    reg_ana_ctrl = (FLD_ANA_CYC | FLD_ANA_RW);
+    while(reg_ana_ctrl & FLD_ANA_BUSY);
+    reg_ana_ctrl =0x00;
+
+    reg_rst1 &= ~(FLD_RST1_ALGM);
+    reg_clk_en1 &= ~(FLD_CLK1_ALGM_EN);
+}
+
+/**
+ * @brief      This function servers to shut down all the GPIO when wakeup from deep retention sleep.
+ * @return     none.
+ * @note       This function called by .S file to shutdown all the GPIO input which can decrease the current early.
+ *             If this C function is called in the S file, it needs to be called after setting sp.
+ */
+_attribute_ram_code_sec_ void gpio_shutdown_ramcode_for_asm(void)
+{
+    //disable input
+    reg_gpio_pa_ie = 0x80;                  //SWS
+    reg_gpio_pb_ie &= 0xf0;
+
+    reg_gpio_pd_ie = 0x00;
+    reg_gpio_pe_ie = 0x00;
+
+    reg_rst1 |= FLD_RST1_ALGM;
+    reg_clk_en1 |= FLD_CLK1_ALGM_EN;
+
+    reg_ana_len = 1;
+    reg_ana_addr = 0xbd;
+    reg_ana_data(0) = 0x00;
+    while(!(reg_ana_buf_cnt & FLD_ANA_TX_BUFCNT));
+    reg_ana_ctrl = (FLD_ANA_CYC | FLD_ANA_RW);
+    while(reg_ana_ctrl & FLD_ANA_BUSY);
+    reg_ana_ctrl =0x00;
+
+    reg_ana_len = 1;
+    reg_ana_addr = 0xbf;
+    reg_ana_data(0) = 0x00;
+    while(!(reg_ana_buf_cnt & FLD_ANA_TX_BUFCNT));
+    reg_ana_ctrl = (FLD_ANA_CYC | FLD_ANA_RW);
+    while(reg_ana_ctrl & FLD_ANA_BUSY);
+    reg_ana_ctrl =0x00;
+
+    reg_rst1 &= ~(FLD_RST1_ALGM);
+    reg_clk_en1 &= ~(FLD_CLK1_ALGM_EN);
+}
+
+/**
+ * @brief     This function set jtag or sdp function.
+ * @param[in] pin
+ * @return    none.
+ */
+void jtag_sdp_set_pin(gpio_pin_e pin)
+{
+    gpio_input_en(pin);
+    reg_gpio_func_mux(pin) = 0;
+    gpio_function_dis(pin);
+}
+
+/**
+ * @brief     This function serves to set jtag(4 wires) pin . Where, PC[4]; PC[5]; PC[6]; PC[7] correspond to TDI; TDO; TMS; TCK functions mux respectively.
+ * @param[in] none
+ * @return    none.
+ * @note      Power-on or hardware reset will detect the level of PB0 (reboot will not detect it), detecting a low level is configured as jtag,
+               detecting a high level is configured as sdp.  the level of PB0 can not be configured internally by the software, and can only be input externally.
+ */
+void jtag_set_pin_en(void)
+{
+    jtag_sdp_set_pin(GPIO_PC4);//TDI
+    gpio_set_up_down_res(GPIO_PC4,GPIO_PIN_PULLDOWN_100K);
+    jtag_sdp_set_pin(GPIO_PC5);//TDO
+    jtag_sdp_set_pin(GPIO_PC6);//TMS
+    gpio_set_up_down_res(GPIO_PC6,GPIO_PIN_PULLUP_10K);
+    jtag_sdp_set_pin(GPIO_PC7);//TCK
+    gpio_set_up_down_res(GPIO_PC7,GPIO_PIN_PULLUP_10K);
+}
+
+/**
+ * @brief     This function serves to set sdp(2 wires) pin . where, PC[6]; PC[7] correspond to TMS and TCK functions mux respectively.
+ * @param[in] none
+ * @return    none.
+ * @note      Power-on or hardware reset will detect the level of PB0 (reboot will not detect it), detecting a low level is configured as jtag,
+               detecting a high level is configured as sdp.  the level of PB0 can not be configured internally by the software, and can only be input externally.
+ */
+void sdp_set_pin_en(void)
+{
+    jtag_sdp_set_pin(GPIO_PC6);//TMS
+    gpio_set_up_down_res(GPIO_PC6,GPIO_PIN_PULLUP_10K);
+    jtag_sdp_set_pin(GPIO_PC7);//TCK
+    gpio_set_up_down_res(GPIO_PC7,GPIO_PIN_PULLUP_10K);
 }
 /**********************************************************************************************************************
   *                                         local function implementation                                             *

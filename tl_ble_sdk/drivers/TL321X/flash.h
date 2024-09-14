@@ -41,7 +41,7 @@
  */
 #pragma once
 
-#include "mspi.h"
+#include "lib/include/mspi.h"
 #include "compiler.h"
 
 #define PAGE_SIZE       256
@@ -136,7 +136,6 @@ typedef enum{
     MID136085   =   0x136085,//P25Q40SU
     MID156085   =   0x156085,//P25Q16SU
     MID166085   =   0x166085,//P25Q32SU
-    MID1660C8   =   0x1660c8,//GD25LQ32E/GD25LE32E
 }flash_mid_e;
 
 
@@ -201,7 +200,7 @@ extern _attribute_data_retention_sec_ flash_read_check_handler_t flash_read_page
  * @param[in]   write   - the write function.
  * @none
  */
-static inline void flash_change_rw_func(flash_handler_t read, flash_handler_t write)
+static _always_inline void flash_change_rw_func(flash_handler_t read, flash_handler_t write)
 {
     flash_read_page = read;
     flash_write_page = write;

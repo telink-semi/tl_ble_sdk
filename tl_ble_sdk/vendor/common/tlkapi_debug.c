@@ -35,7 +35,7 @@ _attribute_ble_data_retention_ tlk_dbg_t tlkDbgCtl = {
 };
 
 _attribute_ble_data_retention_ my_fifo_t   *tlkapi_print_fifo = NULL;
-
+_attribute_ble_data_retention_ u16 g_debug_serial = 0;
 
 
 #if (TLKAPI_DEBUG_ENABLE)
@@ -372,15 +372,13 @@ void tlkapi_send_str_data (char *str, u8 *pData, u32 data_len)
         data_len = tlkDbgCtl.fifo_data_len - ns;
     }
 
-
-
     u32 r = irq_disable();
 
     u8 *pd =  tlkapi_print_fifo->p + (tlkapi_print_fifo->wptr & (tlkapi_print_fifo->num - 1)) * tlkapi_print_fifo->size;
 
     if(tlkDbgCtl.dbg_chn == TLKAPI_DEBUG_CHANNEL_UDB)
     {
-        int len = data_len + ns + 5;
+        int len = data_len + ns + 5 + 6;
         *pd++ = len;
         *pd++ = len >> 8;
         *pd++ = 0;
@@ -391,6 +389,14 @@ void tlkapi_send_str_data (char *str, u8 *pData, u32 data_len)
         *pd++ = 0x22;
         *pd++ = data_len;
         *pd++ = data_len >> 8;
+
+        g_debug_serial++;
+        *pd++ = '[';
+        *pd++ = hex_table[g_debug_serial >> 12]; //0x0000 ~ 0xFFFF, high 4 bit no need "& 0x0F"
+        *pd++ = hex_table[(g_debug_serial >> 8) & 0x0F];
+        *pd++ = hex_table[(g_debug_serial >> 4) & 0x0F];
+        *pd++ = hex_table[g_debug_serial & 0x0F];
+        *pd++ = ']';
 
         while (data_len--)
         {
@@ -431,11 +437,20 @@ void tlkapi_send_str_data (char *str, u8 *pData, u32 data_len)
             if(data_len > max_len){
                 data_len = max_len;
             }
-            int len = ns + data_len * 3 + 3;
+            int len = ns + data_len * 3 + 3 + 6;
             *pd++ = len;
             *pd++ = len >> 8;
             *pd++ = 0;
             *pd++ = 0;
+
+            g_debug_serial++;
+            *pd++ = '[';
+            *pd++ = hex_table[g_debug_serial >> 12]; //0x0000 ~ 0xFFFF, high 4 bit no need "& 0x0F"
+            *pd++ = hex_table[(g_debug_serial >> 8) & 0x0F];
+            *pd++ = hex_table[(g_debug_serial >> 4) & 0x0F];
+            *pd++ = hex_table[g_debug_serial & 0x0F];
+            *pd++ = ']';
+
             while (ns--)
             {
                 *pd++ = *str++;
@@ -456,7 +471,9 @@ void tlkapi_send_str_data (char *str, u8 *pData, u32 data_len)
     tlkapi_print_fifo->wptr++;
 
     irq_restore(r);
-
+    #if (BLE_APP_PM_ENABLE)
+    blc_pm_setSleepMask(PM_SLEEP_DISABLE); // Must not sleep when there is log data to send
+    #endif
 #endif
 }
 
@@ -514,7 +531,15 @@ __attribute__((used)) int _write(int fd, const unsigned char *buf, int size)
     u8 *pd =  tlkapi_print_fifo->p + (tlkapi_print_fifo->wptr & (tlkapi_print_fifo->num - 1)) * tlkapi_print_fifo->size;
     if(tlkDbgCtl.dbg_chn == TLKAPI_DEBUG_CHANNEL_UDB){
         memcpy((char*)(pd + 9),buf,size);
-        int len = size + 5;
+        int len = size + 5 + 6;
+
+        *pd++ = '[';
+        *pd++ = hex_table[g_debug_serial >> 12]; //0x0000 ~ 0xFFFF, high 4 bit no need "& 0x0F"
+        *pd++ = hex_table[(g_debug_serial >> 8) & 0x0F];
+        *pd++ = hex_table[(g_debug_serial >> 4) & 0x0F];
+        *pd++ = hex_table[g_debug_serial & 0x0F];
+        *pd++ = ']';
+
         *pd++ = len;
         *pd++ = len >> 8;
         *pd++ = 0;
@@ -527,14 +552,26 @@ __attribute__((used)) int _write(int fd, const unsigned char *buf, int size)
         *pd++ = 0;
     }
     else{
-        memcpy((char*)(pd + 4),buf,size);
-        int len = size;
+        memcpy((char*)(pd + 4),buf,size+6);
+        int len = size + 6;
+
+        g_debug_serial++;
+        *pd++ = '[';
+        *pd++ = hex_table[g_debug_serial >> 12]; //0x0000 ~ 0xFFFF, high 4 bit no need "& 0x0F"
+        *pd++ = hex_table[(g_debug_serial >> 8) & 0x0F];
+        *pd++ = hex_table[(g_debug_serial >> 4) & 0x0F];
+        *pd++ = hex_table[g_debug_serial & 0x0F];
+        *pd++ = ']';
+
         *pd++ = len;
         *pd++ = len >> 8;
         *pd++ = 0;
         *pd++ = 0;
     }
     tlkapi_print_fifo->wptr ++;
+    #if (BLE_APP_PM_ENABLE)
+    blc_pm_setSleepMask(PM_SLEEP_DISABLE); // Must not sleep when there is log data to send
+    #endif
     return size;
 #endif
 }
@@ -562,7 +599,7 @@ int tlk_printf(const char *format, ...)
     u8 *pd =  tlkapi_print_fifo->p + (tlkapi_print_fifo->wptr & (tlkapi_print_fifo->num - 1)) * tlkapi_print_fifo->size;
     int ret;
 
-#if ((MCU_CORE_TYPE == MCU_CORE_B91) || (MCU_CORE_TYPE == MCU_CORE_TL721X) || (MCU_CORE_TYPE == MCU_CORE_TL321X))
+#if ((MCU_CORE_TYPE == MCU_CORE_B91) || (MCU_CORE_TYPE == MCU_CORE_B92) || (MCU_CORE_TYPE == MCU_CORE_TL751X)||(MCU_CORE_TYPE == MCU_CORE_TL721X)||(MCU_CORE_TYPE == MCU_CORE_TL321X))
     va_list args;
     va_start( args, format );
 
@@ -570,7 +607,7 @@ int tlk_printf(const char *format, ...)
         ret = vsnprintf((char*)(pd + 9), tlkDbgCtl.fifo_data_len, format, args);
     }
     else{
-        ret = vsnprintf((char*)(pd + 4), tlkDbgCtl.fifo_data_len, format, args);
+        ret = vsnprintf((char*)(pd + 4 + 6), tlkDbgCtl.fifo_data_len, format, args);
     }
 
     va_end( args );
@@ -586,6 +623,14 @@ int tlk_printf(const char *format, ...)
         *pd++ = 0;
         *pd++ = 0;
 
+        g_debug_serial++;
+        *pd++ = '[';
+        *pd++ = hex_table[g_debug_serial >> 12]; //0x0000 ~ 0xFFFF, high 4 bit no need "& 0x0F"
+        *pd++ = hex_table[(g_debug_serial >> 8) & 0x0F];
+        *pd++ = hex_table[(g_debug_serial >> 4) & 0x0F];
+        *pd++ = hex_table[g_debug_serial & 0x0F];
+        *pd++ = ']';
+
         *pd++ = 0x82;
         *pd++ = 8;
         *pd++ = 0x22;
@@ -598,12 +643,22 @@ int tlk_printf(const char *format, ...)
         *pd++ = len >> 8;
         *pd++ = 0;
         *pd++ = 0;
+
+        g_debug_serial++;
+        *pd++ = '[';
+        *pd++ = hex_table[g_debug_serial >> 12]; //0x0000 ~ 0xFFFF, high 4 bit no need "& 0x0F"
+        *pd++ = hex_table[(g_debug_serial >> 8) & 0x0F];
+        *pd++ = hex_table[(g_debug_serial >> 4) & 0x0F];
+        *pd++ = hex_table[g_debug_serial & 0x0F];
+        *pd++ = ']';
         //pd += ret;
         //*pd++ = '\n';
     }
 
     tlkapi_print_fifo->wptr ++;
-
+    #if (BLE_APP_PM_ENABLE)
+    blc_pm_setSleepMask(PM_SLEEP_DISABLE); // Must not sleep when there is log data to send
+    #endif
     return ret;
 #endif
 }
