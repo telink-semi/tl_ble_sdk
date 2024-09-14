@@ -2,28 +2,27 @@
 
 ### Version
 
-* SDK Version: tl_ble_sdk_v4.0.4.1
+* SDK Version: tl_ble_sdk V4.0.4.2
 * Chip Version: 
-  - TLSR921X		A3/A4
-  - TL721X			A1
-  - TL321X			A0
-* Driver Version: 
-  - TLSR921X		tl_platform_sdk V2.3.0
-  - TL721X			tl_platform_sdk V3.1.0
-  - TL321X			tl_platform_sdk V3.1.0
+  - TLSR921X(B91): 			A2
+  - TLSR922X/TLSR952X(B92): A3/A4
+  - TL721X: 				A1
+  - TL321X:					A1
+* Hardware EVK Version:
+  - TLSR921X: 				C1T213A20_V1.3
+  - TLSR952X: 				C1T266A20_V1.3
+  - TL721X: 				C1T314A20_V1.0
+  - TL321X: 				C1T331A20_V1.0/C1T335A20_V1.0
+* Platform Version: 
+  - TLSR921X: 				tl_platform_sdk V3.2.0
+  - TLSR922X/TLSR952X: 		tl_platform_sdk V3.2.0
+  - TL721X: 				tl_platform_sdk V3.2.0
+  - TL321X: 				tl_platform_sdk V3.2.0
 * Toolchain Version:
-  - TLSR921X		GCC 7 (IDE: Telink RDS)
-  - TL721X			GCC 12(IDE: Telink IoT Studio)
-  - TL321X			GCC 12(IDE: Telink IoT Studio)
-
-### Hardware
-* TLSR921X
-  - C1T213A20
-* TL721X
-  - C1T314A20
-* TL321X
-  - C1T331A20
-  - C1T335A20
+  - TLSR921X: 				TL32 ELF MCULIB V5F GCC7.4  (IDE: [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/Telink_IoT_Studio/))
+  - TLSR922X/TLSR952X: 		TL32 ELF MCULIB V5F GCC12.2 (IDE: [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/Telink_IoT_Studio/))
+  - TL721X: 				TL32 ELF MCULIB V5F GCC12.2 (IDE: [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/Telink_IoT_Studio/))
+  - TL321X: 				TL32 ELF MCULIB V5  GCC12.2 (IDE: [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/Telink_IoT_Studio/)) 
   
 ### Note
 * The system clock must be at least 32M.
@@ -40,6 +39,7 @@
 ### Features
 * **Chip**
   - Support TLSR951X chip.
+  - Support TLSR922X/TLSR952X chip.
   - Support TL721X chip.
   - Support TL321X chip.
 * **Demo & Library**
@@ -59,6 +59,9 @@
 
 ### Flash
 * TLSR921X
+  - P25Q80U
+  - P25Q16SU
+* TLSR952X
   - P25Q80U
   - P25Q16SU
 * TL721X
