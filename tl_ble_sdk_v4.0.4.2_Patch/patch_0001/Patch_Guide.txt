@@ -1,0 +1,44 @@
+**************************************************************************
+                                                                        
+                       Telink SDK Patch Guide                              
+                                                                            
+                                                                        
+**************************************************************************
+1. 0001_20241121
+	replace file "tl_ble_sdk/proj_lib/liblt_B91.a" with "patch_0001_20241119/proj_lib/liblt_B91.a",
+	replace file "tl_ble_sdk/proj_lib/liblt_B92.a" with "patch_0001_20241119/proj_lib/liblt_B92.a",
+	replace file "tl_ble_sdk/proj_lib/liblt_TL321X.a" with "patch_0001_20241119/proj_lib/liblt_TL321X.a",
+	replace file "tl_ble_sdk/proj_lib/liblt_TL721X.a" with "patch_0001_20241119/proj_lib/liblt_TL721X.a",
+	replace file "tl_ble_sdk/stack/ble/ble_common.h" with "patch_0001_20241119/stack/ble/ble_common.h",
+	replace file "tl_ble_sdk/stack/ble/ble_format.h" with "patch_0001_20241119/stack/ble/ble_format.h",
+	replace file "tl_ble_sdk/stack/ble/controller/contr_comp.h" with "patch_0001_20241119/stack/ble/controller/contr_comp.h",
+	replace file "tl_ble_sdk/stack/ble/controller/ll/ll.h" with "patch_0001_20241119/stack/ble/controller/ll/ll.h",
+	replace file "tl_ble_sdk/stack/ble/hci/hci.h" with "patch_0001_20241119/stack/ble/hci/hci.h",
+	replace file "tl_ble_sdk/stack/ble/hci/hci_cmd.h" with "patch_0001_20241119/stack/ble/hci/hci_cmd.h",
+	replace file "tl_ble_sdk/stack/ble/hci/hci_event.h" with "patch_0001_20241119/stack/ble/hci/hci_event.h",
+	replace file "tl_ble_sdk/stack/ble/host/gap/gap_event.h" with "patch_0001_20241119/stack/ble/host/gap/gap_event.h",
+	replace file "tl_ble_sdk/vendor/acl_central_demo/main.c" with "patch_0001_20241119/vendor/acl_central_demo/main.c",
+	replace file "tl_ble_sdk/vendor/acl_connection_demo/main.c" with "patch_0001_20241119/vendor/acl_connection_demo/main.c",
+	replace file "tl_ble_sdk/vendor/acl_peripheral_demo/app_freertos.c" with "patch_0001_20241119/vendor/acl_peripheral_demo/app_freertos.c",
+	replace file "tl_ble_sdk/vendor/acl_peripheral_demo/main.c" with "patch_0001_20241119/vendor/acl_peripheral_demo/main.c",
+	replace file "tl_ble_sdk/vendor/common/battery_check.c" with "patch_0001_20241119/vendor/common/battery_check.c",
+	replace file "tl_ble_sdk/vendor/common/ble_flash.c" with "patch_0001_20241119/vendor/common/ble_flash.c",
+	replace file "tl_ble_sdk/vendor/common/ble_flash.h" with "patch_0001_20241119/vendor/common/ble_flash.h",
+	replace file "tl_ble_sdk/vendor/common/boards/TL321X_C1T335A20.h" with "patch_0001_20241119/vendor/common/boards/TL321X_C1T335A20.h",
+	replace file "tl_ble_sdk/vendor/common/tlkapi_debug.c" with "patch_0001_20241119/vendor/common/tlkapi_debug.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_2M_coded_phy/main.c" with "patch_0001_20241119/vendor/feature_test/feature_2M_coded_phy/main.c,
+	replace file "tl_ble_sdk/vendor/feature_test/feature_PHY_test/main.c" with "patch_0001_20241119/vendor/feature_test/feature_PHY_test/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_backup/main.c" with "patch_0001_20241119/vendor/feature_test/feature_backup/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_dle/main.c" with "patch_0001_20241119/vendor/feature_test/feature_dle/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_ext_adv/main.c" with "patch_0001_20241119/vendor/feature_test/feature_ext_adv/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_ext_scan/main.c" with "patch_0001_20241119/vendor/feature_test/feature_ext_scan/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_gatt_api/main.c" with "patch_0001_20241119/vendor/feature_test/feature_gatt_api/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_l2cap_coc/main.c" with "patch_0001_20241119/vendor/feature_test/feature_l2cap_coc/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_ll_more_data/main.c" with "patch_0001_20241119/vendor/feature_test/feature_ll_more_data/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_ota/main.c" with "patch_0001_20241119/vendor/feature_test/feature_ota/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_per_adv/main.c" with "patch_0001_20241119/vendor/feature_test/feature_per_adv/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_per_adv_sync/main.c" with "patch_0001_20241119/vendor/feature_test/feature_per_adv_sync/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_smp/main.c" with "patch_0001_20241119/vendor/feature_test/feature_smp/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_soft_timer/main.c" with "patch_0001_20241119/vendor/feature_test/feature_soft_timer/main.c",
+	replace file "tl_ble_sdk/vendor/feature_test/feature_whitelist/main.c" with "patch_0001_20241119/vendor/feature_test/feature_whitelist/main.c",
+	replace file "tl_ble_sdk/sdk_version.txt" with "patch_0001_20241119/sdk_version.txt"
