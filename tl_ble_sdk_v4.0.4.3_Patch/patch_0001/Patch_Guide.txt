@@ -1,0 +1,10 @@
+**************************************************************************
+                                                                        
+                       Telink SDK Patch Guide                              
+                                                                            
+                                                                        
+**************************************************************************
+1. 0001_20250210
+    	replace file "tl_ble_sdk/vendor/common/ble_flash.c" with "patch_0001/vendor/common/ble_flash.c"
+    	replace file "tl_ble_sdk/common/sdk_version.h" with "patch_0001/common/sdk_version.h"
+	replace file "tl_ble_sdk/sdk_version.txt" with "patch_0001/sdk_version.txt"
