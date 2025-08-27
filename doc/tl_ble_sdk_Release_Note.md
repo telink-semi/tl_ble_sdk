@@ -1,3 +1,35 @@
+## V4.0.4.4_Patch_0001(PR)
+
+### Bug Fixes
+* **Drivers**
+  * For TL321X, fixed RF power on sequence error, which may potentially cause abnormal operation of RF module.
+* **APP**
+  * For TL721X, corrected the ADC reference voltage configuration, changing it from ADC_VREF_GPIO_1P2V to ADC_VREF_1P2V to ensure the module works properly.
+
+
+### Features
+* **Drivers**
+  * For TL321X, call the efuse_calib_adc_vref() interface in blc_app_loadCustomizedParameters_normal() to calibrate adc gpio mode and vbat mode.
+  * For TL721X, call the otp_calib_adc_vref() interface in blc_app_loadCustomizedParameters_normal() to calibrate adc gpio mode and vbat mode.
+  
+### BREAKING CHANGES
+   * N/A
+   
+### Bug Fixes
+* **Drivers**
+  * 对于 TL321X，修复了RF错误的上电顺序，概率性的导致RF 模块工作状态异常。
+* **APP**
+  * 对于 TL321X，修正 ADC 参考电压配置，由ADC_VREF_GPIO_1P2V改为ADC_VREF_1P2V，确保模块正常工作。
+  
+### Features
+* **Drivers**
+  * 对于 TL321X，在blc_app_loadCustomizedParameters_normal()中调用efuse_calib_adc_vref()接口校准adc gpio模式和vbat模式。
+  * 对于 TL721X，在blc_app_loadCustomizedParameters_normal()中调用otp_calib_adc_vref()接口校准adc gpio模式和vbat模式。
+
+### BREAKING CHANGES
+   * N/A
+
+
 ## V4.0.4.4(PR)
 
 ### Version

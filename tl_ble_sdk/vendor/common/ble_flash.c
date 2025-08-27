@@ -300,6 +300,13 @@ unsigned char user_calib_adc_vref(user_calib_from_e velfrom, unsigned int addr)
 void blc_app_loadCustomizedParameters_normal(void)
 {
     // Check if flash sector for calibration is valid
+#if  (MCU_CORE_TYPE == MCU_CORE_TL721X)
+       otp_calib_adc_vref();
+#endif
+
+#if  (MCU_CORE_TYPE == MCU_CORE_TL321X)
+        efuse_calib_adc_vref();
+#endif
     if (flash_sector_calibration) {
 #if ((MCU_CORE_TYPE == MCU_CORE_B91) || (MCU_CORE_TYPE == MCU_CORE_B92) || \
     (MCU_CORE_TYPE == MCU_CORE_TL721X) || (MCU_CORE_TYPE == MCU_CORE_TL321X))
