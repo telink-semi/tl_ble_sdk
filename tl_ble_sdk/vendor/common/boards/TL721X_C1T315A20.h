@@ -64,19 +64,19 @@
 }
 
     //////////////////// KEY CONFIG (EVK board) ///////////////////////////
-    #define KB_DRIVE_PINS {GPIO_PD4, GPIO_PD6}
+    #define KB_DRIVE_PINS {GPIO_PB7, GPIO_PD6}  //In the hardware design of TL7218X_C1T315A20_V1_5 and earlier versions, the PD4 pin used for KEY1 does not support I/O functionality. As a result, it has been replaced with the fully functional PB7 pin after adjustment.
     #define KB_SCAN_PINS  {GPIO_PD5, GPIO_PD7}
 
     //scan pin as gpio
-    #define PD4_FUNC AS_GPIO
+    #define PB7_FUNC AS_GPIO
     #define PD6_FUNC AS_GPIO
 
     //scan  pin need 10K pullup
-    #define PULL_WAKEUP_SRC_PD4 MATRIX_ROW_PULL
+    #define PULL_WAKEUP_SRC_PB7 MATRIX_ROW_PULL
     #define PULL_WAKEUP_SRC_PD6 MATRIX_ROW_PULL
 
     //scan pin open input to read gpio level
-    #define PD4_INPUT_ENABLE 1
+    #define PB7_INPUT_ENABLE 1
     #define PD6_INPUT_ENABLE 1
 
     //drive pin as gpio
@@ -202,6 +202,6 @@
 
 #endif //end of DEBUG_GPIO_ENABLE
 
-#define TLKAPI_DEBUG_GPIO_PIN GPIO_PB7
+#define TLKAPI_DEBUG_GPIO_PIN GPIO_PB6
 
 #endif /* VENDOR_COMMON_BOARDS_TL721X_C1T315A20_H_ */

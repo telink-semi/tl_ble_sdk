@@ -271,7 +271,6 @@ void adc_power_on(void)
     adc_reset();                   //reset whole digital adc module
     adc_dig_clk_en();
 }
-#if ADC_ANTI_AGING_MODE
 /**
  * @brief      This function is used to power off sar_adc.
  * @return     none
@@ -279,34 +278,29 @@ void adc_power_on(void)
  */
 void adc_power_off(void)
 {
-    /*
-     * The base voltage decreases over time after a power off, and the logic here solves this problem.
-     * (updated by bolong.zhang, confirmed by shiyi.wu at 20250219)
-     */
-    adc_dig_clk_dis();  //Turn off the digital clock of the ADC.
-    reg_adc_vbat_div = (reg_adc_vbat_div & (~BIT_RNG(0, 1))) | ((ADC_VBAT_DIV_1F4));  //The default is ADC_VBAT_DIV_1F4
-    reg_adc_channel_set_state(ADC_M_CHANNEL) = (reg_adc_channel_set_state(ADC_M_CHANNEL) & (~FLD_SEL_VREF)) | (ADC_VREF_ANTI_AGING << 6);
-    unsigned int r = core_interrupt_disable();  //Turning off interrupts is to avoid interrupts interfering with the timing of the digital state machine and to ensure that the digital state machine operates as expected.
-    adc_set_scan_chn_cnt(1);  //Open the M-channel to enable the configuration of the M-channel.
-    adc_reset();  //reset whole digital adc module.
-    adc_dig_clk_en();  //Turn on the digital clock of the ADC.
-    delay_us(1);  //Wait for the digital state machine to transmit the register values to the analog module.
-    adc_dig_clk_dis();  //Turn off the digital clock of the ADC.
-    analog_write_reg8(areg_adc_pga_ctrl, (analog_read_reg8(areg_adc_pga_ctrl) | FLD_SAR_ADC_POWER_DOWN));  //adc power down
-    core_restore_interrupt(r);
+    if(read_reg8(0x14083d) == CHIP_VERSION_A3){
+        adc_set_scan_chn_dis();//Turn off the M channel before configuring the verf, vbat, and div related registers of the M channel.
+        analog_write_reg8(areg_adc_pga_ctrl, (analog_read_reg8(areg_adc_pga_ctrl) | FLD_SAR_ADC_POWER_DOWN)); //adc power down
+    }
+    else{
+        /*
+        * The base voltage decreases over time after a power off, and the logic here solves this problem.
+        * (updated by bolong.zhang, confirmed by shiyi.wu at 20250219)
+        */
+        adc_dig_clk_dis();  //Turn off the digital clock of the ADC.
+        reg_adc_vbat_div = (reg_adc_vbat_div & (~BIT_RNG(0, 1))) | ((ADC_VBAT_DIV_1F4));  //The default is ADC_VBAT_DIV_1F4
+        reg_adc_channel_set_state(ADC_M_CHANNEL) = (reg_adc_channel_set_state(ADC_M_CHANNEL) & (~FLD_SEL_VREF)) | (ADC_VREF_ANTI_AGING << 6);
+        unsigned int r = core_interrupt_disable();  //Turning off interrupts is to avoid interrupts interfering with the timing of the digital state machine and to ensure that the digital state machine operates as expected.
+        adc_set_scan_chn_cnt(1);  //Open the M-channel to enable the configuration of the M-channel.
+        adc_reset();  //reset whole digital adc module.
+        adc_dig_clk_en();  //Turn on the digital clock of the ADC.
+        delay_us(1);  //Wait for the digital state machine to transmit the register values to the analog module.
+        adc_dig_clk_dis();  //Turn off the digital clock of the ADC.
+        analog_write_reg8(areg_adc_pga_ctrl, (analog_read_reg8(areg_adc_pga_ctrl) | FLD_SAR_ADC_POWER_DOWN));  //adc power down
+        core_restore_interrupt(r);
+    }
 }
-#else
-/**
- * @brief      This function is used to power off sar_adc.
- * @return     none
- * @note       Use this function with the caveat that it will first turn off the interrupt and then restore it after performing the relevant operation.
- */
-void adc_power_off(void)
-{
-    adc_set_scan_chn_dis();//Turn off the M channel before configuring the verf, vbat, and div related registers of the M channel.
-    analog_write_reg8(areg_adc_pga_ctrl, (analog_read_reg8(areg_adc_pga_ctrl) | FLD_SAR_ADC_POWER_DOWN)); //adc power down
-}
-#endif
+
 /**
  * @brief This function is used to set IO port for ADC supply or ADC IO port voltage sampling.
  * @param[in]  mode - ADC gpio pin sample mode
@@ -351,8 +345,7 @@ void adc_set_diff_pin(adc_sample_chn_e chn, adc_input_pin_def_e p_pin, adc_input
  * @param[in]  chn - enum variable of ADC sample channel.
  * @param[in]  v_ref - enum variable of ADC reference voltage.
  * @return none
- * @note       1. adc_set_ref_voltage does not take effect immediately after configuration, it needs to be delayed 100us after calling adc_dig_clk_en().
- *             2. If you call adc_set_ref_voltage() alone, please change the value of g_adc_vref of the corresponding channel, otherwise the voltage conversion will be wrong.
+ * @note       adc_set_ref_voltage does not take effect immediately after configuration, it needs to be delayed 100us after calling adc_dig_clk_en().
  */
 static void adc_set_ref_voltage(adc_sample_chn_e chn, adc_ref_vol_e v_ref)
 {
@@ -361,7 +354,6 @@ static void adc_set_ref_voltage(adc_sample_chn_e chn, adc_ref_vol_e v_ref)
     //Vref buffer bias current trimming:        150%
     //Comparator preamp bias current trimming:  100%
     analog_write_reg8(areg_ain_scale, (analog_read_reg8(areg_ain_scale) & (0xC0)) | 0x3d);
-
 
 }
 
@@ -408,17 +400,6 @@ void adc_set_vbat_divider(adc_sample_chn_e chn, adc_vbat_div_e vbat_div)
 }
 
 /**
- * @brief       This function is used to enable the status of the valid adc code for the m channel.
- * @return      none
- * @attention   The adc_ana_read_en() API must be called before the adc_get_m_chn_valid_status()API.
- * @note        This function is used in NDMA mode where adc_get_m_chn_valid_status() needs to be called.
- */
-static inline void adc_ana_read_en(void)
-{
-    analog_write_reg8(areg_adc_data_sample_control, analog_read_reg8(areg_adc_data_sample_control) | FLD_ANA_RD_EN);
-}
-
-/**
  * @brief This function is used to initialize the ADC.
  * @param[in]  channel_cnt - transfer_mode and the number of channels used.
  * @return none
@@ -439,12 +420,13 @@ void adc_init(adc_chn_cnt_e channel_cnt)
     for(unsigned char chn = 0; chn < (unsigned char)(channel_cnt &0x0f ); chn++) {
         g_adc_channel_set_state[chn] = reg_adc_channel_set_state(chn);
     }
-   
+
     g_adc_vbat_div = reg_adc_vbat_div;
     adc_power_off();               //power off sar adc
-#if (ADC_ANTI_AGING_MODE == 0)
-    adc_reset();                    //reset whole digital adc module
-#endif
+
+    if(read_reg8(0x14083d) != CHIP_VERSION_A3){
+        adc_reset();                    //reset whole digital adc module
+    }
     adc_clk_en();                  //enable signal of 24M clock to sar adc
     adc_set_clk();                 //set adc digital clk to 24MHz and adc analog clk to 4MHz
     adc_set_resolution(ADC_RES12); //default adc_resolution set as 12bit ,BIT(11) is sign bit
@@ -457,6 +439,17 @@ void adc_init(adc_chn_cnt_e channel_cnt)
         reg_adc_config2 &= ~FLD_RX_DMA_ENABLE;          //In NDMA mode,RX DMA needs to be disabled.
         reg_adc_config2 |= FLD_SAR_RX_INTERRUPT_ENABLE; //SAR_RX_INTERRUPT must be enabled to call adc_get_irq_status() to get adc irq status.
     }
+#if (!SPECIAL_APPLICATION)
+    /*
+     * Before adc powering on, configure the PD4 pin to function as a VREF output and pull it high.
+     * This allows the VREF to be established in advance, optimizing the aging issue once the adc power is turned on.
+     * See jira for details:TER-113.(updated by bolong.zhang, confirmed by haitao.gu at 20250912)
+     */
+    adc_power_on();
+    analog_write_reg8(areg_adc_sel_stb, (analog_read_reg8(areg_adc_sel_stb) | 0x30));
+    analog_write_reg8(0X1e, (analog_read_reg8(0X30) & 0xfc) | 0X03);
+    adc_power_off();
+#endif
     /**
      * The set and capture of RNG channel are configured to 0 by default, and the actual state machine scanning time of RNG channel is the maximum time(about 25us),
      * and by configuring both of them to 1 (the minimum scanning time), the state machine scanning time of RNG channel is only (1+1)/24M=83ns,
@@ -585,6 +578,17 @@ void adc_gpio_sample_vbat_init(adc_sample_chn_e chn, adc_gpio_cfg_t cfg)
 }
 
 #if INTERNAL_TEST_FUNC_EN
+/**
+ * @brief       This function is used to enable the status of the valid adc code for the m channel.
+ * @return      none
+ * @attention   The adc_ana_read_en() API must be called before the adc_get_m_chn_valid_status()API.
+ * @note        This function is used in NDMA mode where adc_get_m_chn_valid_status() needs to be called.
+ */
+static inline void adc_ana_read_en(void)
+{
+    analog_write_reg8(areg_adc_data_sample_control, analog_read_reg8(areg_adc_data_sample_control) | FLD_ANA_RD_EN);
+}
+
 /**
  * @brief      This function open temperature sensor power.
  * @return     none
@@ -829,18 +833,21 @@ void adc_stop_sample_nodma(void)
  * @brief   This function is designed to prevent the aging of the ADC reference voltage during deep sleep.
  * @return  none
  * @note    The reference voltage value of ADC Vref decreases with time, which can be avoided by calling this interface.
+ *          Chip A3 has been fixed, and there is no need to invoke the anti-aging logic.
  */
 _attribute_flash_code_sec_noinline_ void adc_anti_aging_mode_flashcode_for_asm(void)
 {
-
+    //A3 does not invoke the subsequent logic.
+    if(read_reg8(0x14083d) == CHIP_VERSION_A3){
+        return;
+    }
     //The following logic is equivalent to adc_reset()
     reg_rst3 &= (~FLD_RST3_SARADC);
     reg_rst3 |= FLD_RST3_SARADC;
     //The following logic is equivalent to adc_clk_en()
     reg_clk_en3 |= FLD_CLK3_SARADC_EN;
 
-    if (read_reg8(0x14083d) == CHIP_VERSION_A1) 
-    {
+    if (read_reg8(0x14083d) == CHIP_VERSION_A1) {
         //Since this interface is called within the .s file and requires the configuration of analog registers, it is necessary to enable the analog clock first.
         reg_rst1 |= FLD_RST1_ALGM;
         reg_clk_en1 |= FLD_CLK1_ALGM_EN,
@@ -897,17 +904,20 @@ _attribute_flash_code_sec_noinline_ void adc_anti_aging_mode_flashcode_for_asm(v
  * @brief   This function is designed to prevent the aging of the ADC reference voltage during deep retention sleep.
  * @return  none
  * @note    The reference voltage value of ADC Vref decreases with time, which can be avoided by calling this interface.
+ *          Chip A3 has been fixed, and there is no need to invoke the anti-aging logic.
  */
 _attribute_ram_code_sec_noinline_ void adc_anti_aging_mode_ramcode_for_asm(void)
-{
+{   
+    if(read_reg8(0x14083d) == CHIP_VERSION_A3){
+        return;
+    }
     //The following logic is equivalent to adc_reset()
     reg_rst3 &= (~FLD_RST3_SARADC);
     reg_rst3 |= FLD_RST3_SARADC;
     //The following logic is equivalent to adc_clk_en()
     reg_clk_en3 |= FLD_CLK3_SARADC_EN;
 
-    if (read_reg8(0x14083d) == CHIP_VERSION_A1) 
-    {
+    if (read_reg8(0x14083d) == CHIP_VERSION_A1) {
         //Since this interface is called within the .s file and requires the configuration of analog registers, it is necessary to enable the analog clock first.
         reg_rst1 |= FLD_RST1_ALGM;
         reg_clk_en1 |= FLD_CLK1_ALGM_EN,

@@ -373,17 +373,6 @@ void adc_set_vbat_divider(adc_sample_chn_e chn, adc_vbat_div_e vbat_div)
 }
 
 /**
- * @brief       This function is used to enable the status of the valid adc code for the m channel.
- * @return      none
- * @attention   The adc_ana_read_en() API must be called before the adc_get_m_chn_valid_status()API.
- * @note        This function is used in NDMA mode where adc_get_m_chn_valid_status() needs to be called.
- */
-static inline void adc_ana_read_en(void)
-{
-    analog_write_reg8(areg_adc_data_sample_control, analog_read_reg8(areg_adc_data_sample_control) | FLD_ANA_RD_EN);
-}
-
-/**
  * @brief This function is used to initialize the ADC.
  * @param[in]  channel_cnt - transfer_mode and the number of channels used.
  * @return none
@@ -524,6 +513,17 @@ void adc_gpio_sample_vbat_init(adc_sample_chn_e chn, adc_gpio_cfg_t cfg)
 }
 
 #if INTERNAL_TEST_FUNC_EN
+/**
+ * @brief       This function is used to enable the status of the valid adc code for the m channel.
+ * @return      none
+ * @attention   The adc_ana_read_en() API must be called before the adc_get_m_chn_valid_status()API.
+ * @note        This function is used in NDMA mode where adc_get_m_chn_valid_status() needs to be called.
+ */
+static inline void adc_ana_read_en(void)
+{
+    analog_write_reg8(areg_adc_data_sample_control, analog_read_reg8(areg_adc_data_sample_control) | FLD_ANA_RD_EN);
+}
+
 /**
  * @brief      This function open temperature sensor power.
  * @return     none

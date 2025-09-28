@@ -135,3 +135,15 @@ static inline unsigned char lpc_get_result(void)
  * @return      none.
  */
 void lpc_set_input_ref(lpc_mode_e mode, lpc_reference_e ref);
+
+/**
+ * @brief       This function serves to protect the flash during the chip power-down process
+ * @param[in]   pin  - selected input channel.Input derived from external PortB(PB<1>~PB<7>).
+ * @return      none.
+ * @note        -# Interrupt preemption must be enabled and the application layer must not call plic_preempt_feature_dis() to disable interrupt preemption.
+ *              -# plic_preempt_feature_en() can only use mode0 ¡ª do not call it again to change the preemption mode, otherwise LPC operations may be interrupted.
+ *              -# The first parameter of flash_plic_preempt_config() must not be set to 0.
+ *              -# The priority of IRQ_PM_LVL must be set to the highest level IRQ_PRI_LEV3 and cannot be modified. No other interrupts are allowed to use IRQ_PRI_LEV3.
+ *              -# Once PBx is configured for LPC functionality, this GPIO can no longer be used for any other functions.
+ */
+void lpc_flash_prot_config(lpc_input_channel_e chn);

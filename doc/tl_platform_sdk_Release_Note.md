@@ -1,3 +1,285 @@
+
+## 3.8.0
+
+### Version
+
+* SDK Version: tl_platform_sdk V3.8.0
+* Chip Version
+  - TLSR921x/TLSR951x(B91)(A0/A1/A2),TLSR922x/TLSR952x(B92)(A3/A4),TL751X(A1),TL721X(A2/A3),TL321X(A1/A2/A3),TL322X(A0)
+* Hardware EVK Version
+  * TLSR951x(B91): C1T213A20
+  * TLSR952x(B92): C1T266A20
+  * TL751X: C1T368A20
+  * TL721X: C1T315A20 In the C1T315A20_V1_5 and earlier versions, the PD4 pin used for KEY1 is not available for any functional use.
+  * TL321X: C1T335A20
+  * TL322X: C1T371A20
+* Hardware AIOT_DK1 Version
+  * C1TXA104
+* Demo Platform Requirements
+ 
+  | Demo Name       | Main Board | Sub-Board            |
+  |-----------------|------------|----------------------|
+  | Codec_Demo      | AIOT_DK1   | C1TXA8(AIOT-CODEC1/AIOT-CODEC2)  |
+  | Sensor_Lcd_Demo | AIOT_DK1   | C1TXA99              |
+  | Camera_Demo     | AIOT_DK1   | C1TXA99 + OV7670     |
+  | Other demos     | EVK        | —                    |
+
+* Toolchain Version
+  - TLSR921x/TLSR951x(B91): gcc7(TL32 ELF MCULIB V5F GCC7.4 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TLSR922x/TLSR952x(B92): gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL751x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL721x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL321x: gcc12(TL32 ELF MCULIB V5  GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL322x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Note
+* **gpio**
+  * (TL721X) In the design of TL7218X_C1T315A20_V1_5, the PD4 pin originally used for KEY1 is not supported for I/O functionality. Therefore, it has been replaced with the PB7 pin to ensure proper operation.(merge_requests/@2010)
+
+### Features
+
+* **lin**
+  * (tl322x)Add LIN driver and demo.(merge_requests/@1856)
+* **adc**
+  * (TL751X) Added anti-aging logic. (merge_requests/@1883)
+  * (TL751X) Added the adc_set_gpio_calib_vref and adc_set_vbat_calib_vref APIs for ADC calibration.(merge_requests/@1883)
+* **pm**
+  * (B91/B92/TL321X/TL721X/tl322x/TL751X) The pm_sw_reboot_reason_e enumeration has added the PLL_DONE parameter, and the drv_api_error_code_e enumeration has removed the DRV_API_ERROR_TIMEOUT_PLL_DONE parameter.(merge_requests/@1925)
+  * (B91/B92/TL321X/TL721X/tl322x/TL751X)Modify the timeout_handler-related interfaces to use the O2 optimization option.(merge_requests/@1925)
+  * (TL322X) Added drivers and functions for USB0, enabling the MCU to enter suspend sleep mode and be awakened by USB. (merge_requests/@1951)
+* **rf**
+  * (TL751X) Added the rf_get_state() interface.(merge_requests/@1828)
+  * (TL751X) Added the rf_reset_baseband() interface.(merge_requests/@1828)
+  * (TL751X)  Added rf_decode_pkt_rssi() interface for converting RSSI values of HD information in data packets.(merge_requests/@1828)
+  * (TL751X) Added rf_get_max_rssi() interface for obtaining max RSSI (merged requests/@ 1828)
+  * (B91/B92/TL721X/TL321X/TL322X/TL751X) Added rf_get_real_time_rssi interface for obtaining real_time RSSI values(merge_requests/@1828)
+  * (TL751X)Add RF frequency offset calibration value address FLASH_CAP_VALUE_ADDR_8M for 8M Flash(merge_requests/@1828)
+  * (TL322x)New energy levels between 5dbm~6.4dbm in Vant mode, when using these levels set to RF_VANT_HIGH_POWER mode via interface rf_set_vant_power_trim_level, and then to RF_VANT_NORMAL_POWER at the end of tx.(merge_requests/@1875)
+  * (TL321x)Added interfaces rf_set_rxpara, rf_ldot_ldo_rxtxlf_bypass_en, and rf_ldot_ldo_rxtxlf_bypass_dis to mitigate the degradation (dip) in RX performance caused by the crystal oscillator.(merge_requests/@1870)
+* **sys**
+  * (TL751x) In the calibration_func() function, the flash_calib_ldo_dcdc_voltage() interface is called to calibrate the voltages of AVDD, DVDD, 1.8VIO, and 3.3VIO. (merge_requests/@1874)
+
+
+### Bug Fixes
+
+* **pm**
+  * (TL751x):Fix the issue where performing a float to unsigned long long conversion would invoke the flash function after closing XIP.(merge_requests/@1927)(merge_requests/@1963)
+  * (TL751x):Fixed the issue where the rf module would send packets abnormally when waking up from suspend mode in D25F.(merge_requests/@1876)
+* **clock**
+  * (TL322X):Fix occasional failure to wait for the PLL stabilization flag bit.(merge_requests/@1872)
+  * (TL751X) Has resolved the issue where the PLL flag bit remained constantly at 1 and was unable to stabilize.(merge_requests/@1931)(merge_requests/@1944)
+* **emi**
+  * (B91/B92/TL721X/TL321X/TL322X/TL751X)Fix the issue of abnormal packet length in rf_emi_tx_burst_loop(merge_requests/@1868)
+* **rf**
+  * (TL321x) Fixed an internal bug in the RF DCOC algorithm.(merge_requests/@1870)
+  * (TL322X)Modified the way of obtaining HPMC in Fastsettle to adapt to the exception problem caused by using floating-point algorithm without floating-point library.(merge_requests/@1893)
+  * (TL322X)Fixed the issue of incorrect configuration of the rf_update_internal_cap interface(merge_requests/@1893)
+  * (TL321x)Resolve RF transmit/receive frequency lock loss issues in certain non-conforming chips.(merge_requests/@1991)
+  * (TL721X)Fix abnormal PER floor issue in BLE S2/S8 modes(merge_requests/@1998)
+  * (TL321x) Fix the issue of inconsistent RSSI values under different performance configurations of RX.(merge_requests/@1999)
+* **audio**
+  * (TL751x) fixed audio_codec0_set_output_filter_mode interface, avoid functional abnormal after using this interface.(merge_requests/@1934)
+* **interrupt**
+  * (B91/B92/TL321X/TL322X/TL721X/TL751X) Fixed an issue where nested interrupts failed due to symbol bit extension.(merge_requests/@1973)
+* **flash**
+  * (B91/B92/TL721X/TL321X/TL322X/TL751X) fix data access error in flash write API when passed in a const buffer pointer(merge_requests/@1943)
+* **adc**
+  * (TL721x): The issue of preventing Vref from dropping under extreme environmental conditions has been fixed.(merge_requests/@2002)
+* **sys**
+  * (TL321x) Fixed RF power on sequence error, which may potentially cause abnormal operation of RF module(merge_requests/@1948)
+* **USB_Demo**
+  * (B91/B92/TL721X/TL321X/TL751X)Fix USB_MIC and USB_SPK Demo compilation errors.(merge_requests/@1892)
+
+### Refactoring
+
+* **pm**
+  * Adjust the code framework for the PM demo, Removed redundant code and modified the macro format.(merge_requests/@1919)
+  * (TL321X/TL322X/TL721X/TL751X)Add comments on some gpio pins that cannot be used as a pm wake source.(merge_requests/@1913)
+  * (TL721X)Add comment explanation: When powering the GPIO with 1.8V and configured in pull-up mode, the sleep current will increase by approximately a dozen uA.(merge_requests/@2006)
+* **rf**
+  * (TL751X) Update the rf_get_rssi() interface to be named rf_get_latched_rssi(), and update the internal RSSI acquisition method to adjust the RSSI configuration parameters. (merge_requests/@1828)
+  * (B91/B92/TL721X/TL321X/TL322X/TL751X)Update the rf_get_rssi() interface to be named rf_get_latched_rssi(), and use macro definitions to be compatible with old version naming (merge_requests/@1828)
+  * (TL721X) Updated TX POWER levels, related enums: rf_power_level_e/rf_power_level_index_e. (merge_requests/@1866)(merge_requests/@1922)
+  * (TL721X) Optimized TX modulation characteristics, related interfaces: rf_mode_init/rf_ldo_pll_compensation/rf_tx_fast_settle_en/rf_tx_fast_settle_dis/rf_rx_fast_settle_en/rf_rx_fast_settle_dis/rf_get_ldo_trim_val/rf_set_ldo_trim_val. Improved RX performance, related interfaces: rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis. (merge_requests/@1866)
+  * (TL322X) Add rf_turn_off_internal_cap interface.(merge_requests/@1893)
+  * (B91/B92/TL721X/TL321X)Optimize the criteria for determining fast settle in rf_ldot_ldo_rxtxlf_bypassing to prevent exceptions when calling this interface in fast settle mode(merge_requests/@1893)
+* **adc**
+  * (TL721x)The A3 revision addresses certain aging issues, and when using the A3 chip, there is no need to enable the A2 aging protection logic.(merge_requests/@2002)
+* **start**
+  * (TL751X/TL322X) Fixed an issue where compiler optimizations caused trap_entry weak definitions to remain undefined when switching to external tools. (merge_requests/@1912)
+* **IR_LEARN_Demo**
+  * (TL321X/TL721X/TL322X)To distinguish the handling of `pwm_set_irq_mask` for different chips using macro definitions.(merge_requests/@1964)
+* **EMI_BQB_Demo**
+  * (B91/B92/TL721X/TL321X/TL751X)Adapted to swire through usb function.(merge_requests/@1906)
+  * (TL751X)Modify platform_init parameter to adapt to DCDC power supply mode.(merge_requests/@1906)
+* **aiot_dk1**
+  * (TL721x/TL321x)The default screen resolution of st7789 has been adjusted from 240x240 to 320x240.(merge_requests/@2000)
+* **SPI_Demo**
+  * (TL721x/TL321x/TL751x)Fixed compilation error issues and updated code comments for the 3-line mode.(merge_requests/@2000)
+
+### BREAKING CHANGES
+
+* **pm**
+  * (TL751x):Remove the 400mA and 600mA gears in the DCDC power supply mode.(merge_requests/@1876)
+* **gpio**
+  * (TL751X) Disabled GPIO functionality for ANA0/1. (merge_requests/@1883)
+* **rf**
+  * (TL322X)All mode initialization interfaces of RF (e.g. rf_set_ble_1M_NO_PN_mode) have added RF Rx DCOC software calibration scheme to solve the problem of poor Rx sensitivity performance in some chips with large DC-offset.The execution time of this function will be longer, you can check the function comment for the specific time.(merge_requests/@1859)
+* **sys**
+  * (TL321X)Delete the definition of CCLK > 48M, if you need CCLK > 48M, please contact Telink FAE support.(merge_requests/@1873)
+* **gpio**
+  * (TL721x)Remove all functions of the PD4 pin.(merge_requests/@2002)
+
+### Performance Improvements
+
+* **rf** 
+  * (TL322X)Optimized BLE S2 S8 per floor performance(merge_requests/@1859)
+  * (TL322X)Optimizing the problem of inaccurate detection of small energy points in BLE1M RSSI(merge_requests/@1928)
+* **pm**
+  * (TL322X) Optimize power consumption. Configure the 24M rc to be turned off when not in use.(merge_requests/@1984)(merge_requests/@1990)(merge_requests/@2001)
+
+## 3.8.0
+
+### 版本
+
+* SDK 版本: tl_platform_sdk V3.8.0
+* 芯片版本
+  - TLSR921x/TLSR951x(B91)(A0/A1/A2),TLSR922x/TLSR952x(B92)(A3/A4),TL751X(A1),TL721X(A2/A3),TL321X(A1/A2/A3),TL322X(A0)
+* 硬件评估板版本
+  * TLSR951x(B91): C1T213A20
+  * TLSR952x(B92): C1T266A20
+  * TL751X: C1T368A20
+  * TL721X: C1T315A20 在C1T315A20_V1_5及之前版本中，KEY1所使用的PD4引脚无法作为任何功能使用。
+  * TL321X: C1T335A20
+  * TL322X: C1T371A20
+* 硬件AIOT_DK1版本
+  * C1TXA104
+* Demo平台要求
+
+  | 示例名称        | 主板       | 子板                 |
+  |-----------------|------------|----------------------|
+  | Codec_Demo      | AIOT_DK1   | C1TXA8(AIOT-CODEC2)  |
+  | Sensor_Lcd_Demo | AIOT_DK1   | C1TXA99              |
+  | Camera_Demo     | AIOT_DK1   | C1TXA99 + OV7670     |
+  | Other demos     | EVK        | —                    |
+
+* 工具链版本
+  - TLSR921x/TLSR951x(B91): gcc7(TL32 ELF MCULIB V5F GCC7.4 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TLSR922x/TLSR952x(B92): gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL751x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL721x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL321x: gcc12(TL32 ELF MCULIB V5  GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL322x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgba(36, 190, 62, 1)">
+
+### Note
+* **gpio**
+  * (TL721X) 在TL7218X_C1T315A20_V1_5及之前版本的硬件设计中，由于KEY1所使用的PD4引脚不支持I/O功能，经过调整，已将其替换为功能完善的PB7(merge_requests/@2010)
+
+### Features
+
+* **lin**
+  * (tl322x)增加LIN驱动和demo。(merge_requests/@1856)
+* **adc**
+  * (TL751X) 新增防老化逻辑。（merge_requests/@1883）
+  * (TL751X) 新增 adc_set_gpio_calib_vref 和 adc_set_vbat_calib_vref 两个API，用于 ADC 校准。(merge_requests/@1883)
+* **pm**
+  * (B91/B92/TL321X/TL721X/tl322x/TL751X) pm_sw_reboot_reason_e枚举新增PLL_DONE参数，drv_api_error_code_e枚举删除DRV_API_ERROR_TIMEOUT_PLL_DONE参数。(merge_requests/@1925)
+  * (B91/B92/TL321X/TL721X/tl322x/TL751X) drv_timeout_handler 相关的接口使用 O2 优化选项。(merge_requests/@1925)
+  * (TL322X) 添加了USB0的相关驱动和函数，可以让MCU进入suspend睡眠，以及USB唤醒。(merge_requests/@1951)
+* **rf**
+  * (TL751X)新增rf_get_state()接口。(merge_requests/@1828)
+  * (TL751X)新增rf_reset_baseband()接口。(merge_requests/@1828)
+  * (TL751X)新增rf_decode_pkt_rssi()接口,用于转换数据包中HD信息的RSSI值。(merge_requests/@1828)
+  * (TL751X)新增rf_get_max_rssi()接口,用于获取max RSSI。(merge_requests/@1828)
+  * (B91/B92/TL721X/TL321X/TL322X/TL751X)添加rf_get_real_time_rssi接口用于获取实时的RSSI 数据。(merge_requests/@1828)
+  * (TL751X)为8M Flash添加RF频偏校准值地址FLASH_CAP_VALUE_ADDR_8M。(merge_requests/@1828)
+  * (TL322x)新增Vant模式下5dbm~6.4dbm之间的能量档位，使用这些档位时通过接口rf_set_vant_power_trim_level设置为RF_VANT_HIGH_POWER模式，tx结束再设置为RF_VANT_NORMAL_POWER。(merge_requests/@1875)
+  * (TL321x)添加rf_set_rxpara,rf_ldot_ldo_rxtxlf_bypass_en ,rf_ldot_ldo_rxtxlf_bypass_dis接口,优化晶振造成的rx 坑点性能下降问题。(merge_requests/@1870)
+* **sys**
+  * (TL751x)在calibration_func()中调用flash_calib_ldo_dcdc_voltage()接口校准AVDD/DVDD/1.8VIO/3.3VIO的电压。(merge_requests/@1874)
+
+### Bug Fixes
+
+* **pm**
+  * (tl751x):修复关闭xip后,调用float强转为unsigned long long会调用flash函数的问题。(merge_requests/@1927)(merge_requests/@1963)
+  * (TL751x):修复了rf模块在D25F从suspend唤醒时,发包异常的问题。(merge_requests/@1876)
+* **clock**
+  * (TL322X):修复偶尔等不到 PLL 稳定标志位的问题。(merge_requests/@1872)
+  * (TL751X)解决了PLL标志位不能稳定的一直为1的问题。(merge_requests/@1931)(merge_requests/@1944)
+* **emi** 
+  * (B91/B92/TL721X/TL321X/TL322X/TL751X)修复rf_emi_tx_burst_loop发包长度异常问题。(merge_requests/@1868)
+* **rf**
+  * (TL321x) 修复RF DCOC算法内部bug。(merge_requests/@1870)
+  * (TL322X) 修改了fastsettle中 hpmc 的获取方式 以适配N22无浮点库情况下使用浮点算法造成的异常问题。(merge_requests/@1893)
+  * (TL322X) 修复了rf_update_internal_cap接口配置错误问题。(merge_requests/@1893)
+  * (TL321x) 修复部分不良芯片RF TX/RX 频率失锁的问题。(merge_requests/@1991)
+  * (TL721X)修复BLE S2/S8模式下的per floor异常问题。(merge_requests/@1998)
+  * (TL321x) 修复RX不同性能配置下RSSI值不一致的问题。(merge_requests/@1999)
+* **audio**
+  * (TL751x) 修复了audio_codec0_set_output_filter_mode接口,避免使用该接口后功能异常。(merge_requests/@1934)
+* **interrupt**
+  * (B91/B92/TL321X/TL322X/TL721X/TL751X) 修复了因符号位扩展导致中断嵌套失败的问题。(merge_requests/@1973)
+* **flash** 
+  * (B91/B92/TL721X/TL321X/TL322X/TL751X)解决了写flash API在传入常量buffer指针时的数据访问出错问题。(merge_requests/@1943)
+* **adc**
+  * (TL721x): 修复了在极端环境下防止vref下降的问题。(merge_requests/@2002)
+* **sys**
+  * (TL321X)修复了RF错误的上电顺序，可能概率性的导致RF 模块工作状态异常。(merge_requests/@1948)
+* **USB_Demo**
+  * (B91/B92/TL721X/TL321X/TL751X)修复 USB_MIC 和 USB_SPK 编译报错问题。(merge_requests/@1892)。
+
+### Refactoring
+
+* **pm**
+  * 给pm demo调整代码框架, 删除了冗余的代码, 修改了宏格式。(merge_requests/@1919)
+  * (TL321X/TL322X/TL721X/TL751X)添加注释说明不能用作pm唤醒源的一些gpio引脚。(merge_requests/@1913)
+  * (TL721X)添加注释说明：当使用1.8V给gpio供电时，如果配置为上拉模式，睡眠电流将会增加十几uA。(merge_requests/@2006)
+* **rf**
+  * (TL751X)更新rf_get_rssi()接口命名为rf_get_latched_rssi()，同时更新内部获取RSSI方法，调整RSSI配置参数。(merge_requests/@1828)
+  * (B91/B92/TL721X/TL321X/TL322X/TL751X)更新rf_get_rssi()接口命名为rf_get_latched_rssi(),使用宏定义兼容旧版本命名。(merge_requests/@1828)
+  * (TL721X)更新 TX POWER 档位，相关枚举：rf_power_level_e/rf_power_level_index_e。(merge_requests/@1866)(merge_requests/@1922)
+  * (TL721X)优化TX调制特性，相关接口：rf_mode_init/rf_ldo_pll_compensation/rf_tx_fast_settle_en/rf_tx_fast_settle_dis/rf_rx_fast_settle_en/rf_rx_fast_settle_dis/rf_get_ldo_trim_val/rf_set_ldo_trim_val。优化RX性能，相关接口：rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis。(merge_requests/@1866)
+  * (TL322X) 新增rf_turn_off_internal_cap 接口。(merge_requests/@1893)
+  * (B91/B92/TL721X/TL321X)优化rf_ldot_ldo_rxtxlf_bypassing中fastsettle的判断标准,用于防止fastsettle模式下调用此接口出现异常。(merge_requests/@1893)
+* **adc**
+  * (TL721x)A3改版解决了部分老化问题，在使用A3芯片时，无需启用A2的防老化逻辑。(merge_requests/@2002)
+* **start**
+  * (TL751X/TL322X)修复因编译器优化导致改成使用外部工具时，trap_entry 弱定义出现没有重定义的问题。(merge_requests/@1912)
+* **IR_LEARN_Demo**
+  * (TL321X/TL721X/TL322X)用宏定义区分不同芯片对pwm_set_irq_mask的处理。(merge_requests/@1964)
+* **EMI_BQB_Demo**
+  * (B91/B92/TL721X/TL321X/TL751X)适配了swire through usb 功能。(merge_requests/@1906)
+  * (TL751X)修改platform_init参数，适配DCDC供电模式。(merge_requests/@1906)
+* **aiot_dk1**
+  * (TL721x/TL321x)st7789 屏幕默认分辨率由 240x240 调整为 320x240。(merge_requests/@2000)
+* **SPI_Demo**
+  * (TL721x/TL321x/TL751x)修复编译报错问题，并更新3线模式代码注释。(merge_requests/@2000)
+
+### BREAKING CHANGES
+
+* **pm**
+  * (TL751x):删除了dcdc供电模式下400mA和600mA的挡位。(merge_requests/@1876)
+* **gpio**
+  * (tl751X)ANA0/1 不开放gpio功能。(merge_requests/@1883)
+* **rf** 
+  * (TL322X)RF的所有模式初始化接口（例如RF_set_ble_1M_NO_PN_mode）都添加了RF Rx DCOC软件校准方案，以解决一些直流偏移较大的芯片中Rx灵敏度性能较差的问题。此函数的执行时间将更长。(merge_requests/@1859)
+* **sys**
+  * (TL321X)删除CCLK > 48M的定义，如果需要CCLK > 48M,请联系Telink FAE支持。(merge_requests/@1873)
+* **gpio**
+  * (TL721x): 删除了PD4引脚的所有功能。(merge_requests/@2002)
+
+### Performance Improvements
+
+* **rf** 
+  * (TL322X)优化了BLE S2 S8 per floor性能。(merge_requests/@1859)
+  * (TL322X)优化BLE1M RSSI 小能量点检测不准的问题。(merge_requests/@1928)
+* **pm**
+  * (TL322X) 优化功耗，配置24M rc在不使用的时候关闭。(merge_requests/@1984)(merge_requests/@1990)(merge_requests/@2001)
+
 ## 3.7.0
 
 ### Version
@@ -40,11 +322,18 @@
   * (tl751X)Add gpio_ds_en() and gpio_ds_dis() API(merge_requests/@1772)
 * **ir_learn_Demo**
   * (TL322x)Add ir_learn_Demo and users can develop infrared learning functionality.(merge_requests/@1814)
+* **rf**
+  * (TL751X) Added the rf_get_state() interface.
+  * (TL751X) Added the rf_reset_baseband() interface.
+  * (TL751X) Added the rf_get_pkt_rssi() interface.
+  * (TL751X) Updated the method for obtaining RSSI in rf_get_rssi(), and adjusted the RSSI configuration parameters. (merge_requests/@1828)
   
 ### Bug Fixes
 
 * **link**
   * (TL322x) Solve the problem that D25F ram_boot.link has no 4-byte alignment compilation error.(merge_requests/@1825)
+* **rf**
+  * (TL321x) Fixed an internal bug in the RF DCOC algorithm.(merge_requests/@1870)
 
 ### Refactoring
 * **adc**
@@ -103,12 +392,21 @@
   * (tl751X)新增 gpio_ds_en 和 gpio_ds_dis 接口。(merge_requests/@1772)
 * **ir_learn_Demo**
   * (TL322x)新增ir_learn_Demo 用户可以开发红外学习功能.(merge_requests/@1814)
+* **rf**
+  * (TL751X)新增rf_get_state()接口。
+  * (TL751X)新增rf_reset_baseband()接口。
+  * (TL751X)新增rf_get_pkt_rssi()接口。
+  * (TL751X)更新rf_get_rssi()获取RSSI方法，调整RSSI配置参数。
+  (merge_requests/@1828)
+
+
   
 ### Bug Fixes
 
 * **link**
   * (TL322x)解决D25F ram_boot.link存在没有4字节对齐编译报错问题。(merge_requests/@1825)
-
+* **rf**
+  * (TL321x) 修复RF DCOC算法内部bug(merge_requests/@1870)
 
 ### Refactoring
 * **adc**

@@ -22,7 +22,10 @@
  *
  *******************************************************************************************************/
 #include "lpc.h"
-
+#include "lib/include/plic.h"
+#include "lib/include/pm/pm.h"
+#include "gpio.h"
+#include "lib/include/stimer.h"
 /**
  * @brief       This function selects input reference voltage for low power comparator.
  * @param[in]   mode    - lower power comparator working mode includes normal mode and low power mode.
@@ -42,4 +45,42 @@ void lpc_set_input_ref(lpc_mode_e mode, lpc_reference_e ref)
     }
 
     analog_write_reg8(0x0d, (analog_read_reg8(0x0d) & 0x8f) | (ref << 4));
+}
+
+/**
+ * @brief       This function serves to protect the flash during the chip power-down process.
+ * @param[in]   pin  - selected input channel.Input derived from external PortB(PB<1>~PB<7>).
+ * @return      none.
+ * @note       -# In order to improve the robustness of the chip during high-speed operation, the low power comparator (LPC) is used to
+ *              protect the flash during power-down of the chip when the main frequency CCLK is running above 48MHz (excluding 48MHz).
+ *              When this feature is enabled, there are the following limitations:
+ *               -# The chip power supply voltage is limited to 2.1V to 4.2V.
+ *               -# One of PB[1:7] must be reserved for this feature.
+ *               -# Interrupt preemption must be enabled and the LPC interrupt will be set as the only highest priority interrupt that can interrupt any process.
+ *               -# LPC interrupt priority(IRQ_PM_LVL) > flash operation priority > other interrupt priority.
+ *               -# lpc_flash_prot_config() and core_interrupt_enable() should be called as early as possible to activate flash power-down protection.This maximizes the duration of flash protection.
+ */
+void lpc_flash_prot_config(lpc_input_channel_e chn)
+{
+    /**
+     * The priority of flash operations has been set to the IRQ_PRI_LEV2 by default in flash.c.?
+     */
+    plic_set_priority(IRQ_PM_LVL,3);//Setting the interrupt priority of LPC(PM) to highest IRQ_PRI_LEV3.
+    plic_preempt_feature_en(CORE_PREEMPT_PRI_MODE0);//enable preemptive priority interrupt feature.
+
+    gpio_function_en(GPIO_GROUPB | (1<<chn));
+    gpio_set_up_down_res(GPIO_GROUPB | (1<<chn), GPIO_PIN_UP_DOWN_FLOAT);//must be configured as float to prevent being pulled down in gpio_shutdown
+    gpio_output_en(GPIO_GROUPB | (1<<chn));    //enable output
+    gpio_input_dis(GPIO_GROUPB | (1<<chn));    //disable input
+    gpio_set_level(GPIO_GROUPB | (1<<chn), 1);
+
+
+    lpc_set_input_chn(chn);
+    lpc_set_input_ref(LPC_NORMAL, LPC_REF_974MV);
+    lpc_set_scaling_coeff(LPC_SCALING_PER50);
+    lpc_power_on();
+    delay_us(64);
+    pm_set_wakeup_src(PM_WAKEUP_COMPARATOR);
+    pm_clr_irq_status(FLD_WAKEUP_STATUS_COMPARATOR);
+    plic_interrupt_enable(IRQ_PM_LVL);
 }

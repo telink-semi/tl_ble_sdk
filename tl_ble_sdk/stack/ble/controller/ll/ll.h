@@ -47,7 +47,8 @@ typedef enum
     BLT_EV_FLAG_SLEEP_ENTER,
     BLT_EV_FLAG_SUSPEND_EXIT,
     BLT_EV_FLAG_KEY_MISSING,
-
+    BLT_EV_FLAG_WFI_ENTER,
+    BLT_EV_FLAG_WFI_EXIT,
     BLT_EV_MAX_NUM,
 } blt_ev_flag_t;
 

@@ -235,4 +235,10 @@ _attribute_ram_code_sec_noinline_ void sys_init(power_mode_e power_mode, vbat_ty
  */
 _attribute_ram_code_sec_noinline_ void crystal_manual_settle(void);
 
+/**
+ * @brief      This function servers to reset and hold mcu.
+ * @return     none
+ */
+_attribute_ram_code_sec_optimize_o2_noinline_ void sys_mcu_reset_hold(void);
+
 #endif

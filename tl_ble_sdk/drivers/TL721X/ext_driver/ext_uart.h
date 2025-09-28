@@ -66,14 +66,14 @@
  * @brief   debug UART TX pin selection, user can change in app_config.h
  */
 #ifndef TLKAPI_DEBUG_UART_TX_PIN
-#define TLKAPI_DEBUG_UART_TX_PIN                    GPIO_FC_PD4
+#define TLKAPI_DEBUG_UART_TX_PIN                    GPIO_FC_PB5
 #endif
 
 /**
  * @brief   debug UART RX pin selection, user can change in app_config.h
  */
 #ifndef TLKAPI_DEBUG_UART_RX_PIN
-#define TLKAPI_DEBUG_UART_RX_PIN                    GPIO_FC_PD3
+#define TLKAPI_DEBUG_UART_RX_PIN                    GPIO_FC_PB4
 #endif
 
 
