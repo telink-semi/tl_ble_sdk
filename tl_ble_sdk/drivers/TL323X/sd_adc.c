@@ -24,7 +24,7 @@
 #include "sd_adc.h"
 #include "compiler.h"
 #include <stdio.h>
-
+#include "lpc.h"
 volatile unsigned char g_sd_adc_divider=1;
 volatile unsigned short g_sd_adc_downsample_rate=128;
 
@@ -41,6 +41,11 @@ _attribute_data_retention_sec_ volatile signed short g_sd_adc_vbat_calib_vref_of
 _attribute_data_retention_sec_ volatile unsigned short g_diff_sd_adc_vref = 9073;
 _attribute_data_retention_sec_ volatile signed short g_diff_sd_adc_vref_offset = -125;
 
+_attribute_data_retention_sec_ volatile double vbat_gain_a = 1;
+_attribute_data_retention_sec_ volatile double vbat_gain_b = 1;
+_attribute_data_retention_sec_ volatile double vbat_offset_c = 0;
+
+extern unsigned char vbat_2v2_calib_flag;
 
 dma_chn_e sd_adc_dma_chn;
 dma_config_t sd_adc_rx_dma_config=
@@ -94,6 +99,20 @@ void sd_adc_set_diff_gpio_calib_vref(unsigned short vref, signed short offset)
 {
     g_diff_sd_adc_vref = vref;
     g_diff_sd_adc_vref_offset = offset;
+}
+
+/**
+ * @brief This function is used to calibrate sd adc sample voltage for VBAT < 2.2V.
+ * @param[in] gain_a - VBAT sampling calibration coefficient.
+ * @param[in] gain_b - VBAT sampling calibration coefficient.
+ * @param[in] offset_c - VBAT sampling calibration offset.
+ * @return none
+ */
+void sd_adc_set_vbat_2v2_calib_vref(signed int gain_a, signed int gain_b, signed int offset_c)
+{
+    vbat_gain_a = (double)gain_a/10000;
+    vbat_gain_b = (double)gain_b/10000;
+    vbat_offset_c = (double)offset_c/10000;
 }
 
 /**
@@ -332,6 +351,10 @@ void sd_adc_set_dc_sample_num_with_audio(unsigned char dc_sample_num)
  */
 void sd_adc_vbat_sample_init(unsigned char clk_freq, sd_adc_vbat_div_e div, sd_adc_downsample_rate_e downsample_rate)
 {
+#if VBAT_MODE_BELOW_2V2_DETECT_EN
+    lpc_vbat_vol_detect_init(LPC_VBAT_FALLING_2P04V_RISING_2P15V);
+    lpc_power_on();
+#endif
     sd_adc_temp_sensor_power_off();//Turn off to reduce power
     sd_adc_set_mux_control(SD_ADC_VBAT_MODE);
     sd_adc_set_clk_freq(clk_freq);
@@ -374,17 +397,38 @@ signed int sd_adc_calculate_voltage(signed int sd_adc_code,sd_adc_result_type_e 
     }
     else
     {
-        //code to vol: vol = (code*1000/(OSR^3)/2)*diviver (unit:mv)
-        if(type == SD_ADC_VOLTAGE_10X_MV)
+        unsigned char vbat_low_vol_detect = lpc_get_result();
+        if(vbat_low_vol_detect && vbat_2v2_calib_flag)
         {
-            return  (signed long long)((float)sd_adc_code/g_sd_adc_downsample_rate/g_sd_adc_downsample_rate/g_sd_adc_downsample_rate/2*g_sd_adc_divider*g_sd_adc_vref)+g_sd_adc_vref_offset;
-        }else if(type == SD_ADC_VOLTAGE_MV)
-        {
-            return  (signed long long)((float)sd_adc_code/g_sd_adc_downsample_rate/g_sd_adc_downsample_rate/g_sd_adc_downsample_rate/2*g_sd_adc_divider*g_sd_adc_vref/10) + (g_sd_adc_vref_offset/10);
-        }else
-        {
-            return 0;
+            if(type == SD_ADC_VOLTAGE_10X_MV)
+            {
+                int adc_vol = (signed long long)((float)sd_adc_code/g_sd_adc_downsample_rate/g_sd_adc_downsample_rate/g_sd_adc_downsample_rate/2*g_sd_adc_divider*10000);
+                double vbat_vol = (double)adc_vol/10000;
+                return (double)((double)vbat_gain_a * vbat_vol * vbat_vol + vbat_gain_b * vbat_vol + vbat_offset_c)*10000;
+
+            }else if(type == SD_ADC_VOLTAGE_MV)
+            {
+                int adc_vol = (signed long long)((float)sd_adc_code/g_sd_adc_downsample_rate/g_sd_adc_downsample_rate/g_sd_adc_downsample_rate/2*g_sd_adc_divider*1000);
+                double vbat_vol = (double)adc_vol/1000;
+                return (double)((double)vbat_gain_a * vbat_vol * vbat_vol + vbat_gain_b * vbat_vol + vbat_offset_c)*1000;
+            }else
+            {
+                return 0;
+            }
+        }else{
+            //code to vol: vol = (code*1000/(OSR^3)/2)*diviver (unit:mv)
+            if(type == SD_ADC_VOLTAGE_10X_MV)
+            {
+                return  (signed long long)((float)sd_adc_code/g_sd_adc_downsample_rate/g_sd_adc_downsample_rate/g_sd_adc_downsample_rate/2*g_sd_adc_divider*g_sd_adc_vref)+g_sd_adc_vref_offset;
+            }else if(type == SD_ADC_VOLTAGE_MV)
+            {
+                return  (signed long long)((float)sd_adc_code/g_sd_adc_downsample_rate/g_sd_adc_downsample_rate/g_sd_adc_downsample_rate/2*g_sd_adc_divider*g_sd_adc_vref/10) + (g_sd_adc_vref_offset/10);
+            }else
+            {
+                return 0;
+            }
         }
+
     }
 }
 
