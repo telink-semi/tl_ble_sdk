@@ -35,6 +35,12 @@
  *  API Reference
  *  ===============
  *  Header File: gpio.h
+ *
+ *  Attention
+ *  ==============
+  -# Peripherals
+      - Multiplexing PD6 and PD7 for PWM functionality affects RF performance, therefore their use as PWM is not recommended.
+      - When PE1~PE5 are used as LSPI, frequencies exceeding 15MHz will affect RF sensitivity. For details, please refer to the HW design guide.
  */
 #ifndef DRIVERS_GPIO_H_
 #define DRIVERS_GPIO_H_
@@ -126,7 +132,7 @@ typedef enum
 #if (SPECIAL_APPLICATION)
     GPIO_PD4  = GPIO_GROUPD | BIT(4),
 #endif
-    GPIO_PD5  = GPIO_GROUPD | BIT(5),
+    GPIO_PD5  = GPIO_GROUPD | BIT(5), //PD5 can only be used for output multiplexing functions. During ADC operation, it must be configured as an output function.
     GPIO_PD6  = GPIO_GROUPD | BIT(6),
     GPIO_PD7  = GPIO_GROUPD | BIT(7),
     GPIOD_ALL = GPIO_GROUPD | 0x00ff,

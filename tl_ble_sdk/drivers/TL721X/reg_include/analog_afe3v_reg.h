@@ -63,8 +63,7 @@ enum
 
 enum
 {
-    FLD_PD_BBPLL_LDO = BIT(0),      //power down bbpll LDO
-                                    //LDO:260uA, DCDC:100uA
+    FLD_PD_BBPLL_LDO      = BIT(0), //power down bbpll LDO  LDO:260uA, DCDC:100uA
     FLD_PD_LC_COMP_3V     = BIT(1), //power down of low current comparator
     FLD_PD_TEMP_SENSOR_3V = BIT(2), //power down of temp sensor
     FLD_PD_VBAT_SW        = BIT(3), //power down of bypass switch(VBAT LDO)
@@ -208,16 +207,21 @@ typedef enum
     FLD_WAKEUP_STATUS_INUSE_ALL  = 0x0f,
 } pm_wakeup_status_e;
 
-#define areg_aon_0x65 0x65 //read only
+#define areg_aon_0x65                0x65
+enum {
+    //RSVD
+    FLD_RESET_XTAL_QICK_START        = BIT(6),
+    FLD_RESET_32K_TIMER_CNT          = BIT(7),
+};
 
-#define areg_aon_0x69 0x69
-
+#define areg_aon_0x69                0x69
 enum
 {
-    FLD_PD_SM_BUSY = BIT(5), /*
+    FLD_PD_SM_BUSY                   = BIT(5), /*
                                             The pd_sm_busy bit just represents the completion of power switch.
                                             During power switch it will be 1, and after the switch is completed, it will become 0.
                                         */
+    FLD_32K_WD_OVERFLOW_STATUS       = BIT(7),
 };
 
 #define areg_aon_0x79 0x79

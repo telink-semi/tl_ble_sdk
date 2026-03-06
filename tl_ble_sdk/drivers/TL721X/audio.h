@@ -870,6 +870,22 @@ static inline void audio_set_fifo_rx_trig_num(audio_fifo_chn_e rx_fifo_chn, unsi
 }
 
 /**
+ *  @brief      This function serves to enable or disable high-pass filter.
+ *  @return     none.
+ */
+static inline void audio_mic_high_pass_filter_en(unsigned char en)
+{
+    if (en)
+    {
+        BM_SET(reg_codec_cfg1, FLD_HPF_EN);
+    }
+    else
+    {
+        BM_CLR(reg_codec_cfg1, FLD_HPF_EN);
+    }
+}
+
+/**
  *  @brief      This function serves to mic mute enable.
  *  @return     none.
  */
@@ -955,6 +971,20 @@ static inline codec_in_pga_gain_e audio_get_adc_pga_gain(void)
  */
 static inline void audio_set_stream0_dig_gain(codec_in_path_digital_gain_e d_gain)
 {
+    /*
+     * Due to the internal digital update of the DMIC of A3 chip, the DMIC path of A3
+     * has an additional gain of 15.5dB compared to A2 (1->6, -1->-6, 20lg6=15.5dB)
+     * (in fact, the gain has been fixed on A3 to approach 0 for a 20 bit scenario).
+     * However, in order to ensure that the same dgain macro has the same effect in A2 and A3,
+     * while also considering the previous chip, the gain of A3 is modified here.
+     */
+    if ((CHIP_VERSION_A3 == g_chip_version) && (reg_codec_vol & FLD_MIC_SEL))
+    {
+        if (d_gain >= CODEC_IN_D_GAIN_m30_DB)
+        {
+            d_gain -= 10;
+        }
+    }
     reg_codec_vol = ((reg_codec_vol & (~FLD_DEC_VOL)) | d_gain);
 }
 
@@ -966,6 +996,18 @@ static inline codec_in_path_digital_gain_e audio_get_stream0_dig_gain(void)
 {
     codec_in_path_digital_gain_e val;
     val = reg_codec_vol & FLD_DEC_VOL;
+    if ((CHIP_VERSION_A3 == g_chip_version) && (reg_codec_vol & FLD_MIC_SEL))
+    {
+        /* Refer to the modification of audio_set_stream0_dig_gain interface and
+         * make corresponding adjustments to this interface as well.
+         */
+        if ((CODEC_IN_D_GAIN_m48_DB == val) || (CODEC_IN_D_GAIN_m42_DB == val) || (CODEC_IN_D_GAIN_m36_DB == val))
+        {}
+        else
+        {
+            val += 10;
+        }
+    }
     return val;
 }
 
@@ -1632,21 +1674,23 @@ void i2s_set_pin(audio_i2s_select_e i2s_select, i2s_pin_config_t *config);
 
 /**
  * @brief     This function serves to config  rx_dma channel.
- * @param[in] chn          - dma channel.
- * @param[in] dst_addr     - the dma address of destination.
- * @param[in] data_len     - the length of dma rx size by byte.
+ * @param[in] chn          - dma channel
+ * @param[in] dst_addr     - Pointer to data buffer, it must be 4-bytes aligned address.
+ *                           and the actual buffer size defined by the user needs to be not smaller than the data_len, otherwise there may be an out-of-bounds problem.
+ * @param[in] data_len     - Length of DMA in bytes, it must be set to a multiple of 4. The maximum value that can be set is 0x10000. 
  * @param[in] head_of_list - the head address of dma llp.
- * @return    none.
+ * @return    none
  */
 void audio_rx_dma_config(dma_chn_e chn, unsigned short *dst_addr, unsigned int data_len, dma_chain_config_t *head_of_list);
 
 /**
- * @brief     This function serves to set rx dma chain transfer.
+ * @brief     This function serves to set rx dma chain transfer
  * @param[in] config_addr - the head of list of llp_pointer.
  * @param[in] llpointer   - the next element of llp_pointer.
- * @param[in] dst_addr    - the dma address of destination.
- * @param[in] data_len    - the length of dma size by byte.
- * @return    none.
+ * @param[in] dst_addr    - Pointer to data buffer, it must be 4-bytes aligned address and the actual buffer size defined by the user needs to
+ *                          be not smaller than the data_len, otherwise there may be an out-of-bounds problem.
+ * @param[in] data_len    - Length of DMA in bytes, it must be set to a multiple of 4. The maximum value that can be set is 0x10000.
+ * @return    none
  */
 void audio_rx_dma_add_list_element(dma_chain_config_t *config_addr, dma_chain_config_t *llpointer, unsigned short *dst_addr, unsigned int data_len);
 
@@ -1663,21 +1707,21 @@ void audio_rx_dma_chain_init(audio_fifo_chn_e rx_fifo_chn, dma_chn_e chn, unsign
 
 /**
  * @brief     This function serves to config  tx_dma channel.
- * @param[in] chn          - dma channel.
- * @param[in] src_addr     - the address of source.
- * @param[in] data_len     - the length of dma rx size by byte.
+ * @param[in] chn          - dma channel
+ * @param[in] src_addr     - Pointer to data buffer, it must be 4-bytes aligned address.
+ * @param[in] data_len     - Length of DMA in bytes, range from 1 to 0x10000.
  * @param[in] head_of_list - the head address of dma llp.
  * @return    none
  */
 void audio_tx_dma_config(dma_chn_e chn, unsigned short *src_addr, unsigned int data_len, dma_chain_config_t *head_of_list);
 
 /**
- * @brief     This function serves to set tx dma chain transfer.
+ * @brief     This function serves to set tx dma chain transfer
  * @param[in] config_addr - the head of list of llp_pointer.
  * @param[in] llpointer   - the next element of llp_pointer.
- * @param[in] src_addr    - the address of source.
- * @param[in] data_len    - the length of dma size by byte.
- * @return    none.
+ * @param[in] src_addr    - Pointer to data buffer, it must be 4-bytes aligned address.
+ * @param[in] data_len    - Length of DMA in bytes, range from 1 to 0x10000.
+ * @return    none
  */
 void audio_tx_dma_add_list_element(dma_chain_config_t *config_addr, dma_chain_config_t *llpointer, unsigned short *src_addr, unsigned int data_len);
 
