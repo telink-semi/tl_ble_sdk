@@ -566,7 +566,7 @@ typedef enum
     PROBE_CCLK       = 4,
     PROBE_HCLK       = 5,
     PROBE_PCLK       = 6,
-    PROBE_RRAM       = 7,
+    PROBE_NVM        = 7,
     PROBE_CLK_MSPI   = 8,
     PROBE_CLK_LSPI   = 9,
     PROBE_CLK_GSPI   = 0x0a,
@@ -803,7 +803,7 @@ static inline _Bool gpio_is_input_en(gpio_pin_e pin)
  */
 static _always_inline void gpio_set_mspi_pin_ie_en(void)
 {
-    reg_gpio_pg_ie = 0x3f;
+    reg_gpio_pi_ie = 0x3f;
 }
 
 /**
@@ -814,7 +814,7 @@ static _always_inline void gpio_set_mspi_pin_ie_en(void)
  */
 static _always_inline void gpio_set_mspi_pin_ie_dis(void)
 {
-    reg_gpio_pg_ie = 0x00;
+    reg_gpio_pi_ie = 0x00;
 }
 
 /**

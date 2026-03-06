@@ -68,7 +68,7 @@
 #include "mailbox.h"
 #include "timer_bb.h"
 #include "keyscan_ana.h"
-#include "lib/include/rram.h"
+#include "lib/include/nvm.h"
 #include "lin.h"
 #include "pem.h"
 #include "sd_adc.h"

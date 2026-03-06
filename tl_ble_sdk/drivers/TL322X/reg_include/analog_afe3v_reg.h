@@ -58,8 +58,8 @@ enum
     FLD_PD_VBAT_SW        = BIT(3), //power down of bypass switch(VBAT LDO)
     //RSVD
     //RSVD
-    FLD_PD_SPD_LDO     = BIT(6), //power down of spd ldo
-    FLD_PD_DIG_RET_LDO = BIT(7), //power down of retention ldo
+    FLD_PD_SPD_LDO        = BIT(6), //power down of spd ldo
+    FLD_PD_DIG_RET_LDO    = BIT(7), //power down of retention ldo
 };
 
 #define areg_aon_0x08 0x08
