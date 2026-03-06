@@ -71,6 +71,8 @@ typedef enum
 
 /**
  *  @brief  Define GPIO types
+ *  @note   the following one point need to noticed when using GPIOF groups:
+ *          Since these GPIOs are used for connecting the flash and have been occupied, they cannot be used as wake-up pins.
  */
 typedef enum
 {
@@ -110,8 +112,10 @@ typedef enum
     GPIO_PB7  = GPIO_GROUPB | BIT(7),
     GPIOB_ALL = GPIO_GROUPB | 0x00ff,
 
-    GPIO_PC0  = GPIO_GROUPC | BIT(0),
+    // There is crosstalk between PC0 and PC1. It is recommended to use only one pin at a time, except for audio, within a short period.
+    GPIO_PC0  = GPIO_GROUPC | BIT(0), 
     GPIO_PC1  = GPIO_GROUPC | BIT(1),
+
     GPIO_PC2  = GPIO_GROUPC | BIT(2),
     GPIO_PC3  = GPIO_GROUPC | BIT(3),
     GPIO_PC4  = GPIO_GROUPC | BIT(4),

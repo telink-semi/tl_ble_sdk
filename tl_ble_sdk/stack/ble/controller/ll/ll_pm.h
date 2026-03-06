@@ -172,15 +172,4 @@ void blc_pm_registerAppWakeupLowPowerCb(pm_appWakeupLowPower_callback_t cb);
  * @return  none
  */
 void blc_ll_enOsPowerManagement_module(void);
-
-/**
- *@brief      This function is used to tell stack that application have not task to handle immediately.
- *            According to the stack situation,stack can stall MCU to reduce power consumption.
- *            If application have emergency tasks that need to handle in time, user can close MCU stall function by setting parameter to 0.
- *
- *@param[in]  en - 1: allow stack to stall MCU;
- *                 0: stack can not stall MCU
- *@return     none
- */
-void blc_ll_appAllowMCUstall(u8 en);
 #endif /* LL_PM_H_ */
