@@ -392,7 +392,6 @@ _attribute_no_inline_ void user_init_normal(void) //app_controller_event_callbac
     blc_ota_setOtaProcessTimeout(30);
 #endif
 
-    blc_ll_appAllowMCUstall(1);
     tlkapi_printf(APP_LOG_EN, "[APP][INI] feature_eslp_esl init");
     ////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -137,13 +137,26 @@ static inline unsigned char lpc_get_result(void)
 void lpc_set_input_ref(lpc_mode_e mode, lpc_reference_e ref);
 
 /**
- * @brief       This function serves to protect the flash during the chip power-down process
+ * @brief       This function is used to initialize GPIO voltage detection.
+ * @param[in]   mode    - lower power comparator working mode includes normal mode and low power mode.
+ * @param[in]   pin     - selected input channel.Input derived from external PortB(PB<1>~PB<7>).
+ * @param[in]   ref     - selected input reference voltage.
+ * @param[in]   divider - selected scaling coefficient.(%25,%50,%75,%100)
+ * @return      none.
+ */
+void lpc_gpio_vol_detect_init(lpc_mode_e mode, lpc_input_channel_e pin, lpc_reference_e ref,lpc_scaling_e divider);
+
+/**
+ * @brief       This function serves to protect the flash during the chip power-down process.
  * @param[in]   pin  - selected input channel.Input derived from external PortB(PB<1>~PB<7>).
  * @return      none.
- * @note        -# Interrupt preemption must be enabled and the application layer must not call plic_preempt_feature_dis() to disable interrupt preemption.
- *              -# plic_preempt_feature_en() can only use mode0 — do not call it again to change the preemption mode, otherwise LPC operations may be interrupted.
- *              -# The first parameter of flash_plic_preempt_config() must not be set to 0.
- *              -# The priority of IRQ_PM_LVL must be set to the highest level IRQ_PRI_LEV3 and cannot be modified. No other interrupts are allowed to use IRQ_PRI_LEV3.
- *              -# Once PBx is configured for LPC functionality, this GPIO can no longer be used for any other functions.
+ * @note       -# In order to improve the robustness of the chip during high-speed operation, the low power comparator (LPC) is used to
+ *              protect the flash during power-down of the chip when the main frequency CCLK is running above 48MHz (excluding 48MHz).
+ *              When this feature is enabled, there are the following limitations:
+ *               -# The chip power supply voltage is limited to 2.1V to 4.2V.
+ *               -# One of PB[1:7] must be reserved for this feature.
+ *               -# Interrupt preemption must be enabled and the LPC interrupt will be set as the only highest priority interrupt that can interrupt any process.
+ *               -# LPC interrupt priority(IRQ_PM_LVL) > flash operation priority > other interrupt priority.
+ *               -# lpc_flash_prot_config() and core_interrupt_enable() should be called as early as possible to activate flash power-down protection.This maximizes the duration of flash protection.
  */
 void lpc_flash_prot_config(lpc_input_channel_e chn);
