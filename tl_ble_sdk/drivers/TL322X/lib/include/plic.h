@@ -203,7 +203,7 @@ extern _attribute_data_retention_sec_ volatile unsigned long g_plic_preempt_en;
     #define IRQ_I3C0                61 /* IRQ_I3C0,  - i3c0_irq_handler */
     #define IRQ_I3C1                62 /* IRQ_I3C1,  - i3c1_irq_handler */
     #define IRQ_DMA1                63 /* IRQ_DMA1,  - dma1_irq_handler */
-    #define IRQ_RRAM                64 /* IRQ_RRAM,  - rram_irq_handler */
+    #define IRQ_NVM                 64 /* IRQ_NVM,   - nvm_irq_handler */
 
     /**
  * @}

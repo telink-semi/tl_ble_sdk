@@ -353,6 +353,14 @@ typedef enum
     RF_POWER_N25p20dBm = BIT(7) | 1,  /**<  -25.2 dbm */
     RF_POWER_N40p00dBm = BIT(7) | 0,  /**<  -40.0 dbm */
 
+/*
+ * The following power scenarios adopt VANT mode to reduce TX power consumption while sustaining high output power.
+ * When using the following VANT power levels,
+ * call the rf_set_vant_power_trim_level interface to adjust the voltage
+ * both before and after toggling the TX switch.
+ * This configuration calling method can ensure an increase in power while limiting additional power consumption.
+ * For detailed implementation, refer to the invocation example of rf_set_vant1p05_power_trim_vol_up in the RF_Demo project.
+ */
     RF_VANT_POWER_P6p40 = BIT(7)| 63, /**<   6.4 dbm */
     RF_VANT_POWER_P6p00 = BIT(7)| 52, /**<   6.0 dbm */
     RF_VANT_POWER_P5p50 = BIT(7)| 43, /**<   5.5 dbm */
@@ -415,6 +423,14 @@ typedef enum
     RF_POWER_INDEX_N25p20dBm,  /**<  -25.2 dbm */
     RF_POWER_INDEX_N40p00dBm,  /**<  -40.0 dbm */
 
+/*
+ * The following power scenarios adopt VANT mode to reduce TX power consumption while sustaining high output power.
+ * When using the following VANT power levels,
+ * call the rf_set_vant_power_trim_level interface to adjust the voltage
+ * both before and after toggling the TX switch.
+ * This configuration calling method can ensure an increase in power while limiting additional power consumption.
+ * For detailed implementation, refer to the invocation example of rf_set_vant1p05_power_trim_vol_up in the RF_Demo project.
+ */
     RF_VANT_POWER_INDEX_P6p40dBm, /**<  6.4 dbm */
     RF_VANT_POWER_INDEX_P6p00dBm, /**<  6.0 dbm */
     RF_VANT_POWER_INDEX_P5p50dBm, /**<  5.5 dbm */
@@ -512,6 +528,17 @@ typedef enum
     RF_VANT_NORMAL_POWER = 0,
     RF_VANT_HIGH_POWER   = 1,
 }rf_vant_power_trim_e;
+
+/**
+ *  @brief  An enumeration variable used to control the time interval of PA ramp step.
+ */
+ typedef enum
+{
+    RF_PA_RAMP_STEP_P84p0 = 2,
+    RF_PA_RAMP_STEP_P250p0 = 5,
+    RF_PA_RAMP_STEP_P500p0 = 6,
+    RF_PA_RAMP_STEP_P1000p0 = 7,
+}rf_pa_ramp_step_e;
 
 /**********************************************************************************************************************
  *                                         RF global constants                                                        *
@@ -627,7 +654,7 @@ static inline void rf_rx_acc_code_pipe_en(rf_channel_e pipe)
  */
 static inline void rf_tx_acc_code_pipe_en(unsigned char pipe)
 {
-    write_reg8(0x170215, ((read_reg8(0x170215) & 0xf8) | pipe) | BIT(4)); //Tx_Channel_man[2:0]
+    write_reg8(0x170215, ((read_reg8(0x170215) & 0xf8) | (pipe&0x07)) | BIT(4)); //Tx_Channel_man[2:0]
 }
 
 /**
@@ -1496,6 +1523,45 @@ void rf_ldot_ldo_rxtxlf_bypass_en(void);
  * @return      none.
  */
 void rf_ldot_ldo_rxtxlf_bypass_dis(void);
+
+/**
+ * @brief       This function is used to set the tx trailer length.
+ * @param[in]   bit_len - the tx trailer length, range: 0~7.
+ * @return      none.
+ */
+void rf_set_tx_trailer_len(unsigned char bit_len);
+
+/**
+ * @brief       This function is used to set the rx pdet hard decision length in modem hp mode.
+ * @param[in]   bit_len - the rx pdet hard decision length,range: 0~63.
+ * @return      none.
+ */
+void rf_set_modem_hp_pdet_threshold(unsigned char bit_len);
+
+/**
+  * @brief      This function is mainly used to set the interval time of the PA ramp step.
+  * @param[in]  step_value- Enumeration variables are used to set the interval time for each step – for example, 
+  *             RF_PA_RAMP_STEP_P250p0 represents an interval of 250 ns per step.
+  * @return     none.
+  */
+void rf_set_pa_ramp_step(rf_pa_ramp_step_e step_value);
+
+
+/**
+ * @brief       This function is used to set the tx power down delay.
+ * @param[in]   delay_time - the tx power down delay, range: 0~15 us.
+ * @return      none.
+ */
+void rf_set_tx_power_down_delay(unsigned char delay_time);
+
+/**
+ * @brief       This function is used to shorten the rx timing sequence.
+ * @param[in]   none.
+ * @return      none.
+ * @note        (1)This interface can shorten the 0.5us RX path delay time.
+ *              (2)When the received packet length is greater than the maximum packet length, receive the minimum number of packets.
+ */
+void rf_rx_timing_seq_shorten(void);
 
 
 #endif
