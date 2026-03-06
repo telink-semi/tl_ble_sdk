@@ -678,7 +678,7 @@ _attribute_no_inline_ void user_init_normal(void)
        #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
     blc_pm_setDeepsleepRetentionEarlyWakeupTiming(760);
        #elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
-    blc_pm_setDeepsleepRetentionEarlyWakeupTiming(600);
+    blc_pm_setDeepsleepRetentionEarlyWakeupTiming(540);
         #endif
     #else
     blc_pm_setDeepsleepRetentionEnable(PM_DeepRetn_Disable);

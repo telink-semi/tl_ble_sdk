@@ -1773,6 +1773,13 @@ enum
 };
 
 #define reg_rf_txrx_en_dbg_ow_ctrl1 REG_ADDR8(REG_TL_RADIO_BASE_ADDR + 0x87)
+enum
+{
+    FLD_RF_CB_BANDGAP_TX_RUN = BIT(0),
+    FLD_RF_CB_PDSTL_TX_RUN   = BIT(1),
+    FLD_RF_CB_BANDGAP_RX_RUN = BIT(2),
+    FLD_RF_CB_PDSTL_RX_RUN   = BIT(3),
+};
 
 #define reg_rf_txrx_en_dbg_val      REG_ADDR8(REG_TL_RADIO_BASE_ADDR + 0x88)
 
@@ -2270,12 +2277,19 @@ enum
 {
     FLD_RF_TX_FRAC_TIME_MUX      = BIT(0),
     FLD_RF_TXC_DSM_INT_OVERWRITE = BIT(1),
-    FLD_RF_FCAL_STL_DCAP_EN      = BIT(2), //FCAL fast settle enable
+    FLD_RF_FCAL_STL_DCAP_RX_EN      = BIT(2), //FCAL fast settle enable
     FLD_RF_FCAL_RVT_T1           = BIT(3),
     FLD_RF_CH_FREQ_RVT_T1        = BIT(4),
     FLD_RF_TX_MI_SWITCH_TONE_EN  = BIT(5),
     FLD_RF_TX_HAFM_RAMP_DOWN_EN  = BIT(6),
     FLD_RF_TX_RAMP_DOWN_TONE_EN  = BIT(7),
+};
+
+#define reg_rf_frac_ctrl0 REG_ADDR8(REG_TL_RADIO_BASE_ADDR + 0x1C8)
+enum
+{
+    FLD_RF_FCAL_AUTO_FAST_RUN   = BIT(0),
+    FLD_RF_FCAL_STL_DCAP_TX_EN  = BIT(1),
 };
 
 #define reg_rf_fcal_ctrl_tx(i)            REG_ADDR8(REG_TL_RADIO_BASE_ADDR + 0x1a0 + i)        //i range:0~7
