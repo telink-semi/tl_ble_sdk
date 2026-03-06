@@ -21,6 +21,21 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
+/** @page PWM
+ *
+ *  Introduction
+ *  ===============
+ *  supports basic pwm functions
+ *
+ *  API Reference
+ *  ===============
+ *  Header File: pwm.h
+ *
+ *  Attention
+ *  ==============
+  -# Peripherals
+      - Multiplexing PD6 and PD7 for PWM functionality affects RF performance, therefore their use as PWM is not recommended.
+ */
 #ifndef PWM_H_
 #define PWM_H_
 #include "dma.h"

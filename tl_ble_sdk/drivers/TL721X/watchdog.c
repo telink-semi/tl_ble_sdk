@@ -54,7 +54,7 @@ _attribute_ram_code_sec_noinline_ void wd_32k_stop(void)
  */
 _attribute_ram_code_sec_noinline_ unsigned char wd_32k_get_status(void)
 {
-    return (analog_read_reg8(0x69) & 0x80);
+    return (analog_read_reg8(areg_aon_0x69) & FLD_32K_WD_OVERFLOW_STATUS);
 }
 
 /**
@@ -64,7 +64,7 @@ _attribute_ram_code_sec_noinline_ unsigned char wd_32k_get_status(void)
  */
 _attribute_ram_code_sec_noinline_ void wd_32k_clear_status(void)
 {
-    analog_write_reg8(0x69, 0x80);
+    analog_write_reg8(areg_aon_0x69, FLD_32K_WD_OVERFLOW_STATUS);
 }
 
 /**

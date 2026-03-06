@@ -126,6 +126,11 @@
           - When spi_master_read_dma_plus()/spi_master_write_read_dma()/spi_master_write_read_dma_plus() is used, TC_MASK is used, because SPI_END_EN can only represent the completion of spi receiving,
             and can not represent whether the dma has completed the work, to prevent abnormal situations.
           - If spi_set_irq_mask() :SPI_END_INT_EN is enabled when master read is used, disable it before read. Enable the read function after it is complete.
+
+ *  Attention
+ *  ==============
+  -# Peripherals
+      - When PE1~PE5 are used as LSPI, frequencies exceeding 15MHz will affect RF sensitivity. For details, please refer to the HW design guide.
  */
 
 /**

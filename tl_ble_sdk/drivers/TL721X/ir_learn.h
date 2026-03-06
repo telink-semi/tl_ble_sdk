@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    ir_learn.h
  *
- * @brief   This is the source file for TL721X
+ * @brief   This is the header file for TL721X
  *
  * @author  Driver Group
  * @date    2024
