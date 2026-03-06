@@ -21,17 +21,59 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-/**@page RF
- *
- *    Header File: rf.h
- *
- *    Attention
- *    ==============
-     -# Precautions when using RF and pm functions in combination:
-        -suspend mode        :In this mode RF related digital registers are lost and need to re-call the RF related function interfaces after waking up.
-        -deep retention mode :In this mode RF related digital registers are lost and need to re-call the RF related function interfaces after waking up.
-        -deep mode           :In this mode RF related digital registers are lost and need to re-call the RF related function interfaces after waking up.
-
+/**
+ * @page RF RF Module Configuration Guide
+ * 
+ * @brief This page provides detailed usage notes, power configuration instructions, and key precautions for the RF module.
+ * 
+ * @par Header File
+ *      rf.h
+ * 
+ * @section rf_pm_precautions RF and PM Usage Precautions
+ * When using RF and Power Management (PM) functions in combination, note the following requirements for different low-power modes:
+ * 
+ * - <b>Suspend mode</b>:
+ *   RF-related digital registers will be lost. After waking up from suspend mode, re-invoke all RF-related function interfaces to restore functionality.
+ * 
+ * - <b>Deep retention mode</b>:
+ *   RF-related digital registers will be lost. After waking up from deep retention mode, re-invoke all RF-related function interfaces to restore functionality.
+ * 
+ * - <b>Deep mode</b>:
+ *   RF-related digital registers will be lost. After waking up from deep mode, re-invoke all RF-related function interfaces to restore functionality.
+ * 
+ * @section rf_power_explanation RF Transmit Power Configuration
+ * 
+ * @subsection rf_power_supply Power Supply Modes of RF PA Module
+ * The RF Power Amplifier (PA) module supports two power supply modes, with key characteristics as follows:
+ * 
+ * | Power Supply Mode | Power Source                          | Output Power Characteristics                                                                 | Advantage                                  |
+ * |-------------------|---------------------------------------|------------------------------------------------------------------------------------------------|-------------------------------------------|
+ * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT → higher available power)          | Simple power path, suitable for high-power scenarios |
+ * | VANT mode         | Powered by embedded DCDC + LDO        | Output power is stable (independent of VBAT voltage)                                          | Lower power consumption at the same transmit power |
+ * 
+ * @subsection rf_power_table TX Power Table (Driver-Provided)
+ * - The default <code>rf_power_level_e</code> enumeration is calibrated based on the largest package, providing typical reference values for both VBAT and VANT modes.
+ * - Power levels exceeding the maximum VANT power are automatically mapped to VBAT mode (driver handles mode switching internally).
+ * 
+ * @subsection rf_power_adjust Power Level Adjustment Instructions
+ * #### 3.1 Basic Configuration Rules
+ * - Both VBAT and VANT modes support 64 configurable power levels (range: 0 ~ 63).
+ * - The mapping relationship between level numbers and hardware registers is fixed (package-independent); only the actual transmit power differs by package.
+ * 
+ * #### 3.2 Configuration Methods (via <code>rf_set_power_level</code> Interface)
+ * Two configuration approaches are supported:
+ * a) Use predefined values from the <code>rf_power_level_e</code> enumeration (recommended for most scenarios).
+ * b) Write custom level values (for scenario-specific power optimization), following mode-specific formatting rules.
+ * 
+ * #### 3.3 Mode-Specific Level Format
+ * | Mode       | Level Format                          | Valid Range |
+ * |------------|---------------------------------------|-------------|
+ * | VBAT mode  | <code>level = power_level</code>      | 0 ~ 63      |
+ * | VANT mode  | <code>level = BIT(7) \| power_level</code> | 0 ~ 63      |
+ * 
+ * @subsection rf_power_notes Supplementary Notes
+ * 1. For package-specific detailed power data (e.g., actual power values corresponding to each level), refer to the <cite>[Chip Model] RF Test Report</cite>.
+ * 2. Actual transmit power is affected by antenna matching, PCB layout, and hardware design. Mandatory hardware calibration is required for mass production or high-precision applications.
  */
 #ifndef RF_H
 #define RF_H
@@ -54,14 +96,17 @@
  *          Set to 1: Restore the settings of the previous version's secondary filtering, only as a reserved configuration for testing, and cannot be used in actual scenarios
  *
  */
-// #define RF_RX_SEC_FLT_CONFIG 0
-#define     SW_DCOC_EN                                  1 //enable and verify by lihaojie.
+#define RF_RX_SEC_FLT_CONFIG 0
 
 /**
  *  @brief This define serve to calculate the DMA length of packet.
  */
 #define rf_tx_packet_dma_len(rf_data_len) (((rf_data_len) + 3) / 4) | (((rf_data_len) % 4) << 22)
 
+/**
+ *  @brief This macro provides an alternative name for the rf_get_latched_rssi() function to be compatible with older versions of code
+ */
+#define rf_get_rssi rf_get_latched_rssi
 /***********************************************************FOR BLE******************************************************/
 /**
  *  @brief Those setting of offset according to ble packet format, so this setting for ble only.
@@ -381,7 +426,7 @@ typedef struct
     unsigned char LDO_VCO_TRIM;
 } rf_ldo_trim_t;
 
-#if (!SW_DCOC_EN)
+#if 0
 /**
  *  @brief  DCOC calibration value
  */
@@ -559,10 +604,7 @@ extern const rf_power_level_e rf_power_Level_list[30];
  * @param[in]   none.
  * @return      none.
  */
-static inline void rf_ldot_ldo_rxtxlf_bypass_en(void)
-{
-    write_reg8(0x140ee4, read_reg8(0x140ee4) | BIT(1));
-}
+void rf_ldot_ldo_rxtxlf_bypass_en(void);
 
 /**
  * @brief       This function is used to close the ldo rxtxlf bypass function, and the hardware will
@@ -570,10 +612,7 @@ static inline void rf_ldot_ldo_rxtxlf_bypass_en(void)
  * @param[in]   none.
  * @return      none.
  */
-static inline void rf_ldot_ldo_rxtxlf_bypass_dis(void)
-{
-    write_reg8(0x140ee4, read_reg8(0x140ee4) & (~BIT(1)));
-}
+void rf_ldot_ldo_rxtxlf_bypass_dis(void);
 
 /**
  * @brief      This function serves to optimize RF performance
@@ -593,15 +632,7 @@ static inline void rf_ldot_ldo_rxtxlf_bypass_dis(void)
  *
  */
 
-static inline void rf_set_rxpara(void)
-{
-    unsigned char reg_calibration = 0;
-    reg_calibration               = ((read_reg8(0x140eed) & 0xf) << 2) | ((read_reg8(0x140eec) & 0xc0) >> 6);
-    if (reg_calibration > 9) {
-        reg_calibration -= 9;
-    }
-    write_reg8(0x140ee5, (read_reg8(0x140ee5) & 0xc0) | reg_calibration);
-}
+void rf_set_rxpara(void);
 
 /**
  * @brief       This function serves to judge the statue of  RF receive.
@@ -717,9 +748,9 @@ static inline void rf_rx_acc_code_pipe_en(rf_channel_e pipe)
  *                        the access_code channel (5) is enabled.
  * @return      none
  */
-static inline void rf_tx_acc_code_pipe_en(rf_channel_e pipe)
+static inline void rf_tx_acc_code_pipe_en(unsigned char pipe)
 {
-    write_reg8(0x140a15, (read_reg8(0x140a15) & 0xf8) | pipe); //Tx_Channel_man[2:0]
+    write_reg8(0x140a15, ((read_reg8(0x140a15) & 0xf8) | (pipe&0x07)) | BIT(4)); //Tx_Channel_man[2:0]
 }
 
 /**
@@ -982,8 +1013,6 @@ static inline void rf_set_ptx_pid(unsigned char pipe_pid)
     reg_rf_ll_ctrl_1 |= (pipe_pid << 6);
 }
 
-
-#if (SW_DCOC_EN)
 /**
  * @brief        This function is used to set whether or not to use the rx DCOC software calibration in rf_mode_init();
  * @param[in]     en:This value is used to set whether or not rx DCOC software calibration is performed.
@@ -1007,7 +1036,6 @@ void rf_set_rx_dcoc_cali_by_sw(unsigned char en);
  * @return         none.
  */
 void rf_update_rx_dcoc_calib_code(unsigned short calib_code);
-#endif
 
 /**
  * @brief      This function serves to initiate information of RF.
@@ -1173,11 +1201,17 @@ void rf_start_srx(unsigned int tick);
 
 
 /**
- * @brief       This function serves to get rssi.
+ * @brief       This function serves to get latched rssi.
  * @return      rssi value.
  */
-signed char rf_get_rssi(void);
+signed char rf_get_latched_rssi(void);
 
+
+/**
+ * @brief       This function serves to get the real time rssi.
+ * @return      rssi value.
+ */
+signed char rf_get_real_time_rssi(void);
 
 /**
  * @brief       This function serves to set pin for RFFE of RF.
