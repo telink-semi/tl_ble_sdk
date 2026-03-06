@@ -153,18 +153,14 @@ typedef enum
 typedef enum
 {
     /**
-     * @brief Reduce 74us of RX settle time
+     * @brief Reduce 77.5us of RX settle time
      *
      * Receive for a period of time and then do a normal calibration.
      *
      * @note
-     * 1. Related to frequency points. When enabling fast settle on both TX and RX ends,
-     *    if 15us option is selected, both TX and RX ends must use the 15us option simultaneously.
-     * 2. Refer to the table below to determine the range of frequency points used.
+     *    Related to frequency points,Refer to the table below to determine the range of frequency points used.
      *    In addition to configuring the calibration values for the used frequency points,
      *    corresponding channel values in the respective intervals need to be configured.
-     *    For example, if using the 2426 frequency point, channel should be configured as 26 and 24.
-     *
      * @table
      * | Frequency (MHz) | 2400-2410 | 2410-2420 | 2420-2430 | 2430-2440 | 2440-2450 | 2450-2460 | 2460-2470 | 2470-2480 |
      * |-----------------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
@@ -207,11 +203,8 @@ typedef enum
      * After frequency hopping, a normal calibration must be done.
      *
      * @note
-     * 1. Related to frequency points. When enabling fast settle on both TX and RX ends,
-     *    if the 15us option is selected, both TX and RX ends must use the 15us option simultaneously.
-     * 2. Refer to the following table to determine the range of frequency points used.
+     *    Related to frequency points,Refer to the following table to determine the range of frequency points used.
      *    Corresponding channel values in the respective intervals need to be configured.
-     *    For example, if using the 2426 frequency point, the channel should be configured as 24.
      *
      * @table
      * | Frequency (MHz) | 2400-2410 | 2410-2420 | 2420-2430 | 2430-2440 | 2440-2450 | 2450-2460 | 2460-2470 | 2470-2480 |
@@ -267,9 +260,7 @@ typedef struct
  */
 typedef struct
 {
-    unsigned char RCCAL_CODE;
-    unsigned char CBPF_CCODE_L;
-    unsigned char CBPF_CCODE_H;
+    unsigned char CBPF_CCODE_RCCAL;
 } rf_rccal_cal_t;
 
 typedef struct
@@ -278,6 +269,8 @@ typedef struct
     rf_ldo_trim_t  ldo_trim;
     rf_dcoc_cal_t  dcoc_cal;
     rf_rccal_cal_t rccal_cal;
+    unsigned char  tx_fcal[81];
+    unsigned char  rx_fcal[81];
 } rf_fast_settle_t;
 
 /**
@@ -614,7 +607,7 @@ static inline void rf_rx_acc_code_pipe_en(rf_channel_e pipe)
  */
 static inline void rf_tx_acc_code_pipe_en(unsigned char pipe)
 {
-    write_reg8(0x170215, ((read_reg8(0x170215) & 0xf8) | pipe) | BIT(4)); //Tx_Channel_man[2:0]
+    write_reg8(0x170215, ((read_reg8(0x170215) & 0xf8) | (pipe&0x07)) | BIT(4)); //Tx_Channel_man[2:0]
 }
 
 /**
@@ -1161,10 +1154,9 @@ void rf_pn_disable(void);
  * @brief      This function serve to adjust tx/rx settle timing sequence.
  * @param[in]  tx_settle_us    After adjusting the timing sequence, the time required for tx to settle.
  * @param[in]  rx_settle_us    After adjusting the timing sequence, the time required for rx to settle.
- * @return       0                   -  Correct configuration.
- *              -1                   -  Incorrect configuration.
+ * @return     none
  */
-signed char rf_fast_settle_config(rf_tx_fast_settle_time_e tx_settle_us, rf_rx_fast_settle_time_e rx_settle_us);
+void rf_fast_settle_config(rf_tx_fast_settle_time_e tx_settle_us, rf_rx_fast_settle_time_e rx_settle_us);
 
 
 /**
@@ -1192,6 +1184,7 @@ void rf_rx_fast_settle_en(void);
  *  @brief      This function serve to disable the rx timing sequence adjusted.
  *  @param[in]  none
  *  @return     none
+ *  @note        This interface needs to be called after rf mode initialization (e.g. after rf_set_ble_1M_NO_PN_mode)
 */
 void rf_rx_fast_settle_dis(void);
 
@@ -1208,6 +1201,73 @@ void rf_get_rccal_cal_val(rf_rccal_cal_t *rccal_cal);
  *  @return     none
  */
 void rf_set_rccal_cal_val(rf_rccal_cal_t rccal_cal);
+/**
+ *  @brief      This function is used to set the tx fast_settle calibration value.
+ *  @param[in]  tx_settle_us    After adjusting the timing sequence, the time required for tx to settle.
+ *  @param[in]  chn             Calibrates the frequency (2400 + chn). Range: 0 to 80. Applies to TX_SETTLE_TIME_15US and TX_SETTLE_TIME_59US, other parameters are invalid.
+ *                              (When tx_settle_us is 15us or 59us, the modules to be calibrated are frequency-dependent, so all used frequency points need to be calibrated.)
+ *  @return     none
+*/
+void rf_tx_fast_settle_update_cal_val(rf_tx_fast_settle_time_e tx_settle_time, unsigned char chn);
+
+/**
+ *  @brief      This function is used to set the rx fast_settle calibration value.
+ *  @param[in]  rx_settle_us    After adjusting the timing sequence, the time required for rx to settle.
+ *  @param[in]  chn             Calibrates the frequency (2400 + chn). Range: 0 to 80. Applies to RX_SETTLE_TIME_15US, other parameters are invalid.
+ *                              (When rx_settle_us is 15us, the modules to be calibrated are frequency-dependent, so all used frequency points need to be calibrated.)
+ *  @return     none
+*/
+void rf_rx_fast_settle_update_cal_val(rf_rx_fast_settle_time_e rx_settle_time, unsigned char chn);
+
+/**
+ *  @brief      This function is used to get the tx fast_settle calibration value.
+ *  @param[in]  tx_settle_us    After adjusting the timing sequence, the time required for tx to settle.
+ *  @param[in]  chn             Calibrates the frequency (2400 + chn). Range: 0 to 80. Applies to TX_SETTLE_TIME_15US and TX_SETTLE_TIME_59US, other parameters are invalid.
+ *                              (When tx_settle_us is 15us or 59us, the modules to be calibrated are frequency-dependent, so all used frequency points need to be calibrated.)
+ *  @param[in]  fs_cv           Fast settle calibration value address pointer.
+ *  @return     none
+*/
+void rf_tx_fast_settle_get_cal_val(rf_tx_fast_settle_time_e tx_settle_time, unsigned char chn, rf_fast_settle_t *fs_cv);
+
+/**
+ *  @brief      This function is used to set the tx fast_settle calibration value.
+ *  @param[in]  tx_settle_us    After adjusting the timing sequence, the time required for tx to settle.
+ *  @param[in]  chn             Calibrates the frequency (2400 + chn). Range: 0 to 80. Applies to TX_SETTLE_TIME_15US and TX_SETTLE_TIME_59US, other parameters are invalid.
+ *                              (When tx_settle_us is 15us or 59us, the modules to be calibrated are frequency-dependent, so all used frequency points need to be calibrated.)
+ *  @param[in]  fs_cv           Fast settle calibration value address pointer.
+ *  @return     none
+*/
+void rf_tx_fast_settle_set_cal_val(rf_tx_fast_settle_time_e tx_settle_time, unsigned char chn, rf_fast_settle_t *fs_cv);
+
+/**
+ *  @brief      This function is used to get the rx fast_settle calibration value.
+ *  @param[in]  rx_settle_us    After adjusting the timing sequence, the time required for rx to settle.
+ *  @param[in]  chn             Calibrates the frequency (2400 + chn). Range: 0 to 80. Applies to RX_SETTLE_TIME_15US, other parameters are invalid.
+ *                              (When rx_settle_us is 15us, the modules to be calibrated are frequency-dependent, so all used frequency points need to be calibrated.)
+ *  @param[in]  fs_cv           Fast settle calibration value address pointer.
+ *  @return     none
+*/
+void rf_rx_fast_settle_get_cal_val(rf_rx_fast_settle_time_e rx_settle_time, unsigned char chn, rf_fast_settle_t *fs_cv);
+
+/**
+ *  @brief      This function is used to set the rx fast_settle calibration value.
+ *  @param[in]  rx_settle_us    After adjusting the timing sequence, the time required for rx to settle.
+ *  @param[in]  chn             Calibrates the frequency (2400 + chn). Range: 0 to 80. Applies to RX_SETTLE_TIME_15US, other parameters are invalid.
+ *                              (When rx_settle_us is 15us, the modules to be calibrated are frequency-dependent, so all used frequency points need to be calibrated.)
+ *  @param[in]  fs_cv           Fast settle calibration value address pointer.
+ *  @return     none
+*/
+void rf_rx_fast_settle_set_cal_val(rf_rx_fast_settle_time_e rx_settle_time, unsigned char chn, rf_fast_settle_t *fs_cv);
+
+/**
+ *  @brief      This function is used to perform a linear fit on the RF calibration tlinear fit.able data.
+ *  @param[in]  fs_cv    - A pointer to the rf_fast_settle_t structure containing the calibration table.
+ *  @return     none
+ *  @note       This function uses the least squares method to calculate the slope and intercept of the best-fit line.
+ *              The x-values are predefined as {4, 14, 24, 34, 44, 54, 64, 74}.
+ *              The corresponding y-values are taken from the calibration table in the fs_cv structure.
+*/
+void rf_cali_linear_fit(rf_fast_settle_t *fs_cv);
 
 /**
  * @brief      This function serves to set the tx wait time during the rx2tx process
@@ -1268,23 +1328,6 @@ _attribute_ram_code_sec_noinline_ void rf_reset_register_value(void);
  */
 void rf_set_power_level_singletone(rf_power_level_e level);
 
-/**
- *  @brief      This function is used to set the tx fast_settle calibration value.
- *  @param[in]  tx_settle_us    After adjusting the timing sequence, the time required for tx to settle.
- *  @param[in]  chn             Calibrates the frequency (2400 + chn). Range: 0 to 80. Applies to TX_SETTLE_TIME_15US and TX_SETTLE_TIME_51US, other parameters are invalid.
- *                              (When tx_settle_us is 15us or 51us, the modules to be calibrated are frequency-dependent, so all used frequency points need to be calibrated.)
- *  @return     none
-*/
-void rf_tx_fast_settle_update_cal_val(rf_tx_fast_settle_time_e tx_settle_time, unsigned char chn);
-
-/**
- *  @brief      This function is used to set the rx fast_settle calibration value.
- *  @param[in]  rx_settle_us    After adjusting the timing sequence, the time required for rx to settle.
- *  @param[in]  chn             Calibrates the frequency (2400 + chn). Range: 0 to 80. Applies to RX_SETTLE_TIME_15US, other parameters are invalid.
- *                              (When rx_settle_us is 15us, the modules to be calibrated are frequency-dependent, so all used frequency points need to be calibrated.)
- *  @return     none
-*/
-void rf_rx_fast_settle_update_cal_val(rf_rx_fast_settle_time_e rx_settle_time, unsigned char chn);
 
 /**
  * @brief     This function is used to select the rx performance mode.
@@ -1404,6 +1447,8 @@ void rf_update_rx_dcoc_calib_code(unsigned short calib_code);
   * @return     none.
   */
 void rf_set_pa_ramp_step(rf_pa_ramp_step_e step_value);
+
+void rf_set_fcal_value(unsigned char fcal_value);
 
 #endif
 

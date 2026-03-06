@@ -321,6 +321,14 @@ enum
 
 #define reg_pvd_config    REG_ADDR8(SC_BASE_ADDR + 0x58)
 
+#define reg_lpd_int_status    REG_ADDR8(SC_BASE_ADDR + 0x59)
+enum
+{
+    FLD_LPD_FLASH_STATUS     = BIT(0),
+    FLD_CMP_RESULT           = BIT(1),
+    FLD_LPD_RESULT           = BIT(2),
+};
+
 #define reg_i2s0_step REG_ADDR16(SC_BASE_ADDR + 0x06)
 
 enum
