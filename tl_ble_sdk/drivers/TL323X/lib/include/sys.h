@@ -187,8 +187,8 @@ typedef struct tbl_cmd_set_t
 typedef enum
 {
     CHIP_VERSION_A0 = 0x00,
-    CHIP_VERSION_A1 = 0x80,
-    CHIP_VERSION_A2 = 0xc0,
+    CHIP_VERSION_A1 = 0x01, /*20260325 add*/
+    CHIP_VERSION_A2 = 0xc0, 
 } sys_chip_version_e;
 
 /**********************************************************************************************************************

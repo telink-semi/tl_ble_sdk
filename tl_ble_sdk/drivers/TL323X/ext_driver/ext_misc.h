@@ -63,11 +63,10 @@
 
 
 /******************************* mac start ************************************************************/
-extern void efuse_get_ieee_addr(unsigned char *buf);
 static inline bool get_device_mac_address(u8* mac_read, int length)
  {
     unsigned char mac[8];
-   efuse_get_ieee_addr(mac);
+    efuse_get_ieee_addr(mac);
 
    u8 empty_8_byte_0[8] = {0, 0, 0, 0, 0, 0, 0, 0};
    u8 empty_8_byte_F[8] = {0XFF, 0XFF, 0XFF, 0XFF, 0XFF, 0XFF, 0XFF, 0XFF};

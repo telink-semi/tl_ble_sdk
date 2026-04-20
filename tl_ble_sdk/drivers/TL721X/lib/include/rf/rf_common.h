@@ -1575,4 +1575,12 @@ void rf_ldot_ldo_rxtxlf_bypass_en(void);
  */
 void rf_ldot_ldo_rxtxlf_bypass_dis(void);
 
+/**
+  * @brief      This function serves to set pin for RFFE of RF.
+  * @param[in]   tx_pin   - select pin as rffe to send.
+  * @param[in]   rx_pin   - select pin as rffe to receive.
+  * @return     none.
+  */
+void rf_set_rffe_pin(gpio_func_pin_e tx_pin, gpio_func_pin_e rx_pin);
+
 #endif

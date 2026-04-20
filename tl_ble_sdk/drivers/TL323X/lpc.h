@@ -199,3 +199,10 @@ void lpc_gpio_vol_detect_init(lpc_mode_e mode, lpc_input_channel_e pin, lpc_refe
  * @note        -# When using the bat low power detection feature, the reference voltage can ONLY be set to BG, and this feature CANNOT be used in sleep mode.
  */
 void lpc_vbat_vol_detect_init(lpc_vbat_threshold_vol_e thres_vol);
+/**
+ * @brief       This function is used to disable vbat low power detection.
+ * @param[in]   none.
+ * @return      none.
+ * @note        -# disable the vbat low power detection feature.
+ */
+void lpc_vbat_vol_detect_deinit(void);

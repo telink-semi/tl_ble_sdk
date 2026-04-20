@@ -358,6 +358,13 @@ _attribute_ram_code_sec_noinline_ void pm_update_status_info(unsigned char clr_e
  */
 _attribute_ram_code_sec_noinline_ void pm_set_power_mode(power_mode_e power_mode);
 
+/**
+ * @brief      This function servers to get vdd1v8 calibration value from EFUSE.
+ * @param[in]  none
+ * @return     DRV_API_SUCCESS - the calibration value update, DRV_API_FAILURE - the calibration value is not update.
+ */
+drv_api_status_e pm_efuse_calib_vdd1v8_voltage(void);
+
 /********************************************************************************************************
  *                                          internal
  *******************************************************************************************************/

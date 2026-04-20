@@ -68,40 +68,49 @@ typedef enum
 #define PLL_CLK PLL_CLK_240M
 
 /**
- *  @note   If it is an external flash, the maximum speed of mspi needs to be based on the board test.
- *          Because the maximum speed is related to the wiring of the board, and is also affected by temperature and GPIO voltage,
- *          the maximum speed needs to be tested at the highest and lowest voltage of the board,
- *          and the high and low temperature long-term stability test speed is no problem.
+ * The following chart lists the maximum operating frequency that each clock source can operate at different voltage levels.
+ * (But if it is related to peripherals, this frequency will be related to the whole system, such as MSPI-->
+ *  If it is built-in flash, the maximum speed of mspi is 64M,If it is an external flash, the maximum speed
+ *  of mspi needs to be based on the board test.)
+ *
+ * :-------------------------------- Voltage versus frequency table --------------------------------------------------------------------------
+ * |  core |  sram |  pll  | cclk  | hclk | pclk | mspi | lspi | gspi| sspi | xtl | usb   | osc | i2s   | audio | sar | ro   | dpr |
+ * |  0.9V |  0.9V |  456  |  240  |  120 |  120 | 64   |  48  | 48  | 60   | 24  | 48    |  60 | 13    | 24    |  12 | 300  | 140 |
+ * |  0.8V |  0.8V |  288  |  124  |  62  |  62  | 48   |  24  | 48  | 60   | 24  | 48    |  60 | 13    | 24    |  12 | 300  | 140 |
+ *
+ * -# If it is an external flash, the maximum speed of mspi needs to be based on the board test.
+ *    Because the maximum speed is related to the wiring of the board, and is also affected by temperature and GPIO voltage,
+ *    the maximum speed needs to be tested at the highest and lowest voltage of the board,
+ *    and the high and low temperature long-term stability test speed is no problem.
  */
 //clock_bbpll_config(PLL_CLK_240M);
 //core 0.9V
-#define PLL_240M_CCLK_240M_HCLK_120M_PCLK_120M_MSPI_60M clock_init(BASEBAND_PLL, CLK_DIV1, CCLK_DIV2_TO_HCLK_DIV2_TO_PCLK, CLK_DIV4)//This frequency is only applicable to chips with built-in Flash
 #define PLL_240M_CCLK_240M_HCLK_120M_PCLK_120M_MSPI_48M clock_init(BASEBAND_PLL, CLK_DIV1, CCLK_DIV2_TO_HCLK_DIV2_TO_PCLK, CLK_DIV5)
 
 //core 0.8V
 #define PLL_240M_CCLK_120M_HCLK_60M_PCLK_60M_MSPI_48M clock_init(BASEBAND_PLL, CLK_DIV2, CCLK_DIV2_TO_HCLK_DIV2_TO_PCLK, CLK_DIV5)
 #define PLL_240M_CCLK_120M_HCLK_60M_PCLK_30M_MSPI_48M clock_init(BASEBAND_PLL, CLK_DIV2, CCLK_DIV2_TO_HCLK_DIV4_TO_PCLK, CLK_DIV5)
-
 #define PLL_240M_CCLK_80M_HCLK_40M_PCLK_40M_MSPI_48M  clock_init(BASEBAND_PLL, CLK_DIV3, CCLK_DIV2_TO_HCLK_DIV2_TO_PCLK, CLK_DIV5)
 #define PLL_240M_CCLK_80M_HCLK_40M_PCLK_20M_MSPI_48M  clock_init(BASEBAND_PLL, CLK_DIV3, CCLK_DIV2_TO_HCLK_DIV4_TO_PCLK, CLK_DIV5)
-
 #define PLL_240M_CCLK_60M_HCLK_60M_PCLK_60M_MSPI_48M  clock_init(BASEBAND_PLL, CLK_DIV4, CCLK_DIV1_TO_HCLK_DIV1_TO_PCLK, CLK_DIV5)
 #define PLL_240M_CCLK_60M_HCLK_60M_PCLK_30M_MSPI_48M  clock_init(BASEBAND_PLL, CLK_DIV4, CCLK_DIV1_TO_HCLK_DIV2_TO_PCLK, CLK_DIV5)
 #define PLL_240M_CCLK_60M_HCLK_60M_PCLK_15M_MSPI_48M  clock_init(BASEBAND_PLL, CLK_DIV4, CCLK_DIV1_TO_HCLK_DIV4_TO_PCLK, CLK_DIV5)
-
 #define PLL_240M_CCLK_60M_HCLK_30M_PCLK_30M_MSPI_48M  clock_init(BASEBAND_PLL, CLK_DIV4, CCLK_DIV2_TO_HCLK_DIV2_TO_PCLK, CLK_DIV5)
 #define PLL_240M_CCLK_60M_HCLK_30M_PCLK_15M_MSPI_48M  clock_init(BASEBAND_PLL, CLK_DIV4, CCLK_DIV2_TO_HCLK_DIV4_TO_PCLK, CLK_DIV5)
-
 #define PLL_240M_CCLK_48M_HCLK_48M_PCLK_48M_MSPI_48M  clock_init(BASEBAND_PLL, CLK_DIV5, CCLK_DIV1_TO_HCLK_DIV1_TO_PCLK, CLK_DIV5)
-
 #define PLL_240M_CCLK_120M_HCLK_60M_PCLK_60M_MSPI_40M clock_init(BASEBAND_PLL, CLK_DIV2, CCLK_DIV2_TO_HCLK_DIV2_TO_PCLK, CLK_DIV6)
 #define PLL_240M_CCLK_120M_HCLK_60M_PCLK_30M_MSPI_40M clock_init(BASEBAND_PLL, CLK_DIV2, CCLK_DIV2_TO_HCLK_DIV4_TO_PCLK, CLK_DIV6)
-
 #define PLL_240M_CCLK_40M_HCLK_40M_PCLK_40M_MSPI_40M  clock_init(BASEBAND_PLL, CLK_DIV6, CCLK_DIV1_TO_HCLK_DIV1_TO_PCLK, CLK_DIV6)
 
 #define XTAL_24M_CCLK_24M_HCLK_24M_PCLK_24M_MSPI_24M  clock_init(XTAL_24M, CLK_DIV1, CCLK_DIV1_TO_HCLK_DIV1_TO_PCLK, CLK_DIV1)
 
 #define RC_24M_CCLK_24M_HCLK_24M_PCLK_24M_MSPI_24M    clock_init(RC_24M, CLK_DIV1, CCLK_DIV1_TO_HCLK_DIV1_TO_PCLK, CLK_DIV1)
+
+/**
+ * -# If it is built-in flash, the maximum speed of mspi is 64M.
+ */
+
+#define PLL_240M_CCLK_240M_HCLK_120M_PCLK_120M_MSPI_60M clock_init(BASEBAND_PLL, CLK_DIV1, CCLK_DIV2_TO_HCLK_DIV2_TO_PCLK, CLK_DIV4)//This frequency is only applicable to chips with built-in Flash
 
 /**********************************************************************************************************************
  *                                          internal

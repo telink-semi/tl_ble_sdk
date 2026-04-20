@@ -53,6 +53,7 @@
 #ifndef STACK_SIZE_FOR_FLASH_DATA
     #define STACK_SIZE_FOR_FLASH_DATA       256
 #endif
+
 /**
  * @brief     flash command definition
  */
