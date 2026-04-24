@@ -117,16 +117,16 @@
 
 * TLSR921X
     - Compiling acl_central_demo
-        - Flash bin size: 105.52 KB
-        - IRAM size: 54.29 KB
-        - DRAM size: 0.65 KB
+        - Flash bin size: 104.12 KB
+        - IRAM size: 53.06 KB
+        - DRAM size: 0.63 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 128.02 KB
-        - IRAM size: 65.77 KB
-        - DRAM size: 0.84 KB
+        - Flash bin size: 126.23 KB
+        - IRAM size: 64.29 KB
+        - DRAM size: 0.81 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size: 110.83 KB
-        - IRAM size: 55.75 KB
+        - Flash bin size: 108.83 KB
+        - IRAM size: 54.75 KB
         - DRAM size: 0.77 KB
     - Compiling eslp_ap_dmeo
         - Flash bin size: 249.14 KB
@@ -134,16 +134,16 @@
         - DRAM size: 24.02 KB
 * TLSR922X/TLSR952X
     - Compiling acl_central_demo
-        - Flash bin size: 105.42 KB
-        - IRAM size: 54.60 KB
+        - Flash bin size: 105.48 KB
+        - IRAM size: 54.37  KB
         - DRAM size: 0.70 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 127.75 KB
-        - IRAM size: 65.86 KB
+        - Flash bin size: 127.69 KB
+        - IRAM size: 65.64 KB
         - DRAM size: 0.94 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size: 111.58 KB
-        - IRAM size: 56.10 KB
+        - Flash bin size: 111.72 KB
+        - IRAM size: 55.86 KB
         - DRAM size: 0.87 KB
     - Compiling eslp_ap_dmeo
         - Flash bin size: 257.20 KB
@@ -152,16 +152,16 @@
 
 * TL721X
     - Compiling acl_central_demo
-        - Flash bin size:  110.96 KB
-        - IRAM size: 58.23 KB
+        - Flash bin size:  110.61 KB
+        - IRAM size: 57.98 KB
         - DRAM size: 0.74 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 133.00 KB
-        - IRAM size: 69.50 KB
+        - Flash bin size: 132.82 KB
+        - IRAM size: 69.25 KB
         - DRAM size: 0.98 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size: 117.30 KB
-        - IRAM size: 59.98 KB
+        - Flash bin size: 116.73 KB
+        - IRAM size: 59.47 KB
         - DRAM size: 0.91 KB
     - Compiling eslp_ap_dmeo
         - Flash bin size: 268.51 KB
@@ -174,16 +174,16 @@
 
 * TL321X
     - Compiling acl_central_demo
-        - Flash bin size: 113.16 KB
-        - IRAM size: 55.36 KB
+        - Flash bin size: 112.95 KB
+        - IRAM size: 56.35 KB
         - DRAM size: 0.71 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 135.22 KB
-        - IRAM size: 66.63 KB
+        - Flash bin size: 135.42 KB
+        - IRAM size: 67.88 KB
         - DRAM size: 0.96 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size:  119.45 KB
-        - IRAM size: 57.11 KB
+        - Flash bin size:  119.28 KB
+        - IRAM size: 58.10 KB
         - DRAM size: 0.88 KB
     - Compiling eslp_ap_dmeo
         - Flash bin size: 258.54 KB
@@ -195,30 +195,30 @@
         - DRAM size: 5.33 KB
 * TL322X
     - Compiling acl_central_demo
-        - Flash bin size: 116.69 KB
-        - IRAM size: 61.36 KB
+        - Flash bin size: 117.27 KB
+        - IRAM size: 61.61 KB
         - DRAM size: 0.70 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 139.84 KB
-        - IRAM size: 73.18 KB
-        - DRAM size: 0.68 KB
+        - Flash bin size: 140.59 KB
+        - IRAM size: 73.43 KB
+        - DRAM size: 0.69 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size:  123.85 KB
-        - IRAM size: 63.15 KB
+        - Flash bin size:  124.11 KB
+        - IRAM size: 63.40 KB
         - DRAM size: 0.61 KB
 * TL323X
     - Compiling acl_central_demo
-        - Flash bin size: 106.39 KB
-        - IRAM size: 55.58 KB
-        - DRAM size: 0.66 KB
+        - Flash bin size: 109.62 KB
+        - IRAM size: 56.48 KB
+        - DRAM size: 0.67 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 128.88 KB
-        - IRAM size: 66.35 KB
-        - DRAM size: 0.64 KB
+        - Flash bin size: 132.20 KB
+        - IRAM size: 67.75 KB
+        - DRAM size: 0.66 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size:  112.95 KB
-        - IRAM size: 56.83 KB
-        - DRAM size: 0.57 KB
+        - Flash bin size:  115.29 KB
+        - IRAM size: 57.98 KB
+        - DRAM size: 0.58 KB
 
 **Note:** The above IRAM usage includes the FIFO buffer required for the debug logging functionality. Disabling the `TLKAPI_DEBUG_ENABLE` macro can save approximately 4.76 KB of IRAM.
 
@@ -340,16 +340,16 @@
 
 * TLSR921X
     - Compiling acl_central_demo
-        - Flash bin size: 105.52 KB
-        - IRAM size: 54.29 KB
-        - DRAM size: 0.65 KB
+        - Flash bin size: 104.12 KB
+        - IRAM size: 53.06 KB
+        - DRAM size: 0.63 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 128.02 KB
-        - IRAM size: 65.77 KB
-        - DRAM size: 0.84 KB
+        - Flash bin size: 126.23 KB
+        - IRAM size: 64.29 KB
+        - DRAM size: 0.81 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size: 110.83 KB
-        - IRAM size: 55.75 KB
+        - Flash bin size: 108.83 KB
+        - IRAM size: 54.75 KB
         - DRAM size: 0.77 KB
     - Compiling eslp_ap_dmeo
         - Flash bin size: 249.14 KB
@@ -357,16 +357,16 @@
         - DRAM size: 24.02 KB
 * TLSR922X/TLSR952X
     - Compiling acl_central_demo
-        - Flash bin size: 105.42 KB
-        - IRAM size: 54.60 KB
+        - Flash bin size: 105.48 KB
+        - IRAM size: 54.37  KB
         - DRAM size: 0.70 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 127.75 KB
-        - IRAM size: 65.86 KB
+        - Flash bin size: 127.69 KB
+        - IRAM size: 65.64 KB
         - DRAM size: 0.94 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size: 111.58 KB
-        - IRAM size: 56.10 KB
+        - Flash bin size: 111.72 KB
+        - IRAM size: 55.86 KB
         - DRAM size: 0.87 KB
     - Compiling eslp_ap_dmeo
         - Flash bin size: 257.20 KB
@@ -375,16 +375,16 @@
 
 * TL721X
     - Compiling acl_central_demo
-        - Flash bin size:  110.96 KB
-        - IRAM size: 58.23 KB
+        - Flash bin size:  110.61 KB
+        - IRAM size: 57.98 KB
         - DRAM size: 0.74 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 133.00 KB
-        - IRAM size: 69.50 KB
+        - Flash bin size: 132.82 KB
+        - IRAM size: 69.25 KB
         - DRAM size: 0.98 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size: 117.30 KB
-        - IRAM size: 59.98 KB
+        - Flash bin size: 116.73 KB
+        - IRAM size: 59.47 KB
         - DRAM size: 0.91 KB
     - Compiling eslp_ap_dmeo
         - Flash bin size: 268.51 KB
@@ -397,16 +397,16 @@
 
 * TL321X
     - Compiling acl_central_demo
-        - Flash bin size: 113.16 KB
-        - IRAM size: 55.36 KB
+        - Flash bin size: 112.95 KB
+        - IRAM size: 56.35 KB
         - DRAM size: 0.71 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 135.22 KB
-        - IRAM size: 66.63 KB
+        - Flash bin size: 135.42 KB
+        - IRAM size: 67.88 KB
         - DRAM size: 0.96 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size:  119.45 KB
-        - IRAM size: 57.11 KB
+        - Flash bin size:  119.28 KB
+        - IRAM size: 58.10 KB
         - DRAM size: 0.88 KB
     - Compiling eslp_ap_dmeo
         - Flash bin size: 258.54 KB
@@ -418,30 +418,30 @@
         - DRAM size: 5.33 KB
 * TL322X
     - Compiling acl_central_demo
-        - Flash bin size: 116.69 KB
-        - IRAM size: 61.36 KB
+        - Flash bin size: 117.27 KB
+        - IRAM size: 61.61 KB
         - DRAM size: 0.70 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 139.84 KB
-        - IRAM size: 73.18 KB
-        - DRAM size: 0.68 KB
+        - Flash bin size: 140.59 KB
+        - IRAM size: 73.43 KB
+        - DRAM size: 0.69 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size:  123.85 KB
-        - IRAM size: 63.15 KB
+        - Flash bin size:  124.11 KB
+        - IRAM size: 63.40 KB
         - DRAM size: 0.61 KB
 * TL323X
     - Compiling acl_central_demo
-        - Flash bin size: 106.39 KB
-        - IRAM size: 55.58 KB
-        - DRAM size: 0.66 KB
+        - Flash bin size: 109.62 KB
+        - IRAM size: 56.48 KB
+        - DRAM size: 0.67 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 128.88 KB
-        - IRAM size: 66.35 KB
-        - DRAM size: 0.64 KB
+        - Flash bin size: 132.20 KB
+        - IRAM size: 67.75 KB
+        - DRAM size: 0.66 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size:  112.95 KB
-        - IRAM size: 56.83 KB
-        - DRAM size: 0.57 KB
+        - Flash bin size:  115.29 KB
+        - IRAM size: 57.98 KB
+        - DRAM size: 0.58 KB
 
 **Note:** 上述 IRAM 统计包含了打印功能所需的 FIFO，关闭宏 TLKAPI_DEBUG_ENABLE，可以节省约 4.76 KB 的 IRAM。
 
