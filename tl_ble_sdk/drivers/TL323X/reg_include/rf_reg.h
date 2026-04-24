@@ -2241,6 +2241,14 @@ enum
    FLD_RF_PA_VBIAS              = BIT_RNG(6,7),
 };
 
+#define reg_rf_vco_ldotrim       REG_ADDR8(REG_TL_RADIO_BASE_ADDR + 0x154)
+enum
+{
+   FLD_RF_VCO_TRIM_KVT          = BIT_RNG(0,2),
+   FLD_RF_VCO_EN_PKDT           = BIT(3),
+   FLD_RF_LDOTRIM_TRIM_VREF     = BIT_RNG(4,5),
+};
+
 #define reg_rf_lnm_pa_ow_ctrl_val REG_ADDR8(REG_TL_RADIO_BASE_ADDR + 0x178)
 
 enum

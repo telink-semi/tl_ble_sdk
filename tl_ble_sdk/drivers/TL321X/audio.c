@@ -1338,7 +1338,7 @@ void audio_i2s2_tdm_output_init(audio_i2s2_tdm_input_output_t *output)
  */
 void audio_set_i2s_ascl_en(audio_i2s_select_e i2s_select)
 {
-    audio_ascl_select_e ascl_select;
+    audio_ascl_select_e ascl_select = ASCL0;
 
     if (i2s_select == I2S2) {
         ascl_select = ASCL2;

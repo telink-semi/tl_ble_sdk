@@ -44,6 +44,7 @@
 #include "flash.h"
 #include "watchdog.h"
 #include "lib/include/core.h"
+#include "lib/include/efuse.h"
 #include "lpc.h"
 #include "uart.h"
 #include "lib/include/stimer.h"

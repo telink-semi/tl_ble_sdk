@@ -287,14 +287,14 @@ union {                                               /* offset: 0x80 */
  * @brief can rx mb / legacy rxfifo id individual mask map.
  */
 typedef struct {
-   volatile unsigned int rx_mb_imr[127];
+   volatile unsigned int rx_mb_imr[128];
 }can_rx_mb_individual_mask_t;
 
 /*!
  * @brief can enhanced rxfifo id filter map.
  */
 typedef struct {
-    unsigned int filter[127];
+    unsigned int filter[128];
 }can_enhanced_rxfifo_filter_t;
 
 
@@ -1227,7 +1227,7 @@ static inline void can_clr_pn_irq_mask(can_chn_e chn,can_pn_irq_e mask){
  *  @param[in]  status     - can_err_irq_status_e
  *  @return     none
  */
-static inline unsigned char can_get_err_irq_status(can_chn_e chn,can_err_irq_status_e status){
+static inline unsigned int can_get_err_irq_status(can_chn_e chn,can_err_irq_status_e status){
     return reg_can_esr1(chn) & status;
 }
 

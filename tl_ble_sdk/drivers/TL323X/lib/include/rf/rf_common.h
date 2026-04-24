@@ -53,7 +53,7 @@
  * 
  * | Power Supply Mode | Power Source                          | Output Power Characteristics                                                                 | Advantage                                  |
  * |-------------------|---------------------------------------|------------------------------------------------------------------------------------------------|-------------------------------------------|
- * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT → higher available power)          | Simple power path, suitable for high-power scenarios |
+ * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT 鈫?higher available power)          | Simple power path, suitable for high-power scenarios |
  * | VANT mode         | Powered by embedded DCDC + LDO        | Output power is stable (independent of VBAT voltage)                                          | Lower power consumption at the same transmit power |
  * 
  * @subsection rf_power_table TX Power Table (Driver-Provided)
@@ -1453,7 +1453,7 @@ void rf_update_rx_dcoc_calib_code(unsigned short calib_code);
 
 /**
   * @brief      This function is mainly used to set the interval time of the PA ramp step.
-  * @param[in]  step_value- Enumeration variables are used to set the interval time for each step – for example, 
+  * @param[in]  step_value- Enumeration variables are used to set the interval time for each step 鈥?for example, 
   *             RF_PA_RAMP_STEP_P250p0 represents an interval of 250 ns per step.
   * @return     none.
   */

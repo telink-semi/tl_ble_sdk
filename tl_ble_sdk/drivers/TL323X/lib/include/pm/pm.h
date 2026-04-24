@@ -372,6 +372,20 @@ drv_api_status_e pm_efuse_calib_vdd1v8_voltage(void);
  *              This is just for internal debug purpose, users are prohibited from calling.
  *******************************************************************************************************/
 /**
+ * @brief       This function serves to trim dig ldo voltage
+ * @param[in]   none, only support 0.925V
+ * @return      none
+ */
+_attribute_ram_code_sec_optimize_o2_noinline_ void pm_set_calib_0p925V_dig_ldo_voltage(void);
+
+/**
+ * @brief       This function serves to trim dig ldo voltage
+ * @param[in]   none, only support 0.950V
+ * @return      none
+ */
+_attribute_ram_code_sec_optimize_o2_noinline_ void pm_set_calib_0p950V_dig_ldo_voltage(void);
+
+/**
  * @brief       When an error occurs, such as the crystal does not vibrate properly, the corresponding recording and reset operations are performed.
  * @param[in]   reboot_reason  - The bit to be configured in the power on buffer.
  * @param[in]   all_ramcode_en  - Whether all processing in this function is required to be ram code.

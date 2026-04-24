@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    efuse.h
  *
- * @brief   This is the header file for TL323X
+ * @brief   This is the header file for tl323x
  *
  * @author  Driver Group
  * @date    2025
