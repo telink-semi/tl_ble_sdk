@@ -1,4 +1,3 @@
-
 ## V4.0.4.7(PR)
 
 ### Version
@@ -42,44 +41,44 @@
 
 * **Drivers**
     * **rf**
-         * (TL323X)Fixed the issue of inconsistent Tx power caused by the call order between rf_rx_performance_mode and power-setting functions (e.g., rf_set_power_level).(merge_requests/@2520)
+         * (TL323X)Fixed the issue of inconsistent Tx power caused by the call order between rf_rx_performance_mode and power-setting functions (e.g., rf_set_power_level).
             * Detailed description:Two bits related to Tx power are written with fixed values in the rf_rx_performance_mode interface. Therefore, calling this function before or after power-setting functions (e.g., rf_set_power_level) will result in inconsistent Tx Power.
             * After Fix: Tx Power is independent of the calling sequence of rf_rx_performance_mode and set power functions, and RX performance is not affected.
             * Update Recommendation:Mandatory update.
-        * (TL321X)Fixed the abnormal RF packet transmission issue after deep retention wakeup when fast settle modes `TX_SETTLE_TIME_23US/TX_SETTLE_TIME_59US` are enabled. (merge_requests/@2594)
+        * (TL321X)Fixed the abnormal RF packet transmission issue after deep retention wakeup when fast settle modes `TX_SETTLE_TIME_23US/TX_SETTLE_TIME_59US` are enabled. 
              * Detailed description:When fast settle modes `TX_SETTLE_TIME_23US/TX_SETTLE_TIME_59US` are enabled, partial RF TX configurations fail to be restored after deep retention wakeup, resulting in abnormal packet transmission.
             * After Fix: RF TX works normally for packet transmission after deep retention wakeup with the above fast settle modes enabled.
             * Update Recommendation:Mandatory update.
     * **sys**
-        * (TL323X) Fixed the issue where RF power-on operation caused system crash when the system was operating at high frequency. (merge_requests/@/2580)
+        * (TL323X) Fixed the issue where RF power-on operation caused system crash when the system was operating at high frequency.
             * Detailed description: Before setting analog register 0x7d, if system clock is at high frequencies, the system may crash.
             * After Fix: During the system init setting analog register 0x7d, at this moment, the system clock is 24M RC，the system runs normally, active current increases by about 110ua.
             * Update Recommendation: Mandatory update.
-        * (TL322X) Fixed the issue where flash operations failed when nvm startup. (merge_requests/@/2587)
+        * (TL322X) Fixed the issue where flash operations failed when nvm startup.
             * Detailed description: In nvm stratup situation, flash read/write failed because flash was not wake up.
             * After Fix: flash was wake up in nvm startup process and flash operation in user application is normal.
             * Update Recommendation: Mandatory update.
     * **adc**
-        * (TL323X)Fixed the issue where the ADC vbat mode failed to accurately sample low voltages at normal temperatures. (merge_requests/@2476)
+        * (TL323X)Fixed the issue where the ADC vbat mode failed to accurately sample low voltages at normal temperatures.
             * Detailed description:The VBAT_MODE_BELOW_2V2_DETECT_EN configuration macro has been removed, and the internal implementation of sd_adc_calculate_voltage has been modified. The sd_adc_set_vbat_4p_calib_vref interface has been added to implement the 4-point calibration logic, which is compatible with the original 2-stage (curved and linear) calibration of A0. The lpc_vbat_vol_detect_deinit interface has also been added to disable the voltage detection function below 2.2V for VBAT.
             * After Fix: When the VBAT is sampled at voltages below 2.3V at room temperature, the error has been reduced from the original 100mv to 20mv.
             * Update Recommendation:It is recommended to update when using ADC.
-        * (TL323X)Optimized GPIO 1/4 voltage divider sampling accuracy for 0mV~30mV. (merge_requests/@2538)
+        * (TL323X)Optimized GPIO 1/4 voltage divider sampling accuracy for 0mV~30mV.
             * Detailed description:Since GPIO performs with higher precision in 1/1 attenuation (no division) mode when capturing 0~30mV, the efuse_set_sd_adc_calib_value interface has been added to calibrate 1/1 mode sampling. Additionally, the sd_adc_div_switch_adjust_rescale interface was introduced to enable dynamic switching: the system now automatically switches to 1/1 mode for samples below 50mV to enhance accuracy, while forcing a switch back to 4/1 mode for samples exceeding 1000mV to ensure range coverage.
             * After Fix: The measurement error for voltages below 30mV has been significantly reduced from 10mV to approximately 3mV.
             * Update Recommendation:Recommended for applications requiring high-precision sampling in the 0~30mV range.
     * **pwm**
-        * (TL322X) Fixed an issue where the PWM continue mode could not generate interrupts normally due to incorrect interface configuration. (merge_requests/@2549)
+        * (TL322X) Fixed an issue where the PWM continue mode could not generate interrupts normally due to incorrect interface configuration.
             * Detailed description: Added pwm_irq_type_e enum to distinguish different interrupt types, and handled the special case of PWM0 through the is_pwm0_special_irq interface.
             * After Fix: PWM continue mode can now generate interrupts normally.
             * Update recommendation: Recommended to update when using PWM.
     * **efuse**
-        * (TL321X/TL323X)Fixed the risk of incorrect chip ID reading in the efuse_get_chip_id interface. (merge_requests/@2523)(merge_requests/@2596)
+        * (TL321X/TL323X)Fixed the risk of incorrect chip ID reading in the efuse_get_chip_id interface.
             * Detailed description: The eFuse clock was not configured for the efuse_get_chip_id interface, which may result in incorrect chip ID reading when called under different clock conditions.
             * After Fix: Calling this interface at any clock frequency carries no risk of a chip ID read error.
             * Update Recommendation: When using the efuse_get_chip_id interface, the `/proj_lib/*.a` file of the corresponding chip must be updated.
     * **gpio**
-        * (TL323X/TL321X/TL322X/TL751X)Fixed the issue where the GPIO IRQ mask could not be turned off.(merge_requests/@2582)
+        * (TL323X/TL321X/TL322X/TL751X)Fixed the issue where the GPIO IRQ mask could not be turned off.
             * Detailed description: After calling gpio_clr_irq_mask, the GPIO interrupt will continue to be triggered.
             * After Fix: Call the function gpio_clr_irq_mask, and the GPIO interrupt will no longer be triggered.
             * Update Recommendation:It is recommended to update when using GPIO IRQ.
@@ -265,44 +264,44 @@
 
 * **Drivers**
     * **rf**
-        * (TL323X)修复了以解决rf_rx_performance_mode与set power函数调（如rf_set_power_level）用先后顺序引起的power不一致问题。(merge_requests/@2520)
+        * (TL323X)修复了以解决rf_rx_performance_mode与set power函数调（如rf_set_power_level）用先后顺序引起的power不一致问题。
             * 详细描述：与Tx power相关的2个bit在rf_rx_performance_mode接口中被写入固定值，因此在set power函数（如rf_set_power_level）前后调用该函数会导致Tx Power不一致。
             * 修复效果：Tx Power与rf_rx_performance_mode/set power函数调用顺序无关，rx性能未受影响 。
             * 更新建议：必须更新。
-        * (TL321X)修复了开启fast settle的'TX_SETTLE_TIME_23US'/'TX_SETTLE_TIME_59US'模式,deep retention唤醒后RF发包异常的问题。(merge_requests/@2594)
+        * (TL321X)修复了开启fast settle的'TX_SETTLE_TIME_23US'/'TX_SETTLE_TIME_59US'模式,deep retention唤醒后RF发包异常的问题。
             * 详细描述：开启fast settle的'TX_SETTLE_TIME_23US'/'TX_SETTLE_TIME_59US'模式,deep retention唤醒后RF TX部分配置未恢复导致发包异常。
             * 修复效果：开启fast settle的'TX_SETTLE_TIME_23US'/'TX_SETTLE_TIME_59US'模式,deep retention唤醒后RF TX正常发包。
             * 更新建议：必须更新。
     * **sys**
-        * (TL323X) 修复了在系统高频运行时，RF上电操作导致系统崩溃的问题。(merge_requests/@/2580)
+        * (TL323X) 修复了在系统高频运行时，RF上电操作导致系统崩溃的问题。
             * 详细描述：在设置模拟寄存器0x7d之前，如果系统时钟处于高频状态，系统可能会崩溃。
             * 修复效果：在系统初始化过程中设置模拟寄存器0x7d，此时系统时钟为24M RC，系统正常运行, active电流增加110ua左右。
             * 更新建议：必须更新。
-        * (TL322X) 修复了使用 NVM 启动时，进行 Flash 读写等操作失败的问题。(merge_requests/@/2587)
+        * (TL322X) 修复了使用 NVM 启动时，进行 Flash 读写等操作失败的问题。
             * 详细描述：在nvm启动场景中，如果flash没有唤醒，后续的flash操作会失败。
             * 修复效果：在nvm启动的启动流程增加flash唤醒，保证后续的flash操作正常。
             * 更新建议：必须更新。
     * **adc**
-        * (TL323X)修复了ADC vbat模式常温下采样低电压不准的问题。(merge_requests/@2476)
+        * (TL323X)修复了ADC vbat模式常温下采样低电压不准的问题。
             * 详细描述：移除了VBAT_MODE_BELOW_2V2_DETECT_EN配置宏，修改了sd_adc_calculate_voltage内部实现，增加了sd_adc_set_vbat_4p_calib_vref 接口用于4点校准逻辑，兼容A0原来2段式（曲线和直线）校准，增加lpc_vbat_vol_detect_deinit 接口用于关闭VBAT2.2V以下电压检测功能。
             * 修复效果：常温下VBAT采样2.3V以下电压时，误差由原来100mv降低到20mv。
             * 更新建议：使用adc时建议更新。
-        * (TL323X)优化 GPIO 4 分压采样 0mV~30mV 精度问题 (merge_requests/@2538)
+        * (TL323X)优化 GPIO 4 分压采样 0mV~30mV 精度问题。
             * 详细描述：鉴于 GPIO 在 1 分压模式下采集 0~30mV 电压具有更高的精度，本次更新新增了 efuse_set_sd_adc_calib_value 接口，专门用于校准 1 分压模式下的采样偏置。同时引入 sd_adc_div_switch_adjust_rescale 接口实现分压模式的动态切换：当采样电压低于 50mV 时，系统将自动切换至 1 分压模式以提升精度；当采样电压高于 1000mV 时，则强制切换回 4 分压模式以保证量程。
             * 修复效果：30mV 以下极小电压的采集误差从原先的 10mV 显著降低至 3mV 左右
             * 更新建议：若应用场景涉及 0~30mV 极低电压的精确采集，建议同步此更新。
     * **pwm**
-        * (TL322X)修复了由于接口配置错误导致pwm continue模式不能正常产生中断的问题。(merge_requests/@2549)
+        * (TL322X)修复了由于接口配置错误导致pwm continue模式不能正常产生中断的问题。
             * 详细描述：新增pwm_irq_type_e枚举，用于区分不同的中断类型，以及通过is_pwm0_special_irq接口处理PWM0的特殊性。
             * 修复效果：可以正常产生pwm continue模式的中断。
             * 更新建议：使用pwm时建议更新。
     * **efuse**
-        * (TL321X/TL323X)修复efuse_get_chip_id接口获取chip id错误的风险。(merge_requests/@2523)(merge_requests/@2596)
+        * (TL321X/TL323X)修复efuse_get_chip_id接口获取chip id错误的风险。
             * 详细描述：efuse_get_chip_id接口未配置efuse时钟，不同时钟下调用此接口会有获取chip id错误的风险。
             * 修复效果：在任意时钟下调用此接口无读错chip id的风险。
             * 更新建议：使用efuse_get_chip_id接口时必须更新对应芯片的`/proj_lib/*.a`。
     * **gpio**
-        * (TL323X/TL321X/TL322X/TL751X) 修复了gpio irq mask 无法关闭的问题。(merge_requests/@2582)
+        * (TL323X/TL321X/TL322X/TL751X) 修复了gpio irq mask 无法关闭的问题。
             * 详细描述：调用gpio_clr_irq_mask后，gpio中断会继续触发。
             * 修复效果：调用函数gpio_clr_irq_mask，gpio中断不会继续触发。
             * 更新建议：使用gpio irq时建议更新。
