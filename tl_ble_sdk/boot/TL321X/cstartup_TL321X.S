@@ -48,6 +48,7 @@
 
 .extern gpio_shutdown_flashcode_for_asm
 .extern gpio_shutdown_ramcode_for_asm
+.extern rf_sw_config
 
 //According to the current internal seal flash model of Telink RISC-V MCU, the maximum time between the flash awakening and the operating flash is 20us, which leaves some margin and is set to 25us.
 //When adding flash later, if tRES1 is greater than 25us, this waiting time needs to be updated. (flash tRES1, which can be viewed in the comments of the variable flash_support_mid.)
@@ -236,12 +237,19 @@ _RAMCODE_INIT:
     la     t3, _RAMCODE_VMA_END
     .option pop
 _RAMCODE_INIT_BEGIN:
-    bleu   t3, t2, _DATA_INIT
+    bleu   t3, t2, _RF_SW_CONFIG
     lw     t0, 0(t1)
     sw     t0, 0(t2)
     addi   t1, t1, 4
     addi   t2, t2, 4
     j      _RAMCODE_INIT_BEGIN
+
+//All applications that use RF peripherals must call this function.
+//If this function is called without using RF peripherals, it will increase the FLASH usage by 4040 bytes.
+//Calling this function takes approximately 7.7 ms.
+_RF_SW_CONFIG:
+    la     t0, rf_sw_config
+    jalr   t0
 
     /* Move Data from flash to sram */
 _DATA_INIT:
