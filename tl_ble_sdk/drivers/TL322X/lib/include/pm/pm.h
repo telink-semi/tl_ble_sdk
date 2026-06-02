@@ -28,7 +28,9 @@
 #include "gpio.h"
 #include "lib/include/clock.h"
 
-#define PM_POWER_OPTIMIZATION  1
+#define PM_POWER_OPTIMIZATION           1
+#define PM_WFI_OPTIMIZATION             0 //2.4G use
+
 
 /**
  * @brief these analog register can store data in deep sleep mode or deep sleep with SRAM retention mode.
@@ -154,30 +156,6 @@ typedef enum
 } pm_power_sel_e;
 
 /**
- * @brief trim dig ldo
- *
- */
-typedef enum
-{
-    DIG_LDO_TRIM_0P750V = 0,
-    DIG_LDO_TRIM_0P775V,
-    DIG_LDO_TRIM_0P800V,
-    DIG_LDO_TRIM_0P825V,
-    DIG_LDO_TRIM_0P850V,
-    DIG_LDO_TRIM_0P875V,
-    DIG_LDO_TRIM_0P900V,
-    DIG_LDO_TRIM_0P925V,
-    DIG_LDO_TRIM_0P950V,
-    DIG_LDO_TRIM_0P975V,
-    DIG_LDO_TRIM_1P000V,
-    DIG_LDO_TRIM_1P025V,
-    DIG_LDO_TRIM_1P050V,
-    DIG_LDO_TRIM_1P075V,
-    DIG_LDO_TRIM_1P100V,
-    DIG_LDO_TRIM_1P125V,
-} pm_dig_ldo_trim_e;
-
-/**
  * @brief dig voltage mode
  * 
  */
@@ -245,7 +223,10 @@ extern unsigned char                                g_areg_aon_3a;
 extern _attribute_data_retention_sec_ unsigned char g_pm_vbat_v;
 extern _attribute_data_retention_sec_ unsigned char g_areg_aon_0a;
 #if (PM_POWER_OPTIMIZATION)
-extern _attribute_data_retention_sec_ unsigned char g_areg_aon_06;
+extern _attribute_data_retention_sec_ volatile unsigned char g_areg_aon_06;
+extern _attribute_data_retention_sec_ volatile unsigned char g_areg_aon_0x05;
+extern _attribute_data_retention_sec_ volatile unsigned char g_areg_0x101;
+extern _attribute_data_retention_sec_ volatile unsigned char g_areg_0x102;
 #endif
 
 /**
@@ -299,6 +280,84 @@ static inline void pm_set_usb1_wakeup(void)
 {
     reg_wakeup_en |= FLD_USB1_PWDN_I;
 }
+
+#if (PM_WFI_OPTIMIZATION)
+#define analog_write_reg8_pwr_opt(addr, data)                                                   \
+do {                                                                                            \
+    reg_ana_len     = 1;                                                                        \
+    reg_ana_addr    = (unsigned char)(addr);                                                    \
+    reg_ana_data(0) = (data);                                                                   \
+    reg_ana_ctrl    = (FLD_ANA_CYC | FLD_ANA_RW | (((addr) & 0x00000300) >> 8));                \
+    analog_wait();                                                                              \
+    reg_ana_ctrl    = 0x00;                                                                     \
+} while(0)
+
+#define clock_restore_xtal_24m_config()                                                         \
+{                                                                                               \
+    /* 1. power on 24M RC */                                                                    \
+    unsigned int r  = core_interrupt_disable();                                                 \
+    g_areg_aon_0x05 &= ~(FLD_24M_RC_PD);                                                        \
+    analog_write_reg8_pwr_opt(areg_aon_0x05, g_areg_aon_0x05);                                  \
+    /* 2. set cclk/hclk/pclk 24M */                                                             \
+    write_reg8(0x140828, (read_reg8(0x140828) & 0xc0) | XTAL_24M | CLK_DIV1);                   \
+    /* 3. power down 24M RC */                                                                  \
+    g_areg_aon_0x05 |= FLD_24M_RC_PD;                                                           \
+    analog_write_reg8_pwr_opt(areg_aon_0x05, g_areg_aon_0x05);                                  \
+    /* 4. power on pll */                                                                       \
+    g_areg_aon_06 &= (~FLD_PD_BBPLL_LDO);                                                       \
+    analog_write_reg8_pwr_opt(areg_aon_0x06, g_areg_aon_06); /*ana_reg_0x06[0]=1'0*/            \
+    g_areg_0x101 &= (~FLD_POWER_ON_BBPLL_SUPPLY_SWITCH);                                        \
+    analog_write_reg8_pwr_opt(areg_0x101, g_areg_0x101);/*ana_reg_0x101[7]=1'0,power on pll*/   \
+    g_bbpll_is_used = 1;                                                                        \
+    core_restore_interrupt(r);                                                                  \
+    /*Before use pll, must check pll flag bit */                                                \
+    /*todo: check pll flag bit*/                                                                \
+}
+
+#define clock_change_to_2m_xtal() /* xtal 24M change to xtal 2M clock */                        \
+{                                                                                               \
+    /* 1. power down pll */                                                                     \
+    unsigned int r  = core_interrupt_disable();                                                 \
+    g_areg_aon_06 |= (FLD_PD_BBPLL_LDO);                                                        \
+    analog_write_reg8_pwr_opt(areg_aon_0x06, g_areg_aon_06); /*5.1us, ana_reg_0x06[0]=1'0*/     \
+    g_areg_0x101 |= (FLD_POWER_ON_BBPLL_SUPPLY_SWITCH);                                         \
+    analog_write_reg8_pwr_opt(areg_0x101, g_areg_0x101);/*ana_reg_0x101[7]=1'1,power down pll*/ \
+    g_bbpll_is_used = 0;                                                                        \
+    /* 2. power on 24M RC */                                                                    \
+    g_areg_aon_0x05 &= ~(FLD_24M_RC_PD);                                                        \
+    analog_write_reg8_pwr_opt(areg_aon_0x05, g_areg_aon_0x05);                                  \
+    /* Configure the CCLK clock frequency. clock source. 0:rc 24m, 1:xtl_24m, 2:pll*/           \
+    write_reg8(0x140828, (read_reg8(0x140828) & 0xc0) | XTAL_24M | CLK_DIV12);                  \
+    g_areg_aon_0x05 |= FLD_24M_RC_PD;                                                           \
+    analog_write_reg8_pwr_opt(areg_aon_0x05, g_areg_aon_0x05);                                  \
+    core_restore_interrupt(r);                                                                  \
+}
+
+#define clock_enter_2m_wfi_optimization()                                                       \
+{                                                                                               \
+    clock_change_to_2m_xtal();                                                                  \
+    __asm__ __volatile__("wfi");                                                                \
+    /*restore should be done in the stimer handler*/                                            \
+}
+
+/**
+ * @brief       This function serves to enter the wfi pwr optimization.
+ * @return      none.
+ */
+static inline void pm_enter_wfi_optimization(void)
+{
+    clock_enter_2m_wfi_optimization();
+}
+
+/**
+ * @brief       This function serves to exit the wfi pwr optimization.
+ * @return      none.
+ */
+static inline void pm_exit_wfi_optimization(void)
+{
+    clock_restore_xtal_24m_config();
+}
+#endif
 
 /**
  * @brief       This function configures a GPIO pin as the wakeup pin.
