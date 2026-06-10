@@ -4,20 +4,20 @@
 ### Bug Fixes
 
 * **Drivers**
-    * (TL322X/TL323X) Fix the unexpected interrupt issue that occurred during the initialization configuration of the GPIO:
+    * (TL321X/TL322X/TL323X) Fix the unexpected interrupt issue that occurred during the initialization configuration of the GPIO:
         * Detailed description: When configured as rising-edge triggered, if the external GPIO input is at a high level, the gpio_set_irq initialization will result in an unexpected interrupt response.
         * After Fix:After the fix, this issue is no longer present.
         * Update recommendation: To use the GPIO edge-triggered interrupt function, the driver must be updated.
-    * **rf**	
-        * (TL323X) Fixed the problem that Δf2 index failed to meet spec requirements when testing TX FDEV performance of some chips:
-            * Detailed description: 99.9% of Δf2 values are below 185KHz in TX FDEV test of partial chips.
-            * After Fix: After repair, all TX performance indicators comply with specification requirements.
-            * Update recommendation: Mandatory update.
-
-        * (TL322X) Fixed the issue of TX packet transmission anomaly that may occur in the BLE 4M and BLE 6M fastsettle mode:
-            * Detailed description:  Repeatedly calling the 4M and 6M initialization code in the fastsettle mode may lead to abnormal packet transmission performance.
-            * After Fix: In the Fastsettle mode, repeatedly invoking the 4M and 6M initialization codes will not cause abnormal performance of the transaction packet transmission.
-            * Update recommendation:  The configuration of using BLE4M and BLE6M modes must be updated.
+    * (TL323X) Fixed the problem that Δf2 index failed to meet spec requirements when testing TX FDEV performance of some chips:
+        * Detailed description: 99.9% of Δf2 values are below 185KHz in TX FDEV test of partial chips.
+        * After Fix: After repair, all TX performance indicators comply with specification requirements.
+        * Update recommendation: Mandatory update.
+    * (TL322X) Fixed the issue of TX packet transmission anomaly that may occur in the BLE 4M and BLE 6M fastsettle mode:
+        * Detailed description:  Repeatedly calling the 4M and 6M initialization code in the fastsettle mode may lead to abnormal packet transmission performance.
+        * After Fix: In the Fastsettle mode, repeatedly invoking the 4M and 6M initialization codes will not cause abnormal performance of the transaction packet transmission.
+        * Update recommendation:  The configuration of using BLE4M and BLE6M modes must be updated.
+    * (TL721X)The rf_mode_init() function has enabled an RF Rx DCOC software calibration scheme to solve the problem of poor Rx sensitivity performance in some chips with large DC-offset:
+        * Update recommendation:  Mandatory update.
 
 ### BREAKING CHANGES
 
@@ -31,7 +31,7 @@
     - N/A
 * **Drivers**
     * N/A
-
+    
 * **Others**
     * N/A
 
@@ -149,7 +149,7 @@
 ### Bug Fixes
 
 * **Drivers**
-    * (TL322X/TL323X) 修复gpio在初始化配置过程中产生的一次非预期中断问题：
+    * (TL321X/TL322X/TL323X) 修复gpio在初始化配置过程中产生的一次非预期中断问题：
         * 详细描述：当配置为上升沿触发时，外部gpio输入高电平，gpio_set_irq初始化完将导致一次非预期的中断响应。
         * 修复效果:修复后无该问题。
         * 更新建议：使用 GPIO沿中断触发功能必须更新驱动。
@@ -161,6 +161,8 @@
         * 详细描述：Fastsettle 模式下重复调用4M 6M初始化代码可能会导致发包性能异常。
         * 修复效果: Fastsettle 模式下重复调用4M 6M初始化代码不会导致tx 发包性能异常。
         * 更新建议：使用 BLE4M BLE6M 模式配置必须更新。
+    * (TL721X) rf_mode_init()函数中使能rf rx dcoc软件校准方案来解决部分DC-offset较大的芯片 rx sensitivity性能差的问题：
+        * 更新建议：必须更新。
 
 ### BREAKING CHANGES
 
@@ -173,8 +175,8 @@
 * **2.4G通用功能**
     - N/A
 * **Drivers**
-    * N/A
-
+    * * 
+    
 * **Others**
     * N/A 
 
