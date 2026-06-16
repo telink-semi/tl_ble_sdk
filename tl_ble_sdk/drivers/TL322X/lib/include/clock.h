@@ -58,7 +58,7 @@
  *  If it is built-in flash, the maximum speed of mspi is 64M,If it is an external flash, the maximum speed
  *  of mspi needs to be based on the board test.)
  * :-------------------------------- Voltage versus frequency(default is 0.8v)  table clock_h_1 --------------------------------------------------------------------------
- * |voltage|  pll  | cclk  | hclk | pclk | mspi | lspi(m/s) | gspi(m/s) | i2s   | alg   |   pm_top  |  rram  |  itag  |  adc  |  i3c | i3c_bus_pp | i3c_bus_od |
+ * |voltage|  pll  | cclk  | hclk | pclk | mspi | lspi(m/s) | gspi(m/s) | i2s   | alg   |   pm_top  |   nvm  |  itag  |  adc  |  i3c | i3c_bus_pp | i3c_bus_od |
  * |  1.1V |  192  |  192  |  96  |  96  |  64  |  48/24    |  48/24    |  13   |  24   |     24    |   48   |   20   |  48   |  48  |     12     |     4      |
  * |  1.0V |  192  |  78   |  39  |  39  |  64  |  48/24    |  48/24    |  13   |  19.5 |     19.5  |   19.5 |   20   |  48   |  24  |     6      |     2      |
  * 

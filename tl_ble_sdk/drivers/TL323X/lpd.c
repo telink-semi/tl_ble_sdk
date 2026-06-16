@@ -30,13 +30,13 @@
  *              protect the flash during power-down of the chip .
  *             -# This feature is enabled by default, and the chip power supply voltage is limited to 2.1V to 4.5V.
  */
-void lpd_power_down_protect_enable(void)
+void lpd_power_down_protect_ana_config(void)
 {
     reg_rst1 |=  FLD_RST1_ALGM;
     reg_clk_en1 |= FLD_CLK1_ALGM_EN;
 
-    lpd_set_vbat_threshold(LPD_FALLING_1P79V_RISING_1P88V);
-    lpd_enable();
+    lpd_set_vbat_threshold(LPD_FALLING_1P70V_RISING_1P80V);
+    lpd_ana_enable();
 }
 
 /**
@@ -46,11 +46,11 @@ void lpd_power_down_protect_enable(void)
  *              protect the flash during power-down of the chip .
  *             -# This feature is enabled by default, and the chip power supply voltage is limited to 2.1V to 4.5V.
  */
-void lpd_power_down_protect_enable_for_deep_ret(void)
+void lpd_power_down_protect_ana_config_for_deep_ret(void)
 {
     reg_rst1 |=  FLD_RST1_ALGM;
     reg_clk_en1 |= FLD_CLK1_ALGM_EN;
 
     //Deep retention mode does not lose analog register 0x14, so there is NO need to call lpd_set_vbat_threshold() to save time.
-    lpd_enable();
+    lpd_ana_enable();
 }

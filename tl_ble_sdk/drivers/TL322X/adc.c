@@ -26,25 +26,41 @@
 #include "compiler.h"
 #include "lib/include/stimer.h"
 /**********************************************************************************************************************
+ *                                           Declare variables                                                             *
+ *********************************************************************************************************************/
+extern drv_api_status_e efuse_get_sar_drv_flag(unsigned int * flag);
+
+/**********************************************************************************************************************
  *                                              local macro                                                        *
  *********************************************************************************************************************/
-
 #define ADC_CHN_CNT                        3
-#define ADC_GPIO_VREF_DEFAULT_VALUE        1202
-#define ADC_GPIO_VREF_OFFSET_DEFAULT_VALUE 7
 
-#define ADC_VBAT_VREF_DEFAULT_VALUE        1207
-#define ADC_VBAT_VREF_OFFSET_DEFAULT_VALUE -7
+/* The default value is the one obtained through testing under high driving capability conditions (0x1d cfg) and is provided by the ATE.
+ * When temp_code is 0 (unconfigured or not programmed in eFuse), the system defaults to the high-drive configuration. 
+ * Therefore, the median value derived from large-scale data under the high-drive mode can be directly used as the default value.
+*/
+#define SAR0_ADC_GPIO_VREF_DEFAULT_VALUE        1175
+#define SAR0_ADC_GPIO_VREF_OFFSET_DEFAULT_VALUE 0
 
-_attribute_data_retention_sec_ unsigned short g_adc_vref[ADC_CHN_CNT] = {ADC_GPIO_VREF_DEFAULT_VALUE, ADC_VBAT_VREF_DEFAULT_VALUE, ADC_GPIO_VREF_DEFAULT_VALUE}; //default ADC ref voltage (unit:mV)
-_attribute_data_retention_sec_ signed char    g_adc_vref_offset[ADC_CHN_CNT];                                                                                    //ADC calibration value voltage offset (unit:mV).
-_attribute_data_retention_sec_ unsigned short g_adc_gpio_calib_vref        = ADC_GPIO_VREF_DEFAULT_VALUE;                                                        //ADC gpio calibration value voltage (unit:mV)(used for gpio voltage sample).
-_attribute_data_retention_sec_ signed char    g_adc_gpio_calib_vref_offset = ADC_GPIO_VREF_OFFSET_DEFAULT_VALUE;                                                 //ADC gpio calibration value voltage offset (unit:mV)(used for gpio voltage sample).
-_attribute_data_retention_sec_ unsigned short g_adc_vbat_calib_vref        = ADC_VBAT_VREF_DEFAULT_VALUE;                                                        //ADC vbat calibration value voltage (unit:mV)(used for vbat voltage sample).
-_attribute_data_retention_sec_ signed char    g_adc_vbat_calib_vref_offset = ADC_VBAT_VREF_OFFSET_DEFAULT_VALUE;                                                 //ADC vbat calibration value voltage offset (unit:mV)(used for vbat voltage sample).
+#define SAR0_ADC_VBAT_VREF_DEFAULT_VALUE        1175
+#define SAR0_ADC_VBAT_VREF_OFFSET_DEFAULT_VALUE 0
 
-volatile unsigned char g_adc_pre_scale[ADC_CHN_CNT];
-unsigned char          g_adc_rx_fifo_index[2];
+#define SAR1_ADC_GPIO_VREF_DEFAULT_VALUE        1190
+#define SAR1_ADC_GPIO_VREF_OFFSET_DEFAULT_VALUE 0
+
+
+_attribute_data_retention_sec_ unsigned short g_adc_vref[ADC_SAR_CNT][ADC_CHN_CNT];                                              //ADC calibration value voltage table(unit:mV).
+_attribute_data_retention_sec_ signed char     g_adc_vref_offset[ADC_SAR_CNT][ADC_CHN_CNT];                                      //ADC calibration value voltage offset table(unit:mV).
+_attribute_data_retention_sec_ unsigned short g_adc_sar0_gpio_calib_vref        = SAR0_ADC_GPIO_VREF_DEFAULT_VALUE;              //sar0 gpio calibration value voltage (unit:mV)(used for gpio voltage sample).
+_attribute_data_retention_sec_ signed char    g_adc_sar0_gpio_calib_vref_offset = SAR0_ADC_GPIO_VREF_OFFSET_DEFAULT_VALUE;       //sar0 gpio calibration value voltage offset (unit:mV)(used for gpio voltage sample).
+_attribute_data_retention_sec_ unsigned short g_adc_sar0_vbat_calib_vref        = SAR0_ADC_VBAT_VREF_DEFAULT_VALUE;              //sar0 vbat calibration value voltage (unit:mV)(used for vbat voltage sample).
+_attribute_data_retention_sec_ signed char    g_adc_sar0_vbat_calib_vref_offset = SAR0_ADC_VBAT_VREF_OFFSET_DEFAULT_VALUE;       //sar0 vbat calibration value voltage offset(unit:mV)(used for vbat voltage sample).
+_attribute_data_retention_sec_ unsigned short g_adc_sar1_gpio_calib_vref        = SAR1_ADC_GPIO_VREF_DEFAULT_VALUE;              //sar1 gpio calibration value voltage (unit:mV)(used for gpio voltage sample).
+_attribute_data_retention_sec_ signed char    g_adc_sar1_gpio_calib_vref_offset = SAR1_ADC_GPIO_VREF_OFFSET_DEFAULT_VALUE;       //sar1 gpio calibration value voltage offset (unit:mV)(used for vbat voltage sample).
+
+
+volatile unsigned char g_adc_pre_scale[ADC_SAR_CNT][ADC_CHN_CNT];
+unsigned char          g_adc_rx_fifo_index[ADC_SAR_CNT];
 unsigned char          g_channel_cnt       = 0;
 
 dma_chn_e    adc_dma_chn;
@@ -333,6 +349,7 @@ void adc_pin_config(gpio_pin_e pin)
     gpio_input_dis(adc_input_pin);
     gpio_output_dis(adc_input_pin);
     gpio_set_low_level(adc_input_pin);
+    gpio_set_up_down_res(adc_input_pin,GPIO_PIN_UP_DOWN_FLOAT);
 
 }
 
@@ -347,11 +364,22 @@ void adc_pin_config(gpio_pin_e pin)
  */
 static void adc_set_ref_voltage(adc_num_e sar_adc_num,adc_sample_chn_e chn)
 {
+    unsigned int flag = 0;
+    unsigned int ret = 0;
     reg_adc_channel_set_state(sar_adc_num,chn) = (reg_adc_channel_set_state(sar_adc_num,chn)&(~FLD_SEL_VREF)) | (ADC_VREF_1P2V<<6);
     //Vref buffer bias current trimming:        150%
     //Comparator preamp bias current trimming:  100%
-    analog_write_reg8(areg_ain_scale(sar_adc_num)  , (analog_read_reg8(areg_ain_scale(sar_adc_num)  )&(0xC0)) | 0x15 );
-    g_adc_vref[chn] = 1175;
+    //if flag all bits are 0, use high drive capability.
+    /*Background: ATE calibrated 8K chips with configuration 0x1d, which resulted in relatively high power consumption.
+     * At that time, power consumption requirements were not very sensitive. Later, to reduce power consumption, the chips were produced using configuration 0x15. The error performance of configuration 0x15 on the original 8K chips was 50mV.
+     * To balance the ADC performance of the old chips, the following compatible logic was used.*/
+    ret = efuse_get_sar_drv_flag(&flag);
+    if (!flag || ret) { // if read efuse fail unlikely, also use high drive capability .
+        analog_write_reg8(areg_ain_scale(sar_adc_num), (analog_read_reg8(areg_ain_scale(sar_adc_num)  )&(0xC0)) | 0x1d );
+    } else {
+        analog_write_reg8(areg_ain_scale(sar_adc_num), (analog_read_reg8(areg_ain_scale(sar_adc_num)  )&(0xC0)) | 0x15 );
+
+    }
 }
 /**
  * @brief This function serves to set the sample frequency.
@@ -378,7 +406,7 @@ static void adc_set_sample_rate(adc_num_e sar_adc_num,adc_sample_chn_e chn,adc_s
 static inline void adc_set_scale_factor(adc_num_e sar_adc_num,adc_sample_chn_e chn,adc_pre_scale_e pre_scale)
 {
     reg_adc_channel_set_state(sar_adc_num,chn) = ((reg_adc_channel_set_state(sar_adc_num,chn)&(~FLD_SEL_AI_SCALE)) | (pre_scale<<4));
-    g_adc_pre_scale[chn] = 1<<pre_scale;
+    g_adc_pre_scale[sar_adc_num][chn] = 1<<pre_scale;
 }
 /**
  * @brief      This function serves to set Vbat voltage division factor.
@@ -615,12 +643,15 @@ void adc_channel_sample_init(adc_num_e sar_adc_num,adc_mode_e mode,adc_sample_ch
      * it is necessary to add a judgment here: only when the corresponding gears of the corresponding calibration conditions are selected,
      * the following calibration code can be invoked
      */
-    if(mode == ADC_GPIO_MODE){
-        g_adc_vref[chn]        = g_adc_gpio_calib_vref;        //set gpio sample calib vref
-        g_adc_vref_offset[chn] = g_adc_gpio_calib_vref_offset; //set adc_vref_offset as adc_gpio_calib_vref_offset
-    }else if(mode == ADC_VBAT_MODE){
-        g_adc_vref[chn]        = g_adc_vbat_calib_vref;        //set vbat sample calib vref
-        g_adc_vref_offset[chn] = g_adc_vbat_calib_vref_offset; //set g_adc_vref_offset as g_adc_vbat_calib_vref_offset
+    if(sar_adc_num == ADC0 && mode == ADC_GPIO_MODE){
+        g_adc_vref[sar_adc_num][chn]        = g_adc_sar0_gpio_calib_vref;        
+        g_adc_vref_offset[sar_adc_num][chn] = g_adc_sar0_gpio_calib_vref_offset; 
+    }else if(sar_adc_num == ADC0 && mode == ADC_VBAT_MODE){
+        g_adc_vref[sar_adc_num][chn]        = g_adc_sar0_vbat_calib_vref;        
+        g_adc_vref_offset[sar_adc_num][chn] = g_adc_sar0_vbat_calib_vref_offset; 
+    } else if(sar_adc_num == ADC1 && mode == ADC_GPIO_MODE) {
+        g_adc_vref[sar_adc_num][chn]        = g_adc_sar1_gpio_calib_vref;        
+        g_adc_vref_offset[sar_adc_num][chn] = g_adc_sar1_gpio_calib_vref_offset; 
     }
 }
 
@@ -674,12 +705,13 @@ void adc_keyscan_sample_init(adc_num_e sar_adc_num)
 }
 /**
  * @brief This function serves to calculate voltage from adc sample code.
+ * @param[in]   sar_adc_num - SAR0/SAR1.
  * @param[in]   mode - ADC sample mode
  * @param[in]   chn - enum variable of ADC sample channel.
- * @param[in]   adc_code    - the adc sample code(should be positive value.)
+ * @param[in]   adc_code    - the adc sample code.
  * @return      adc_vol_mv  - the average value of adc voltage value.
  */
-short adc_calculate_voltage(adc_mode_e mode,adc_sample_chn_e chn,short adc_code)
+short adc_calculate_voltage(adc_num_e sar_adc_num,adc_mode_e mode,adc_sample_chn_e chn,short adc_code)
 {
     /**
      *  adc sample code convert to voltage(mv):
@@ -688,9 +720,9 @@ short adc_calculate_voltage(adc_mode_e mode,adc_sample_chn_e chn,short adc_code)
      *               =  (adc_code * Vref * adc_pre_scale >>11) + offset
      */
     if(mode == ADC_VBAT_MODE){
-        return (((adc_code * 4 * g_adc_pre_scale[chn] * g_adc_vref[chn]) >> 11) + g_adc_vref_offset[chn]); // divider = 4
+        return (((adc_code * 4 * g_adc_pre_scale[sar_adc_num][chn] * g_adc_vref[sar_adc_num][chn]) >> 11) + g_adc_vref_offset[sar_adc_num][chn]); // divider = 4
     }else if(mode == ADC_GPIO_MODE){
-        return (((adc_code * g_adc_pre_scale[chn] * g_adc_vref[chn]) >> 11) + g_adc_vref_offset[chn]);
+        return (((adc_code * g_adc_pre_scale[sar_adc_num][chn] * g_adc_vref[sar_adc_num][chn]) >> 11) + g_adc_vref_offset[sar_adc_num][chn]);
     }
 #if INTERNAL_TEST_FUNC_EN
     else if (mode == ADC_TEMP_MODE)
@@ -702,15 +734,15 @@ short adc_calculate_voltage(adc_mode_e mode,adc_sample_chn_e chn,short adc_code)
 }
 
 /**
- * @brief This function is used to calib ADC 1.2V vref for GPIO.
+ * @brief This function is used to calib ADC 1.2V vref for sar0 GPIO.
  * @param[in] vref - GPIO sampling calibration value.
  * @param[in] offset - GPIO sampling two-point calibration value offset.
  * @return none
  */
-void adc_set_gpio_calib_vref(unsigned short vref, signed char offset)
+void adc_set_sar0_gpio_calib_vref(unsigned short vref, signed char offset)
 {
-    g_adc_gpio_calib_vref        = vref;
-    g_adc_gpio_calib_vref_offset = offset;
+    g_adc_sar0_gpio_calib_vref        = vref;
+    g_adc_sar0_gpio_calib_vref_offset = offset;
 }
 
 /**
@@ -719,10 +751,21 @@ void adc_set_gpio_calib_vref(unsigned short vref, signed char offset)
  * @param[in] offset - Vbat channel sampling two-point calibration value offset.
  * @return none
  */
-void adc_set_vbat_calib_vref(unsigned short vref, signed char offset)
+void adc_set_sar0_vbat_calib_vref(unsigned short vref, signed char offset)
 {
-    g_adc_vbat_calib_vref        = vref;
-    g_adc_vbat_calib_vref_offset = offset;
+    g_adc_sar0_vbat_calib_vref        = vref;
+    g_adc_sar0_vbat_calib_vref_offset = offset;
+}
+/**
+ * @brief This function is used to calib ADC 1.2V vref for sar1 GPIO.
+ * @param[in] vref - GPIO sampling calibration value.
+ * @param[in] offset - GPIO sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_sar1_gpio_calib_vref(unsigned short vref, signed char offset)
+{
+    g_adc_sar1_gpio_calib_vref        = vref;
+    g_adc_sar1_gpio_calib_vref_offset = offset;
 }
 
 /**********************************************************************************************************************

@@ -73,7 +73,6 @@ typedef enum
 #define PLL_192M_CCLK_96M_HCLK_48M_PCLK_48M_MSPI_64M clock_init(BASEBAND_PLL, CLK_DIV2, CCLK_DIV2_TO_HCLK_DIV2_TO_PCLK, CLK_DIV3)
 #define PLL_192M_CCLK_24M_HCLK_24M_PCLK_24M_MSPI_48M clock_init(BASEBAND_PLL, CLK_DIV8, CCLK_DIV1_TO_HCLK_DIV1_TO_PCLK, CLK_DIV4)
 #define PLL_192M_CCLK_48M_HCLK_24M_PCLK_24M_MSPI_48M clock_init(BASEBAND_PLL, CLK_DIV4, CCLK_DIV2_TO_HCLK_DIV2_TO_PCLK, CLK_DIV4)
-#define PLL_192M_CCLK_48M_HCLK_24M_PCLK_12M_MSPI_48M clock_init(BASEBAND_PLL, CLK_DIV4, CCLK_DIV2_TO_HCLK_DIV4_TO_PCLK, CLK_DIV4)
 
 #define PLL_192M_CCLK_48M_HCLK_48M_PCLK_48M_MSPI_48M clock_init(BASEBAND_PLL, CLK_DIV4, CCLK_DIV1_TO_HCLK_DIV1_TO_PCLK, CLK_DIV4)
 #define PLL_192M_CCLK_48M_HCLK_48M_PCLK_24M_MSPI_48M clock_init(BASEBAND_PLL, CLK_DIV4, CCLK_DIV1_TO_HCLK_DIV2_TO_PCLK, CLK_DIV4)
@@ -294,7 +293,7 @@ _attribute_ram_code_sec_optimize_o2_noinline_ void clock_set_32k_tick(unsigned i
  * @param[in]   div - the mspi clk source divider
  * @return      none.
  */
-_attribute_ram_code_sec_noinline_ void clock_mspi_clk_config(sys_clock_src_e src, sys_clock_div_e div);
+_attribute_ram_code_sec_optimize_o2_noinline_ void clock_mspi_clk_config(sys_clock_src_e src, sys_clock_div_e div);
 
 /**
  * @brief       This function used to configure the frequency of CCLK/HCLK/PCLK when the PLL is 240M.
@@ -305,7 +304,7 @@ _attribute_ram_code_sec_noinline_ void clock_mspi_clk_config(sys_clock_src_e src
  * @param[in]   pclk_div - divider of PCLK.
  * @return      none
  */
-_attribute_ram_code_sec_noinline_ void clock_cclk_hclk_pclk_config(sys_clock_src_e src, sys_clock_div_e cclk_div, sys_cclk_div_to_hclk_pclk_e hclk_pclk_div);
+_attribute_ram_code_sec_optimize_o2_noinline_ void clock_cclk_hclk_pclk_config(sys_clock_src_e src, sys_clock_div_e cclk_div, sys_cclk_div_to_hclk_pclk_e hclk_pclk_div);
 
 /**
  * @brief       This function use to set all clock to default. 
@@ -317,21 +316,21 @@ _attribute_ram_code_sec_noinline_ void clock_cclk_hclk_pclk_config(sys_clock_src
  *              RC 24M       | CCLK 24M, HCLK 24M, PCLK 24M, MSPI CLK 24M.
  *              -----------------------------------------------------------------------
  */
-_attribute_ram_code_sec_noinline_ void clock_set_all_clock_to_default(void);
+_attribute_ram_code_sec_optimize_o2_noinline_ void clock_set_all_clock_to_default(void);
 
 /**
  * @brief       This function use to save all clock configuration for the follow-up restore. 
  * @return      none.
  * @note        This function needs to be used in conjunction with clock_restore_clock_config().
  */
-_attribute_ram_code_sec_noinline_ void clock_save_clock_config(void);
+_attribute_ram_code_sec_optimize_o2_noinline_ void clock_save_clock_config(void);
 
 /**
  * @brief       This function use to restore all previously saved clock configurations.
  * @return      none.
  * @note        This function needs to be used in conjunction with clock_save_clock_config().
  */
-_attribute_ram_code_sec_noinline_ void clock_restore_clock_config(void);
+_attribute_ram_code_sec_optimize_o2_noinline_ void clock_restore_clock_config(void);
 
 /********************************************************************************************************
  *                                          internal
@@ -349,6 +348,6 @@ _attribute_ram_code_sec_noinline_ void clock_restore_clock_config(void);
  * @note        Before invoking this interface, you need to make sure that you are not using PLL as the clock source,
  *              otherwise the clock waveform is messy and may cause unknown problems.
  */
-_attribute_ram_code_sec_noinline_ void clock_bbpll_config(sys_pll_clk_e pll_clk);
+_attribute_ram_code_sec_optimize_o2_noinline_ void clock_bbpll_config(sys_pll_clk_e pll_clk);
 
 #endif

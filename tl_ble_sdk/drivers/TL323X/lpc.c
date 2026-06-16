@@ -74,7 +74,7 @@ void lpc_vbat_vol_detect_init(lpc_vbat_threshold_vol_e thres_vol)
 
     lpc_set_input_chn(LPC_FLOAT);//must be float
     lpc_set_scaling_coeff(LPC_SCALING_PER50);//lpc scaling coeff = 50%, CANNOT be change
-    analog_write_reg8(0x16, (analog_read_reg8(0x16) & 0x3f) | ((thres_vol&0xf0)<<6));//ref_bg_trim
+    analog_write_reg8(0x16, (analog_read_reg8(0x16) & 0x3f) | (((thres_vol&0xf0)>>4)<<6));//ref_bg_trim
     analog_write_reg8(0x0d, (analog_read_reg8(0x0d) & 0x8f) | ((thres_vol&0x0f) << 4));
     lpc_vbat_detect_enable();
 }

@@ -46,7 +46,20 @@ void lpc_set_input_ref(lpc_mode_e mode, lpc_reference_e ref)
 
     analog_write_reg8(0x0d, (analog_read_reg8(0x0d) & 0x8f) | (ref << 4));
 }
-
+/**
+ * @brief       This function is used to initialize GPIO voltage detection.
+ * @param[in]   mode    - lower power comparator working mode includes normal mode and low power mode.
+ * @param[in]   pin     - selected input channel.Input derived from external PortB(PB<1>~PB<7>).
+ * @param[in]   ref     - selected input reference voltage.
+ * @param[in]   divider - selected scaling coefficient.(%25,%50,%75,%100)
+ * @return      none.
+ */
+void lpc_gpio_vol_detect_init(lpc_mode_e mode, lpc_input_channel_e pin, lpc_reference_e ref,lpc_scaling_e divider)
+{
+    lpc_set_input_chn(pin);
+    lpc_set_input_ref(mode,ref);
+    lpc_set_scaling_coeff(divider);
+}
 /**
  * @brief       This function serves to protect the flash during the chip power-down process.
  * @param[in]   pin  - selected input channel.Input derived from external PortB(PB<1>~PB<7>).
@@ -63,7 +76,7 @@ void lpc_set_input_ref(lpc_mode_e mode, lpc_reference_e ref)
 void lpc_flash_prot_config(lpc_input_channel_e chn)
 {
     /**
-     * The priority of flash operations has been set to the IRQ_PRI_LEV2 by default in flash.c.?
+     * The priority of flash operations has been set to the IRQ_PRI_LEV2 by default in flash.c.​
      */
     plic_set_priority(IRQ_PM_LVL,3);//Setting the interrupt priority of LPC(PM) to highest IRQ_PRI_LEV3.
     plic_preempt_feature_en(CORE_PREEMPT_PRI_MODE0);//enable preemptive priority interrupt feature.

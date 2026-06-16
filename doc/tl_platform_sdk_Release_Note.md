@@ -1,3 +1,333 @@
+## 3.10.0
+
+### Version
+
+* SDK Version: tl_platform_sdk V3.10.0
+* Chip Version
+  - TLSR921x/TLSR951x(B91)(A0/A1/A2),TLSR922x/TLSR952x(B92)(A3/A4),TL751X(A1),TL721X(A2/A3),TL321X(A1/A2/A3),TL322X(A1),TL323X(A0)
+* Hardware EVK Version
+  * TLSR951x(B91): C1T213A20
+  * TLSR952x(B92): C1T266A20
+  * TL751X: C1T368A20
+  * TL721X: C1T315A20 In the C1T315A20_V1_5 and earlier versions, the PD4 pin used for KEY1 is not available for any functional use.
+  * TL321X: C1T335A20
+  * TL322X: C1T371A20
+  * TL323X: C1T388A20
+* Hardware AIOT_DK1 Version
+  * C1TXA104
+* Demo Platform Requirements
+ 
+  | Demo Name       | Main Board | Sub-Board            |
+  |-----------------|------------|----------------------|
+  | Codec_Demo      | AIOT_DK1   | C1TXA8(AIOT-CODEC1/AIOT-CODEC2)  |
+  | Sensor_Lcd_Demo | AIOT_DK1   | C1TXA99              |
+  | Camera_Demo     | AIOT_DK1   | C1TXA99 + OV7670     |
+  | Other demos     | EVK        | —                    |
+
+* Toolchain Version
+  - TLSR921x/TLSR951x(B91): gcc7(TL32 ELF MCULIB V5F GCC7.4 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TLSR922x/TLSR952x(B92): gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL751x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL721x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL321x: gcc12(TL32 ELF MCULIB V5  GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL322x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL323x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Note
+
+### Features
+
+* **rf**
+  * (TL323X) Implement the relevant interfaces for the Fast Settle function and supplement the corresponding sample code for usage. (merge_requests/@2398)
+
+* **audio**
+  * (TL751X) I2S add audio_set_i2s_clk_as_mclk interface to output i2s mclk. (merge_requests/@2331)
+  * (TL721X) Added audio_mic_high_pass_filter_en interface to enable or disable high-pass filter.(merge_requests/@2430)
+
+* **pm**
+  * (TL323X) Added vdd1v8 voltage calibration. (merge_requests/@2378)(merge_requests/@2394)
+  * (TL323X) Added voltage calibration. (merge_requests/@2338)(merge_requests/@2394)
+
+* **JTAG**
+  * (tl322x) Added the sdp_set_pin_en interface to support JTAG 2-wire debugging; introduced the JTAG_MODE macro for one-click configuration to enter JTAG mode. (merge_requests/@2407)
+  * (tl323x) Introduced the JTAG_MODE macro for one-click configuration to enter JTAG mode. (merge_requests/@2423)  
+
+* **rf**
+  * (TL322X) Add rf_rx_timing_seq_shorten interface to shorten the rx timing sequence. (merge_requests/@2409)
+  * (TL322X) Add rf_set_tx_power_down_delay interface to set tx power down delay. (merge_requests/@2409)
+  * (TL322X) Add rf_set_tx_trailer_len interface to set tx trailer length. (merge_requests/@2409)
+  * (TL322X) Add rf_set_pa_ramp_step interface to set pa ramp step. (merge_requests/@2409)
+  * (TL322X) Add rf_set_modem_hp_pdet_threshold interface to set rx pdet threshold.(merge_requests/@2409)
+
+* **flash**
+  * (TL322X) Add flash erase interfaces with block sizes of 32K and 64K. (merge_requests/@2431)
+
+* **nvm**
+  * （TL322X）Add the NVM module。(merge_requests/@2457)
+
+### Bug Fixes
+* **sys**
+  * (TL321X)Adjust the retention ldo voltage from 0.8V to 0.95V. (merge_requests/@2469)
+    * Detailed description: When using deep retention sleep, the device would probabilistically crash after waking up with the default retention ldo setting of 0.8V.
+    * After Fix: After raising the voltage, the device can work normally after deep retention wake-up, but electric increased by approximately 0.5 uA.
+    * Update Recommendation: An update is mandatory when using deep retention sleep.
+* **USB** 
+  * (TL322X) Fixed the issue where using USB to enter suspend sleep mode caused the system to fail to respond normally to USB interrupts upon waking up. (merge_requests/@2339)
+    * Detailed description: In the USB interrupt service function, the suspend sleep was called, which led to the incorrect configuration of usb::complete, resulting in the inability to respond to USB interrupts normally subsequently and the interruption being blocked.
+    * After Fix: By entering USB into suspend sleep and then waking up, it is possible to respond to USB interrupts normally.
+    * Update Recommendation: When using the usb function, an update is mandatory.
+  * (TL322X) Fixed an issue where USB devices failed to enumerate properly after the computer restarted.(merge_requests/@2434)
+    * Detailed description: During USB suspend interrupts, the PCGC and PHY clocks are disabled. If the computer restarts, the USB ports remain powered but enter USB suspend mode. After the restart completes, the system does not enter resume interrupt mode. Since the PCGC and PHY remain disabled, USB devices cannot be enumerated.
+    * After Fix: After restarting the computer, USB devices enumerate normally.
+    * Update Recommendation: When using the usb function, an update is mandatory.
+
+* **adc** 
+  * (TL751X)The problem of the collected voltage decreasing over time has been resolved.(merge_requests/@2337)
+    * Detailed description: Over time, the reference voltage of the ADC gradually decreases. This change causes deviations in the collected voltage values, thereby affecting the accuracy of the measurements.
+    * After Fix：The reference voltage of the ADC is relatively stable, resulting in more accurate collected voltage values.
+    * Update Recommendation：When using ADC, updates must be performed.
+
+  * (TL322X)The issue of sampling value anomalies when using SAR0 and SAR1 together in different configurations has been resolved.(merge_requests/@2448)
+    * Detailed description: When using SAR0 and SAR1 together, different voltage prescale ratios can affect the accuracy of the sampling values.
+    * After Fix：Both SAR0 and SAR1 can be used simultaneously, and the sampling values are normal.
+    * Update Recommendation：When both SAR0 and SAR1 are used simultaneously, an update must be performed.
+  
+* **pm** 
+  * (tl321x/tl721x/tl322x/tl323x)The issue of the sleep function being called when the wake-up source remained active and causing a runtime error has been resolved.(merge_requests/@2362)
+    * Detailed description: In the sleep function, the PLL module is turned off until it is awakened and then reopened. If the wake-up source persists and the actual sleep has not occurred, the PLL module will not be reopened, resulting in abnormal clock operation. The logic has been modified; instead of manually turning off the PLL module, it will be automatically turned off only when the device is truly in sleep mode.
+    * After Fix: The sleep function can run normally when the wake-up source persists.
+    * Update Recommendation: It must be updated.
+
+* **gpio** 
+  * (tl322x)Implemented the gpio_set_mspi_pin_ie_en and gpio_set_mspi_pin_ie_dis interfaces.(merge_requests/@2401)
+    * Detailed description: This interface has no effect on Mspi pin operations.
+    * After Fix: Using this interface, you can enable or disable the MSPI pin and activate or deactivate the MSPI function.
+    * Update Recommendation: If this interface is used, it must be updated.
+
+* **rf** 
+  * (TLSR921x/TLSR951x/TLSR922x/TLSR952x/TL321x/TL721x) Fixed the issue of incorrect parameter type for the rf_tx_acc_code_pipe_en interface (merge_requests/@2362)
+    * Detailed Description: The parameter type of the rf_tx_acc_code_pipe_en interface was changed from rf_channel_e to unsigned char. The pipe definition (as bit * positions) in the rf_channel_e enumeration was inconsistent with the actual register configuration logic.
+    * After Effect: The pipe value is correctly set after configuring rf_tx_acc_code_pipe_en.
+    * Update Recommendation: Mandatory update.
+  * (TL322X) Fixed minor packet loss issue in BLE coded PHY S2/S8 RX.(merge_requests/@2424)
+     * Detailed Description: During BLE coded PHY S2/S8 communication, when the TX energy is sufficiently high, a small packet loss issue                         (0.1%–0.2%) still occurs at the RX end.
+     * After Fix：Modify RX-related configurations to achieve zero packet loss at the RX end when energy is sufficiently high.
+     * Update Recommendation:  The update is mandatory when using the BLE Coded PHY S2/S8.
+  * (TL322X) Fix the sync error issue of TX during BQB testing for BLE Coded PHY S2/S8.(merge_requests/@2424)
+     * Detailed Description: Synchronization errors are observed on certain test instruments when performing BQB certification testing for BLE Coded PHY S2/S8.
+     * After Fix：PA ramp-related configurations were modified, and sync errors no longer occur in Coded PHY S2/S8 TX testing.
+     * Update Recommendation:  The update is mandatory when using the BLE Coded PHY S2/S8.
+	 
+* **JTAG**
+  * (tl322x) Fixed incorrect GPIO mux configuration in the jtag_sdp_set_pin interface, which prevented JTAG from connecting. (merge_requests/@2407)
+    * Details: The JTAG GPIO mux function was mis-configured within the jtag_sdp_set_pin interface.
+    * Result: The JTAG GPIO mux function is now correctly configured in the jtag_sdp_set_pin interface.
+    * Update recommendation: When using the JTAG function, an update is mandatory. 
+
+* **audio**
+  * (TLSR921x/TLSR951x) Solved the issue of no sound from the Audio DMIC. (merge_requests/@2443)
+    * Details: All GPIO(except sws) input function was disabled by the gpio_shutdown interface in the platform_init resulting in no sound from dmic.
+    * After Fix: Dmic data IO input function is enabled by audio_set_dmic_pin interface, Audio Dmic is normal after fix.
+    * Update recommendation: Must be updated if Audio Dmic is used.
+
+### Refactoring
+
+### BREAKING CHANGES
+* **sys**
+  * (TL323X)Adjusted LPD (Low-Voltage Protection) software configuration logic to prevent unintended LPD triggering during chip power-up or wake-up from sleep mode, which could lead to system lock-up and failure to operate normally. (merge_requests/@2333)
+  * Detailed Description:The original configuration sequence of digital and analog modules deviated from the intended design. This could cause the LPD module to be falsely triggered due to abnormal state detection when the supply voltage was below 2.1V during power-up or wake-up from sleep mode, resulting in system lock-up and malfunction. To resolve this issue, the initialization order of digital and analog modules has been restructured, and explicit state flag clearing has been added at critical stages to ensure the LPD module remains in a controlled state during early power-up.
+  * After Effect: After optimization, unintended LPD triggering during power-up and wake-up is effectively prevented. The reliability and stability of chip startup have been significantly improved. Meanwhile, the minimum operating voltage has been reduced from 2.1V to 1.9V.
+  * Update Recommendation:Firmware update is required.
+  * Note: The solution is under continuous optimization.
+* **audio**
+  * (TL721X) The digital gain of A3 dmic is modified in audio_set_stream0_dig_gain interface and audio_get_stream0_dig_gain is updated as well.(merge_requests/@2419/@2429)
+  * Detailed Description: Due to the internal digital update of the DMIC of A3 chip, the DMIC path of A3 has an additional gain of 15.5dB compared to A2 (1->6, -1->-6, 20lg6=15.5dB). Therefore,the gain of A3 is modified in audio_set_stream0_dig_gain interface. And make corresponding adjustments to the audio_get_stream0_dig_gain interface as well.
+  * After Effect: The same digital macro has the similar effect in A2 and A3, the gain of A3 is only 1dB greater than that of A2 after using updated interface.
+  * Update Recommendation: Mandatory update.
+
+* **adc**
+  * (TL322X) Added SAR1 ADC calibration function (merge_requests/@2448)
+  * Detailed description: Modified the parameters passed to adc_calculate_voltage, removed the adc_set_gpio_calib_vref and adc_set_vbat_calib_vref interfaces, and added the adc_set_sar0_gpio_calib_vref, adc_set_sar0_vbat_calib_vref, and adc_set_sar1_gpio_calib_vref functions.
+  * After effect: Supports SAR1 ADC calibration function.
+  * Update recommendation: Must update when using SAR1.
+
+* **audio**
+  * (TL721X)Compensation is implemented inside audio_set_stream0_dig_gain to resolve the inconsistent digital gain between Chip A3 and A2 under the same parameters.(merge_requests/@2419/@2429)
+    * Detailed Description：As the digital design of the DMIC on Chip A3 has been updated, the DMIC path of A3 has an additional +15.5 dB gain compared to A2. Therefore, software compensation is applied in the audio_set_stream0_dig_gain interface.
+    * After Fix：With the same interface parameters, A2 and A3 achieve similar gain levels. In practice, the gain of A3 is only 1 dB higher than that of A2.
+    * Update Recommendation：Must be updated when using DMIC.
+
+### Performance Improvements
+
+* **adc**
+  * (TL322X)In the adc_pin_config, we will add a configuration to disable the pull-up and pull-down resistors for the pins, setting them to a floating state. This measure aims to prevent any inaccuracies in ADC readings that may arise from pull-up or pull-down resistors present on the pins during ADC usage.(merge_requests/@2416)
+
+* **rf**
+  * (TL322X)Optimize the digital DC signal to address the receiving sensitivity differences between chips.(merge_requests/@2409)
+  
+## 3.10.0
+
+### 版本
+
+* SDK 版本: tl_platform_sdk V3.10.0
+* 芯片版本
+  - TLSR921x/TLSR951x(B91)(A0/A1/A2),TLSR922x/TLSR952x(B92)(A3/A4),TL751X(A1),TL721X(A2/A3),TL321X(A1/A2/A3),TL322X(A1),TL323X(A0)
+* 硬件评估板版本
+  * TLSR951x(B91): C1T213A20
+  * TLSR952x(B92): C1T266A20
+  * TL751X: C1T368A20
+  * TL721X: C1T315A20 在C1T315A20_V1_5及之前版本中，KEY1所使用的PD4引脚无法作为任何功能使用。
+  * TL321X: C1T335A20
+  * TL322X: C1T371A20
+  * TL323X: C1T388A20
+* 硬件AIOT_DK1版本
+  * C1TXA104
+* Demo平台要求
+
+  | 示例名称        | 主板       | 子板                 |
+  |-----------------|------------|----------------------|
+  | Codec_Demo      | AIOT_DK1   | C1TXA8(AIOT-CODEC2)  |
+  | Sensor_Lcd_Demo | AIOT_DK1   | C1TXA99              |
+  | Camera_Demo     | AIOT_DK1   | C1TXA99 + OV7670     |
+  | Other demos     | EVK        | —                    |
+
+* 工具链版本
+  - TLSR921x/TLSR951x(B91): gcc7(TL32 ELF MCULIB V5F GCC7.4 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TLSR922x/TLSR952x(B92): gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL751x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL721x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL321x: gcc12(TL32 ELF MCULIB V5  GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL322x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL323x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgba(36, 190, 62, 1)">
+
+### Note
+
+### Features
+
+* **rf**
+  * (TL323X) 添加fast settle功能相关接口及使用示例代码。 (merge_requests/@2398)
+  
+* **audio**
+  * (TL751X) 增加了audio_set_i2s_clk_as_mclk接口用于引出i2s mclk。 (merge_requests/@2331)
+  * (TL721X) 增加了audio_mic_high_pass_filter_en接口用于使能或失能高通滤波器。(merge_requests/@2430)
+
+* **pm**
+  * (TL323X) 增加了vdd1v8电压校准功能。 (merge_requests/@2378)(merge_requests/@2394)
+  * (TL323X) 增加了电压校准功能。 (merge_requests/@2338)(merge_requests/@2394)
+
+* **JTAG** 
+  * (tl322x)新增接口sdp_set_pin_en，支持jtag两线调试；新增宏JTAG_MODE，支持一键可配进入jtag模式。(merge_requests/@2407)
+  * (tl323x)新增宏JTAG_MODE，支持一键可配进入jtag模式。(merge_requests/@2423)
+
+* **rf**
+  * （TL322X）添加“rf_rx_timing_seq_shorten”接口以缩短收包时序。(merge_requests/@2409)
+  * （TL322X）添加“rf_set_tx_power_down_delay”接口以设置tx power down延迟。(merge_requests/@2409)
+  * （TL322X）添加“rf_set_tx_trailer_len”接口以设置tx trailer长度。(merge_requests/@2409)
+  * （TL322X）添加“rf_set_pa_ramp_step”接口以设置pa ramp step。(merge_requests/@2409)
+  * （TL322X）添加“rf_set_modem_hp_pdet_threshold”接口以设置modem hp 模式下接收 PDET 阈值。(merge_requests/@2409)
+
+* **nvm**
+  * （TL322X）添加NVM模块。(merge_requests/@2457)
+
+### Bug Fixes
+* **sys**
+  * (TL321X)retention ldo电压从0.8V抬到0.95V。 (merge_requests/@2469)
+    * 问题描述：使用deep retention睡眠时，用默认的retention ldo挡位0.8V会出现唤醒后低概率性死机。
+    * 修复结果：抬高电压后，deep rentention唤醒后能正常工作, 但deep rentention睡眠电流增加约0.5uA。
+    * 更新建议：在使用deep retention睡眠时，必须进行更新。
+
+* **adc** 
+  * (TL751X)修复了采集电压出现随时间递减的问题。(merge_requests/@2337)
+    * 问题描述：随着时间的推移，ADC的参考电压逐渐下降，这一变化导致采集的电压值出现偏差，从而影响了测量的准确性。
+    * 修复结果：ADC参考电压比较稳定，采集到的电压值也更加准确。
+    * 更新建议：在使用ADC时，必须进行更新。
+  * (TL322X)解决了SAR0与SAR1在不同配置下共同使用时采样值异常的问题。(merge_requests/@2448)
+    * 问题描述：在SAR0与SAR1共同使用时，不同的分压系数会影响采样值的正确性。
+    * 修复结果：可以同时使用SAR0和SAR1，且采样值正常。
+    * 更新建议：同时使用SAR0和SAR1时，必须进行更新。
+  
+* **USB** 
+  * (TL322X)修复使用USB进入suspend睡眠，唤醒后无法正常响应USB中断的问题。(merge_requests/@2339)
+    * 详细描述：在USB的中断服务函数中，调用suspend睡眠，导致usb的complete没有被正确配置，从而后续无法正常响应USB中断，中断被阻塞。
+    * 修复效果：使用USB进入suspend睡眠，唤醒后能够正常响应USB中断。
+    * 更新建议：使用usb功能时必须更新。
+  * (TL322X)修复电脑重启后，USB 无法正常枚举的问题。(merge_requests/@2434)
+    * 详细描述：在 USB suspend 中断中会把 PCGC 和 PHY 的时钟关掉，如果电脑重启，USB 端口不会断电，但是会进入 USB suspend，电脑重启完成后，不会进入 resume 中断，PCGC 和 PHY 没有打开，导致 USB 无法枚举。
+    * 修复效果：电脑重启后 USB 正常枚举。
+    * 更新建议：使用usb功能时必须更新。
+
+* **pm** 
+  * (tl321x/tl721x/tl322x/tl323x)解决了在唤醒源一直存在的时候调用睡眠函数，发生运行异常的问题。(merge_requests/@2362)
+    * 详细描述：睡眠函数中关掉了PLL模块，直到唤醒时重新打开PLL，如果唤醒源一直存在，没有真正进睡眠，就不会重新打开PLL，导致时钟异常。修改逻辑，不手动关闭PLL模块，只在真正睡眠时自动关闭PLL模块。
+    * 修复效果：在唤醒源一直存在的时候调用睡眠函数运行正常。
+    * 更新建议：必须更新。
+
+* **gpio** 
+  * (tl322x)修复了gpio_set_mspi_pin_ie_en 和 gpio_set_mspi_pin_ie_dis 接口。(merge_requests/@2401)
+    * 详细描述：该接口对mspi pin操作不生效。
+    * 修复效果：使用该接口将mspi pin使能或关闭mspi功能。
+    * 更新建议：如果使用了该接口，则必须更新。
+
+* **rf** 
+  * (TLSR921x/TLSR951x/TLSR922x/TLSR952x/tl321x/tl721x)修复了rf_tx_acc_code_pipe_en 接口参数类型错误问题。(merge_requests/@2362)
+    * 详细描述：rf_tx_acc_code_pipe_en 接口参数类型从 rf_channel_e 改为 unsigned char.rf_channel_e 枚举中对pipe 定义为bit位和实际寄存器设置逻辑不一致。
+    * 修复效果：rf_tx_acc_code_pipe_en 设置后pipe值正确。
+    * 更新建议：必须更新。
+  * (TL322X)修复BLE coded PHY S2/S8 RX少量丢包问题。(merge_requests/@2424)
+    * 详细描述：BLE coded PHY S2/S8 通信时当TX能量足够大时，RX端仍存在少量丢包的问题（0.1%~0.2%）。
+    * 修复效果：修改RX相关配置，当能量足够大时rx端丢包率为0。
+    * 更新建议：使用BLE coded PHY S2/S8时必须更新。
+  * (TL322X)修复BLE coded PHY S2/S8 BQB测试tx时sync error的问题。(merge_requests/@2424)
+    * 详细描述：BLE coded PHY S2/S8 在进行BQB测试时，部分仪器会出现sync error的错误。
+    * 修复效果：修改PA ramp相关配置，测试coded PHY S2/S8 tx时未再出现sync error的问题。
+    * 更新建议：使用BLE coded PHY S2/S8时必须更新。
+
+* **JTAG** 
+  * (tl322x)修复了jtag_sdp_set_pin接口gpio mux功能配置错误，导致jtag无法连接的问题。(merge_requests/@2407)
+    * 详细描述：jtag_sdp_set_pin接口中jtag gpio mux功能配置错误。
+    * 修复效果：jtag_sdp_set_pin接口中jtag gpio mux功能配置正确。
+    * 更新建议：使用jtag功能时必须更新。
+
+* **audio**
+  * (TLSR921x/TLSR951x)解决了Audio DMIC没有声音的问题。 (merge_requests/@2443)
+    * 详细描述: platform_init中的gpio_shutdown接口禁用了所有GPIO（sws除外）输入功能，导致dmic没有声音。
+    * 修复效果: Dmic数据IO的输入功能在audio_set_dmic_pin中使能，dmic功能恢复正常。
+    * 更新建议: 如果使用了audio dmic,则必须更新。
+
+### Refactoring
+
+### BREAKING CHANGES
+* **sys**
+  * (TL323X)调整LPD(低电压保护)软件配置逻辑，防止芯片上电时或睡眠唤醒后误触发LPD，进而引发系统锁死，无法正常工作。(merge_requests/@2333)
+    * 详细描述：数字与模拟模块的配置顺序与预期不符，可能导致芯片在上电低于2.1V和睡眠唤醒过程中，LPD模块因状态判断异常而被误触发，进而引发系统锁死，无法正常工作。为解决该问题，对数字与模拟模块的初始化顺序进行了重构，并在关键阶段增加状态位清零操作，确保LPD模块在上电初期处于可控状态。
+    * 修复效果：优化后，有效避免了上电和睡眠唤醒过程中的误触发LPD风险，提升了芯片启动的可靠性与稳定性，同时最低工作电压从2.1V降低到1.9V。
+    * 更新建议：必须更新。
+    * Note: 该方案内部正在持续优化中。
+* **audio**
+  * (TL721X)在 audio_set_stream0_dig_gain 接口内部做补偿 ，解决相同参数下，A3芯片和A2芯片数字增益不一致问题 .(merge_requests/@2419/@2429)
+    * 详细描述：由于A3芯片DMIC 数字设计有更新，dmic path A3 相比A2 有额外+15.5dB增益，因此在audio_set_stream0_dig_gain接口内做了软件补偿。
+    * 修复效果：相同的接口参数下，A3和A2 具有相近的增益，实际效果A3的增益仅比A2大1dB.
+    * 更新建议：使用dmic 必须更新
+
+* **adc**
+  * (TL322X)增加sar1 adc校准功能。(merge_requests/@2448)
+  * 详细描述：修改了adc_calculate_voltage传入参数，删除了adc_set_gpio_calib_vref和adc_set_vbat_calib_vref接口，增加了adc_set_sar0_gpio_calib_vref、adc_set_sar0_vbat_calib_vref、adc_set_sar1_gpio_calib_vref函数。
+  * 修复效果：支持sar1 adc校准功能。
+  * 更新建议：使用sar1时必须更新。
+
+### Performance Improvements
+
+* **adc**
+  * (TL322X) 在adc_pin_config中增加取消引脚的上下拉配置，使其处于浮空状态。此举旨在防止在使用ADC时，引脚上的上下拉电阻可能导致ADC采集结果不准确。(merge_requests/@2416)
+
+* **rf**
+  * (TL322X)优化数字直流信号，解决芯片间接收灵敏度差异。(merge_requests/@2409)
+
+
 ## V3.9.0(ER)
 
 ### Version

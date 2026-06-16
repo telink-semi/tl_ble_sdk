@@ -423,6 +423,18 @@ static inline void usb0hw_test_mode(usb0_test_mode_t mode)
 }
 
 /**
+ * @brief      This function servers to set the power on program done.
+ * 
+ * @param[in]  None.
+ * @return     None.
+ * 
+ */
+static inline void usb0hw_set_pwronprgdone(void)
+{
+    BM_SET(reg_usb_dctl, FLD_USB_DCTL_PWRONPRGDONE);
+}
+
+/**
  * @brief      This function servers to enable the device endpoint interrupt mask.
  * 
  * @param[in]  mask - The mask to be enabled.

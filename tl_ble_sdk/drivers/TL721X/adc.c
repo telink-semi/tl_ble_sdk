@@ -247,6 +247,7 @@ static inline void adc_set_scan_chn_dis(void)
  *           -# When vbat samples, the user needs to wait >300us after adc_power_on () for the ADC to stabilize.
  *           -# If you call adc_power_off(), the analog circuits of the ADC are powered down. After calling adc_power_on() again,
  *           it is necessary to wait for a period of time to allow the ADC to stabilize.
+ * @attention During ADC operation, PD5 must be enabled, and the output level of PD5 should be monitored.
  */
 /*!< BLE USED */
 _attribute_ram_code_
@@ -262,9 +263,24 @@ void adc_power_on(void)
     reg_adc_vbat_div = g_adc_vbat_div;
 
     adc_set_scan_chn_dis();
-    analog_write_reg8(areg_adc_pga_ctrl, (analog_read_reg8(areg_adc_pga_ctrl) & (~FLD_SAR_ADC_POWER_DOWN)));
+#if (!SPECIAL_APPLICATION)
     /*
-     * Perform a reset operation when the adc is powered up, which will restart the digital state machine and clear the previous state. 
+     * Before adc powering on, configure the PD4 pin to function as a VREF output and pull it high.
+     * This allows the VREF to be established in advance, optimizing the aging issue once the adc power is turned on.
+     * See jira for details:TER-113.(updated by bolong.zhang, confirmed by haitao.gu at 20250912)
+     */
+    analog_write_reg8(areg_adc_sel_stb, (analog_read_reg8(areg_adc_sel_stb) | 0x30));
+    analog_write_reg8(0X1e, (analog_read_reg8(0X1e) & 0xfc) | 0X03);
+    delay_us(10);
+    analog_write_reg8(areg_adc_pga_ctrl, (analog_read_reg8(areg_adc_pga_ctrl) & (~FLD_SAR_ADC_POWER_DOWN)));
+    delay_us(10);
+    analog_write_reg8(areg_adc_sel_stb, (analog_read_reg8(areg_adc_sel_stb) & 0xcf));
+    analog_write_reg8(0X1e, (analog_read_reg8(0X1e) & 0xfc) & 0Xfc);
+#else
+    analog_write_reg8(areg_adc_pga_ctrl, (analog_read_reg8(areg_adc_pga_ctrl) & (~FLD_SAR_ADC_POWER_DOWN)));
+#endif
+    /*
+     * Perform a reset operation when the adc is powered up, which will restart the digital state machine and clear the previous state.
      * Confirm with digital circuit colleagues that performing an ADC reset at power-up helps to improve the operational stability of the ADC.
      * (updated by bolong.zhang, confirmed by shiyi.wu at 202503013)
      */
@@ -403,9 +419,10 @@ void adc_set_vbat_divider(adc_sample_chn_e chn, adc_vbat_div_e vbat_div)
  * @brief This function is used to initialize the ADC.
  * @param[in]  channel_cnt - transfer_mode and the number of channels used.
  * @return none
- * @attention Many features are configured in adc_init function. But some features
- *      such as adc digital clk, adc analog clk, resolution, we think better to set as default value,
- *      and user don't need to change them in most use cases.
+ * @attention - Many features are configured in adc_init function. But some features
+ *             such as adc digital clk, adc analog clk, resolution, we think better to set as default value,
+ *              and user don't need to change them in most use cases.
+ *            - During ADC operation, PD5 must be enabled, and the output level of PD5 should be monitored.
  */
 /*!< BLE USED */
 _attribute_ram_code_
@@ -420,11 +437,13 @@ void adc_init(adc_chn_cnt_e channel_cnt)
     for(unsigned char chn = 0; chn < (unsigned char)(channel_cnt &0x0f ); chn++) {
         g_adc_channel_set_state[chn] = reg_adc_channel_set_state(chn);
     }
-
+#if (!SPECIAL_APPLICATION)
+    gpio_output_en(GPIO_PD5);  //During ADC operation, PD5 must remain enabled.
+#endif
     g_adc_vbat_div = reg_adc_vbat_div;
     adc_power_off();               //power off sar adc
 
-    if(read_reg8(0x14083d) != CHIP_VERSION_A3){
+    if(read_reg8(0x14083d) == CHIP_VERSION_A3){
         adc_reset();                    //reset whole digital adc module
     }
     adc_clk_en();                  //enable signal of 24M clock to sar adc
@@ -445,9 +464,9 @@ void adc_init(adc_chn_cnt_e channel_cnt)
      * This allows the VREF to be established in advance, optimizing the aging issue once the adc power is turned on.
      * See jira for details:TER-113.(updated by bolong.zhang, confirmed by haitao.gu at 20250912)
      */
-    adc_power_on();
-    analog_write_reg8(areg_adc_sel_stb, (analog_read_reg8(areg_adc_sel_stb) | 0x30));
-    analog_write_reg8(0X1e, (analog_read_reg8(0X30) & 0xfc) | 0X03);
+    //adc_power_on();
+    //analog_write_reg8(areg_adc_sel_stb, (analog_read_reg8(areg_adc_sel_stb) | 0x30));
+    //analog_write_reg8(0X1e, (analog_read_reg8(0X30) & 0xfc) | 0X03);
     adc_power_off();
 #endif
     /**
@@ -646,7 +665,9 @@ unsigned short adc_calculate_temperature(unsigned short adc_code)
  * @brief This function serves to calculate voltage from adc sample code.
  * @param[in]   chn - enum variable of ADC sample channel.
  * @param[in]   adc_code    - the adc sample code(should be positive value.)
- * @return      adc_vol_mv  - the average value of adc voltage value(adc voltage value >= 0).
+ * @return      - adc_vol_mv  - the average value of adc voltage value(adc voltage value >= 0).
+ *              - If PD5 is set to output mode, it will return the normal sampling code value; otherwise, it will return an error value of 0xFF.
+ * @attention   During ADC operation, PD5 must be enabled, and the output level of PD5 should be monitored.
  */
 /*!< BLE USED */
 _attribute_ram_code_
@@ -660,11 +681,15 @@ unsigned short adc_calculate_voltage(adc_sample_chn_e chn, unsigned short adc_co
      *               =  (adc_code * Vref * adc_pre_scale >>11) + offset
      */
     unsigned short adc_voltage = (((adc_code * g_adc_vbat_divider[chn] * g_adc_pre_scale[chn] * g_adc_vref[chn]) >> 11) + g_adc_vref_offset[chn]);
-    if(adc_voltage & BIT(15))
-    {
+    if(adc_voltage & BIT(15)){
         return 0;//When the adc_voltage < 0, the returned voltage value should be 0.
-    }else
-    {
+    }
+#if (!SPECIAL_APPLICATION)
+    else if(!BM_IS_SET(reg_gpio_oen((GPIO_PD5 >> 8)), GPIO_PD5 & 0xff)){
+        return 0xffff;
+    }
+#endif
+    else{
         return adc_voltage;
     }
 }
@@ -784,13 +809,20 @@ static inline unsigned char adc_get_m_chn_valid_status(void)
  * @return  adc_code    - the adc sample code.
  *                      - Bit[11:15] of the adc code read from reg_adc_rxfifo_dat are sign bits,if the adc code is positive, bits [11:15] are all 1's,
  *                        if the adc code is negative, bits [11:15] are all 0's and valid data bits are Bit[0:10],the valid range is 0~0x7FF.
+ *                      - If PD5 is set to output mode, it will return the normal sampling code value; otherwise, it will return an error value of 0xFF.
+ * @attention           - During ADC operation, PD5 must be enabled, and the output level of PD5 should be monitored.
  */
 /*!< BLE USED */
 _attribute_ram_code_
 /*!< BLE USED END */
 unsigned short adc_get_raw_code(void)
 {
-    unsigned short adc_code = 0;
+    unsigned short adc_code = 0xFFFF;
+#if (!SPECIAL_APPLICATION)
+    if(!BM_IS_SET(reg_gpio_oen((GPIO_PD5 >> 8)), GPIO_PD5 & 0xff)){
+        return adc_code;
+    }
+#endif
     /**
      * Change the way to get adc code from read areg_adc_misc to read rx fifo, to solve the problem that the valid status is 1 for a long time
      * due to the slow change of valid status in adc_get_m_chn_valid_status(), which leads to fetching the same code repeatedly.(Confirmed by qiangkai.xu, added by xiaobin.huang at 20240903)

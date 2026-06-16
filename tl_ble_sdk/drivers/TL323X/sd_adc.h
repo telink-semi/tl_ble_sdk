@@ -52,6 +52,15 @@ extern volatile unsigned short g_sd_adc_downsample_rate;
 #endif
 
 /**
+ * Note: If the application scenario detected by VBAT may fall below 2.2V, this feature must be enabled,
+ *       otherwise, it can be disabled to save power.
+ */
+#ifndef VBAT_MODE_BELOW_2V2_DETECT_EN
+    #define VBAT_MODE_BELOW_2V2_DETECT_EN  1
+#endif
+
+
+/**
  *  @brief  Define SD ADC VMID power switch state
  */
 typedef enum
@@ -215,8 +224,8 @@ void sd_adc_set_single_gpio_calib_vref(unsigned short vref, signed short offset)
 
 /**
  * @brief This function is used to calibrate sd adc sample voltage for VABT.
- * @param[in] vref - GPIO sampling calibration value.
- * @param[in] offset - GPIO sampling two-point calibration value offset.
+ * @param[in] vref - VBAT sampling calibration value.
+ * @param[in] offset - VBAT sampling two-point calibration value offset.
  * @return none
  */
 void sd_adc_set_vbat_calib_vref(unsigned short vref, signed short offset);
@@ -229,6 +238,14 @@ void sd_adc_set_vbat_calib_vref(unsigned short vref, signed short offset);
  */
 void sd_adc_set_diff_gpio_calib_vref(unsigned short vref, signed short offset);
 
+/**
+ * @brief This function is used to calibrate sd adc sample voltage for VBAT < 2.2V.
+ * @param[in] gain_a - VBAT sampling calibration coefficient.
+ * @param[in] gain_b - VBAT sampling calibration coefficient.
+ * @param[in] offset_c - VBAT sampling calibration offset.
+ * @return none
+ */
+void sd_adc_set_vbat_2v2_calib_vref(signed int gain_a, signed int gain_b, signed int offset_c);
 /**
  * @brief      This function servers to clear the rx fifo.
  * @param[in]  none
@@ -575,5 +592,4 @@ static inline void sd_adc_data_weighted_average_en(void)
 {
     analog_write_reg8(areg_0x10c, analog_read_reg8(areg_0x10c) | FLD_L_DEM_EN);
 }
-
 

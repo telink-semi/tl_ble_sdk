@@ -203,8 +203,8 @@ typedef enum
     DMA_REQ_I3C0_RX,
     DMA_REQ_I3C1_RX,
 
-    DMA_REQ_RRAM_TX = 58,
-    DMA_REQ_RRAM_RX,
+    DMA_REQ_NVM_TX = 58,
+    DMA_REQ_NVM_RX,
 
     DMA_REQ_SAR_ADC1_RX,
 

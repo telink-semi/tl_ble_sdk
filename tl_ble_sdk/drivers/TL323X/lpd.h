@@ -52,22 +52,27 @@ typedef enum
  * @brief       This function is used to select the MSPI or MSPI and MCU that is reset hold(not release) when LPD is triggered.
  * @param[in]   mcu_reset_hold_en -Whether to enable MCU reset hold
  * @return      none.
- * @note        lpd_trigger_reset_config() must be called at least 100 us after lpd_enable().
+ * @note        lpd_trigger_reset_config_and_enable() must be called at least 100 us after lpd_ana_enable().
  *              Otherwise, the LPD may be erroneously triggered during power-up or wake-up from sleep, causing the chip to crash.
  */
-static _always_inline void lpd_trigger_reset_config(unsigned char mcu_reset_hold_en)
+static _always_inline void lpd_trigger_reset_config_and_enable(unsigned char mcu_reset_hold_en)
 {
     if(mcu_reset_hold_en)
     {
-        reg_pvd_config = (reg_pvd_config & 0xea) | BIT(0) | BIT(2) | BIT(4);//mspi and mcu reset hold, not release
+        reg_pvd_config = (reg_pvd_config & 0xee) | BIT(0) | BIT(4);//mspi and mcu reset hold, not release
     } else {
-        reg_pvd_config = (reg_pvd_config & 0xfa) | BIT(0) | BIT(2);//mspi reset hold, not release
+        reg_pvd_config = reg_pvd_config  | BIT(0) ;//mspi reset hold, not release
     }
+    analog_write_reg8(0x14, (analog_read_reg8(0x14) & (~BIT(5))));//release the analog lpd reset signal
+    reg_lpd_int_status |= FLD_LPD_FLASH_STATUS;//clear lpd irq status to prevent accidental triggering
+    reg_pvd_config = reg_pvd_config | BIT(2) ;//lpd digital enable
 }
 
-static _always_inline void lpd_enable(void)
+static _always_inline void lpd_ana_enable(void)
 {
     analog_write_reg8(0x14, (analog_read_reg8(0x14) & (~BIT(4))));//lpd analog configuration must be set before lpd digital configuration, otherwise lpd may be triggered abnormally.
+    analog_write_reg8(0x14, analog_read_reg8(0x14) | BIT(5));//hold the analog lpd reset signal to prevent accidental triggering
+
 }
 
 static _always_inline void lpd_disable(void)
@@ -88,7 +93,7 @@ static inline void lpd_set_vbat_threshold(lpd_threshold_vol_e thres_vol)
  *              protect the flash during power-down of the chip .
  *             -# This feature is enabled by default, and the chip power supply voltage is limited to 2.1V to 4.5V.
  */
-void lpd_power_down_protect_enable(void);
+void lpd_power_down_protect_ana_config(void);
 
 
 /**
@@ -98,4 +103,4 @@ void lpd_power_down_protect_enable(void);
  *              protect the flash during power-down of the chip .
  *             -# This feature is enabled by default, and the chip power supply voltage is limited to 2.1V to 4.5V.
  */
-void lpd_power_down_protect_enable_for_deep_ret(void);
+void lpd_power_down_protect_ana_config_for_deep_ret(void);

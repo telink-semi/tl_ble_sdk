@@ -201,18 +201,38 @@ _attribute_text_sec_ unsigned char flash_4read_decrypt_check(unsigned long addr,
  * @param[in]   len     - the length(in byte, must be above 0) of content needs to write into the flash.
  * @param[in]   buf     - the start address of the content needs to write into(ram address).
  * @param[in]   cmd     - the write command. FLASH_WRITE_CMD or FLASH_QUAD_PAGE_PROGRAM_CMD.
+ * @note        buf pointer passed in should be a sram addr, otherwise a data access error will occurred in spi transfer stage,
+ *              because xip function was disabled during spi flash access.
+ *              to avoid this issue, a sram moving operation was added if the buf pointer passed in is flash addr, and the stack cost was defined by STACK_SIZE_FOR_FLASH_DATA.
+ *              once the passed buffer len is larger than STACK_SIZE_FOR_FLASH_DATA, the program stalled for user debug.
  * @return      none.
  */
 _attribute_text_sec_ static void flash_write(unsigned long addr, unsigned long len, unsigned char *buf, flash_command_e cmd)
 {
     unsigned int ns = PAGE_SIZE - (addr & (PAGE_SIZE - 1));
     int          nw = 0;
+    unsigned int is_flash_addr = (((unsigned int)buf & FLASH_ADDR_MASK) == FLASH_ADDR_BASE) ? 1 : 0;
 
     while (len > 0) {
         nw = len > ns ? ns : len;
-        DISABLE_BTB;
-        flash_mspi_write_ram(cmd, addr, buf, nw);
-        ENABLE_BTB;
+
+        if(1 == is_flash_addr)
+        {
+            if(nw > STACK_SIZE_FOR_FLASH_DATA) while(1);
+            unsigned char const_buf[nw];
+            
+            memcpy(const_buf, buf, nw);
+            DISABLE_BTB;
+            flash_mspi_write_ram(cmd, addr, const_buf, nw);
+            ENABLE_BTB;
+        }
+        else
+        {
+            DISABLE_BTB;
+            flash_mspi_write_ram(cmd, addr, buf, nw);
+            ENABLE_BTB;
+        }
+
         ns = PAGE_SIZE;
         addr += nw;
         buf += nw;

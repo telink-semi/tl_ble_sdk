@@ -163,7 +163,7 @@ void lpc_pem_flash_prot_config(lpc_input_channel_e lpc_chn, pem_chn_e pem_chn, d
     pem_init();
     lpc_set_misc_pem_event(pem_chn,6);//misc_sel=6: select lpc module as event to trigger task module
     lpc_set_dma_pem_task(pem_chn,dma_chn);
-    lpc_pem_dma_task_set_config(dma_chn,(unsigned int *)ptr, reg_rst);//Use DMA to write src_data_buf to register reg_rst
+    lpc_pem_dma_task_set_config(dma_chn,(unsigned int *)ptr, (unsigned int)reg_rst_addr);//Use DMA to write src_data_buf to register reg_rst
     pem_chn_en(pem_chn);
     g_lpc_pem_chn = pem_chn;
 }
