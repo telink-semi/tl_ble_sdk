@@ -458,7 +458,6 @@
 ./tl_ble_sdk/drivers/TL321X/reg_include/soc.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/reg_include/spi_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/reg_include/stimer_reg.h			TELINK_APACHE 
-./tl_ble_sdk/drivers/TL321X/reg_include/swire_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/reg_include/timer_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/reg_include/uart_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/reg_include/usb_reg.h			TELINK_APACHE 
@@ -560,6 +559,7 @@
 ./tl_ble_sdk/drivers/TL322X/lib/include/hash/sha512_256.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/hash/sm3.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/mspi.h			TELINK_APACHE 
+./tl_ble_sdk/drivers/TL322X/lib/include/nvm.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/pke/dh.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/pke/ecdh.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/pke/ecdsa.h			TELINK_APACHE 
@@ -580,10 +580,10 @@
 ./tl_ble_sdk/drivers/TL322X/lib/include/pm/pm.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/rf/rf_ble.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/rf/rf_common.h			TELINK_APACHE 
+./tl_ble_sdk/drivers/TL322X/lib/include/rf/rf_cs.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/rf/rf_dma.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/rf/rf_private.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/rf/rf_zigbee.h			TELINK_APACHE 
-./tl_ble_sdk/drivers/TL322X/lib/include/rram.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/ske/ske.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/ske/ske_aes_xcbc_mac_96.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/lib/include/ske/ske_algorithm.h			TELINK_APACHE 
@@ -637,6 +637,7 @@
 ./tl_ble_sdk/drivers/TL322X/reg_include/lin_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/mailbox_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/mspi_reg.h			TELINK_APACHE 
+./tl_ble_sdk/drivers/TL322X/reg_include/nvm_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/pem_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/pke_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/plic_reg.h			TELINK_APACHE 
@@ -646,7 +647,6 @@
 ./tl_ble_sdk/drivers/TL322X/reg_include/qdec_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/register.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/rf_reg.h			TELINK_APACHE 
-./tl_ble_sdk/drivers/TL322X/reg_include/rram_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/rz_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/sar_adc_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/sc_bb_reg.h			TELINK_APACHE 
@@ -655,7 +655,6 @@
 ./tl_ble_sdk/drivers/TL322X/reg_include/soc.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/spi_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/stimer_reg.h			TELINK_APACHE 
-./tl_ble_sdk/drivers/TL322X/reg_include/swire_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/timer_bb_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/timer_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL322X/reg_include/uart_reg.h			TELINK_APACHE 
@@ -724,6 +723,7 @@
 ./tl_ble_sdk/drivers/TL323X/lib/include/crypto_common/eccp_curve.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/lib/include/crypto_common/lib_extension.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/lib/include/crypto_common/utility.h			TELINK_APACHE 
+./tl_ble_sdk/drivers/TL323X/lib/include/efuse.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/lib/include/flash_base.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/lib/include/hash/hash.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/lib/include/hash/hash_algorithm.h			TELINK_APACHE 

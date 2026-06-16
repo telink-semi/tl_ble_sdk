@@ -53,7 +53,7 @@
  * 
  * | Power Supply Mode | Power Source                          | Output Power Characteristics                                                                 | Advantage                                  |
  * |-------------------|---------------------------------------|------------------------------------------------------------------------------------------------|-------------------------------------------|
- * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT → higher available power)          | Simple power path, suitable for high-power scenarios |
+ * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT 鈫?higher available power)          | Simple power path, suitable for high-power scenarios |
  * | VANT mode         | Powered by embedded DCDC + LDO        | Output power is stable (independent of VBAT voltage)                                          | Lower power consumption at the same transmit power |
  * 
  * @subsection rf_power_table TX Power Table (Driver-Provided)
@@ -1408,6 +1408,17 @@ void rf_set_rxpara(void);
 void rf_set_tx_modulation_index(rf_mi_value_e mi_value);
 
 /**
+ * @brief       This function is used to  set the modulation index of the receiver.
+ *              This function is common to all modes,the order of use requirement:configure mode first,
+ *              then set the the modulation index,default is 0.5 in drive,both sides need to be consistent
+ *              otherwise performance will suffer,if don't specifically request,don't need to call this function.
+ * @param[in]   mi_value- the value of modulation_index*100.
+ * @note       (1)On the TL323X series chip, the MI parameter for the receive path is in a range below 1000.
+ * @return      none.
+ */
+void rf_set_rx_modulation_index(rf_mi_value_e mi_value);
+
+/**
  *@brief      This function is primarily used to set the threshold value for modem sync in private 2M PHY HP mode.
  *@param[in]  byte_len   - Specify the synchronization word length to be set for the modem, measured in bytes.
  *@return     none.
@@ -1442,7 +1453,7 @@ void rf_update_rx_dcoc_calib_code(unsigned short calib_code);
 
 /**
   * @brief      This function is mainly used to set the interval time of the PA ramp step.
-  * @param[in]  step_value- Enumeration variables are used to set the interval time for each step – for example, 
+  * @param[in]  step_value- Enumeration variables are used to set the interval time for each step 鈥?for example, 
   *             RF_PA_RAMP_STEP_P250p0 represents an interval of 250 ns per step.
   * @return     none.
   */

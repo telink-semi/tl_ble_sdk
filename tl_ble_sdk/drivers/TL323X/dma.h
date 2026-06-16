@@ -248,19 +248,19 @@ typedef struct
  * 3.dma size needs to be configured DMA_BYTE_WIDTH,the length of the configuration can be any byte.
  */
 #define M2M_DMA_CFG                                                \
-    (0 << DMA_CHACTRL_DST_REQ_SEL_OFFSET) |                        \
-        (0 << DMA_CHACTRL_SRC_REQ_SEL_OFFSET) |                    \
-        (DMA_ADDR_INCREMENT << DMA_CHACTRL_DST_ADDR_CTRL_OFFSET) | \
-        (DMA_ADDR_INCREMENT << DMA_CHACTRL_SRC_ADDR_CTRL_OFFST) |  \
-        (DMA_NORMAL_MODE << DMA_CHACTRL_DSTMODE_OFFSET) |          \
-        (DMA_NORMAL_MODE << DMA_CHACTRL_SRCMODE_OFFSET) |          \
-        (DMA_CTR_BYTE_WIDTH << DMA_CHACTRL_DSTWIDTH_SIZE_OFFSET) | \
-        (DMA_CTR_BYTE_WIDTH << DMA_CHACTRL_SRCWIDTH_SIZE_OFFSET) | \
-        (0 << DMA_CHACTRL_SRC_BURST_SIZE_OFFSET) |                 \
-        (0 << DMA_CHACTRL_READ_NUM_EN_OFFSET) |                    \
-        (0 << DMA_CHACTRL_PRIORITY_OFFSET) |                       \
-        (0 << DMA_CHACTRL_WRITE_NUM_EN_OFFSET) |                   \
-        (0 << DMA_CHACTRL_AUTO_EN_OFFSET)
+    ((unsigned int)0 << DMA_CHACTRL_DST_REQ_SEL_OFFSET) |                        \
+        ((unsigned int)0 << DMA_CHACTRL_SRC_REQ_SEL_OFFSET) |                    \
+        ((unsigned int)DMA_ADDR_INCREMENT << DMA_CHACTRL_DST_ADDR_CTRL_OFFSET) | \
+        ((unsigned int)DMA_ADDR_INCREMENT << DMA_CHACTRL_SRC_ADDR_CTRL_OFFST) |  \
+        ((unsigned int)DMA_NORMAL_MODE << DMA_CHACTRL_DSTMODE_OFFSET) |          \
+        ((unsigned int)DMA_NORMAL_MODE << DMA_CHACTRL_SRCMODE_OFFSET) |          \
+        ((unsigned int)DMA_CTR_BYTE_WIDTH << DMA_CHACTRL_DSTWIDTH_SIZE_OFFSET) | \
+        ((unsigned int)DMA_CTR_BYTE_WIDTH << DMA_CHACTRL_SRCWIDTH_SIZE_OFFSET) | \
+        ((unsigned int)0 << DMA_CHACTRL_SRC_BURST_SIZE_OFFSET) |                 \
+        ((unsigned int)0 << DMA_CHACTRL_READ_NUM_EN_OFFSET) |                    \
+        ((unsigned int)0 << DMA_CHACTRL_PRIORITY_OFFSET) |                       \
+        ((unsigned int)0 << DMA_CHACTRL_WRITE_NUM_EN_OFFSET) |                   \
+        ((unsigned int)0 << DMA_CHACTRL_AUTO_EN_OFFSET)
 
 /**
  * @brief      This function sets DMA chain transfer interrupt mode.

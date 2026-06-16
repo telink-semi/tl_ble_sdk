@@ -78,4 +78,13 @@ void lpc_vbat_vol_detect_init(lpc_vbat_threshold_vol_e thres_vol)
     analog_write_reg8(0x0d, (analog_read_reg8(0x0d) & 0x8f) | ((thres_vol&0x0f) << 4));
     lpc_vbat_detect_enable();
 }
-
+/**
+ * @brief       This function is used to disable vbat low power detection.
+ * @param[in]   none.
+ * @return      none.
+ * @note        -# disable the vbat low power detection feature.
+ */
+void lpc_vbat_vol_detect_deinit(void)
+{
+    lpc_vbat_detect_disable();
+}

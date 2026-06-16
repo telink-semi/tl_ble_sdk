@@ -69,6 +69,15 @@ typedef enum
     PWM_IR_DMA_FIFO_MODE = 0x0F,
 } pwm_mode_e;
 
+/**
+ * @brief  Interrupt type flags
+ */
+typedef enum {
+    FLD_PWM_FRAME_DONE_IRQ      = 0x00,  // Frame done interrupt
+    FLD_PWM0_PNUM_IRQ           = 0x01,  // Pulse number interrupt (PWM0 only)
+    FLD_PWM0_IR_DMA_FIFO_IRQ    = 0x02,  // DMA FIFO interrupt (PWM0 only)
+    FLD_PWM0_IR_FIFO_IRQ        = 0x04,  // FIFO interrupt (PWM0 only)
+} pwm_irq_type_e;
 
 /**
  * @brief     This function servers to set pwm clock frequency, when pwm clock source is pclk.
@@ -201,88 +210,6 @@ static inline void pwm_set_polarity_en(pwm_id_e id){
  */
 static inline void pwm_set_polarity_dis(pwm_id_e id){
         BM_CLR(reg_pwm_cfg_b6(id), FLD_PWM_FIRST_OUT_LEVEL);
-}
-
-/**
- * @brief     This function servers to enable the pwm interrupt.
- * @param[in] id - variable of enum to select the pwm number,Value range 0~23.
- * @param[in] mask - variable of enum to select the pwm interrupt source.
- * @return    none.
- */
-static inline void pwm_set_irq_mask(pwm_id_e id, pwm_irq_e mask){
-
-    if (mask == FLD_PWM_IRQ_CYCDONE_MASK) {
-        reg_pwm_cfg_b6(id) |= mask;
-    } else if ((mask == FLD_PWM0_PNUM_IRQ) || (mask == FLD_PWM0_IR_DMA_FIFO_IRQ) || (mask == FLD_PWM0_IR_FIFO_IRQ)) {
-        reg_pwm_ctrl_b2 |= mask;
-    } else {
-        reg_pwm_irq_sta |= mask;
-    }
-}
-
-/**
- * @brief     This function servers to disable the pwm interrupt function.
- * @param[in] mask - variable of enum to select the pwm interrupt source.
- * @return    none.
- */
-static inline void pwm_clr_irq_mask(pwm_irq_e mask){
-
-    reg_pwm_ctrl_b2 &= ~mask;
-}
-
-/**
- * @brief     This function servers to get the pwm interrupt status.
- * @param[in] id - variable of enum to select the pwm number,Value range 0~23.
- * @param[in] status - variable of enum to select the pwm interrupt source.
- * @retval    non-zero      -  the interrupt occurred.
- * @retval    zero  -  the interrupt did not occur.
- */
-static inline unsigned short pwm_get_irq_status(pwm_id_e id, pwm_irq_e status){
-
-    if (status == FLD_PWM_IRQ_CYCDONE_MASK) {
-        return (reg_pwm_cfg_b6(id) & status);
-    } else if ((status == FLD_PWM0_PNUM_IRQ) || (status == FLD_PWM0_IR_DMA_FIFO_IRQ) || (status == FLD_PWM0_IR_FIFO_IRQ)) {
-        return (reg_pwm_ctrl_b2 & status);
-    } else {
-        return (reg_pwm_irq_sta & status);
-    }
-}
-
-/**
- * @brief     This function servers to get the pwm interrupt status.
- * @param[in] status - variable of enum to select the pwm interrupt source.
- * @retval    non-zero      -  the interrupt occurred.
- * @retval    zero  -  the interrupt did not occur.
- */
-static inline unsigned short pwm0_get_irq_status(pwm_irq_e status){
-    return (reg_pwm_int & status);
-}
-
-/**
- * @brief     This function servers to clear the pwm interrupt.When a PWM interrupt occurs, the corresponding interrupt flag bit needs to be cleared manually.
- * @param[in] id - variable of enum to select the pwm number,Value range 0~23.
- * @param[in] status  - variable of enum to select the pwm interrupt source.
- * @return    none.
- */
-static inline void pwm_clr_irq_status(pwm_id_e id, pwm_irq_e status){
-
-    if (status == FLD_PWM_IRQ_CYCDONE_MASK) {
-        reg_pwm_cfg_b6(id) |= status;
-    } else if ((status == FLD_PWM0_PNUM_IRQ) || (status == FLD_PWM0_IR_DMA_FIFO_IRQ) || (status == FLD_PWM0_IR_FIFO_IRQ)) {
-        reg_pwm_ctrl_b2 |= status;
-    } else {
-        reg_pwm_irq_sta |= status;
-    }
-}
-
-/**
- * @brief     This function servers to clear the pwm interrupt.When a PWM interrupt occurs, the corresponding interrupt flag bit needs to be cleared manually.
- * @param[in] status  - variable of enum to select the pwm interrupt source.
- * @return    none.
- * @note      This interface is only used for the count, ir mode and ir dma fifo mode of the PWM0 channel.
- */
-static inline void pwm0_clr_irq_status(pwm_irq_e status){
-    reg_pwm_int = status;
 }
 
 /**
@@ -510,4 +437,40 @@ static inline void pwm_set_pwm0_output_to_ana_ir_dis(void)
 {
     BM_CLR(reg_pwm0_mode, BIT(4));
 }
+
+
+/**
+ * @brief     This function enables PWM interrupt mask.
+ * @param[in] id   - PWM channel id.
+ * @param[in] type - interrupt type.
+ * @return    none
+ */
+void pwm_set_irq_mask(pwm_id_e id, pwm_irq_type_e type);
+
+/**
+ * @brief     This function disables PWM interrupt mask.
+ * @param[in] id   - PWM channel id.
+ * @param[in] type - interrupt type.
+ * @return    none
+ */
+void pwm_clr_irq_mask(pwm_id_e id, pwm_irq_type_e type);
+
+/**
+ * @brief     This function gets PWM interrupt status.
+ * @param[in] id   - PWM channel id.
+ * @param[in] type - interrupt type.
+ * @return    interrupt status (0 or non-zero).
+ */
+unsigned int pwm_get_irq_status(pwm_id_e id, pwm_irq_type_e type);
+
+/**
+ * @brief     This function clears PWM interrupt status.
+ * @param[in] id   - PWM channel id.
+ * @param[in] type - interrupt type.
+ * @return    none
+ * @note      Write 1 to clear interrupt flag (W1C).
+ */
+void pwm_clr_irq_status(pwm_id_e id, pwm_irq_type_e type);
+
+
 #endif

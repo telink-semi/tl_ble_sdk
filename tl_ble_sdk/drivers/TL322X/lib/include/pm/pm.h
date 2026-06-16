@@ -449,3 +449,10 @@ _attribute_ram_code_sec_noinline_ drv_api_status_e pm_set_dig_ldo(pm_dig_vol_mod
  * @return      none.
  */
 _attribute_ram_code_sec_optimize_o2_noinline_ void pm_sys_reboot_with_reason(pm_sw_reboot_reason_e reboot_reason, unsigned char all_ramcode_en);
+
+/**
+ * @brief      This function servers to get calibration value from EFUSE.
+ * @param[in]  none
+ * @return     DRV_API_SUCCESS - the calibration value update, DRV_API_FAILURE - the calibration value is not update.
+ */
+drv_api_status_e pm_efuse_calib_ret_ldo_voltage(void);

@@ -22,6 +22,7 @@
  *
  *******************************************************************************************************/
 #include "pwm.h"
+#define PWM_MAX_NUM 23
 
 
 dma_config_t pwm_tx_dma_config = {
@@ -122,3 +123,152 @@ void pwm_set_tx_dma_add_list_element(dma_chn_e chn, dma_chain_config_t *config_a
     config_addr->dma_chain_data_len = dma_cal_size(data_len, DMA_WORD_WIDTH);
     config_addr->dma_chain_llp_ptr  = (unsigned int)(llpoint);
 }
+/**
+ * @brief     This function checks whether the interrupt type belongs to PWM0 special interrupt group.
+ * @param[in] type - interrupt type.
+ * @return    true if it is PWM0 special interrupt, otherwise false.
+ * @note      PWM0 has additional interrupt sources (PNUM/DMA FIFO/FIFO) not shared by other PWM channels.
+ */
+static bool is_pwm0_special_irq(pwm_irq_type_e type)
+{
+    return (type == FLD_PWM0_PNUM_IRQ || type == FLD_PWM0_IR_DMA_FIFO_IRQ || type == FLD_PWM0_IR_FIFO_IRQ);
+}
+
+/**
+ * @brief     This function enables PWM interrupt mask.
+ * @param[in] id   - PWM channel id.
+ * @param[in] type - interrupt type.
+ * @return    none
+ */
+void pwm_set_irq_mask(pwm_id_e id, pwm_irq_type_e type)
+{
+    if (id == PWM0_ID && is_pwm0_special_irq(type)) {
+        unsigned char reg_val = reg_pwm_ctrl_b2;
+
+        switch (type) {
+            case FLD_PWM0_PNUM_IRQ:
+                reg_val |= FLD_PWM0_PNUM_IRQ;
+                break;
+            case FLD_PWM0_IR_DMA_FIFO_IRQ:
+                reg_val |= FLD_PWM0_IR_DMA_FIFO_IRQ;
+                break;
+            case FLD_PWM0_IR_FIFO_IRQ:
+                reg_val |= FLD_PWM0_IR_FIFO_IRQ;
+                break;
+            default:
+                return;
+        }
+
+        reg_pwm_ctrl_b2 = reg_val;
+        return;
+    }
+
+    if (type == FLD_PWM_FRAME_DONE_IRQ) {
+        reg_pwm_cfg_b6(id) |= FLD_PWM_IRQ_CYCDONE_MASK;
+    }
+}
+
+/**
+ * @brief     This function disables PWM interrupt mask.
+ * @param[in] id   - PWM channel id.
+ * @param[in] type - interrupt type.
+ * @return    none
+ */
+void pwm_clr_irq_mask(pwm_id_e id, pwm_irq_type_e type)
+{
+    if (id == PWM0_ID && is_pwm0_special_irq(type)) {
+        unsigned char reg_val = reg_pwm_ctrl_b2;
+
+        switch (type) {
+            case FLD_PWM0_PNUM_IRQ:
+                reg_val &= ~FLD_PWM0_PNUM_IRQ;
+                break;
+            case FLD_PWM0_IR_DMA_FIFO_IRQ:
+                reg_val &= ~FLD_PWM0_IR_DMA_FIFO_IRQ;
+                break;
+            case FLD_PWM0_IR_FIFO_IRQ:
+                reg_val &= ~FLD_PWM0_IR_FIFO_IRQ;
+                break;
+            default:
+                return;
+        }
+
+        reg_pwm_ctrl_b2 = reg_val;
+        return;
+    }
+
+    if (type == FLD_PWM_FRAME_DONE_IRQ) {
+        reg_pwm_cfg_b6(id) &= ~FLD_PWM_IRQ_CYCDONE_MASK;
+    }
+}
+
+/**
+ * @brief     This function gets PWM interrupt status.
+ * @param[in] id   - PWM channel id.
+ * @param[in] type - interrupt type.
+ * @return    interrupt status (0 or non-zero).
+ */
+unsigned int pwm_get_irq_status(pwm_id_e id, pwm_irq_type_e type)
+{
+    if (id == PWM0_ID && is_pwm0_special_irq(type)) {
+        unsigned char reg_val = reg_pwm_int;
+
+        switch (type) {
+            case FLD_PWM0_PNUM_IRQ:
+                return (reg_val & FLD_PWM0_PNUM_IRQ);
+            case FLD_PWM0_IR_DMA_FIFO_IRQ:
+                return (reg_val & FLD_PWM0_IR_DMA_FIFO_IRQ);
+            case FLD_PWM0_IR_FIFO_IRQ:
+                return (reg_val & FLD_PWM0_IR_FIFO_IRQ);
+            default:
+                return 0;
+        }
+    }
+
+    if (type == FLD_PWM_FRAME_DONE_IRQ) {
+        unsigned int reg_val = reg_pwm_irq_sta;
+        unsigned int valid_mask = BIT(id) & ((1 << PWM_MAX_NUM) - 1);
+        return reg_val & valid_mask;
+    }
+
+    return 0;
+}
+
+/**
+ * @brief     This function clears PWM interrupt status.
+ * @param[in] id   - PWM channel id.
+ * @param[in] type - interrupt type.
+ * @return    none
+ * @note      Write 1 to clear interrupt flag (W1C).
+ */
+void pwm_clr_irq_status(pwm_id_e id, pwm_irq_type_e type)
+{
+    if (id == PWM0_ID && is_pwm0_special_irq(type)) {
+        unsigned char clear_val = 0;
+
+        switch (type) {
+            case FLD_PWM0_PNUM_IRQ:
+                clear_val = FLD_PWM0_PNUM_IRQ;
+                break;
+            case FLD_PWM0_IR_DMA_FIFO_IRQ:
+                clear_val = FLD_PWM0_IR_DMA_FIFO_IRQ;
+                break;
+            case FLD_PWM0_IR_FIFO_IRQ:
+                clear_val = FLD_PWM0_IR_FIFO_IRQ;
+                break;
+            default:
+                return;
+        }
+
+        reg_pwm_int = clear_val;
+        return;
+    }
+
+    if (type == FLD_PWM_FRAME_DONE_IRQ) {
+        unsigned int valid_mask = BIT(id) & ((1 << PWM_MAX_NUM) - 1);
+        if (valid_mask) {
+            reg_pwm_irq_sta = valid_mask;
+        }
+    }
+}
+

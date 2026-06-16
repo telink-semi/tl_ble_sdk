@@ -208,7 +208,7 @@ void keyscan_set_row(unsigned char *ks_row, unsigned char row_cnt, ks_col_pull_t
             martix_row_sel |= (0x1f << (5 * i));
         }
         if (i == 6) {
-            martix_row_sel |= (0x1f & 0x3) << 30;
+            martix_row_sel |= (unsigned int)((0x1f & 0x3)) << 30;
             martix_row_7_sel |= 0x1f >> 2;
         }
         if (i == 7) {

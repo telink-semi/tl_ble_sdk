@@ -47,7 +47,6 @@
 #include "uart_reg.h"
 #include "stimer_reg.h"
 #include "adc_reg.h"
-#include "swire_reg.h"
 #include "qdec_reg.h"
 #include "plic_sw_reg.h"
 #include "plmt_reg.h"

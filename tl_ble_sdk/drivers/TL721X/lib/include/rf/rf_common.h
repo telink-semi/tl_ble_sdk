@@ -52,7 +52,7 @@
  * 
  * | Power Supply Mode | Power Source                          | Output Power Characteristics                                                                 | Advantage                                  |
  * |-------------------|---------------------------------------|------------------------------------------------------------------------------------------------|-------------------------------------------|
- * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT → higher available power)          | Simple power path, suitable for high-power scenarios |
+ * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT 鈫?higher available power)          | Simple power path, suitable for high-power scenarios |
  * | VANT mode         | Powered by embedded DCDC + LDO        | Output power is stable (independent of VBAT voltage)                                          | Lower power consumption at the same transmit power |
  * 
  * @subsection rf_power_table TX Power Table (Driver-Provided)
@@ -1574,5 +1574,13 @@ void rf_ldot_ldo_rxtxlf_bypass_en(void);
  * @return      none.
  */
 void rf_ldot_ldo_rxtxlf_bypass_dis(void);
+
+/**
+  * @brief      This function serves to set pin for RFFE of RF.
+  * @param[in]   tx_pin   - select pin as rffe to send.
+  * @param[in]   rx_pin   - select pin as rffe to receive.
+  * @return     none.
+  */
+void rf_set_rffe_pin(gpio_func_pin_e tx_pin, gpio_func_pin_e rx_pin);
 
 #endif

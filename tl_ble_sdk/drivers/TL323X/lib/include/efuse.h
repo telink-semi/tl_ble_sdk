@@ -1,12 +1,12 @@
 /********************************************************************************************************
- * @file    chacha20_poly1305_algorithm.h
+ * @file    efuse.h
  *
- * @brief   This is the header file for TL721X
+ * @brief   This is the header file for tl323x
  *
  * @author  Driver Group
- * @date    2024
+ * @date    2025
  *
- * @par     Copyright (c) 2024, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2025, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -21,12 +21,24 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#ifndef CHACHA20_POLY1305_ALGORITHM_H
-#define CHACHA20_POLY1305_ALGORITHM_H
+#ifndef EFUSE_H_
+#define EFUSE_H_
 
-#include "lib/include/crypto_common/utility.h"
-#include "chacha20_poly1305.h"
-#include "chacha20_poly1305_basic.h"
-#include "lib/include/chacha20_poly1305/chacha20_poly1305_portable.h"
+#include "error_handler/error_handler.h"
 
+/**
+* @brief      This function servers to get chip id from EFUSE.
+* @param[in]  chip_id_buff - store chip id. Chip ID is 16 bytes.
+* @return     DRV_API_SUCCESS: operation successful.
+*             DRV_API_TIMEOUT: operation timeout.
+*/
+drv_api_status_e efuse_get_chip_id(unsigned char *chip_id_buff);
+
+/**
+ * @brief      This function serves to read IEEE address from EFUSE.
+ * @param[out] buf  - Pointer to IEEE address buffer(IEEE address is 8bytes)
+ * @return     DRV_API_SUCCESS: operation successful.
+ *             DRV_API_TIMEOUT: operation timeout.
+ */
+drv_api_status_e efuse_get_ieee_addr(unsigned char *buf);
 #endif

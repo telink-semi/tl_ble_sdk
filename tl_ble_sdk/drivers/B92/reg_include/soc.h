@@ -305,6 +305,9 @@ enum
     FLD_STANDBY_EX    = BIT(5),
 };
 
+#define reg_product_id0 REG_ADDR8(SC_BASE_ADDR + 0x3e)
+#define reg_product_id1 REG_ADDR8(SC_BASE_ADDR + 0x3f)
+
 #define reg_wakeup_status 0x64
 
 typedef enum

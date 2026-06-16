@@ -369,6 +369,9 @@ enum
     FLD_DMIC_SEL  = BIT(15),
 };
 
+#define reg_product_id0 REG_ADDR8(SC_BASE_ADDR + 0x3e)
+#define reg_product_id1 REG_ADDR8(SC_BASE_ADDR + 0x3f)
+
 #define AUDIO_SRAM_EMA_ADDR     (SC_BASE_ADDR + 0x68)
 #define AUDIO_SRAM_EMA_DATA_LEN 2
 #define reg_audio_reg_cfg0      REG_ADDR8(SC_BASE_ADDR + 0x68)

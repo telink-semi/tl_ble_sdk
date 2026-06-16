@@ -1266,6 +1266,7 @@ enum
 enum
 {
     FLD_RF_R_TX_ID       = BIT_RNG(0, 6),
+    FLD_RF_R_LL_IRQ_MASK = BIT(7),
     FLD_RF_R_TX_PRE_EN = BIT(7), // modify by BLE SDK
 };
 

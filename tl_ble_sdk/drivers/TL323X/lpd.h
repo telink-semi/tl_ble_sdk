@@ -29,8 +29,8 @@
 typedef enum
 {
     LPD_FALLING_1P60V_RISING_1P70V,
-    LPD_FALLING_1P70V_RISING_1P80V,
-    LPD_FALLING_1P79V_RISING_1P88V = 2,//default
+    LPD_FALLING_1P70V_RISING_1P80V = 1,//default
+    LPD_FALLING_1P79V_RISING_1P88V,
     LPD_FALLING_1P96V_RISING_2P06V,
     LPD_FALLING_2P10V_RISING_2P20V,
     LPD_FALLING_2P28V_RISING_2P38V,
@@ -81,10 +81,13 @@ static _always_inline void lpd_disable(void)
     analog_write_reg8(0x14, (analog_read_reg8(0x14) | BIT(4)));
 }
 
-static inline void lpd_set_vbat_threshold(lpd_threshold_vol_e thres_vol)
-{
-    analog_write_reg8(0x14, (analog_read_reg8(0x14) & 0xf0) | thres_vol);
-}
+/**
+ * @brief       This function used for setting the LPD vbat threshold
+ * @return      none.
+ * @note       -# A0 is not calibrated, so the register value is set to the default position of 1. 
+ *              For future versions including A1, the g_lpd_vbat_efuse_code is read from the efuse, looked up in the lpd_vbat_1p7_trim_tab table, and the corresponding register value is set.
+ */
+void lpd_set_vbat_threshold(lpd_threshold_vol_e thres_vol);
 
 /**
  * @brief       This function serves to protect the flash during the chip power-down process.

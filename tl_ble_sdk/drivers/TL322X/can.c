@@ -372,7 +372,7 @@ void can_init(can_chn_e chn,can_timing_config_t* timing_config,can_mb_cfg_t* mb_
     reg_can_ctrl1_3(chn) = (timing_config->presdiv);
     reg_can_ctrl1_2(chn)  =  (reg_can_ctrl1_2(chn)&(~FLD_CAN_RJW))|((0x01)<<6);
     //mb_cfg
-    reg_can_mcr0(chn) = (reg_can_mcr0(chn) &(~FLD_CAN_MAXMB))|(mb_cfg->mb_max);
+    reg_can_mcr0(chn) = (reg_can_mcr0(chn) &(~FLD_CAN_MAXMB))|(mb_cfg->mb_max - 1);
     reg_can_fdctrl_2(chn) = (reg_can_fdctrl_2(chn) &(~ FLD_CAN_MBDSR0))|(mb_cfg->mb_data_size);
     reg_can_fdctrl_2(chn) = (reg_can_fdctrl_2(chn) &(~ FLD_CAN_MBDSR1))|((mb_cfg->mb_data_size)<<3);
     reg_can_fdctrl_2(chn) = (reg_can_fdctrl_2(chn) &(~ FLD_CAN_MBDSR2))|((mb_cfg->mb_data_size)<<6);
@@ -507,8 +507,8 @@ void canfd_init(can_chn_e chn,can_timing_config_t* timing_config,can_mb_cfg_t* m
         if(timing_config->canfd_timing_mode == CANFD_EDCBT){
             reg_can_etdc_3(chn) |=FLD_CAN_ETDCEN;
             reg_can_etdc_3(chn) &= ~FLD_CAN_TDMDIS;
-            if(((timing_config->fd_prop_seg + timing_config->fd_phase_seg1+2)*(timing_config->fd_presdiv+1))< 0x7f){
-                reg_can_etdc_2(chn) = ((timing_config->fd_prop_seg + timing_config->fd_phase_seg1+2)*(timing_config->fd_presdiv+1));
+            if((( timing_config->fd_phase_seg1+2)*(timing_config->fd_presdiv+1))< 0x7f){
+                reg_can_etdc_2(chn) = (( timing_config->fd_phase_seg1+2)*(timing_config->fd_presdiv+1));
             }else{
                 reg_can_etdc_2(chn) = 0x7f;
             }
@@ -528,7 +528,7 @@ void canfd_init(can_chn_e chn,can_timing_config_t* timing_config,can_mb_cfg_t* m
 
     reg_can_ctrl2_1(chn)|=FLD_CAN_ISO_CAN_FD_EM;
     //mb cfg
-    reg_can_mcr0(chn) = (reg_can_mcr0(chn) &(~FLD_CAN_MAXMB))|(mb_cfg->mb_max);
+    reg_can_mcr0(chn) = (reg_can_mcr0(chn) &(~FLD_CAN_MAXMB))|(mb_cfg->mb_max - 1);
     reg_can_fdctrl_2(chn) = (reg_can_fdctrl_2(chn) &(~ FLD_CAN_MBDSR0))|(mb_cfg->mb_data_size);
     reg_can_fdctrl_2(chn) = (reg_can_fdctrl_2(chn) &(~ FLD_CAN_MBDSR1))|((mb_cfg->mb_data_size)<<3);
     reg_can_fdctrl_2(chn) = (reg_can_fdctrl_2(chn) &(~ FLD_CAN_MBDSR2))|((mb_cfg->mb_data_size)<<6);
@@ -539,7 +539,8 @@ void canfd_init(can_chn_e chn,can_timing_config_t* timing_config,can_mb_cfg_t* m
     volatile unsigned int *mb_addr = &(can[chn]->MB[0].cs);
     for(unsigned char i=0;i<mb_cfg->mb_max;i++){
         unsigned int offset = canfd_get_mailbox_offset(mb_cfg->mb_data_size,i);
-        mb_addr[offset] = 0;
+        volatile unsigned int *mb_addr_i = (volatile unsigned int *)(mb_addr + offset);
+        *mb_addr_i = 0;
     }
     //irmq
     reg_can_mcr2(chn) = (irmq_en) ? (reg_can_mcr2(chn) | FLD_CAN_IRMQ) : (reg_can_mcr2(chn) & ~FLD_CAN_IRMQ);
@@ -1126,7 +1127,7 @@ unsigned char can_read_rx_mb(can_chn_e chn,unsigned char mb_index,can_frame_t* f
     }
     unsigned int cs_temp;
     unsigned int rx_code;
-    unsigned char status;
+    unsigned char status = 0xff;
     /* Read CS field of Rx Message Buffer to lock Message Buffer. */
     cs_temp = can[chn]->MB[mb_index].cs;
     /* Get Rx Message Buffer Code field. */

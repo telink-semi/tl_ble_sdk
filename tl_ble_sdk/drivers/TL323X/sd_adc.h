@@ -27,6 +27,7 @@
 #include "compiler.h"
 #include "gpio.h"
 #include "reg_include/register.h"
+#include "lpc.h"
 
 extern volatile unsigned char g_sd_adc_divider;
 extern volatile unsigned short g_sd_adc_downsample_rate;
@@ -50,15 +51,6 @@ extern volatile unsigned short g_sd_adc_downsample_rate;
 #ifndef SD_ADC_INTERNAL_TEST_FUNC_EN
     #define SD_ADC_INTERNAL_TEST_FUNC_EN  0 //only for internal test
 #endif
-
-/**
- * Note: If the application scenario detected by VBAT may fall below 2.2V, this feature must be enabled,
- *       otherwise, it can be disabled to save power.
- */
-#ifndef VBAT_MODE_BELOW_2V2_DETECT_EN
-    #define VBAT_MODE_BELOW_2V2_DETECT_EN  1
-#endif
-
 
 /**
  *  @brief  Define SD ADC VMID power switch state
@@ -223,12 +215,30 @@ typedef enum{
 void sd_adc_set_single_gpio_calib_vref(unsigned short vref, signed short offset);
 
 /**
+ * @brief This function is used to store the voltage values of the four voltage points recorded by ATE, and to calculate the gain values for each segment.
+ * @param[in] vol2v2 - the voltage value of 2.200V.
+ * @param[in] vol2v225 - the voltage value of 2.225V.
+ * @param[in] vol2v25 - the voltage value of 2.250V.
+ * @param[in] vol2v275 - the voltage value of 2.275V.
+ * @return none
+ */
+void sd_adc_set_vbat_4p_calib_vref(signed short vol2v2, signed short vol2v225, signed short vol2v25, signed short vol2v275 );
+
+/**
  * @brief This function is used to calibrate sd adc sample voltage for VABT.
  * @param[in] vref - VBAT sampling calibration value.
  * @param[in] offset - VBAT sampling two-point calibration value offset.
  * @return none
  */
 void sd_adc_set_vbat_calib_vref(unsigned short vref, signed short offset);
+
+/**
+ * @brief This function is used to calibrate sd adc sample voltage for single GPIO with no divider (1:1).
+ * @param[in] vref - GPIO sampling calibration value for no divider.
+ * @param[in] offset - GPIO sampling two-point calibration value offset for no divider.
+ * @return none
+ */
+void sd_adc_set_single_gpio_no_div_calib_vref(unsigned short vref, signed short offset);
 
 /**
  * @brief This function is used to calibrate sd adc sample voltage for GPIO differential.
@@ -389,7 +399,12 @@ static inline void sd_adc_clr_irq_status(void)
  */
 static inline void sd_adc_temp_sensor_power_on(void)
 {
-    analog_write_reg8(0x06,analog_read_reg8(0x06) & (~BIT(2)));
+#if (PM_POWER_OPTIMIZATION)
+    g_areg_aon_06 &= ~(FLD_PD_TEMP_SENSOR_3V);
+    analog_write_reg8(areg_aon_0x06, g_areg_aon_06);
+#else
+    analog_write_reg8(areg_aon_0x06,analog_read_reg8(areg_aon_0x06) & (~BIT(2)));
+#endif
 }
 
 /**
@@ -399,7 +414,12 @@ static inline void sd_adc_temp_sensor_power_on(void)
  */
 static inline void sd_adc_temp_sensor_power_off(void)
 {
-      analog_write_reg8(0x06,analog_read_reg8(0x06) | BIT(2));
+#if (PM_POWER_OPTIMIZATION)
+    g_areg_aon_06 |= FLD_PD_TEMP_SENSOR_3V;
+    analog_write_reg8(areg_aon_0x06, g_areg_aon_06);
+#else
+    _0x06,analog_read_reg8(areg_aon_0x06) | BIT(2));
+#endif
 }
 
 /**
@@ -474,6 +494,8 @@ void sd_adc_set_gpio_divider(sd_adc_gpio_chn_div_e gpio_div);
  * @brief      This function is used to initialize the SD_ADC.
  * @param[in]  mode - sd_dc_op_mode_e
  * @return     none
+ * @note       -# In the a0 version of the chip, when using ADC, the PLL, LPD, and LPC functions will be enabled. 
+ *             -# After using ADC, the "power off" function needs to be called to restore these functions. During the use of ADC, the PLL, LPD, and LPC registers cannot be operated.
  */
 void sd_adc_init(sd_dc_op_mode_e mode);
 
@@ -552,6 +574,18 @@ signed int sd_adc_calculate_voltage(signed int sd_adc_code,sd_adc_result_type_e 
 signed short sd_adc_calculate_temperature(signed int sd_adc_code);
 
 
+/**
+ * @brief       Automatically adjusts the ADC input divider based on measured voltage thresholds.
+ * @param[in]   raw_result - The measured voltage value (either in 0.1mV or 1mV units).
+ * @param[in]   type       - The type of result (SD_ADC_VOLTAGE_10X_MV or SD_ADC_VOLTAGE_MV).
+ * @param[in,out] gpio_div - Pointer to the current divider. Will be updated if a switch occurs.
+ * @return      1: Divider switched, hardware stopped and range updated.
+ * 0: No switch needed.
+ * @note        Switching Logic:
+ * - If voltage < 50mV, switch to 1:1 (DIV_OFF) for higher resolution.
+ * - If voltage > 200mV, switch back to 1:4 (DIV_1F4) to prevent signal overflow.
+ */
+signed int sd_adc_div_switch_adjust_rescale(signed int raw_result, sd_adc_result_type_e type, sd_adc_gpio_chn_div_e *gpio_div);
 
 /**********************************************************************************************************************
  *                                         Audio and SD_ADC common interface                                              *
@@ -562,7 +596,9 @@ signed short sd_adc_calculate_temperature(signed int sd_adc_code);
  * @return    none
  * @note      -# After sd_adc_power_on(SD_ADC_SAMPLE_MODE), must wait >160us(when the C10 capacitor on the development board is 10nF) for VMID power to stabilize, otherwise there will be hundreds of sample data will be abnormal.
  *            -# After each call to sd_adc_power_on(SD_ADC_SAMPLE_MODE) and wait >160us(when the C10 capacitor on the development board is 10nF), the first 4 codes sampled by sd_adc may be abnormal and need to be discarded.
- *
+ *            -# In the a0 version of the chip, when using ADC, the PLL, LPD, and LPC functions will be enabled. 
+ *            -# After using ADC, the "power off" function needs to be called to restore these functions. During the use of ADC, the PLL, LPD, and LPC registers cannot be operated.
+ * 
  */
 void sd_adc_power_on(sd_adc_mode_e mode);
 
