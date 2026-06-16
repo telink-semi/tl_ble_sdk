@@ -49,6 +49,13 @@
 .extern gpio_shutdown_flashcode_for_asm
 .extern gpio_shutdown_ramcode_for_asm
 
+
+#if (__PROJECT_ACL_CONN_DEMO__ || __PROJECT_ACL_CEN_DEMO__ || __PROJECT_ACL_PER_DEMO__)
+.extern rf_sw_config
+#else
+#define SKIP_RF_DRV
+#endif
+
 //According to the current internal seal flash model of Telink RISC-V MCU, the maximum time between the flash awakening and the operating flash is 20us, which leaves some margin and is set to 25us.
 //When adding flash later, if tRES1 is greater than 25us, this waiting time needs to be updated. (flash tRES1, which can be viewed in the comments of the variable flash_support_mid.)
 //(add by weihua.zhang 20230811)
@@ -236,12 +243,25 @@ _RAMCODE_INIT:
     la     t3, _RAMCODE_VMA_END
     .option pop
 _RAMCODE_INIT_BEGIN:
+#ifndef SKIP_RF_DRV
+    bleu   t3, t2, _RF_SW_CONFIG
+#else
     bleu   t3, t2, _DATA_INIT
+#endif
     lw     t0, 0(t1)
     sw     t0, 0(t2)
     addi   t1, t1, 4
     addi   t2, t2, 4
     j      _RAMCODE_INIT_BEGIN
+
+#ifndef SKIP_RF_DRV   // BQB_EMI_Demo, RF_Demo, rf_sw_config must be used. 
+    //All applications that use RF peripherals must call this function. 
+    //If this function is called without using RF peripherals, it will increase the FLASH usage by 4040 bytes.
+    //Calling this function takes approximately 7.7 ms.
+_RF_SW_CONFIG:
+    la     t0, rf_sw_config
+    jalr   t0
+#endif
 
     /* Move Data from flash to sram */
 _DATA_INIT:
