@@ -130,16 +130,16 @@
         - DRAM size: 0.61 KB
 * TL323X
     - Compiling acl_central_demo
-        - Flash bin size: 110.98 KB
-        - IRAM size: 57.80 KB
+        - Flash bin size: 116.24 KB
+        - IRAM size: 61.70 KB
         - DRAM size: 0.67 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 133.50 KB
-        - IRAM size: 69.08 KB
+        - Flash bin size: 139.01 KB
+        - IRAM size: 73.48 KB
         - DRAM size: 0.66 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size:  117.22 KB
-        - IRAM size: 59.31 KB
+        - Flash bin size:  122.73 KB
+        - IRAM size: 63.71 KB
         - DRAM size: 0.58 KB
 
 **Note:** The above IRAM usage includes the FIFO buffer required for the debug logging functionality. Disabling the `TLKAPI_DEBUG_ENABLE` macro can save approximately 4.76 KB of IRAM.
@@ -275,16 +275,16 @@
         - DRAM size: 0.61 KB
 * TL323X
     - Compiling acl_central_demo
-        - Flash bin size: 110.98 KB
-        - IRAM size: 57.80 KB
+        - Flash bin size: 116.24 KB
+        - IRAM size: 61.70 KB
         - DRAM size: 0.67 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 133.50 KB
-        - IRAM size: 69.08 KB
+        - Flash bin size: 139.01 KB
+        - IRAM size: 73.48 KB
         - DRAM size: 0.66 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size:  117.22 KB
-        - IRAM size: 59.31 KB
+        - Flash bin size:  122.73 KB
+        - IRAM size: 63.71 KB
         - DRAM size: 0.58 KB
 
 **Note:** 上述 IRAM 统计包含了打印功能所需的 FIFO，关闭宏 TLKAPI_DEBUG_ENABLE，可以节省约 4.76 KB 的 IRAM。
