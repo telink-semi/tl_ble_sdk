@@ -41,7 +41,7 @@
 #if (MCU_CORE_TYPE != MCU_CORE_TL323X)
 #define BAT_DEEP_THRESHOLD_MV    2000 // 2000 mV low battery alarm
 #else
-#define BAT_DEEP_THRESHOLD_MV    2100 // 2000 mV low battery alarm
+#define BAT_DEEP_THRESHOLD_MV    2000 // 2000 mV low battery alarm
 #endif
 
 #define DCDC_ADC_SOFTWARE_FILTER 0    // Filter ADC data in DCDC mode

@@ -57,8 +57,8 @@ extern volatile unsigned short g_sd_adc_downsample_rate;
  */
 typedef enum
 {
-    SD_ADC_VBG_POWER_DOWN,
-    SD_ADC_VBG_POWER_ON,
+    SD_ADC_VMID_POWER_DOWN,
+    SD_ADC_VMID_POWER_ON,
 } sd_adc_vmid_power_switch_e;
 
 typedef enum{
@@ -590,6 +590,7 @@ signed int sd_adc_div_switch_adjust_rescale(signed int raw_result, sd_adc_result
 /**********************************************************************************************************************
  *                                         Audio and SD_ADC common interface                                              *
  **********************************************************************************************************************/
+
 /**
  * @brief     This function servers to power on SD_ADC.
  * @param[in] mode -sd_adc_mode_e

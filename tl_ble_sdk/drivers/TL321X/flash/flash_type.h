@@ -29,8 +29,8 @@
 #include "flash_mid136085.h" // P25Q40SU
 #include "flash_mid156085.h" // P25Q16SU
 #include "flash_mid166085.h" // P25Q32SU
-#include "flash_mid1460c8.h" // GD25LE80E(untest)
-#include "flash_mid1560c8.h" // GD25LE16E(untest)
+#include "flash_mid1460c8.h" // GD25LE80E
+#include "flash_mid1560c8.h" // GD25LE16E
 
 /**
  * @brief       This function reads the status of flash.
