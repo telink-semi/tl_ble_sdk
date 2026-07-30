@@ -42,6 +42,28 @@
  *                                              global variable                                                       *
  *********************************************************************************************************************/
 
+/**
+ * @brief      This setting serves to set the configuration of stimer PEM event.
+ */
+pem_event_config_t gpio_pem_event_config = {
+    .module      = PEM_EVENT_GPIO,
+    .sig_sel     = 0,
+    .clk_sel     = ASYNC_CLK,
+    .lvl         = LEVEL,
+    .edge_detect = 0,
+    .inv         = 0,
+};
+
+/**
+ * @brief      This setting serves to set the configuration of stimer PEM task.
+ */
+pem_task_config_t gpio_pem_task_config = {
+    .module  = PEM_TASK_GPIO,
+    .sig_sel = 0,
+    .clk_sel = PCLK,
+    .lvl     = PULSE,
+};
+
 /**********************************************************************************************************************
  *                                              local variable                                                     *
  *********************************************************************************************************************/
@@ -285,6 +307,47 @@ void gpio_set_probe_clk_function(gpio_func_pin_e pin, probe_clk_sel_e sel_clk)
     reg_probe_clk_sel = (reg_probe_clk_sel & 0xe0) | sel_clk; //probe_clk_sel_e
     gpio_set_mux_function(pin, DBG_PROBE_CLK);                //sel probe_clk function
     gpio_function_dis((gpio_pin_e)pin);
+}
+
+/**
+ * @brief      This function serves to configure the GPIO PEM event.
+ * @param[in]  chn - to select the PEM channel.
+ * @param[in]  pin - the GPIO event signal selection.
+ * @param[in]  pol - the GPIO event signal edge selection
+ * @return     none.
+ */
+void gpio_set_pem_event(pem_chn_e chn, gpio_event_e pin, pem_event_pol_e pol)
+{
+    unsigned char group = (pin & 0xf00) >> 8;
+    unsigned char bit   = pin & 0xff;
+
+    reg_gpio_irq_ctrl |= FLD_GPIO_PEM_EVENT_EN;
+
+    reg_gpio_pem_ctrl1 = (reg_gpio_pem_ctrl1&0x0f)|group;
+
+    gpio_pem_event_config.sig_sel = bit;
+    gpio_pem_event_config.edge_detect = pol&0x01;
+    gpio_pem_event_config.inv = (pol&0x04)>>2;
+    pem_event_config(chn, gpio_pem_event_config);
+}
+
+/**
+ * @brief      This function serves to configure the GPIO PEM task.
+ * @param[in]  chn - to select the PEM channel.
+ * @param[in]  pin - the GPIO task signal selection.
+ * @return     none.
+ */
+void gpio_set_pem_task(pem_chn_e chn, gpio_task_e pin)
+{
+    unsigned short group = (pin & 0xf00) >> 8;
+    unsigned char  bit   = pin & 0xff;
+
+    reg_gpio_pem_ctrl0 |= (1 << bit);
+
+    reg_gpio_pem_ctrl1 = (reg_gpio_pem_ctrl1&0xf0)|(group << 4);
+
+    gpio_pem_task_config.sig_sel = bit;
+    pem_task_config(chn, gpio_pem_task_config);
 }
 
 /**

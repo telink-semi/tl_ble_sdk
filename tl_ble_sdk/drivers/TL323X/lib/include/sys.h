@@ -37,6 +37,8 @@
 #include "reg_include/register.h"
 #include "compiler.h"
 
+#define  INTERNAL_SIMULATION_DEBUG    0
+
 /**********************************************************************************************************************
  *                                         global constants                                                           *
  *********************************************************************************************************************/
@@ -228,7 +230,7 @@ _attribute_ram_code_sec_noinline_ void sys_reboot_ram(void);
  *              to adjust the waiting time for the crystal oscillator to start before calling the sys_init interface.
  *              When this time is adjusted to meet the crystal oscillator requirements, it will not reboot.
  */
-void sys_init(power_mode_e power_mode, vbat_type_e vbat_v, cap_typedef_e cap);
+_attribute_ram_code_sec_noinline_ void sys_init(power_mode_e power_mode, vbat_type_e vbat_v, cap_typedef_e cap);
 
 /**
  * @brief     this function servers to manual set crystal.

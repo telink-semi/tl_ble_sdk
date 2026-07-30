@@ -1,5 +1,5 @@
 /********************************************************************************************************
- * @file    driver.h
+ * @file    pem_reg.h
  *
  * @brief   This is the header file for tl323x
  *
@@ -21,40 +21,27 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#pragma once
+#ifndef PEM_REG_H
+#define PEM_REG_H
 
+#include "soc.h"
 
-#include "lib/include/plic.h"
-#include "lib/include/pm/pm.h"
+#define PEM_BASE_ADDR  0x142000
+#define reg_pem_ctr(i) REG_ADDR32((PEM_BASE_ADDR + (i) * 0x04))
 
-#include "lib/include/rf/rf_common.h"
-#include "lib/include/sys.h"
-#include "lib/include/trng/trng_algorithm.h"
-#include "lib/include/pke/pke_algorithm.h"
-#include "lib/include/ske/ske_algorithm.h"
-#include "lib/include/hash/hash_algorithm.h"
-#include "lib/include/crypto_common/common_config.h"
-#include "lib/include/analog.h"
-#include "dma.h"
-#include "gpio.h"
-#include "i2c.h"
-#include "spi.h"
-#include "pwm.h"
-#include "timer.h"
-#include "flash.h"
-#include "watchdog.h"
-#include "lib/include/core.h"
-#include "lib/include/efuse.h"
-#include "lpc.h"
-#include "uart.h"
-#include "lib/include/stimer.h"
-
-#include "lib/include/clock.h"
-#include "lib/include/mspi.h"
-#include "plic_sw.h"
-#include "plmt.h"
-#include "pem.h"
-#include "flash/flash_type.h"
-#include "flash/flash_common.h"
-#include "sd_adc.h"
-
+enum
+{
+    FLD_PEM_EVENT_MODULE_SEL             = BIT_RNG(0, 4),
+    FLD_PEM_TASK_MODULE_SEL              = BIT_RNG(8, 12),
+    FLD_PEM_EVENT_SIG_SEL                = BIT_RNG(16, 18),
+    FLD_PEM_TASK_SIG_SEL                 = BIT_RNG(19, 21),
+    FLD_PEM_EVENT_CLK_SEL                = BIT_RNG(22, 23),
+    FLD_PEM_BOTH_EDGE_DETECT             = BIT(24),
+    //
+    FLD_PEM_INV                          = BIT(26),
+    FLD_PEM_CH_EN                        = BIT(27),
+    FLD_PEM_EVENT_LVL                    = BIT(28),
+    FLD_PEM_TASK_LVL                     = BIT(29),
+    FLD_PEM_TASK_CLK_SEL                 = BIT_RNG(30, 31),
+};
+#endif /* PEM_REG_H_ */

@@ -1,3 +1,297 @@
+## V4.0.4.7_Patch_0002(PR)
+
+
+### Bug Fixes
+
+- **Drivers**
+    - For TL323X, fixed SD ADC aging accuracy degradation issue:
+        - Detailed description: The accuracy of SD ADC will be degraded with aging after a long time of use, resulting in the difference between the measured value and the real value.
+        - Fix effect: Add anti-aging mechanism to ensure the accuracy of SD ADC remains stable after long time usage.
+        - Update suggestion: must be updated.
+    - For TL323X, fixed the issue that some chips cannot transmit packets normally under low-temperature conditions:
+        - Detailed description: Some chips fail to transmit packets when the temperature drops below -36°C.
+        - Fix effect: After repair, the RF functions work normally under the temperature condition of -40°C.
+        - Update suggestion: must be updated.
+
+
+### BREAKING CHANGES
+
+* For TL321X, synchronized tl_platform_sdk V3.11.3 and supported the A4 version chips;
+* For TL321X, the digital gain of A4 dmic is modified in audio_set_stream0_dig_gain interface and audio_get_stream0_dig_gain is updated as well:
+    * Detailed Description: Due to the internal digital update of the DMIC of A4 chip, the DMIC path of A4 has an additional gain of 15.5dB compared to the before (1->6, -1->-6, 20lg6=15.5dB). Therefore,the gain of A4 is modified in audio_set_stream0_dig_gain interface. And make corresponding adjustments to the audio_get_stream0_dig_gain interface as well.
+    * After Effect: The same digital macro has the similar effect in A4 and previous chip, the gain of A4 is only 1dB greater than that of before after using updated interface.
+    * Update Recommendation: Mandatory update.
+
+* For TL323X, synchronized tl_platform_sdk V3.11.3 and supported the A1 version chips.
+
+### Features
+
+* **BLE general function** 
+    - N/A
+* **2.4G general function** 
+    - N/A
+* **Drivers**
+    * N/A
+
+* **Others**
+    * N/A
+
+### CodeSize
+
+* TLSR921X
+    - Compiling acl_central_demo
+        - Flash bin size: 104.12 KB
+        - IRAM size: 53.06 KB
+        - DRAM size: 0.63 KB
+    - Compiling acl_connection_demo
+        - Flash bin size: 126.23 KB
+        - IRAM size: 64.29 KB
+        - DRAM size: 0.81 KB
+    - Compiling acl_peripheral_demo
+        - Flash bin size: 108.83 KB
+        - IRAM size: 54.75 KB
+        - DRAM size: 0.77 KB
+    - Compiling eslp_ap_dmeo
+        - Flash bin size: 249.14 KB
+        - IRAM size: 93.77 KB
+        - DRAM size: 24.02 KB
+* TLSR922X/TLSR952X
+    - Compiling acl_central_demo
+        - Flash bin size: 105.48 KB
+        - IRAM size: 54.37  KB
+        - DRAM size: 0.70 KB
+    - Compiling acl_connection_demo
+        - Flash bin size: 127.69 KB
+        - IRAM size: 65.64 KB
+        - DRAM size: 0.94 KB
+    - Compiling acl_peripheral_demo
+        - Flash bin size: 111.72 KB
+        - IRAM size: 55.86 KB
+        - DRAM size: 0.87 KB
+    - Compiling eslp_ap_dmeo
+        - Flash bin size: 257.20 KB
+        - IRAM size: 93.61 KB
+        - DRAM size: 24.09 KB
+
+* TL721X
+    - Compiling acl_central_demo
+        - Flash bin size:  111.86 KB
+        - IRAM size: 59.18 KB
+        - DRAM size: 0.74 KB
+    - Compiling acl_connection_demo
+        - Flash bin size: 133.99 KB
+        - IRAM size: 70.43 KB
+        - DRAM size: 0.98 KB
+    - Compiling acl_peripheral_demo
+        - Flash bin size: 117.92 KB
+        - IRAM size: 60.67 KB
+        - DRAM size: 0.91 KB
+    - Compiling eslp_ap_dmeo
+        - Flash bin size: 268.51 KB
+        - IRAM size: 98.24 KB
+        - DRAM size: 21.62 KB
+    - Compiling eslp_esl_dmeo
+        - Flash bin size: 203.16 KB
+        - IRAM size: 69.83 KB
+        - DRAM size: 5.36 KB
+
+* TL321X
+    - Compiling acl_central_demo
+        - Flash bin size: 114.23 KB
+        - IRAM size: 56.88 KB
+        - DRAM size: 0.71 KB
+    - Compiling acl_connection_demo
+        - Flash bin size: 136.53 KB
+        - IRAM size: 68.41 KB
+        - DRAM size: 0.96 KB
+    - Compiling acl_peripheral_demo
+        - Flash bin size:  120.39 KB
+        - IRAM size: 58.63 KB
+        - DRAM size: 0.88 KB
+    - Compiling eslp_ap_demo
+        - Flash bin size: 258.54 KB
+        - IRAM size: 90.60 KB
+        - DRAM size: 21.60 KB
+    - Compiling eslp_esl_dmeo
+        - Flash bin size: 204.53 KB
+        - IRAM size: 66.45 KB
+        - DRAM size: 5.33 KB
+* TL322X
+    - Compiling acl_central_demo
+        - Flash bin size: 117.18 KB
+        - IRAM size: 61.86 KB
+        - DRAM size: 0.70 KB
+    - Compiling acl_connection_demo
+        - Flash bin size: 140.35 KB
+        - IRAM size: 73.69 KB
+        - DRAM size: 0.69 KB
+    - Compiling acl_peripheral_demo
+        - Flash bin size:  124.46 KB
+        - IRAM size: 63.67 KB
+        - DRAM size: 0.61 KB
+* TL323X
+    - Compiling acl_central_demo
+        - Flash bin size: 116.24 KB
+        - IRAM size: 61.70 KB
+        - DRAM size: 0.67 KB
+    - Compiling acl_connection_demo
+        - Flash bin size: 139.01 KB
+        - IRAM size: 73.48 KB
+        - DRAM size: 0.66 KB
+    - Compiling acl_peripheral_demo
+        - Flash bin size:  122.73 KB
+        - IRAM size: 63.71 KB
+        - DRAM size: 0.58 KB
+
+**Note:** The above IRAM usage includes the FIFO buffer required for the debug logging functionality. Disabling the `TLKAPI_DEBUG_ENABLE` macro can save approximately 4.76 KB of IRAM.
+
+
+
+### Bug Fixes
+
+- **Drivers**
+    - 对于 TL323X， 修复了SD ADC老化精度降低问题：
+        - 详细描述：SD ADC长时间使用后，精度会随老化而降低，导致测量值与真实值存在差异。
+        - 修复效果：添加防老化机制，确保SD ADC在长时间使用后精度保持稳定。
+        - 更新建议：必须更新。
+    - 对于 TL323X，修复部分芯片低温状态下无法正常发送的问题：
+        * 详细描述：部分芯片当温度低于-36°时会出现发不出包的问题。
+        * 修复效果：修复后温度-40°的条件下测试RF功能正常。
+        * 更新建议：必须更新。
+
+
+### BREAKING CHANGES
+
+* 对于 TL321X，同步 tl_platform_sdk V3.11.3，并添加对 A4 版本芯片的支持；
+* 对于 TL321X，在audio_set_stream0_dig_gain接口对A4的dmic数字增益做了调整，也同步更新了audio_get_stream0_dig_gain接口：
+    * 详细描述：由于A4芯片DMIC数字设计有更新，dmic path A4相比之前芯片有额外+15.5dB增益，因此在audio_set_stream0_dig_gain接口内做了调整，同时audio_get_stream0_dig_gain接口也做了相应的更新。
+    * 修复效果：相同的接口参数下，A4和之前的芯片具有相近的增益，实际效果A4的增益仅比之前大1dB。
+    * 更新建议：使用dmic必须更新
+* 对于 TL323X，同步 tl_platform_sdk V3.11.3，并添加对 A1 版本芯片的支持。
+
+### Features
+
+* **BLE general function** 
+    - N/A
+* **2.4G general function** 
+    - N/A
+* **Drivers**
+    * N/A
+
+* **Others**
+    * N/A
+
+### CodeSize
+
+* TLSR921X
+    - Compiling acl_central_demo
+        - Flash bin size: 104.12 KB
+        - IRAM size: 53.06 KB
+        - DRAM size: 0.63 KB
+    - Compiling acl_connection_demo
+        - Flash bin size: 126.23 KB
+        - IRAM size: 64.29 KB
+        - DRAM size: 0.81 KB
+    - Compiling acl_peripheral_demo
+        - Flash bin size: 108.83 KB
+        - IRAM size: 54.75 KB
+        - DRAM size: 0.77 KB
+    - Compiling eslp_ap_dmeo
+        - Flash bin size: 249.14 KB
+        - IRAM size: 93.77 KB
+        - DRAM size: 24.02 KB
+* TLSR922X/TLSR952X
+    - Compiling acl_central_demo
+        - Flash bin size: 105.48 KB
+        - IRAM size: 54.37  KB
+        - DRAM size: 0.70 KB
+    - Compiling acl_connection_demo
+        - Flash bin size: 127.69 KB
+        - IRAM size: 65.64 KB
+        - DRAM size: 0.94 KB
+    - Compiling acl_peripheral_demo
+        - Flash bin size: 111.72 KB
+        - IRAM size: 55.86 KB
+        - DRAM size: 0.87 KB
+    - Compiling eslp_ap_dmeo
+        - Flash bin size: 257.20 KB
+        - IRAM size: 93.61 KB
+        - DRAM size: 24.09 KB
+
+* TL721X
+    - Compiling acl_central_demo
+        - Flash bin size:  111.86 KB
+        - IRAM size: 59.18 KB
+        - DRAM size: 0.74 KB
+    - Compiling acl_connection_demo
+        - Flash bin size: 133.99 KB
+        - IRAM size: 70.43 KB
+        - DRAM size: 0.98 KB
+    - Compiling acl_peripheral_demo
+        - Flash bin size: 117.92 KB
+        - IRAM size: 60.67 KB
+        - DRAM size: 0.91 KB
+    - Compiling eslp_ap_dmeo
+        - Flash bin size: 268.51 KB
+        - IRAM size: 98.24 KB
+        - DRAM size: 21.62 KB
+    - Compiling eslp_esl_dmeo
+        - Flash bin size: 203.16 KB
+        - IRAM size: 69.83 KB
+        - DRAM size: 5.36 KB
+
+* TL321X
+    - Compiling acl_central_demo
+        - Flash bin size: 114.23 KB
+        - IRAM size: 56.88 KB
+        - DRAM size: 0.71 KB
+    - Compiling acl_connection_demo
+        - Flash bin size: 136.53 KB
+        - IRAM size: 68.41 KB
+        - DRAM size: 0.96 KB
+    - Compiling acl_peripheral_demo
+        - Flash bin size:  120.39 KB
+        - IRAM size: 58.63 KB
+        - DRAM size: 0.88 KB
+    - Compiling eslp_ap_demo
+        - Flash bin size: 258.54 KB
+        - IRAM size: 90.60 KB
+        - DRAM size: 21.60 KB
+    - Compiling eslp_esl_dmeo
+        - Flash bin size: 204.53 KB
+        - IRAM size: 66.45 KB
+        - DRAM size: 5.33 KB
+* TL322X
+    - Compiling acl_central_demo
+        - Flash bin size: 117.18 KB
+        - IRAM size: 61.86 KB
+        - DRAM size: 0.70 KB
+    - Compiling acl_connection_demo
+        - Flash bin size: 140.35 KB
+        - IRAM size: 73.69 KB
+        - DRAM size: 0.69 KB
+    - Compiling acl_peripheral_demo
+        - Flash bin size:  124.46 KB
+        - IRAM size: 63.67 KB
+        - DRAM size: 0.61 KB
+* TL323X
+    - Compiling acl_central_demo
+        - Flash bin size: 116.24 KB
+        - IRAM size: 61.70 KB
+        - DRAM size: 0.67 KB
+    - Compiling acl_connection_demo
+        - Flash bin size: 139.01 KB
+        - IRAM size: 73.48 KB
+        - DRAM size: 0.66 KB
+    - Compiling acl_peripheral_demo
+        - Flash bin size:  122.73 KB
+        - IRAM size: 63.71 KB
+        - DRAM size: 0.58 KB
+
+**Note:** 上述 IRAM 统计包含了打印功能所需的 FIFO，关闭宏 TLKAPI_DEBUG_ENABLE，可以节省约 4.76 KB 的 IRAM。
+
+
+
 ## V4.0.4.7_Patch_0001(PR)
 
 
@@ -130,16 +424,16 @@
         - DRAM size: 0.61 KB
 * TL323X
     - Compiling acl_central_demo
-        - Flash bin size: 110.98 KB
-        - IRAM size: 57.80 KB
+        - Flash bin size: 116.24 KB
+        - IRAM size: 61.70 KB
         - DRAM size: 0.67 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 133.50 KB
-        - IRAM size: 69.08 KB
+        - Flash bin size: 139.01 KB
+        - IRAM size: 73.48 KB
         - DRAM size: 0.66 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size:  117.22 KB
-        - IRAM size: 59.31 KB
+        - Flash bin size:  122.73 KB
+        - IRAM size: 63.71 KB
         - DRAM size: 0.58 KB
 
 **Note:** The above IRAM usage includes the FIFO buffer required for the debug logging functionality. Disabling the `TLKAPI_DEBUG_ENABLE` macro can save approximately 4.76 KB of IRAM.
@@ -275,16 +569,16 @@
         - DRAM size: 0.61 KB
 * TL323X
     - Compiling acl_central_demo
-        - Flash bin size: 110.98 KB
-        - IRAM size: 57.80 KB
+        - Flash bin size: 116.24 KB
+        - IRAM size: 61.70 KB
         - DRAM size: 0.67 KB
     - Compiling acl_connection_demo
-        - Flash bin size: 133.50 KB
-        - IRAM size: 69.08 KB
+        - Flash bin size: 139.01 KB
+        - IRAM size: 73.48 KB
         - DRAM size: 0.66 KB
     - Compiling acl_peripheral_demo
-        - Flash bin size:  117.22 KB
-        - IRAM size: 59.31 KB
+        - Flash bin size:  122.73 KB
+        - IRAM size: 63.71 KB
         - DRAM size: 0.58 KB
 
 **Note:** 上述 IRAM 统计包含了打印功能所需的 FIFO，关闭宏 TLKAPI_DEBUG_ENABLE，可以节省约 4.76 KB 的 IRAM。

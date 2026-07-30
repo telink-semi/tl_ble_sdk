@@ -426,6 +426,8 @@
 ./tl_ble_sdk/drivers/TL321X/lib/include/trng/trng_portable.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/lpc.c			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/lpc.h			TELINK_APACHE 
+./tl_ble_sdk/drivers/TL321X/pem.c			TELINK_APACHE 
+./tl_ble_sdk/drivers/TL321X/pem.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/plic_isr.c			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/plic_sw.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/plmt.c			TELINK_APACHE 
@@ -446,6 +448,7 @@
 ./tl_ble_sdk/drivers/TL321X/reg_include/i2c_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/reg_include/ir_learn_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/reg_include/mspi_reg.h			TELINK_APACHE 
+./tl_ble_sdk/drivers/TL321X/reg_include/pem_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/reg_include/pke_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/reg_include/plic_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL321X/reg_include/plic_sw_reg.h			TELINK_APACHE 
@@ -803,6 +806,8 @@
 ./tl_ble_sdk/drivers/TL323X/lpc.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/lpd.c			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/lpd.h			TELINK_APACHE 
+./tl_ble_sdk/drivers/TL323X/pem.c			TELINK_APACHE 
+./tl_ble_sdk/drivers/TL323X/pem.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/plic_isr.c			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/plic_sw.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/plmt.c			TELINK_APACHE 
@@ -818,6 +823,7 @@
 ./tl_ble_sdk/drivers/TL323X/reg_include/hash_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/reg_include/i2c_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/reg_include/mspi_reg.h			TELINK_APACHE 
+./tl_ble_sdk/drivers/TL323X/reg_include/pem_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/reg_include/pke_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/reg_include/plic_reg.h			TELINK_APACHE 
 ./tl_ble_sdk/drivers/TL323X/reg_include/plic_sw_reg.h			TELINK_APACHE 

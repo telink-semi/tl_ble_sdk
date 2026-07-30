@@ -1,3 +1,237 @@
+## 3.11.3
+
+### Version
+
+* SDK Version: tl_platform_sdk V3.11.3
+* Chip Version
+  - TLSR921x/TLSR951x(B91)(A0/A1/A2),TLSR922x/TLSR952x(B92)(A3/A4),TL751X(A1),TL721X(A2/A3),TL321X(A1/A2/A3/A4),TL322X(A1),TL323X(A0/A1), TL752X(A0)
+* Hardware EVK Version
+  * TLSR951x(B91): C1T213A20
+  * TLSR952x(B92): C1T266A20
+  * TL751X: C1T368A20
+  * TL721X: C1T315A20 In the C1T315A20_V1_5 and earlier versions, the PD4 pin used for KEY1 is not available for any functional use.
+  * TL321X: C1T335A20
+  * TL322X: C1T371A20
+  * TL323X: C1T388A20
+  * TL752X: C1T387A20
+* Hardware AIOT_DK1 Version
+  * C1TXA104
+* Demo Platform Requirements
+
+  | Demo Name       | Main Board | Sub-Board            |
+  |-----------------|------------|----------------------|
+  | Codec_Demo      | AIOT_DK1   | C1TXA8(AIOT-CODEC1/AIOT-CODEC2)  |
+  | Sensor_Lcd_Demo | AIOT_DK1   | C1TXA99              |
+  | Camera_Demo     | AIOT_DK1   | C1TXA99 + OV7670     |
+  | Other demos     | EVK        | —                    |
+
+* Toolchain Version
+  - TLSR921x/TLSR951x(B91): gcc7(TL32 ELF MCULIB V5F GCC7.4 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TLSR922x/TLSR952x(B92): gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL751x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL721x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL321x: gcc12(TL32 ELF MCULIB V5  GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL322x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL323x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL752x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Note
+* N/A
+
+### Features
+* **pem**
+  * (TL721X/TL321X/TL322X/TL323X)Add PEM DEMO.(merge_requests/@2730)
+* **rf**
+  * (TL322X)Added RF PTA related interfaces including rf_2wire_pta_init, rf_3wire_pta_init, rf_set_pta_t1_time, rf_set_pta_t2_time, and completed the demo adaptation.(merge_requests/@2734)
+* **PMP_Demo**
+  * ((TLSR921x/TLSR951x/TLSR922x/TLSR952x/TL751x/TL721x/TL321x/TL322x/TL323x))Add PMP (Physical Memory Protection) Demo.(merge_requests/@2657)
+* **sys**
+  * (TL321x) A4 version adaptation and deepret sleep power consumption optimization through calibration. (merge_requests/@2773)
+* **flash**
+  * (TL752X): Add the flash support about TH25Q16U. (merge_requests/@2784)
+  * (B91): Add the flash support about ZB25WQ80A. (merge_requests/@2677)
+* **audio**
+  * (B92): Add the I2S support 4line mode. (merge_requests/@2787)
+* **nvm**
+  * (TL322x): Add calibration adaption for NVM only chip. (merge_requests/@2655)
+### Bug Fixes
+* **sd adc**
+    * (TL323X) Fixed SD ADC aging accuracy degradation issue,. (merge_requests/@2374)
+    * Detailed description: The accuracy of SD ADC will be degraded with aging after a long time of use, resulting in the difference between the measured value and the real value.
+    * Fix effect: Add anti-aging mechanism to ensure the accuracy of SD ADC remains stable after long time usage.
+    * Update suggestion: must be updated.
+
+* **flash**
+  * (TL752X):Fix flash ZB25VQ32E 4-wire enable failure issue.(merge_requests/@2807)
+    * Detailed description: The drv_nor_enable_quad() interface does not support enabling ZB25VQ32E four-wire mode, causing the program to fail to run.
+    * Fix effect: Added support for ZB25VQ32E four-wire mode, allowing programs to run normally on ZB25VQ32E.
+    * Update suggestion: Using the ZB25VQ32E flash must be updated.
+
+* **pm**
+    * (TL322X) resolves the issue of potential abnormal operation when opening USB/AUDIO/ZB during runtime. (merge_requests/@2782)
+    * Detailed Description: When enabling USB/AUDIO/ZB during high-frequency operation, abnormal behavior may occur. The enablement has been moved to the initialization interface, and a new interface pm_set_active_power_cfg has been added to configure modules that are not used by the entire application, thereby saving power consumption.  
+    * Fix Effect: The system will no longer experience operational anomalies due to enabling USB/AUDIO/ZB during runtime, although overall power consumption will slightly increase.  
+    * Update suggestion: must be updated.
+	
+* **rf**
+    * (TL323X) Fix the issue that some chips cannot transmit packets normally under low-temperature conditions. (merge_requests/@2802)
+    * Detailed description: Some chips fail to transmit packets when the temperature drops below -36°C.
+    * Fix effect: After repair, the RF functions work normally under the temperature condition of -40°C.
+    * Update suggestion: must be updated.
+
+* **pwm**
+  * (TL752X):Fix timer6 clock configuration error and optimize pwm demo configuration.(merge_requests/@2807)
+    * Detailed Description: Fix the problem that timer6 clock source is configured as timer5 and optimize the demo configuration.
+    * Fix Effect: After the fix timer6 works fine, the pwm demo is easier to use.
+    * Update suggestion: must be updated.
+
+* **charger**
+  * (TL752X) Add calibration logic for the CC gear, to prevent some chips from being unable to trim to 90~05 mA.(merge_requests/@2711)
+    * Detailed description: For some chips that cannot be trimmed within the 90-95mA range, the ATE will increase the cc gear and write the offset value of the cc gear into the efuse. When the driver sets the cc, it will add the offset value and write it into the corresponding register.For some higher CC gears, the theoretical charging current may not be achievable, which is related to the deviation value of the CC gear.
+    * After Fix: After the new calibration, chips whose default trimmed current is not within the 90-95 mA range can meet the requirements.
+    * Update recommendation: Updates are required when using the charger.
+### Refactoring
+* **pm**
+  * (TL321X)Adapt power-related configurations for A4 chip.(merge_requests/@2735)
+
+* **rf**
+  * (TL752X) Refactored the rf internal register write interfaces (wr_reg, sub_wr, sub_wr32, wr_reg32) by adding volatile qualifiers and fence memory barriers to prevent register write failures caused by -O2 compiler optimization. (merge_requests/@2753)
+  
+### BREAKING CHANGES
+
+* **audio**
+  * (TL321X) The digital gain of A4 dmic is modified in audio_set_stream0_dig_gain interface and audio_get_stream0_dig_gain is updated as well.(merge_requests/@2728)
+  * Detailed Description: Due to the internal digital update of the DMIC of A4 chip, the DMIC path of A4 has an additional gain of 15.5dB compared to the before (1->6, -1->-6, 20lg6=15.5dB). Therefore,the gain of A4 is modified in audio_set_stream0_dig_gain interface. And make corresponding adjustments to the audio_get_stream0_dig_gain interface as well.
+  * After Effect: The same digital macro has the similar effect in A4 and previous chip, the gain of A4 is only 1dB greater than that of before after using updated interface.
+  * Update Recommendation: Mandatory update.
+
+* **clock**
+  * (TL322X) Remove the interfaces clock_cclk_hclk_pclk_config and clock_mspi_clk_config; separate configuration is no longer supported. To configure clocks, use the clock_init interface to set them up together. (merge_requests/@/2782)
+
+### Performance Improvements
+* **sys**
+  * (TL322X/TL323X/TL321X/TL751X/TL721X/TL521X) Optimize sys_init clock init: check current clock source first. Only switch and configure divider if not already RC_24M, avoiding redundant operations.(merge_requests/@2631)
+* **rf**
+  * (TL323X)  Optimize the Δf performance difference among chips with different packages.(merge_requests/@/2802)
+
+## 3.11.3
+
+### 版本
+
+* SDK 版本: tl_platform_sdk V3.11.3
+* 芯片版本
+  - TLSR921x/TLSR951x(B91)(A0/A1/A2),TLSR922x/TLSR952x(B92)(A3/A4),TL751X(A1),TL721X(A2/A3),TL321X(A1/A2/A3/A4),TL322X(A1),TL323X(A0/A1), TL752X(A0)
+* 硬件评估板版本
+  * TLSR951x(B91): C1T213A20
+  * TLSR952x(B92): C1T266A20
+  * TL751X: C1T368A20
+  * TL721X: C1T315A20 在C1T315A20_V1_5及之前版本中，KEY1所使用的PD4引脚无法作为任何功能使用。
+  * TL321X: C1T335A20
+  * TL322X: C1T371A20
+  * TL323X: C1T388A20
+  * TL323X: C1T387A20
+* 硬件AIOT_DK1版本
+  * C1TXA104
+* Demo平台要求
+
+  | 示例名称        | 主板       | 子板                 |
+  |-----------------|------------|----------------------|
+  | Codec_Demo      | AIOT_DK1   | C1TXA8(AIOT-CODEC2)  |
+  | Sensor_Lcd_Demo | AIOT_DK1   | C1TXA99              |
+  | Camera_Demo     | AIOT_DK1   | C1TXA99 + OV7670     |
+  | Other demos     | EVK        | —                    |
+
+* 工具链版本
+  - TLSR921x/TLSR951x(B91): gcc7(TL32 ELF MCULIB V5F GCC7.4 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TLSR922x/TLSR952x(B92): gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL751x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL721x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL321x: gcc12(TL32 ELF MCULIB V5  GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL322x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL323x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - TL752x: gcc12(TL32 ELF MCULIB V5F GCC12.2 (riscv32-elf-gcc)) ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgba(36, 190, 62, 1)">
+
+### Note
+* N/A
+### Features
+
+* **pem**
+  * (TL721X/TL321X/TL322X/TL323X)增加 PEM DEMO.(merge_requests/@2730)
+* **rf**
+  * (TL322X)增加了RF PTA功能相关接口（rf_2wire_pta_init/rf_3wire_pta_init/rf_set_pta_t1_time/rf_set_pta_t2_time），及demo的适配。(merge_requests/@2734)
+* **PMP_Demo**
+  * ((TLSR921x/TLSR951x/TLSR922x/TLSR952x/TL751x/TL721x/TL321x/TL322x/TL323x))增加PMP(Physical Memory Protection) Demo。(merge_requests/@2657)
+* **sys**
+  * (TL321x) A4版本适配，并通过校准优化deepret睡眠功耗。(merge_requests/@2773)
+* **flash**
+  * (TL752X):增加TH25Q16U flash支持。(merge_requests/@2784)
+  * (B91): 增加ZB25WQ80A flash支持。 (merge_requests/@2677)
+* **audio**
+  * (B92): 增加I2S支持4line模式。 (merge_requests/@2787)
+* **nvm**
+  * (TL322x): 增加纯NVM芯片校准适配。 (merge_requests/@2655)
+### Bug Fixes 
+* **sd adc**
+  * (TL323X) 修复了SD ADC老化精度降低问题，。(merge_requests/@2374)
+    * 详细描述：SD ADC长时间使用后，精度会随老化而降低，导致测量值与真实值存在差异。
+    * 修复效果：添加防老化机制，确保SD ADC在长时间使用后精度保持稳定。
+    * 更新建议：必须更新。
+* **pm** 
+  * (TL322X)解决了在运行过程中打开USB/AUDIO/ZB时，可能会运行异常的问题。(merge_requests/@2782)
+    * 详细描述：高频运行时执行打开USB/AUDIO/ZB时，可能会打开异常。修改打开的位置到初始化接口中，添加接口pm_set_active_power_cfg用于配置不打开整个应用都不会使用的模块，用于节省功耗。
+    * 修复效果：不会因为运行过程中打开USB/AUDIO/ZB而导致运行异常，但是整体功耗会略有增加。
+    * 更新建议：必须更新。
+	
+* **rf** 
+  * (TL323X)修复部分芯片低温状态下无法正常发送的问题。(merge_requests/@2802)
+    * 详细描述：部分芯片当温度低于-36°时会出现发不出包的问题。
+    * 修复效果：修复后温度-40°的条件下测试RF功能正常。
+    * 更新建议：必须更新。
+
+* **flash**
+  * (TL752X):修复flash ZB25VQ32E四线使能失败问题。(merge_requests/@2807)
+    * 详细描述：drv_nor_enable_quad()接口不支持使能ZB25VQ32E四线模式，导致程序无法运行。
+    * 修复效果：添加对ZB25VQ32E四线模式的支持，程序能在ZB25VQ32E上正常运行。
+    * 更新建议：使用ZB25VQ32E flash必须更新。
+
+* **pwm**
+  * (TL752X):修复timer6 clock配置错误和优化demo配置。(merge_requests/@2807)
+    * 详细描述：修复timer6时钟源配置成timer5的问题和优化demo配置。
+    * 修复效果：修复后timer6可以正常使用，demo更简单易用。
+    * 更新建议：必须更新。
+    
+* **charger**
+  * (TL752X): 增加cc挡位校准逻辑，防止部分芯片无法达到90-95mA需求。(merge_requests/@2711)
+    * 详细描述：对于默认挡位无法校准到90-95mA范围的芯片，ATE会提高电流控制（cc）档位，并将 cc 档位的偏移值（相对于95mA档）写入efuse。当驱动设置cc时，它会加上该偏移值，并将其写入相应的寄存器中。对于部分较高cc挡位可能无法达到理论充电电流，与cc挡位偏移值有关。
+    * 修复效果: 经过重新校准后，默认挡位后的电流不在90至95毫安范围内的芯片也能够满足要求。
+    * 更新建议：使用charger时必须更新。
+### Refactoring
+* **pm**
+  * (TL321X)适配A4芯片电源相关配置。(merge_requests/@2735)
+* **rf**
+  * (TL752X)重构了rf内部写寄存器接口（wr_reg、sub_wr、sub_wr32、wr_reg32），添加volatile与fence内存屏障，防止-O2编译优化导致寄存器写入异常。(merge_requests/@2753)
+  
+### BREAKING CHANGES
+
+* **audio**
+  * (TL321X) 在audio_set_stream0_dig_gain接口对A4的dmic数字增益做了调整，也同步更新了audio_get_stream0_dig_gain接口。(merge_requests/@2728)
+    * 详细描述：由于A4芯片DMIC数字设计有更新，dmic path A4相比之前芯片有额外+15.5dB增益，因此在audio_set_stream0_dig_gain接口内做了调整，同时audio_get_stream0_dig_gain接口也做了相应的更新。
+    * 修复效果：相同的接口参数下，A4和之前的芯片具有相近的增益，实际效果A4的增益仅比之前大1dB。
+    * 更新建议：使用dmic必须更新
+
+* **clock**
+  * (TL322X)删除接口-clock_cclk_hclk_pclk_config和clock_mspi_clk_config，不再支持单独配置，如果要配置时钟，调用clock_init接口一起配置。(merge_requests/@2782)
+
+### Performance Improvements
+* **sys**
+  * (TL322X/TL323X/TL321X/TL751X/TL721X/TL521X) 优化sys_init中的时钟初始化流程:先读取当前时钟源状态，仅当非RC_24M时才执行时钟切换与分频配置，防止冗余操作.(merge_requests/@2631)
+* **rf**
+  * (TL323X)优化不同封装的芯片间的Δf表现差异。(merge_requests/@2802)
+
 ## 3.11.2
 
 ### Version
@@ -77,6 +311,7 @@
     * Detailed description: Modify the implementations of the two macros, __DRV_CPR_GPADC_CLK_ENABLE and __DRV_CPR_GPADC_DEINIT, and remove the configuration unrelated to the ADC.
     * After Fix: Fix the issue where the initialization of ADC causes crashes in N22 or D25F.
     * Update recommendation: The use of ADC requires an update.
+
 ### Refactoring
 * **rf**
   * (TL321X/TL322X/TL721x)Remove the TX settle time configuration in RF initialization. The original setting was 113 μs, while the register default value is 150 μs.(merge_requests/@2686)
@@ -157,13 +392,12 @@
     * 详细描述：Fastsettle 模式下重复调用4M 6M初始化代码可能会导致发包性能异常
     * 修复效果: Fastsettle 模式下重复调用4M 6M初始化代码不会导致tx 发包性能异常
     * 更新建议：使用 BLE4M BLE6M 模式配置必须更新。
-
-
 * **adc**
   * (TL752X): 移除enable/deinit宏实现里除了adc外的操作。(merge_requests/@2648)
     * 详细描述：修改__DRV_CPR_GPADC_CLK_ENABLE 和 __DRV_CPR_GPADC_DEINIT这两个宏的实现方式，删除与 ADC 无关的配置部分。
     * 修复效果: 删除了与ADC无关的宏配置，修复了adc初始化引起的crash问题。
     * 更新建议：使用ADC时必须更新。
+
 ### Refactoring
 * **rf**
   * (TL321X/TL322X/TL721x) 删除RF初始化中对tx settle时间的设置，原设置为113us，寄存器默认值为150us。(merge_requests/@2686)

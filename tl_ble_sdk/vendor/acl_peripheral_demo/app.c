@@ -500,6 +500,11 @@ _attribute_no_inline_ void user_init_normal(void)
     blc_debug_enableStackLog(STK_LOG_NONE);
 #endif
 
+    blc_readFlashSize_autoConfigCustomFlashSector();
+
+    /* attention that this function must be called after "blc readFlashSize_autoConfigCustomFlashSector" !!!*/
+    blc_app_loadCustomizedParameters_normal();
+
 #if (BATT_CHECK_ENABLE)
     /*The SDK must do a quick low battery detect during user initialization instead of waiting
       until the main_loop. The reason for this process is to avoid application errors that the device
@@ -518,11 +523,6 @@ _attribute_no_inline_ void user_init_normal(void)
 
     user_battery_power_check(2000);
 #endif
-
-    blc_readFlashSize_autoConfigCustomFlashSector();
-
-    /* attention that this function must be called after "blc readFlashSize_autoConfigCustomFlashSector" !!!*/
-    blc_app_loadCustomizedParameters_normal();
 
 #if (APP_FLASH_PROTECTION_ENABLE)
     app_flash_protection_operation(FLASH_OP_EVT_APP_INITIALIZATION, 0, 0);
