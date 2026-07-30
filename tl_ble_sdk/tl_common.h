@@ -38,10 +38,9 @@
 #include "common/usb_dbg/myudb.h"
 #include "common/sdk_version.h"
 
-#include "vendor/common/user_config.h"
+
 #include "vendor/common/app_common.h"
 #include "vendor/common/ble_flash.h"
-#include "vendor/common/blt_fw_sign.h"
 #include "vendor/common/blt_led.h"
 #include "vendor/common/blt_soft_timer.h"
 #include "vendor/common/device_manage.h"
@@ -49,10 +48,15 @@
 #include "vendor/common/flash_fw_check.h"
 #include "vendor/common/flash_prot.h"
 #include "vendor/common/tlkapi_debug.h"
+#include "vendor/common/hci_transport/hci_tr_def.h"
 #include "vendor/common/battery_check.h"
 #include "gpio_default.h"
 
-#include "application/keyboard/keyboard.h"
+#if MCU_CORE_TYPE != MCU_CORE_TL323X
+#include "application/app/usbkb.h"
+#include "application/app/usbmouse.h"
+#endif
 #include "application/usbstd/usbkeycode.h"
+#include "application/keyboard/keyboard.h"
 
 #endif /* TL_COMMON_H_ */

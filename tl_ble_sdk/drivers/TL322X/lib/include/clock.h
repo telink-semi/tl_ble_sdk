@@ -25,7 +25,7 @@
  *
  *  Introduction
  *  ===============
- *  B92 clock setting.
+ *  TL322X clock setting.
  *
  *  API Reference
  *  ===============
@@ -48,15 +48,15 @@
 /*
  * ALG_MODULE_MAX_CLK is configured to 24:
  * - The alg clock source is pclk, with a default division of 1/2.
- *   - At 1.0v, the maximum pclk is 39m, that is, the maximum alg is 19.5m. Just follow the default frequency division.
- *   - At 1.1v, the maximum pclk is 96m, and the maximum alg is 24m. It is necessary to modify the crossover according to the current size of the pclk.
+ * - At 1.0v, the maximum pclk is 39m, that is, the maximum alg is 19.5m. Just follow the default frequency division.
+ * - At 1.1v, the maximum pclk is 96m, and the maximum alg is 24m. It is necessary to modify the crossover according to the current size of the pclk.
  */
 #define ALG_MODULE_MAX_CLK                24
 
 /**
  * The following chart lists the maximum operating frequency that each clock source can operate at different voltage levels.
  * (But if it is related to peripherals, this frequency will be related to the whole system, such as MSPI-->
- *  If it is built-in flash, the maximum speed of mspi is 64M,If it is an external flash, the maximum speed
+ *  If it is built-in flash, the maximum speed of mspi is 64M, If it is an external flash, the maximum speed
  *  of mspi needs to be based on the board test.)
  *
  * :-------------------------------- Voltage versus frequency(default is 1.0v)  table --------------------------------------------------------------------------
@@ -114,11 +114,11 @@
  */
 typedef struct
 {
-    unsigned short pll_clk;            /**< pll clk */
-    unsigned char  cclk;               /**< cpu clk */
-    unsigned char  hclk_n22;      /**< hclk */
-    unsigned char  pclk;               /**< pclk */
-    unsigned char  mspi_clk;           /**< mspi_clk */
+    unsigned short pll_clk;  /**< pll clk */
+    unsigned char  cclk;     /**< cpu clk */
+    unsigned char  hclk_n22; /**< hclk */
+    unsigned char  pclk;     /**< pclk */
+    unsigned char  mspi_clk; /**< mspi_clk */
 } sys_clk_t;
 
 /**
@@ -128,9 +128,9 @@ typedef struct
 {   
     unsigned char bbpll_input_divider;      /* bbpll input divider */
     unsigned char bbpll_divider_control;    /* bbpll divider control */
-    unsigned char cclk_cfg;                 /* cpu clk cfg */
-    unsigned char hclk_pclk_cfg;            /* hclk and pclk cfg */
-    unsigned char mspi_clk_cfg;             /* mspi_clk cfg */
+    unsigned char cclk_cfg;      /* cpu clk cfg */
+    unsigned char hclk_pclk_cfg; /* hclk and pclk cfg */
+    unsigned char mspi_clk_cfg;  /* mspi_clk cfg */
     unsigned char rc_24m_is_used;
     unsigned char bbpll_is_used;
 } sys_clk_config_t;
@@ -146,7 +146,6 @@ typedef enum
     XTAL_24M     = 0x10,
     BASEBAND_PLL = 0x20,
 } sys_clock_src_e;
-
 
 typedef enum
 {
@@ -189,7 +188,7 @@ typedef enum
                           //so no relevant processing is done here.
     MODULE_LSPI = BIT(3), //The driver does not provide an interface for selecting 24M RC,
                           //so no relevant processing is done here.
-} clk_src_24m_rc_use_modules_e;
+} clk_src_use_modules_e;
 
 /**
  * @brief 32K clock type.
@@ -322,25 +321,6 @@ _attribute_ram_code_sec_optimize_o2_noinline_ unsigned int clock_get_32k_tick(vo
 _attribute_ram_code_sec_optimize_o2_noinline_ void clock_set_32k_tick(unsigned int tick);
 
 /**
- * @brief       This function use to configure the mspi clock source.
- * @param[in]   src - the mspi clk source
- * @param[in]   div - the mspi clk source divider
- * @return      none.
- */
-_attribute_ram_code_sec_optimize_o2_noinline_ void clock_mspi_clk_config(sys_clk_src_config_e src, sys_clock_div_e div);
-
-/**
- * @brief       This function used to configure the frequency of CCLK/HCLK/PCLK when the PLL is 240M.
- *              You need to wait until all the peripherals that use these clocks are idle before you can switch frequencies.
- * @param[in]   src - clock source.
- * @param[in]   cclk_div - divider of CCLK.
- * @param[in]   hclk_div - divider of HCLK.
- * @param[in]   pclk_div - divider of PCLK.
- * @return      none
- */
-_attribute_ram_code_sec_optimize_o2_noinline_ void clock_cclk_hclk_pclk_config(sys_clk_src_config_e src, sys_clock_div_e cclk_div, sys_cclk_div_to_hclk_pclk_e hclk_pclk_div);
-
-/**
  * @brief       This function use to set all clock to default. 
  * @return      none.
  * @note        After call this, the following clock will set to default source and value:
@@ -352,6 +332,12 @@ _attribute_ram_code_sec_optimize_o2_noinline_ void clock_cclk_hclk_pclk_config(s
  */
 _attribute_ram_code_sec_optimize_o2_noinline_ void clock_set_all_clock_to_default(void);
 
+/********************************************************************************************************
+ *                                          internal
+ *******************************************************************************************************/
+/********************************************************************************************************
+ *              This is just for internal use, users are prohibited from calling.
+ *******************************************************************************************************/
 /**
  * @brief       This function use to save all clock configuration for the follow-up restore. 
  * @return      none.

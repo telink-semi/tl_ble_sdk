@@ -71,6 +71,8 @@ static HciH5TrCb_t hciH5TrCb;
 
 void HCI_Tr_DefaultSlipHandler(u8 *pPacket, u32 len)
 {
+    (void)pPacket;
+    (void)len;
 }
 
 void                HCI_Tr_H5UartRxIRQHandler(unsigned int *param);

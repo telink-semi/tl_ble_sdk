@@ -21,6 +21,8 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
+#include <stdlib.h>
+
 #include "tl_common.h"
 #include "drivers.h"
 #include "stack/ble/ble.h"
@@ -31,6 +33,9 @@
 #include "../default_att.h"
 #include "app_ui.h"
 
+#if (APP_PARSE_CHAR_ENABLE)
+#include "../feature_app_parse_char.h"
+#endif
 
 #if (FEATURE_TEST_MODE == TEST_SMP)
 
@@ -51,6 +56,10 @@
     #define SMP_TEST_MODE        SMP_TEST_NOT_SUPPORT //SMP_TEST_NOT_SUPPORT
 
 
+#if (APP_PARSE_CHAR_ENABLE)
+    #define APP_SMP_SC_EN 1
+    #define APP_MITM_EN 0   // MITM is not disabled. This comments only double UART inclusion.
+#else
     #if (SMP_TEST_MODE >= SMP_TEST_LESC_JW)
         #define APP_SMP_SC_EN 1
     #else
@@ -62,9 +71,9 @@
     #else
         #define APP_MITM_EN 1
     #endif
+#endif
 
 
-    #if (SMP_TEST_MODE == SMP_TEST_LESC_OOB)
 typedef struct
 {
     /* LESC OOB data */
@@ -84,9 +93,13 @@ typedef struct
 
 _attribute_ble_data_retention_ AppScOobCtrl_t appScOobCtrl;
 
-    #endif
 
 _attribute_ble_data_retention_ int central_smp_pending = 0; // SMP: security & encryption;
+
+#if (APP_PARSE_CHAR_ENABLE && APP_PARSE_CHAR_UART_CLIENT)
+_attribute_ble_data_retention_ static u8 smp_address[6] = {0xFF};
+_attribute_ble_data_retention_ static u8 smp_address_type = 0xFF;
+#endif
 
 __attribute__((aligned(4))) typedef struct
 {
@@ -164,6 +177,9 @@ __attribute__((aligned(4))) typedef struct
         #elif (MCU_CORE_TYPE == MCU_CORE_B92)
             #define UART_RX_PIN GPIO_FC_PA4
             #define UART_TX_PIN GPIO_FC_PA3
+        #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
+            #define UART_RX_PIN GPIO_FC_PF6
+            #define UART_TX_PIN GPIO_FC_PF7
         #endif
         #define UART_DMA_CHN_RX DMA2
         #define UART_DMA_CHN_TX DMA3
@@ -180,6 +196,8 @@ void UART_Init(u8 *rxBuf, u32 byteNum)
     uart_set_pin(UART_TX_PIN, UART_RX_PIN);
         #elif (MCU_CORE_TYPE == MCU_CORE_B92)
     uart_set_pin(UART_ID, UART_TX_PIN, UART_RX_PIN);
+        #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
+    uart_set_pin(UART_ID, UART_TX_PIN, UART_RX_PIN);
         #endif
 
     uart_cal_div_and_bwpc(UART_BAUDRATE, sys_clk.pclk * 1000 * 1000, &div, &bwpc);
@@ -187,6 +205,8 @@ void UART_Init(u8 *rxBuf, u32 byteNum)
     uart_set_rx_timeout(UART_ID, bwpc, 12, UART_BW_MUL3);
         #elif (MCU_CORE_TYPE == MCU_CORE_B92)
     uart_set_rx_timeout(UART_ID, bwpc, 12, UART_BW_MUL2);
+        #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
+    uart_set_rx_timeout_with_exp(UART_ID, bwpc, 12, UART_BW_MUL2, 0);
         #endif
     uart_init(UART_ID, div, bwpc, UART_PARITY_NONE, UART_STOP_BIT_ONE);
     uart_set_rx_dma_config(UART_ID, UART_DMA_CHN_RX);
@@ -196,7 +216,11 @@ void UART_Init(u8 *rxBuf, u32 byteNum)
     plic_interrupt_enable(IRQ_UART0);
     core_interrupt_enable();
 
+#if (MCU_CORE_TYPE == MCU_CORE_B91 || MCU_CORE_TYPE == MCU_CORE_B92)
     uart_receive_dma(UART_ID, (unsigned char *)rxBuf, byteNum);
+#elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
+    uart_receive_dma(UART_ID, (unsigned char *)rxBuf+4, byteNum);
+#endif
 }
 
 _attribute_ram_code_sec_ void uart0_irq_handler(void)
@@ -205,12 +229,16 @@ _attribute_ram_code_sec_ void uart0_irq_handler(void)
     if (uart_get_irq_status(UART_ID, UART_RXDONE))
         #elif (MCU_CORE_TYPE == MCU_CORE_B92)
     if (uart_get_irq_status(UART_ID, UART_RXDONE_IRQ_STATUS))
+        #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
+    if (uart_get_irq_status(UART_ID, UART_RXDONE_IRQ_STATUS))
         #endif
     {
         if ((uart_get_irq_status(UART_ID, UART_RX_ERR))) {
         #if (MCU_CORE_TYPE == MCU_CORE_B91)
             uart_clr_irq_status(UART_ID, UART_CLR_RX);
         #elif (MCU_CORE_TYPE == MCU_CORE_B92)
+            uart_clr_irq_status(UART_ID, UART_RXBUF_IRQ_STATUS);
+        #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
             uart_clr_irq_status(UART_ID, UART_RXBUF_IRQ_STATUS);
         #endif
         }
@@ -224,21 +252,33 @@ _attribute_ram_code_sec_ void uart0_irq_handler(void)
         }
         #elif (MCU_CORE_TYPE == MCU_CORE_B92)
         rev_data_len = uart_get_dma_rev_data_len(UART_ID, UART_DMA_CHN_RX);
+        #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
+        rev_data_len = *(unsigned int *)appCtrl.dat;
         #endif
         #if (MCU_CORE_TYPE == MCU_CORE_B91)
         uart_clr_irq_status(UART_ID, UART_CLR_RX);
         #elif (MCU_CORE_TYPE == MCU_CORE_B92)
         uart_clr_irq_status(UART_ID, UART_RXDONE_IRQ_STATUS);
+        #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
+        uart_clr_irq_status(UART_ID, UART_RXDONE_IRQ_STATUS);
         #endif
 
         //DMA access memory needs to be aligned according to word.
+#if (MCU_CORE_TYPE == MCU_CORE_B91 || MCU_CORE_TYPE == MCU_CORE_B92)
         uart_receive_dma(UART_ID, (unsigned char *)appCtrl.dat, sizeof(appCtrl.dat));
+#elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
+        uart_receive_dma(UART_ID, (unsigned char *)appCtrl.dat+4, sizeof(appCtrl.dat));
+#endif
 
         #if (SMP_TEST_MODE == SMP_TEST_LESC_PKI || SMP_TEST_MODE == SMP_TEST_LEGACY_PKI)
         if (rev_data_len == 6 && appCtrl.connHandle) {
             u32 pinCode = 0;
             for (u32 i = 0; i < rev_data_len; i++) {
+#if (MCU_CORE_TYPE == MCU_CORE_B91 || MCU_CORE_TYPE == MCU_CORE_B92)
                 pinCode = pinCode * 10 + appCtrl.dat[i] - '0';
+#elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
+                pinCode = pinCode * 10 + appCtrl.dat[i+4] - '0';
+#endif
                 blc_smp_sendKeypressNotify(appCtrl.connHandle, KEYPRESS_NTF_PKE_DIGIT_ENTERED);
             }
             blc_smp_setTK_by_PasskeyEntry(appCtrl.connHandle, pinCode);
@@ -250,7 +290,11 @@ _attribute_ram_code_sec_ void uart0_irq_handler(void)
         if (rev_data_len == 16 && appCtrl.connHandle) {
             u8 oobData[16] = {0};
             for (int i = 0; i < rev_data_len; i++) {
+#if (MCU_CORE_TYPE == MCU_CORE_B91 || MCU_CORE_TYPE == MCU_CORE_B92)
                 oobData[i] = appCtrl.dat[i];
+#elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
+                oobData[i] = appCtrl.dat[i+4];
+#endif
             }
             blc_smp_setTK_by_OOB(appCtrl.connHandle, oobData);
             appCtrl.connHandle = 0;
@@ -261,8 +305,13 @@ _attribute_ram_code_sec_ void uart0_irq_handler(void)
             appScOobCtrl.scoob_remote_geted = 1;
 
             for (int i = 0; i < 16; i++) {
+#if (MCU_CORE_TYPE == MCU_CORE_B91 || MCU_CORE_TYPE == MCU_CORE_B92)
                 appScOobCtrl.scoob_remote.confirm[i] = appCtrl.dat[i];
                 appScOobCtrl.scoob_remote.random[i]  = appCtrl.dat[i + 16];
+#elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
+                appScOobCtrl.scoob_remote.confirm[i] = appCtrl.dat[i + 4];
+                appScOobCtrl.scoob_remote.random[i]  = appCtrl.dat[i + 4 + 16];
+#endif
             }
             tlkapi_send_string_data(APP_SMP_LOG_EN, "[APP][SMP]Get Remote SC OOB data-c(be)(by UART)", appScOobCtrl.scoob_remote.confirm, 16);
             tlkapi_send_string_data(APP_SMP_LOG_EN, "[APP][SMP]    Remote SC OOB data-r(be)(by UART)", appScOobCtrl.scoob_remote.random, 16);
@@ -328,8 +377,11 @@ int app_le_adv_report_event_handle(u8 *p)
     central_auto_connect = blc_smp_searchBondingPeripheralDevice_by_PeerMacAddress(pa->adr_type, pa->mac);
     #endif
 
-
+#if (APP_PARSE_CHAR_ENABLE && APP_PARSE_CHAR_UART_CLIENT)
+    if ((central_auto_connect || user_manual_pairing) && (smp_address_type == pa->adr_type) && !memcmp(smp_address, pa->mac, sizeof(pa->mac))) {
+#else
     if (central_auto_connect || user_manual_pairing) {
+#endif
         /* send create connection command to Controller, trigger it switch to initiating state. After this command, Controller
          * will scan all the ADV packets it received but not report to host, to find the specified device(mac_adr_type & mac_adr),
          * then send a "CONN_REQ" packet, enter to connection state and send a connection complete event
@@ -362,10 +414,21 @@ int app_le_connection_complete_event_handle(u8 *p)
                 pConnEvt->peerAddr[3],
                 pConnEvt->peerAddr[4],
                 pConnEvt->peerAddr[5]);
+#if (APP_PARSE_CHAR_ENABLE)
+    app_parse_printf("le_connection_complete connHandle:%04X mac:%02X %02X %02X %02X %02X %02X\r\n",
+                     pConnEvt->connHandle,
+                     pConnEvt->peerAddr[0],
+                     pConnEvt->peerAddr[1],
+                     pConnEvt->peerAddr[2],
+                     pConnEvt->peerAddr[3],
+                     pConnEvt->peerAddr[4],
+                     pConnEvt->peerAddr[5]);
+#endif
     if (pConnEvt->status == BLE_SUCCESS) {
         dev_char_info_insert_by_conn_event(pConnEvt);
 
-        if (pConnEvt->role == ACL_ROLE_CENTRAL) {       // central role, process SMP and SDP if necessary
+        if (pConnEvt->role == ACL_ROLE_CENTRAL)         // central role, process SMP and SDP if necessary
+        {
     #if (ACL_CENTRAL_SMP_ENABLE)
             central_smp_pending = pConnEvt->connHandle; // this connection need SMP
     #endif
@@ -388,6 +451,9 @@ int app_disconnect_event_handle(u8 *p)
 {
     hci_disconnectionCompleteEvt_t *pDisConn = (hci_disconnectionCompleteEvt_t *)p;
     BLT_APP_LOG("app Disconnect event connHandle:%04X reason:%02X", pDisConn->connHandle, pDisConn->reason);
+#if (APP_PARSE_CHAR_ENABLE)
+    app_parse_printf("app Disconnect event connHandle:%04X reason:%02X\r\n", pDisConn->connHandle, pDisConn->reason);
+#endif
 
     //terminate reason
     if (pDisConn->reason == HCI_ERR_CONN_TIMEOUT) {                 //connection timeout
@@ -435,28 +501,34 @@ int app_disconnect_event_handle(u8 *p)
  */
 int app_controller_event_callback(u32 h, u8 *p, int n)
 {
-    (void)n;                         //unused, remove warning
-    if (h & HCI_FLAG_EVENT_BT_STD) { //Controller HCI event
+    (void)n;                       //unused, remove warning
+    if (h & HCI_FLAG_EVENT_BT_STD) //Controller HCI event
+    {
         u8 evtCode = h & 0xff;
 
         //------------ disconnect -------------------------------------
-        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) { //connection terminate
+        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) //connection terminate
+        {
             app_disconnect_event_handle(p);
-        } else if (evtCode == HCI_EVT_LE_META) {         //LE Event
+        } else if (evtCode == HCI_EVT_LE_META)         //LE Event
+        {
             u8 subEvt_code = p[0];
 
             //------hci le event: le connection complete event---------------------------------
-            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) { // connection complete
+            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) // connection complete
+            {
                 app_le_connection_complete_event_handle(p);
             }
             //--------hci le event: le adv report event ----------------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT) { // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT) // ADV packet
+            {
                 //after controller is set to scan state, it will report all the adv packet it received by this event
 
                 app_le_adv_report_event_handle(p);
             }
             //------hci le event: le connection update complete event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) { // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) // connection update
+            {
             }
         }
     }
@@ -486,12 +558,18 @@ int app_host_event_callback(u32 h, u8 *para, int n)
              *  JustWorks = 0, PK_Init_Display_Resp_Input = 1, PK_Resp_Display_Init_Input = 2, PK_BOTH_INPUT = 3,OOB_Authentication = 4, Numeric_Comparison = 5,
              */
         tlkapi_send_string_data(APP_SMP_LOG_EN, "[APP][SMP] Pairing begin", &p->tk_method, 1);
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("Pairing begin: %d\r\n", p->tk_method);
+#endif
     } break;
 
     case GAP_EVT_SMP_PAIRING_SUCCESS:
     {
         gap_smp_pairingSuccessEvt_t *p = (gap_smp_pairingSuccessEvt_t *)para;
         tlkapi_send_string_data(APP_SMP_LOG_EN, "[APP][SMP] pairing success", &p->bonding_result, 1);
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("pairing success: %d\r\n", p->bonding_result);
+#endif
         gpio_write(GPIO_LED_BLUE, LED_ON_LEVEL);
     } break;
 
@@ -499,6 +577,9 @@ int app_host_event_callback(u32 h, u8 *para, int n)
     {
         gap_smp_pairingFailEvt_t *pEvt = (gap_smp_pairingFailEvt_t *)para;
         tlkapi_send_string_data(APP_SMP_LOG_EN, "[APP][SMP] pairing fail", &pEvt->connHandle, sizeof(gap_smp_pairingFailEvt_t));
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("pairing fail, conn_handle: 0x%x, reason: %d\r\n", pEvt->connHandle, pEvt->reason);
+#endif
         //pEvt->reason see PAIRING_FAIL_REASON_PASSKEY_ENTRY...
 
     #if (ACL_CENTRAL_SMP_ENABLE)
@@ -514,18 +595,25 @@ int app_host_event_callback(u32 h, u8 *para, int n)
     {
         gap_smp_TkDisplayEvt_t *pEvt = (gap_smp_TkDisplayEvt_t *)para;
         tlkapi_printf(APP_SMP_LOG_EN, "[APP][SMP] TK display: %d\r\n", pEvt->tk_pincode);
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("TK display: %d\r\n", pEvt->tk_pincode);
+#endif
     } break;
-    #if (SMP_TEST_MODE == SMP_TEST_LEGACY_OOB)
     case GAP_EVT_SMP_TK_REQUEST_OOB:
     {
         gap_smp_TkRequestOOBEvt_t *pEvt = (gap_smp_TkRequestOOBEvt_t *)para;
         appCtrl.connHandle              = pEvt->connHandle;
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("TK request OOB: conn_handle:0x%x\r\n", pEvt->connHandle);
+#endif
     } break;
-    #endif
     case GAP_EVT_SMP_TK_REQUEST_PASSKEY:
     {
         gap_smp_TkReqPassKeyEvt_t *pEvt = (gap_smp_TkReqPassKeyEvt_t *)para;
         tlkapi_send_string_data(APP_SMP_LOG_EN, "[APP][SMP] TK request", &pEvt->connHandle, sizeof(gap_smp_TkReqPassKeyEvt_t));
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("TK request passkey: conn_handle:0x%x\r\n", pEvt->connHandle);
+#endif
         appCtrl.connHandle = pEvt->connHandle;
 
     #if (SMP_TEST_MODE == SMP_TEST_LESC_PKI)
@@ -538,6 +626,9 @@ int app_host_event_callback(u32 h, u8 *para, int n)
     {
         gap_smp_connEncDoneEvt_t *pEvt = (gap_smp_connEncDoneEvt_t *)para;
         tlkapi_send_string_data(APP_SMP_LOG_EN, "[APP][SMP] Connection encryption done event", &pEvt->connHandle, sizeof(gap_smp_connEncDoneEvt_t));
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("Connection encryption done event:%s\r\n", hex_to_str(&pEvt->connHandle, sizeof(uint16_t)));
+#endif
         gpio_write(GPIO_LED_WHITE, LED_ON_LEVEL);
     } break;
 
@@ -546,6 +637,9 @@ int app_host_event_callback(u32 h, u8 *para, int n)
     #if (ACL_CENTRAL_SMP_ENABLE)
         gap_smp_securityProcessDoneEvt_t *pEvt = (gap_smp_securityProcessDoneEvt_t *)para;
         tlkapi_send_string_data(APP_SMP_LOG_EN, "[APP][SMP] Security process done event", &pEvt->connHandle, sizeof(gap_smp_connEncDoneEvt_t));
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("Security process done event:%s\r\n", hex_to_str(&pEvt->connHandle, sizeof(uint16_t)));
+#endif
 
         if (dev_char_get_conn_role_by_connhandle(pEvt->connHandle) == ACL_ROLE_CENTRAL) {
             if (central_smp_pending == pEvt->connHandle) {
@@ -555,33 +649,50 @@ int app_host_event_callback(u32 h, u8 *para, int n)
     #endif
     } break;
 
-    #if (SMP_TEST_MODE == SMP_TEST_LESC_OOB)
     case GAP_EVT_SMP_REQUEST_SCOOB_DATA:
     {
         gap_smp_requestScOobDataEvt_t *pEvt = (gap_smp_requestScOobDataEvt_t *)para;
         tlkapi_send_string_data(APP_SMP_LOG_EN, "[APP][SMP] SC OOB request data", &pEvt->connHandle, sizeof(gap_smp_requestScOobDataEvt_t));
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("SC OOB request data, conn_handle: 0x%x\r\n", pEvt->connHandle);
+#endif
 
         appScOobCtrl.acl_handle = pEvt->connHandle;
         //appScOobCtrl.scoob_remote_used = pEvt->scOobRemoteUsed; //needless set
         appScOobCtrl.scoob_local_used = pEvt->scOobLocalUsed;
         tlkapi_printf(APP_SMP_LOG_EN, "[APP][SMP] SC OOB scOobLocalUsed %d", pEvt->scOobLocalUsed);
         tlkapi_printf(APP_SMP_LOG_EN, "[APP][SMP] SC OOB scOobRemoteUsed %d", pEvt->scOobRemoteUsed);
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("SC OOB scOobLocalUsed %d\r\n", pEvt->scOobLocalUsed);
+        app_parse_printf("SC OOB scOobRemoteUsed %d\r\n", pEvt->scOobRemoteUsed);
+#endif
 
         if (appScOobCtrl.scoob_local_used) {
+#if (!APP_PARSE_CHAR_ENABLE)
             uart_data_t uart_tx_data;
             uart_tx_data.len = sizeof(smp_sc_oob_data_t);
             memcpy(uart_tx_data.data, &appScOobCtrl.scoob_local, sizeof(smp_sc_oob_data_t));
             uart_send_dma(UART_ID, (u8 *)(&uart_tx_data.data), uart_tx_data.len);
+#endif
             tlkapi_send_string_data(APP_SMP_LOG_EN, "[APP][SMP] Send Local SC OOB data-c(be) (by UART simulate OOB)", appScOobCtrl.scoob_local.confirm, 16);
             tlkapi_send_string_data(APP_SMP_LOG_EN, "                      SC OOB data-r(be) (by UART simulate OOB)", appScOobCtrl.scoob_local.random, 16);
-
+#if (APP_PARSE_CHAR_ENABLE)
+            app_parse_printf("Send Local SC OOB data-c(be) (by UART simulate OOB): %s\r\n", hex_to_str(appScOobCtrl.scoob_local.confirm, 16));
+            app_parse_printf("Send Local SC OOB data-r(be) (by UART simulate OOB): %s\r\n", hex_to_str(appScOobCtrl.scoob_local.random, 16));
+#endif
         } else {
             tlkapi_printf(APP_SMP_LOG_EN, "[APP][SMP] local SC OOB data not used");
+#if (APP_PARSE_CHAR_ENABLE)
+            app_parse_printf("local SC OOB data not used\r\n");
+#endif
         }
 
         if (appScOobCtrl.scoob_remote_used && !appScOobCtrl.scoob_remote_geted) {
             tlkapi_printf(APP_SMP_LOG_EN, "[APP][SMP] SC OOB not receive remote data, waiting");
-            // blc_smp_cancel_auth(appScOobCtrl.acl_handle);
+#if (APP_PARSE_CHAR_ENABLE)
+            app_parse_printf("SC OOB not receive remote data, waiting\r\n");
+#endif
+            //          blc_smp_cancel_auth(appScOobCtrl.acl_handle);
 
             /* Waiting SC OOB remote data from UART */
             appScOobCtrl.scoob_remote_waiting = TRUE;
@@ -590,15 +701,17 @@ int app_host_event_callback(u32 h, u8 *para, int n)
             blc_smp_setScOobData(appScOobCtrl.acl_handle, &appScOobCtrl.scoob_local, &appScOobCtrl.scoob_local_key, &appScOobCtrl.scoob_remote);
         }
     } break;
-    #endif
 
-    #if (SMP_TEST_MODE == SMP_TEST_LESC_NC)
     case GAP_EVT_SMP_TK_NUMERIC_COMPARE:
     {
         gap_smp_TkDisplayEvt_t *pEvt = (gap_smp_TkDisplayEvt_t *)para;
+        appCtrl.connHandle = pEvt->connHandle;
         tlkapi_printf(APP_SMP_LOG_EN, "[APP][SMP] TK display: %d\r\n", pEvt->tk_pincode);
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("TK display: %d\r\n", pEvt->tk_pincode);
+#endif
+
     } break;
-    #endif
 
     case GAP_EVT_ATT_EXCHANGE_MTU:
     {
@@ -628,13 +741,15 @@ int app_host_event_callback(u32 h, u8 *para, int n)
  */
 int app_gatt_data_handler(u16 connHandle, u8 *pkt)
 {
-    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) { //GATT data for Central
+    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) //GATT data for Central
+    {
         rf_packet_att_t *pAtt = (rf_packet_att_t *)pkt;
 
         dev_char_info_t *dev_info = dev_char_info_search_by_connhandle(connHandle);
         if (dev_info) {
             //-------   user process ------------------------------------------------
-            if (pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI) { //peripheral handle notify
+            if (pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI) //peripheral handle notify
+            {
             } else if (pAtt->opcode == ATT_OP_HANDLE_VALUE_IND) {
             }
         }
@@ -673,6 +788,330 @@ int app_gatt_data_handler(u16 connHandle, u8 *pkt)
 
 ///////////////////////////////////////////
 
+#if (APP_PARSE_CHAR_ENABLE)
+#if (APP_PARSE_CHAR_UART_CLIENT)
+#define BDADDR_STR_LEN 17
+
+static bool app_parse_bdaddr(const char *str, u8 *addr)
+{
+    u8 pos = 0;
+
+    if (strlen(str) != BDADDR_STR_LEN) {
+        return false;
+    }
+
+    for (u8 i = 0; i < 6; i++) {
+        char temp[3] = {str[pos], str[pos + 1], 0};
+
+        app_parse_str2hex(temp, &addr[i], 2);
+        pos += 2;
+        if (i < 5 && str[pos++] != ':') {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+static void pairing_fun(char *argv[], int argc, void *user_data)
+{
+    (void)user_data;
+
+    if (argc < 1) {
+        goto failed;
+    }
+
+    if (!strcasecmp(argv[0], "on") && (argc >= 2)) {
+        u8 addr_temp[6];
+
+        if (!app_parse_bdaddr(argv[1], addr_temp)) {
+            goto failed;
+        }
+
+        if (argc > 2) {
+            smp_address_type = app_parse_str2n(argv[2]);
+        } else {
+            smp_address_type = PEERATYPE_PUBLIC_DEVICE_ADDRESS;
+        }
+
+        memcpy(smp_address, addr_temp, sizeof(addr_temp));
+        central_pairing_enable = 1;
+    } else if (!strcasecmp(argv[0], "off")) {
+        smp_address_type = 0xFF;
+        memset(smp_address, 0xFF, sizeof(smp_address));
+
+        blc_smp_eraseAllBondingInfo();
+        blt_smp_cleanBondingInfoStorage();
+        central_pairing_enable = 0;
+
+        for (int i = 0; i < ACL_CENTRAL_MAX_NUM + ACL_PERIPHR_MAX_NUM; i++) {               //peripheral index is from 0 to "ACL_CENTRAL_MAX_NUM - 1"
+            if (conn_dev_list[i].conn_state) {
+                central_unpair_enable = conn_dev_list[i].conn_handle; //mark connHandle on central_unpair_enable
+                app_parse_printf("Unpair conn_handle: 0x%x\r\n", central_unpair_enable);
+                break;
+            }
+        }
+    } else {
+        goto failed;
+    }
+
+    app_parse_printf("pairing %s done\r\n", argv[0]);
+
+    return;
+
+failed:
+    app_parse_printf("pairing <on <addr> [addr_type] | off>\r\n");
+}
+#endif
+
+static void send_yes_no(char *argv[], int argc, void *user_data)
+{
+    (void)user_data;
+
+    if (argc == 1) {
+        uint8_t yes_no = 0;
+
+        if (!strcmp(argv[0], "yes")) {
+            yes_no = 1;
+        } else if (!strcmp(argv[0], "no")) {
+            yes_no = 0;
+        } else {
+            app_parse_printf("Invalid parameter. Pass \"yes\" or \"no\"\r\n");
+            return;
+        }
+
+        if (blc_smp_isWaitingToCfmNumericComparison(appCtrl.connHandle)) {
+            app_parse_printf("Numeric comparison confirmation:%s, conn_handle:0x%x\r\n", argv[0], appCtrl.connHandle);
+            blc_smp_setNumericComparisonResult(appCtrl.connHandle, yes_no);
+        } else {
+            app_parse_printf("Not waiting for numeric comparison\r\n");
+        }
+        return;
+    } else {
+        app_parse_printf("Invalid number of arguments\r\n");
+    }
+}
+
+static void enable_oob(char *argv[], int argc, void *user_data)
+{
+    (void)user_data;
+
+    if (argc == 1) {
+        uint8_t enable = 0;
+
+        if (!strcmp(argv[0], "on")) {
+            enable = 1;
+        } else if (!strcmp(argv[0], "off")) {
+            enable = 0;
+        } else {
+            app_parse_printf("Invalid parameter. Pass \"on\" or \"off\"\r\n");
+            return;
+        }
+        app_parse_printf("SC OOB remote used flag:%d\r\n", enable);
+
+        appScOobCtrl.scoob_remote_used    = enable ? TRUE : FALSE;
+        appScOobCtrl.scoob_remote_geted   = FALSE; //clear
+        appScOobCtrl.scoob_remote_waiting = FALSE; //clear
+
+        blc_smp_enableOobAuthentication(appScOobCtrl.scoob_remote_used ? 1 : 0);
+        blc_smp_smpParamInit();
+        return;
+    } else {
+        app_parse_printf("Invalid number of arguments");
+    }
+}
+
+static void enter_pin(char *argv[], int argc, void *user_data)
+{
+    (void)argc;
+    (void)user_data;
+
+    u32 pinCode = atoi(argv[0]);
+    if (!pinCode) {
+        app_parse_printf("Invalid pin\r\n");
+        return;
+    }
+
+    for (u32 i = 0; i < strlen(argv[0]); i++) {
+        blc_smp_sendKeypressNotify(appCtrl.connHandle, KEYPRESS_NTF_PKE_DIGIT_ENTERED);
+    }
+    blc_smp_setTK_by_PasskeyEntry(appCtrl.connHandle, pinCode);
+    blc_smp_sendKeypressNotify(appCtrl.connHandle, KEYPRESS_NTF_PKE_COMPLETED);
+    app_parse_printf("TK set PIN:%d\r\n", pinCode);
+}
+
+static void enter_oob(char *argv[], int argc, void *user_data)
+{
+    (void)user_data;
+
+    if (argc < 16 || argc > 32) {
+        app_parse_printf("Invalid OOB data length\r\n");
+        return;
+    }
+
+    char *end;
+
+    // LEGACY
+    if (argc == 16) {
+        u8 oobData[16] = {0};
+        for (int i = 0; i < argc; i++) {
+            oobData[i] = strtol(argv[i], &end, 16);
+        }
+        blc_smp_setTK_by_OOB(appCtrl.connHandle, oobData);
+        app_parse_printf("LEGACY OOB TK set:%s\r\n", hex_to_str(oobData, 16));
+    // LESC
+    } else if (argc == 32 && appScOobCtrl.scoob_remote_used) {
+        appScOobCtrl.scoob_remote_geted = 1;
+
+        for (int i = 0; i < 16; i++) {
+            appScOobCtrl.scoob_remote.confirm[i] = strtol(argv[i], &end, 16);
+            appScOobCtrl.scoob_remote.random[i]  = strtol(argv[i + 16], &end, 16);
+        }
+        app_parse_printf("Get Remote SC OOB data-c(be)(by UART):%s\r\n", hex_to_str(appScOobCtrl.scoob_remote.confirm, 16));
+        app_parse_printf("Get Remote SC OOB data-r(be)(by UART):%s\r\n", hex_to_str(appScOobCtrl.scoob_remote.random, 16));
+
+        if (appScOobCtrl.scoob_remote_waiting) {
+            appScOobCtrl.scoob_remote_geted   = FALSE; //clear
+            appScOobCtrl.scoob_remote_waiting = FALSE; //clear
+            blc_smp_setScOobData(appScOobCtrl.acl_handle, &appScOobCtrl.scoob_local, &appScOobCtrl.scoob_local_key, &appScOobCtrl.scoob_remote);
+
+            appScOobCtrl.acl_handle = 0;
+        }
+    }
+}
+
+static void smp_fun(char *argv[], int argc, void *user_data)
+{
+    (void)user_data;
+
+    if (argc < 1) {
+        app_parse_printf("smp <type>\r\n");
+        return;
+    }
+
+    if (!strcasecmp(argv[0], "disabled")) {
+        blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_1);
+    } else if (!strcasecmp(argv[0], "legacy_jw")) {
+        blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_2);
+        blc_smp_setSecurityParameters(Bondable_Mode, 0, LE_Legacy_Pairing, 0, 0, IO_CAPABILITY_NO_INPUT_NO_OUTPUT);
+    } else if (!strcasecmp(argv[0], "lesc_jw")) {
+        blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_2);
+        blc_smp_setSecurityParameters(Bondable_Mode, 0, LE_Secure_Connection, 0, 0, IO_CAPABILITY_NO_INPUT_NO_OUTPUT);
+#if !APP_PARSE_CHAR_UART_CLIENT
+        blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
+#endif
+    } else if (!strcasecmp(argv[0], "legacy_pkd")) {
+        blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_3);
+        blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Legacy_Pairing, 0, 0, IO_CAPABILITY_DISPLAY_ONLY);
+        blc_smp_setDefaultPinCode(123456);
+    } else if (!strcasecmp(argv[0], "legacy_pki")) {
+        blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_3);
+        blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Legacy_Pairing, 0, 0, IO_CAPABILITY_KEYBOARD_ONLY);
+    } else if (!strcasecmp(argv[0], "legacy_oob")) {
+        blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_3);
+        blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Legacy_Pairing, 1, 0, IO_CAPABILITY_KEYBOARD_ONLY);
+    } else if (!strcasecmp(argv[0], "lesc_pkd")) {
+        blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_4);
+        blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Secure_Connection, 0, 0, IO_CAPABILITY_DISPLAY_ONLY);
+#if !APP_PARSE_CHAR_UART_CLIENT
+        blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
+#endif
+        blc_smp_setDefaultPinCode(123456);
+    } else if (!strcasecmp(argv[0], "lesc_nc")) {
+        blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_4);
+        blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Secure_Connection, 0, 0, IO_CAPABILITY_DISPLAY_YES_NO);
+#if !APP_PARSE_CHAR_UART_CLIENT
+        blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
+#endif
+        blc_smp_setDefaultPinCode(123456);
+    } else if (!strcasecmp(argv[0], "lesc_pki")) {
+        blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_4);
+        blc_smp_setSecurityParameters(Bondable_Mode, 1, LE_Secure_Connection, 0, 0, IO_CAPABILITY_KEYBOARD_ONLY);
+#if !APP_PARSE_CHAR_UART_CLIENT
+        blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
+#endif
+        blc_smp_enableKeypress(1);
+    } else if (!strcasecmp(argv[0], "lesc_oob")) {
+        blc_smp_setSecurityLevel(LE_Security_Mode_1_Level_4);
+        blc_smp_setSecurityParameters(Bondable_Mode, 0, LE_Secure_Connection, 0, 0, IO_CAPABILITY_NO_INPUT_NO_OUTPUT);
+#if !APP_PARSE_CHAR_UART_CLIENT
+        blc_smp_setEcdhDebugMode(debug_mode); //only one role can use debug mode,if peripheral and central both enable debug mode,SMP will fail.
+#endif
+
+        /* if use remote SC OOB data */
+        appScOobCtrl.acl_handle           = 0;
+        appScOobCtrl.scoob_remote_used    = TRUE;  //FALSE;
+        appScOobCtrl.scoob_remote_geted   = FALSE; //clear
+        appScOobCtrl.scoob_remote_waiting = FALSE; //clear
+        blc_smp_enableOobAuthentication(appScOobCtrl.scoob_remote_used ? 1 : 0);
+
+        /* generate local SC OOB data */
+        if (!blc_smp_generateScOobData(&appScOobCtrl.scoob_local, &appScOobCtrl.scoob_local_key)) {
+                app_parse_printf("Generate local SC OOB data failed\r\n");
+        } else {
+                app_parse_printf("SC OOB data-confirm value:%s\r\n", hex_to_str(appScOobCtrl.scoob_local.confirm, 16));
+                app_parse_printf("SC OOB data-random value:%s\r\n", hex_to_str(appScOobCtrl.scoob_local.random, 16));
+        }
+        app_parse_printf("SC OOB Initialize\r\n");
+    } else {
+        app_parse_printf("smp <type>\r\n");
+        return;
+    }
+
+    blc_smp_smpParamInit();
+    app_parse_printf("smp set to: %s\r\n", argv[0]);
+}
+
+static void read_bdaddr(char *argv[], int argc, void *user_data)
+{
+    (void)argv;
+    (void)argc;
+    (void)user_data;
+    u8 addr[6];
+
+    if (blc_ll_readBDAddr(addr) == BLE_SUCCESS) {
+        app_parse_printf("read_bdaddr: %02X:%02X:%02X:%02X:%02X:%02X\r\n",
+                         addr[0],
+                         addr[1],
+                         addr[2],
+                         addr[3],
+                         addr[4],
+                         addr[5]);
+    } else {
+        app_parse_printf("read_bdaddr: failed\r\n");
+    }
+}
+
+static void help_fun(char *argv[], int argc, void *user_data);
+
+static const parse_fun_list_t app_funcs[] = {
+    {"help", help_fun, NULL},
+#if APP_PARSE_CHAR_UART_CLIENT
+    {"pairing", pairing_fun, NULL},
+#endif
+    {"send_nc", send_yes_no, NULL},
+    {"enable_oob", enable_oob, NULL},
+    {"enter_pin", enter_pin, NULL},
+    {"enter_oob", enter_oob, NULL},
+    {"smp", smp_fun, NULL},
+    {"read_bdaddr", read_bdaddr, NULL},
+};
+
+static void help_fun(char *argv[], int argc, void *user_data)
+{
+    (void)argv;
+    (void)argc;
+    (void)user_data;
+
+    app_parse_printf("Commands:\r\n");
+
+    foreach_arr(i, app_funcs)
+    {
+        app_parse_printf("\t%s\r\n", app_funcs[i].fun_name);
+    }
+}
+#endif
+
 /**
  * @brief       user initialization when MCU power on or wake_up from deepSleep mode
  * @param[in]   none
@@ -704,6 +1143,10 @@ _attribute_no_inline_ void user_init_normal(void)
 
     blc_initMacAddress(flash_sector_mac_address, mac_public, mac_random_static);
 
+    #if defined(TLK_ONLY_BLE_HOST)
+    sys_n22_start();
+    delay_ms(300);
+    #endif
 
     //////////// LinkLayer Initialization  Begin /////////////////////////
     blc_ll_initBasicMCU();
@@ -747,13 +1190,13 @@ _attribute_no_inline_ void user_init_normal(void)
     blc_hci_setEventMask_cmd(HCI_EVT_MASK_DISCONNECTION_COMPLETE);
 
     //bluetooth low energy(LE) event
-    blc_hci_le_setEventMask_cmd(HCI_LE_EVT_MASK_CONNECTION_COMPLETE | HCI_LE_EVT_MASK_ADVERTISING_REPORT | HCI_LE_EVT_MASK_CONNECTION_UPDATE_COMPLETE);
+    blc_hci_le_setEventMask_cmd(HCI_LE_EVT_MASK_CONNECTION_COMPLETE | HCI_LE_EVT_MASK_ADVERTISING_REPORT | HCI_LE_EVT_MASK_CONNECTION_UPDATE_COMPLETE | HCI_LE_EVT_MASK_LONG_TERM_KEY_REQUEST);
 
 
     u8 error_code = blc_contr_checkControllerInitialization();
     if (error_code != INIT_SUCCESS) {
         /* It's recommended that user set some UI alarm to know the exact error, e.g. LED shine, print log */
-        write_log32(0x88880000 | error_code);
+           
     #if (TLKAPI_DEBUG_ENABLE)
         tlkapi_send_string_data(APP_LOG_EN, "[APP][INI] Controller INIT ERROR", &error_code, 1);
         while (1) {
@@ -859,6 +1302,10 @@ _attribute_no_inline_ void user_init_normal(void)
     #endif
 
 
+#if (APP_PARSE_CHAR_ENABLE)
+    blc_smp_eraseAllBondingInfo();
+    blt_smp_cleanBondingInfoStorage();
+#endif
     blc_smp_smpParamInit();
 
 
@@ -869,17 +1316,10 @@ _attribute_no_inline_ void user_init_normal(void)
                          GAP_EVT_MASK_SMP_PAIRING_FAIL |
                          GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE |
                          GAP_EVT_MASK_SMP_TK_DISPLAY |
-    #if (SMP_TEST_MODE == SMP_TEST_LESC_NC)
                          GAP_EVT_MASK_SMP_TK_NUMERIC_COMPARE |
-    #endif
-    #if (SMP_TEST_MODE == SMP_TEST_LEGACY_OOB)
                          GAP_EVT_MASK_SMP_TK_REQUEST_OOB |
-    #endif
-    #if (SMP_TEST_MODE == SMP_TEST_LESC_OOB)
                          GAP_EVT_MASK_SMP_REQUEST_SCOOB_DATA |
-    #elif (SMP_TEST_MODE == SMP_TEST_LESC_PKI)
                          GAP_EVT_MASK_SMP_KEYPRESS_NOTIFY |
-    #endif
                          GAP_EVT_MASK_SMP_TK_REQUEST_PASSKEY);
     //////////// Host Initialization  End /////////////////////////
 
@@ -887,10 +1327,12 @@ _attribute_no_inline_ void user_init_normal(void)
 
 
     //////////////////////////// User Configuration for BLE application ////////////////////////////
+#if (!APP_PARSE_CHAR_UART_CLIENT)
     blc_ll_setAdvData(tbl_advData, sizeof(tbl_advData));
     blc_ll_setScanRspData(tbl_scanRsp, sizeof(tbl_scanRsp));
     blc_ll_setAdvParam(ADV_INTERVAL_50MS, ADV_INTERVAL_50MS, ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC, 0, NULL, BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
     blc_ll_setAdvEnable(BLC_ADV_ENABLE); //ADV enable
+#endif
 
     blc_ll_setScanParameter(SCAN_TYPE_PASSIVE, SCAN_INTERVAL_100MS, SCAN_WINDOW_50MS, OWN_ADDRESS_PUBLIC, SCAN_FP_ALLOW_ADV_ANY);
     blc_ll_setScanEnable(BLC_SCAN_ENABLE, DUP_FILTER_DISABLE);
@@ -898,6 +1340,11 @@ _attribute_no_inline_ void user_init_normal(void)
     rf_set_power_level_index(RF_POWER_P3dBm);
 
     tlkapi_send_string_data(APP_LOG_EN, "[APP][INI] FEATURE_SMP init", 0, 0);
+
+    #if (APP_PARSE_CHAR_ENABLE)
+        app_parse_init(app_funcs, ARRAY_SIZE(app_funcs));
+        app_parse_printf("feature_test_smp init\r\n");
+    #endif
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     #if APP_MITM_EN
@@ -938,6 +1385,10 @@ int main_idle_loop(void)
     ////////////////////////////////////// UI entry /////////////////////////////////
     #if (UI_KEYBOARD_ENABLE)
     proc_keyboard(0, 0, 0);
+    #endif
+
+    #if (APP_PARSE_CHAR_ENABLE)
+    app_parse_loop();
     #endif
 
     proc_central_role_unpair();

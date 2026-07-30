@@ -318,7 +318,7 @@ enum
 
 #define reg_wakeup_en REG_ADDR8(SC_BASE_ADDR + 0x2e)
 
-enum
+typedef enum
 {
     FLD_USB1_PWDN_I    = BIT(0),
     FLD_GPIO_WAKEUP_I  = BIT(1),
@@ -328,7 +328,7 @@ enum
     FLD_USB0_PWDN_I    = BIT(5),
     FLD_USB_RESUME     = BIT(6),
     FLD_STANDBY_EX     = BIT(7),
-};
+} soc_core_wakeup_mask_e;
 
 #define reg_pwdn_en REG_ADDR8(SC_BASE_ADDR + 0x2f)
 

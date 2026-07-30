@@ -36,7 +36,7 @@ pem_event_config_t misc_pem_event_config={
             .sig_sel        = 0,
             .clk_sel        = ASYNC_CLK,
             .lvl            = LEVEL,
-            .edge_detect    = RISING_EDGE,
+            .edge_detect    = 0,
             .inv            = 0,
 };
 

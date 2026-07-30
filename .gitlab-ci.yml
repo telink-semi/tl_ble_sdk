@@ -1,13 +1,20 @@
 stages:
   - checktab
-  - scc
-  - cmake_builds
-  - checkLicense
-  - build_TelinkIoTStudio
-  - build_Andes
   - oss
+  - scc
+  - genLicense
+  - checkLicense
+  - build_B91
+  - build_B92
+  - build_TL321X
+  - build_TL521X
+  - build_TL721X
+  - build_TL322X
+  - build_TL323X
+  - fossid
   - plainPW_check
   - misspellChecking
+  - chinese_characters_check
   - sensitive_word_check
 
 
@@ -29,7 +36,18 @@ checktab:
     when: always
     paths:
     - checktabresult
-
+    
+oss:
+  tags:
+    - OSS
+  stage: oss
+  script:
+    - oss_checking .
+  artifacts:
+    when: always
+    paths:
+    - scan_result
+  when: manual
 
 scc:
   stage: scc 
@@ -45,6 +63,23 @@ scc:
     paths:
     - scc.txt
   when: always
+  
+genLicense:
+  variables:
+    CODE_COMPILE_ARCH: 'EAGLE_ANDES'
+    COV_PF_CATALOG: 'BLE'
+  stage: genLicense
+  before_script:
+  script:
+    - date
+    - generat_license_list
+    - date
+  artifacts:
+    paths:
+    - "license_list_gen.txt"
+    - "no_license_list_gen.txt"
+    - "mismatch_license_file_gen.txt"
+  when: manual
 
 
 checkLicense:
@@ -69,39 +104,13 @@ checkLicense:
     - "unknow_type_file.txt"
   when: always
 
-cmake_builds:
-  stage: cmake_builds
-  tags:
-    - TELINKIDE_LINUX
-  before_script:
-  script:
-    - cmake --version
-    - echo ${TL32_ELF_MCULIB_V5F_GCC12_2}
-    - echo ${TL32_ELF_MCULIB_V5_GCC12_2}
-    - echo ${TL32_ELF_MCULIB_V5F_GCC10_3}
-    - echo ${TL32_ELF_MCULIB_V5F_GCC7_4}
-    - echo ${TC32_GCC_Toolchain}
-
-    - run_cmake.sh TL_BLE_SDK_B91 all
-    - run_cmake.sh TL_BLE_SDK_B92 all
-    - run_cmake.sh TL_BLE_SDK_321X all
-    - run_cmake.sh TL_BLE_SDK_322X all
-    - run_cmake.sh TL_BLE_SDK_721X all
-  artifacts:
-    paths:
-    - "**/cmake_builds/**/*.bin"
-    - "**/cmake_builds/**/*.elf"
-
-
-build_TelinkIoTStudio:
+build_B91:
   variables:
-    ECLIPSE_PROJECT_PATH: './tl_ble_sdk/build/TL721X'
-    ECLIPSE_PROJECT_NAME: 'TL_BLE_SDK_721X'
+    ECLIPSE_PROJECT_PATH: './tl_ble_sdk/build/B91'
+    ECLIPSE_PROJECT_NAME: 'TL_BLE_SDK_B91'
     ECLIPSE_BUILD_TARGET: 'acl_connection_demo'            #Use code is more convenient than MACRO when multiple targets
-    #IDE: "TelinkIDE" #[build_all]
-    #PROJECT: "B95"  #[build_all]
-    #SKIP_MODULE: "feture_demo" #[build_all]
-  stage: build_TelinkIoTStudio
+
+  stage: build_B91
   tags:
     - TELINKIDE_LINUX
   before_script:
@@ -117,18 +126,55 @@ build_TelinkIoTStudio:
 
   artifacts:
     paths:
-    - "tl_ble_sdk/build/TL721X/**/*.lst"
-    - "tl_ble_sdk/build/TL721X/**/*.bin"
-  when: manual
-  
+    - "tl_ble_sdk/build/B91/**/*.lst"
+    - "tl_ble_sdk/build/B91/**/*.bin"
+    - "*.bin"
+    - "*.lst"
+  when: always
+
+
+###################################################################################################################################################
+
+build_B92:
+  variables:
+    ECLIPSE_PROJECT_PATH: './tl_ble_sdk/build/B92'
+    ECLIPSE_PROJECT_NAME: 'TL_BLE_SDK_B92'
+    ECLIPSE_BUILD_TARGET: 'acl_connection_demo'            #Use code is more convenient than MACRO when multiple targets
+
+  stage: build_B92
+  tags:
+    - TELINKIDE_LINUX
+  before_script:
+  script:
+    - date
+    - echo "--------------- Will build Demo -----------------"
+    - echo $ECLIPSE_PROJECT_PATH --- $ECLIPSE_PROJECT_NAME/$ECLIPSE_BUILD_TARGET
+    #- compile_project_all_modules.sh $IDE $PROJECT #[build_all] This cmd can trigger build all targets in project configuration
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/$ECLIPSE_BUILD_TARGET   #acl_connection_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_central_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_peripheral_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/eslp_ap_demo
+    - echo "--------------- Building CS demo -----------------"
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/cs_reflector_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/cs_initiator_demo
+    - date
+
+  artifacts:
+    paths:
+    - "tl_ble_sdk/build/B92/**/*.lst"
+    - "tl_ble_sdk/build/B92/**/*.bin"
+    - "*.bin"
+    - "*.lst"
+  when: always
+###################################################################################################################################################
+
+build_TL321X:
   variables:
     ECLIPSE_PROJECT_PATH: './tl_ble_sdk/build/TL321X'
     ECLIPSE_PROJECT_NAME: 'TL_BLE_SDK_321X'
     ECLIPSE_BUILD_TARGET: 'acl_connection_demo'            #Use code is more convenient than MACRO when multiple targets
-    #IDE: "TelinkIDE" #[build_all]
-    #PROJECT: "B95"  #[build_all]
-    #SKIP_MODULE: "feture_demo" #[build_all]
-  stage: build_TelinkIoTStudio
+
+  stage: build_TL321X
   tags:
     - TELINKIDE_LINUX
   before_script:
@@ -140,24 +186,26 @@ build_TelinkIoTStudio:
     - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/$ECLIPSE_BUILD_TARGET   #acl_connection_demo
     - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_central_demo
     - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_peripheral_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/eslp_esl_demo
     - date
 
   artifacts:
     paths:
     - "tl_ble_sdk/build/TL321X/**/*.lst"
     - "tl_ble_sdk/build/TL321X/**/*.bin"
-  when: manual
- 
+    - "*.bin"
+    - "*.lst"
+  when: always
 
-build_Andes:
+
+###################################################################################################################################################
+
+build_TL521X:
   variables:
-    ECLIPSE_PROJECT_PATH: './tl_ble_sdk/build/B91'
-    ECLIPSE_PROJECT_NAME: 'B91_ble_multi_conn_sdk'
-    ECLIPSE_BUILD_TARGET: 'acl_connection_demo'            #Use code is more convenient than MACRO when multiple targets
-    #IDE: "TelinkIDE" #[build_all]
-    #PROJECT: "B92"  #[build_all]
-    #SKIP_MODULE: "feture_demo" #[build_all]
-  stage: build_Andes
+    ECLIPSE_PROJECT_PATH: './tl_ble_sdk/build/TL521X'
+    ECLIPSE_PROJECT_NAME: 'TL_BLE_SDK_521X'
+    ECLIPSE_BUILD_TARGET: 'acl_connection_demo'
+  stage: build_TL521X
   tags:
     - TELINKIDE_LINUX
   before_script:
@@ -165,44 +213,136 @@ build_Andes:
     - date
     - echo "--------------- Will build Demo -----------------"
     - echo $ECLIPSE_PROJECT_PATH --- $ECLIPSE_PROJECT_NAME/$ECLIPSE_BUILD_TARGET
-    #- chmod 777 ./tl_ble_sdk/tl_check_fw.bat   # Linux do not support bat
-    #- compile_project_all_modules.sh $IDE $PROJECT #[build_all] This cmd can trigger build all targets in project configuration
-    - $ANDESRISCV_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/$ECLIPSE_BUILD_TARGET   #acl_connection_demo
-    - $ANDESRISCV_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_central_demo
-    - $ANDESRISCV_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_peripheral_demo
-# feature build script, this YAML version cannot use target(&) and reference(*) semantics
-#     - MACRO=FEATURE_TEST_MODE
-#     - MACRO_VAL=TEST_LL_MD
-#     - MACRO_PATH=./b92_ble_multiconn_sdk/vendor/feature_demo/feature_config.h
-#     - sed  -i "/#define\s\+${MACRO}/c#define ${MACRO}\t\t${MACRO_VAL}" $MACRO_PATH
-#     - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/feature_demo
-#     - mv $ECLIPSE_PROJECT_PATH/feature_demo/feature_demo.bin    $ECLIPSE_PROJECT_PATH/feature_demo/$MACRO_VAL.bin
-#     - mv $ECLIPSE_PROJECT_PATH/feature_demo/feature_demo.lst    $ECLIPSE_PROJECT_PATH/feature_demo/$MACRO_VAL.lst
-#     
-#     - MACRO=FEATURE_TEST_MODE
-#     - MACRO_VAL=TEST_OTA
-#     - MACRO_PATH=./b92_ble_multiconn_sdk/vendor/feature_demo/feature_config.h
-#     - sed  -i "/#define\s\+${MACRO}/c#define ${MACRO}\t\t${MACRO_VAL}" $MACRO_PATH
-#     - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/feature_demo
-#     - mv $ECLIPSE_PROJECT_PATH/feature_demo/feature_demo.bin    $ECLIPSE_PROJECT_PATH/feature_demo/$MACRO_VAL.bin
-#     - mv $ECLIPSE_PROJECT_PATH/feature_demo/feature_demo.lst    $ECLIPSE_PROJECT_PATH/feature_demo/$MACRO_VAL.lst
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/$ECLIPSE_BUILD_TARGET   #acl_connection_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_central_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_peripheral_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/ble_remote
     - date
-  artifacts:
-    paths:
-    - "tl_ble_sdk/build/B91/**/objdump.txt"
-    - "tl_ble_sdk/build/B91/**/*.bin"
-  when: manual
 
-oss:
-  tags:
-    - OSS
-  stage: oss
-  script:
-    - oss_checking .
   artifacts:
     paths:
-    - scan_result
-  when: manual      # Just check
+    - "tl_ble_sdk/build/TL521X/**/*.lst"
+    - "tl_ble_sdk/build/TL521X/**/*.bin"
+    - "*.bin"
+    - "*.lst"
+  when: always
+
+
+###################################################################################################################################################
+
+build_TL721X:
+  variables:
+    ECLIPSE_PROJECT_PATH: './tl_ble_sdk/build/TL721X'
+    ECLIPSE_PROJECT_NAME: 'TL_BLE_SDK_721X'
+    ECLIPSE_BUILD_TARGET: 'acl_connection_demo'            #Use code is more convenient than MACRO when multiple targets
+
+  stage: build_TL721X
+  tags:
+    - TELINKIDE_LINUX
+  before_script:
+  script:
+    - date
+    - echo "--------------- Will build Demo -----------------"
+    - echo $ECLIPSE_PROJECT_PATH --- $ECLIPSE_PROJECT_NAME/$ECLIPSE_BUILD_TARGET
+    #- compile_project_all_modules.sh $IDE $PROJECT #[build_all] This cmd can trigger build all targets in project configuration
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/$ECLIPSE_BUILD_TARGET   #acl_connection_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_central_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_peripheral_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/eslp_ap_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/cs_initiator_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/cs_reflector_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/CS_Initiator_Test
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/CS_Reflector_Test
+    - date
+
+  artifacts:
+    paths:
+    - "tl_ble_sdk/build/TL721X/**/*.lst"
+    - "tl_ble_sdk/build/TL721X/**/*.bin"
+    - "*.bin"
+    - "*.lst"
+  when: always
+
+
+###################################################################################################################################################
+
+build_TL322X:
+  variables:
+    ECLIPSE_PROJECT_PATH: './tl_ble_sdk/build/TL322X'
+    ECLIPSE_PROJECT_NAME: 'TL_BLE_SDK_322X'
+    ECLIPSE_BUILD_TARGET: 'acl_connection_demo'            #Use code is more convenient than MACRO when multiple targets
+
+  stage: build_TL322X
+  tags:
+    - TELINKIDE_LINUX
+  before_script:
+  script:
+    - date
+    - echo "--------------- Will build Demo -----------------"
+    - echo $ECLIPSE_PROJECT_PATH --- $ECLIPSE_PROJECT_NAME/$ECLIPSE_BUILD_TARGET
+    #- compile_project_all_modules.sh $IDE $PROJECT #[build_all] This cmd can trigger build all targets in project configuration
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/$ECLIPSE_BUILD_TARGET   #acl_connection_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_peripheral_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_central_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/n22_ble_controller
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/cs_initiator_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/cs_reflector_demo
+    - date
+
+  artifacts:
+    paths:
+    - "tl_ble_sdk/build/TL322X/**/*.lst"
+    - "tl_ble_sdk/build/TL322X/**/*.bin"
+    - "*.bin"
+    - "*.lst"
+  when: always
+
+###################################################################################################################################################
+
+build_TL323X:
+  variables:
+  variables:
+    ECLIPSE_PROJECT_PATH: './tl_ble_sdk/build/TL323X'
+    ECLIPSE_PROJECT_NAME: 'TL_BLE_SDK_323X'
+    ECLIPSE_BUILD_TARGET: 'acl_connection_demo'            #Use code is more convenient than MACRO when multiple targets
+
+  stage: build_TL323X
+  tags:
+    - TELINKIDE_LINUX
+  before_script:
+  script:
+    - date
+    - echo "--------------- Will build Demo -----------------"
+    - echo $ECLIPSE_PROJECT_PATH --- $ECLIPSE_PROJECT_NAME/$ECLIPSE_BUILD_TARGET
+    #- compile_project_all_modules.sh $IDE $PROJECT #[build_all] This cmd can trigger build all targets in project configuration
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/$ECLIPSE_BUILD_TARGET   #acl_connection_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_central_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/acl_peripheral_demo
+    - $TELINK_IDE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import $ECLIPSE_PROJECT_PATH -cleanBuild $ECLIPSE_PROJECT_NAME/eslp_esl_demo
+    - date
+
+  artifacts:
+    paths:
+    - "tl_ble_sdk/build/TL323X/**/*.lst"
+    - "tl_ble_sdk/build/TL323X/**/*.bin"
+    - "*.bin"
+    - "*.lst"
+  when: always
+
+
+###################################################################################################################################################
+
+  
+fossid:
+  tags:
+    - FOSSID
+  stage: fossid
+  script:
+    - fossid_check.sh
+  artifacts:
+    paths:
+    - fossid*.txt
+  when: manual
 
 plainPW_check:
   stage: plainPW_check

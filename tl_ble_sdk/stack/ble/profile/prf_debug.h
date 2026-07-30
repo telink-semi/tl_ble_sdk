@@ -142,7 +142,7 @@ extern const unsigned char DBG_PRF_MASK_GATTS_LOG;
 #endif
 
 #ifndef PRF_DBG_STORE_EN
-    #define PRF_DBG_STORE_EN 1
+    #define PRF_DBG_STORE_EN 0
 #endif
 
 extern const unsigned char DBG_PRF_MASK_AUD_LOG;
@@ -176,6 +176,10 @@ extern const unsigned char DBG_PRF_MASK_STORE_LOG;
     #define PRF_DBG_RAS_DATA_EN 0
 #endif
 
+#ifndef PRF_DBG_RAS_MEM_EN
+    #define PRF_DBG_RAS_MEM_EN 0
+#endif
+
 extern const unsigned char DBG_PRF_MASK_RAS_LOG;
 extern const unsigned char DBG_PRF_MASK_RAS_DATA_LOG;
 
@@ -192,14 +196,14 @@ extern const unsigned char DBG_PRF_MASK_RAS_DATA_LOG;
 extern const unsigned char DBG_PRF_MASK_ESLS_LOG;
 extern const unsigned char DBG_PRF_MASK_ESL_ESLP_LOG;
 
-/////////////////////////Ultra Low Latency(ULL) HID Debug Log///////////////////////
+/////////////////////////HID ISO Debug Log///////////////////////
 #ifndef PRF_DBG_HID_EN
     #define PRF_DBG_HID_EN 1
 #endif
 
 
-#ifndef PRF_DBG_ULLHID_EN
-    #define PRF_DBG_ULLHID_EN 1
+#ifndef PRF_DBG_HID_ISO_EN
+    #define PRF_DBG_HID_ISO_EN 1
 #endif
 
 extern const unsigned char DBG_PRF_MASK_HID_LOG;

@@ -79,6 +79,54 @@ typedef enum {
     FLD_PWM0_IR_FIFO_IRQ        = 0x04,  // FIFO interrupt (PWM0 only)
 } pwm_irq_type_e;
 
+typedef enum
+{
+    //event_sel = 0
+    PWM_EVENT_PWM0_START = 0x0000,
+    PWM_EVENT_PWM1_START,
+    PWM_EVENT_PWM2_START,
+    PWM_EVENT_PWM3_START,
+    PWM_EVENT_PWM4_START,
+    PWM_EVENT_PWM5_START,
+    PWM_EVENT_PWM6_START,
+
+    //event_sel = 1
+    PWM_EVENT_PWM0_CYCDONE = 0x0100,
+    PWM_EVENT_PWM1_CYCDONE,
+    PWM_EVENT_PWM2_CYCDONE,
+    PWM_EVENT_PWM3_CYCDONE,
+    PWM_EVENT_PWM4_CYCDONE,
+    PWM_EVENT_PWM5_CYCDONE,
+    PWM_EVENT_PWM6_CYCDONE,
+
+    //event_sel = 2
+    PWM_EVENT_PWM0_DONE = 0x0200,
+    PWM_EVENT_PWM0_FIFO_DONE,
+    PWM_EVENT_PWM0_LVL,
+} pwm_event_e;
+
+typedef enum
+{
+    //task_sel = 0
+    PWM_TASK_PWM0_EN = 0x0000,
+    PWM_TASK_PWM1_EN,
+    PWM_TASK_PWM2_EN,
+    PWM_TASK_PWM3_EN,
+    PWM_TASK_PWM0_DISABLE,
+    PWM_TASK_PWM1_DISABLE,
+    PWM_TASK_PWM2_DISABLE,
+    PWM_TASK_PWM3_DISABLE,
+
+    //task_sel = 1
+    PWM_TASK_PWM4_EN = 0x0100,
+    PWM_TASK_PWM5_EN,
+    PWM_TASK_PWM6_EN,
+    PWM_TASK_PWM4_DISABLE,
+    PWM_TASK_PWM5_DISABLE,
+    PWM_TASK_PWM6_DISABLE,
+} pwm_task_e;
+
+
 /**
  * @brief     This function servers to set pwm clock frequency, when pwm clock source is pclk.
  * @param[in] pwm_clk_div - variable of the pwm clock.
@@ -472,5 +520,20 @@ unsigned int pwm_get_irq_status(pwm_id_e id, pwm_irq_type_e type);
  */
 void pwm_clr_irq_status(pwm_id_e id, pwm_irq_type_e type);
 
+/**
+ * @brief      This function serves to configure the PWM PEM event.
+ * @param[in]  chn - to select the PEM channel.
+ * @param[in]  pin - the PWM event signal selection.
+ * @return     none.
+ */
+void pwm_set_pem_event(pem_chn_e chn, pwm_event_e event_signal);
+
+/**
+ * @brief      This function serves to configure the PWM PEM task.
+ * @param[in]  chn - to select the PEM channel.
+ * @param[in]  pin - the PWM task signal selection.
+ * @return     none.
+ */
+void pwm_set_pem_task(pem_chn_e chn, pwm_task_e task_signal);
 
 #endif

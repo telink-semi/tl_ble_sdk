@@ -35,14 +35,24 @@
 #include "stack/ble/hci/hci_event.h"
 
 #include "stack/ble/controller/ll/ll.h"
+
+#if !defined(TLK_ONLY_BLE_HOST)
 #include "stack/ble/controller/ll/ll_pm.h"
+#endif
+
 
 #include "stack/ble/controller/ll/fsu/ll_fsu.h"
+
+#include "stack/ble/controller/ll/feat_page/ll_feat_page.h"
+
 #include "stack/ble/controller/ll/acl_conn/acl_conn.h"
 #include "stack/ble/controller/ll/acl_conn/acl_peripheral.h"
 #include "stack/ble/controller/ll/acl_conn/acl_central.h"
 
 #include "stack/ble/controller/ll/past/past.h"
+
+#include "stack/ble/controller/ll/acl_conn/acl_sci.h"
+
 #include "stack/ble/controller/ll/adv/adv.h"
 #include "stack/ble/controller/ll/adv/leg_adv.h"
 #include "stack/ble/controller/ll/adv/ext_adv.h"
@@ -50,6 +60,7 @@
 #include "stack/ble/controller/ll/scan/scan.h"
 #include "stack/ble/controller/ll/scan/leg_scan.h"
 #include "stack/ble/controller/ll/scan/ext_scan.h"
+#include "stack/ble/controller/ll/scan/mon_adv.h"
 
 
 #include "stack/ble/controller/ll/init/init.h"
@@ -72,10 +83,11 @@
 
 #include "stack/ble/controller/contr_comp.h"
 
-
 #include "stack/ble/debug/debug.h"
 
 #include "algorithm/algorithm.h"
+
+
 
 
 #endif /* BLE_H_ */

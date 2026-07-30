@@ -30,7 +30,7 @@
  */
 void usb1hw_init(void)
 {
-    pm_set_dig_module_power_switch(FLD_PD_USB_EN, PM_POWER_UP); /* usb0 and usb1 use the same bit. */
+//    pm_set_dig_module_power_switch(FLD_PD_USB_EN, PM_POWER_UP); /* usb0 and usb1 use the same bit. */
 
     BM_SET(reg_rst7, FLD_RST7_USB1);
     BM_SET(reg_clk_en7, FLD_CLK7_USB1_EN);

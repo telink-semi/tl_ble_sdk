@@ -924,7 +924,7 @@ void usb_init(void)
     /* set control endpoint size */
     usbhw_set_ctrl_ep_size(USB_CTR_SIZE);
     #endif
-    #if ((MCU_CORE_TYPE == MCU_CORE_TL321X) || (MCU_CORE_TYPE == MCU_CORE_TL751X))
+    #if ((MCU_CORE_TYPE == MCU_CORE_TL321X))
     usbhw_enable_hw_feature(FLD_USB_AUTO_HALT_CLR | FLD_USB_AUTO_HALT_STALL);
     #endif
     usbhw_enable_manual_interrupt(FLD_CTRL_EP_AUTO_STD | FLD_CTRL_EP_AUTO_DESC | FLD_CTRL_EP_AUTO_CFG);

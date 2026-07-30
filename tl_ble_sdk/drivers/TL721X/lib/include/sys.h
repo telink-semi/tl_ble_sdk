@@ -37,6 +37,8 @@
 #include "reg_include/register.h"
 #include "compiler.h"
 
+#define  INTERNAL_SIMULATION_DEBUG    0
+
 /**********************************************************************************************************************
  *                                         global constants                                                           *
  *********************************************************************************************************************/
@@ -207,7 +209,11 @@ extern unsigned int g_chip_version;
  * @brief      This function reboot mcu.
  * @return     none
  */
+#ifdef BLC_ZEPHYR_BLE_INTEGRATION
+_attribute_text_sec_ void protected_sys_reboot(void);
+#else
 _attribute_text_sec_ void sys_reboot(void);
+#endif
 
 /**
  * @brief      This function reboot mcu.

@@ -29,8 +29,10 @@ struct blc_bas_server
     u16 batteryPowerStateHdl; //Battery power state attribute handle
 };
 
+
 struct blc_bas_server_ctrl
 {
     blc_prf_proc_t        process;
     struct blc_bas_server basServer;
 } __attribute__((packed));
+

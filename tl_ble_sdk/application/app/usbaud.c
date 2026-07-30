@@ -159,7 +159,9 @@ volatile int aaa_audio_intf_set = 0;
 int usb_audio_class_out_intf_proc(unsigned char type, unsigned char feature_id)
 {
     int                 ret   = 0;
+#if MCU_CORE_TYPE != MCU_CORE_TL322X
     usb_audio_status_t *p_aud = &g_usb_audio_status;
+#endif
 
     aaa_audio_intf_set = 0;
     aaa_audio_intf_set = (type << 8);
@@ -246,6 +248,8 @@ int usbaud_handle_set_mic_cmd(int type)
         usbaud_set_mic_vol(val);
     } else {
     }
+#else
+    (void)type;
 #endif
     return 0;
 }

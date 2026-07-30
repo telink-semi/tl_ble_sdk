@@ -30,6 +30,9 @@
 #include "../default_att.h"
 #include "app_ui.h"
 
+#if (APP_PARSE_CHAR_ENABLE)
+#include "../feature_app_parse_char.h"
+#endif
 
 #if (FEATURE_TEST_MODE == TEST_SMP)
 
@@ -58,12 +61,14 @@ _attribute_ble_data_retention_ u8 key_type;
 void key_change_proc(void)
 {
     u8 key0 = kb_event.keycode[0];
-    // u8 key_buf[8] = {0,0,0,0,0,0,0,0};
+    //  u8 key_buf[8] = {0,0,0,0,0,0,0,0};
 
     key_not_released = 1;
-    if (kb_event.cnt == 2) {                //two key press
+    if (kb_event.cnt == 2)     //two key press
+    {
     } else if (kb_event.cnt == 1) {
-        if (key0 >= CR_VOL_UP) {            //volume up/down
+        if (key0 >= CR_VOL_UP) //volume up/down
+        {
             key_type = CONSUMER_KEY;
             u16 consumer_key;
             if (key0 == CR_VOL_UP) {        //volume up
@@ -101,10 +106,12 @@ void key_change_proc(void)
         } else {
             key_type = PAIR_UNPAIR_KEY;
 
-            if (key0 == BTN_PAIR) {          //Manual pair triggered by Key Press
+            if (key0 == BTN_PAIR) //Manual pair triggered by Key Press
+            {
                 central_pairing_enable = 1;
                 tlkapi_send_string_data(APP_PAIR_LOG_EN, "[UI][PAIR] Pair begin", 0, 0);
-            } else if (key0 == BTN_UNPAIR) { //Manual un_pair triggered by Key Press
+            } else if (key0 == BTN_UNPAIR) //Manual un_pair triggered by Key Press
+            {
                 /*Here is just Telink Demonstration effect. Cause the demo board has limited key to use, only one "un_pair" key is
                  available. When "un_pair" key pressed, we will choose and un_pair one device in connection state */
                 if (acl_conn_central_num) {               //at least 1 central connection exist
@@ -124,7 +131,8 @@ void key_change_proc(void)
             }
         }
 
-    } else { //kb_event.cnt == 0,  key release
+    } else //kb_event.cnt == 0,  key release
+    {
         key_not_released = 0;
         if (key_type == CONSUMER_KEY) {
             u16 consumer_key = 0;
@@ -198,11 +206,15 @@ void proc_central_role_unpair(void)
 
                 central_unpair_enable = 0;                                                          //every "un_pair" key can only triggers one connection disconnect
 
-                                                                                                    // delete this device information(mac_address and distributed keys...) on FLash
+    // delete this device information(mac_address and distributed keys...) on FLash
     #if (ACL_CENTRAL_SMP_ENABLE)
                 blc_smp_deleteBondingPeripheralInfo_by_PeerMacAddress(dev_char_info->peer_adrType, dev_char_info->peer_addr);
     #endif
-
+                #if (APP_PARSE_CHAR_ENABLE)
+                    app_parse_printf("delete bonding info for %02X:%02X:%02X:%02X:%02X:%02X\r\n",
+                                     dev_char_info->peer_addr[0], dev_char_info->peer_addr[1], dev_char_info->peer_addr[2],
+                                     dev_char_info->peer_addr[3], dev_char_info->peer_addr[4], dev_char_info->peer_addr[5]);
+                #endif
                 tlkapi_send_string_data(APP_PAIR_LOG_EN, "[UI][PAIR] delete peer device", &central_disconnect_connhandle, 2);
             }
 

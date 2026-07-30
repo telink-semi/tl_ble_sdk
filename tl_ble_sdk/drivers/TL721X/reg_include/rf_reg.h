@@ -413,8 +413,6 @@ enum
     FLD_RF_LAT_AT_END = BIT(4),
 };
 
-//BLE CS use
-#define reg_rf_iq_samp_num  REG_ADDR16(REG_BASEBAND_BASE_ADDR+0x2e)
 #define reg_rf_iq_samp_num0 REG_ADDR8(REG_BASEBAND_BASE_ADDR + 0x2e)
 #define reg_rf_iq_samp_num1 REG_ADDR8(REG_BASEBAND_BASE_ADDR + 0x2f)
 
@@ -859,21 +857,6 @@ enum
 #define reg_rf_en_freq_comp_time2          REG_ADDR8(REG_BASEBAND_BASE_ADDR + 0xa2)
 #define reg_rf_en_freq_comp_time3          REG_ADDR8(REG_BASEBAND_BASE_ADDR + 0xa3)
 
-//BLE CS use start
-#define reg_rf_tx_frac_time_pose_time_addr  0x170048
-#define reg_rf_tx_frac_time_pose_time       REG_ADDR32(REG_BASEBAND_BASE_ADDR+0x48)
-#define reg_rf_tx_frac_time_pose_time0      REG_ADDR8(REG_BASEBAND_BASE_ADDR+0x48)
-#define reg_rf_tx_frac_time_pose_time1      REG_ADDR8(REG_BASEBAND_BASE_ADDR+0x49)
-#define reg_rf_tx_frac_time_pose_time2      REG_ADDR8(REG_BASEBAND_BASE_ADDR+0x4a)
-#define reg_rf_tx_frac_time_pose_time3      REG_ADDR8(REG_BASEBAND_BASE_ADDR+0x4b)
-
-#define reg_rf_tx_frac_time_neg_time_addr   0x17004c
-#define reg_rf_tx_frac_time_neg_time        REG_ADDR32(REG_BASEBAND_BASE_ADDR+0x4c)
-#define reg_rf_tx_frac_time_neg_time0       REG_ADDR8(REG_BASEBAND_BASE_ADDR+0x4c)
-#define reg_rf_tx_frac_time_neg_time1       REG_ADDR8(REG_BASEBAND_BASE_ADDR+0x4d)
-#define reg_rf_tx_frac_time_neg_time2       REG_ADDR8(REG_BASEBAND_BASE_ADDR+0x4e)
-#define reg_rf_tx_frac_time_neg_time3       REG_ADDR8(REG_BASEBAND_BASE_ADDR+0x4f)
-//BLE CS use end
 
 /**************************************AES-CCM***********************************************/
 #define reg_rf_tlk_crypt_skey(i)  REG_ADDR8(REG_BASEBAND_BASE_ADDR + 0xa4 + (i))

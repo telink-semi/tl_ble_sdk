@@ -129,7 +129,7 @@ __INLINE int pm_is_deepPadWakeup(void)
  * @param[in]  none.
  * @return     mcu_status.
  */
-__INLINE int pm_get_mcu_status(void)
+__INLINE unsigned char pm_get_mcu_status(void)
 {
     return g_pm_status_info.mcu_status;
 }

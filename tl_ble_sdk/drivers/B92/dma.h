@@ -399,7 +399,7 @@ static inline unsigned int dma_cal_size(unsigned int size_byte, dma_transfer_wid
  * @note      <p> The src_addr and dst_addr must be aligned by word (4 bytes), otherwise the program will enter an exception.
  *            <p>  When a certain DMA channel has not finished the transmission (bit 0 of reg_dma_ctr0(chn) is 1), it is needed  to disable DMA before writing to the DMA register.
  */
-_attribute_ram_code_only_ /*!< added by BLE */
+_attribute_ram_code_sec_ /*!< added by BLE */
 static inline void dma_set_address(dma_chn_e chn, unsigned int src_addr, unsigned int dst_addr)
 {
     reg_dma_src_addr(chn) = (unsigned int)convert_ram_addr_cpu2bus(src_addr);

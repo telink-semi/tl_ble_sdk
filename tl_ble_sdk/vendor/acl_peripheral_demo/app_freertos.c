@@ -267,14 +267,6 @@ void app_TaskCreate(void)
         #if (PM_DEEPSLEEP_RETENTION_ENABLE)
             #if (MCU_CORE_TYPE == MCU_CORE_B91)
                 #error "B91 deep retention 64K SRAM not enough !!!"
-            #elif (MCU_CORE_TYPE == MCU_CORE_B92)
-    blc_pm_setDeepsleepRetentionType(DEEPSLEEP_MODE_RET_SRAM_LOW96K);
-            #elif (MCU_CORE_TYPE == MCU_CORE_TL721X)
-    blc_pm_setDeepsleepRetentionType(DEEPSLEEP_MODE_RET_SRAM_LOW128K);
-            #elif (MCU_CORE_TYPE == MCU_CORE_TL321X)
-    blc_pm_setDeepsleepRetentionType(DEEPSLEEP_MODE_RET_SRAM_LOW96K);
-            #else
-                #error "This chip doesn't support deep retention !!!"
             #endif
         #endif //(PM_DEEPSLEEP_RETENTION_ENABLE)
     #endif     //#if (BLE_APP_PM_ENABLE)

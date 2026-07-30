@@ -37,8 +37,7 @@ void pem_init(void)
 /**
  * @brief     This function servers to configure PEM channel and some configures.
  * @param[in] chn - to select the PEM channel.
- * @param[in] pem_event_config -  to setting serves to set the configuration of stimer PEM event.
-
+ * @param[in] pem_event_config -  to setting serves to set the configuration of PEM event.
  * @return    none
  */
 void pem_event_config(pem_chn_e chn, pem_event_config_t pem_event_config)
@@ -49,7 +48,7 @@ void pem_event_config(pem_chn_e chn, pem_event_config_t pem_event_config)
 /**
  * @brief     This function servers to configure PEM channel and some configures.
  * @param[in] chn - to select the PEM channel.
- * @param[in] pem_task_config - to setting serves to set the configuration of stimer PEM task.
+ * @param[in] pem_task_config - to setting serves to set the configuration of PEM task.
  * @return    none
  */
 void pem_task_config(pem_chn_e chn, pem_task_config_t pem_task_config)

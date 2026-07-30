@@ -52,7 +52,7 @@
  * 
  * | Power Supply Mode | Power Source                          | Output Power Characteristics                                                                 | Advantage                                  |
  * |-------------------|---------------------------------------|------------------------------------------------------------------------------------------------|-------------------------------------------|
- * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT 鈫?higher available power)          | Simple power path, suitable for high-power scenarios |
+ * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT → higher available power)          | Simple power path, suitable for high-power scenarios |
  * | VANT mode         | Powered by embedded DCDC + LDO        | Output power is stable (independent of VBAT voltage)                                          | Lower power consumption at the same transmit power |
  * 
  * @subsection rf_power_table TX Power Table (Driver-Provided)
@@ -97,12 +97,14 @@
  *          Set to 0 (it is the configuration confirmed to be used with xuqiang, i.e. the current configuration):
  *                    All RF modes except private 250k and 500k have enabled secondary filters to improve the chip's out-of-band immunity to interference (including DC offset).
  *                    After turning it on, the sensitivity performance of chips with poor interference immunity can be restored to the normal range.
- *                    However, turning it on will tighten the chip's anti-frequency offset range to within 卤150kHz.
+ *                    However, turning it on will tighten the chip's anti-frequency offset range to within ±150kHz.
  *          Set to 1: Restore the settings of the previous version's secondary filtering, only as a reserved configuration for testing, and cannot be used in actual scenarios
  *
  */
-#define RF_RX_SEC_FLT_CONFIG 0
-
+#define RF_RX_SEC_FLT_BACK    0
+#ifndef SW_DCOC_EN
+    #define     SW_DCOC_EN                              1
+#endif
 /**
  *  @brief This define serve to calculate the DMA length of packet.
  */
@@ -1011,7 +1013,7 @@ void rf_update_rx_dcoc_calib_code(unsigned short calib_code);
  *                   in order to improve the chip's out of band anti-interference ability (including DC offset).
  *                But there are two things to note:
  *                (1)Using DCOC software calibration will increase the software execution time of rf_mode_init().
- *                (2)After turning on the RX secondary filter, the anti frequency offset range of the chip will be reduced to within 卤 150kHz.
+ *                (2)After turning on the RX secondary filter, the anti frequency offset range of the chip will be reduced to within ± 150kHz.
  */
 void rf_mode_init(void);
 

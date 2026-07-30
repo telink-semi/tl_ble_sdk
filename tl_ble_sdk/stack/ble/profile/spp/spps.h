@@ -24,7 +24,6 @@
 #pragma once
 
 #include "spps_client_buf.h"
-#include "prf_spp.h"
 
 /******************************* SPPS Common Start **********************************************************************/
 

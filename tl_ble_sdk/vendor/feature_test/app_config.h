@@ -53,6 +53,8 @@
     #include "feature_soft_timer/app_config.h"
 #elif (FEATURE_TEST_MODE == TEST_FEATURE_BACKUP)
     #include "feature_backup/app_config.h"
+#elif (FEATURE_TEST_MODE == TEST_FEATURE_SCI)
+    #include "feature_sci/app_config.h"
 #elif (FEATURE_TEST_MODE == TEST_SMP)
     #include "feature_smp/app_config.h"
 #elif (FEATURE_TEST_MODE == TEST_L2CAP_COC)

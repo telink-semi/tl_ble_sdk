@@ -32,7 +32,6 @@
 unsigned char ptx_buffer[TPLL_PIPE_NUM * TPLL_TX_FIFO_SIZE * TPLL_TX_FIFO_NUM] __attribute__((aligned(4))) = {};
 unsigned char rx_buf[TPLL_PIPE_RX_FIFO_SIZE * TPLL_PIPE_RX_FIFO_NUM] __attribute__((aligned(4)))           = {};
 
-volatile unsigned char  rx_flag         = 0;
 volatile unsigned char  rx_payload[128] = {0};
 static unsigned char    ack_payload[32] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f};
 volatile unsigned int   Timestamp_value = 0;
@@ -46,6 +45,7 @@ volatile unsigned int   rx_header_len  = 0;
 volatile signed char    rx_rssi        = 0;
 volatile unsigned char  rx_pipe        = 0;
 volatile unsigned char  rx_crc_len     = 0;
+extern volatile unsigned char rx_flag, rx_dr_flag;
 TPLL_CrcConfig_t        TPLL_CrcConfig = {
            .init_value    = 0xffffffff,
            .poly          = 0x00001021,
@@ -77,13 +77,13 @@ rf_pkt_flt_t TPLL_PktFlt = {
  *         only generic mode need to configure this!!!
 */
 TPLL_GenericHeader_t TPLL_GenericHeader = {
-    .h0_size         = 5,
-    .h1_size         = 4,
-    .length_size     = 15,
-    .h0_val          = 26, //0x22 to enable no ack
-    .h1_val          = 14,
+    .h0_size         = 8,
+    .h1_size         = 8, // must be <=8
+    .length_size     = 8,
+    .h0_val          = 0, //no ack 0x22
+    .h1_val          = 0,
     .length_val      = TX_PAYLOAD_LEN,
-    .pid_start_bit   = 0,
+    .pid_start_bit   = 0,  //start at h0
     .noack_start_bit = 2,
 };
 
@@ -208,10 +208,14 @@ _attribute_no_inline_ void main_loop(void)
         rx_pipe        = ReadRxPayload.rx_pipe;
         rx_crc_len     = ReadRxPayload.crc_len;
         time_out_tick  = rf_stimer_get_tick();
-        while (!TPLL_TxFifoEmpty(0) || clock_time_exceed(time_out_tick, 200 * 1000))
-            ;
-        ack_payload[4]++;
-        TPLL_WriteAckPayload(PRX_PIPE, ptx_buffer, ack_payload, TX_PAYLOAD_LEN);
+//        while (!TPLL_TxFifoEmpty(0) || clock_time_exceed(time_out_tick, 200 * 1000))
+//            ;
+        if (rx_dr_flag == 1) {
+            rx_dr_flag = 0;
+            ack_payload[4]++;
+            TPLL_WriteAckPayload(PRX_PIPE, ptx_buffer, ack_payload, TX_PAYLOAD_LEN);
+        }
+        printf("rx:0x%x %x %x %x %x %x\n", rx_packet[0], rx_packet[1], rx_packet[2], rx_packet[3], rx_packet[4], rx_packet[5]);
     }
 }
 #endif

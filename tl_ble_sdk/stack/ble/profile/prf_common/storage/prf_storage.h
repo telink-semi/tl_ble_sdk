@@ -77,3 +77,9 @@ u32 blt_prf_searchBondingDeviceByAclHandle(u16 connHandle, u16* valueLen);
  * @return      none.
  */
 void blt_prf_deleteBondingInfoByFlashAddress(u32 flashAddr);
+/**
+ * @brief       This function is used to set max profile bond number.
+ * @param[in]   none
+ * @return      set status 0 means success.
+ */
+int blc_prf_setPairingDeviceMaxNumber (int maxBondNum);

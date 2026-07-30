@@ -1915,3 +1915,12 @@ void spi_slave_tx_dma_chain_init(spi_sel_e spi_sel, dma_chn_e chn, unsigned char
     spi_tx_dma_add_list_element(spi_sel, chn, &g_spi_tx_dma_list_cfg, &g_spi_tx_dma_list_cfg, (unsigned char *)(dst_addr), data_len);
     dma_chn_en(chn);
 }
+
+//2.4g used
+drv_api_status_e spi_status_check(spi_sel_e spi_sel)
+{
+    if (SPI_WAIT(spi_txfifo_is_full, spi_sel, g_spi_timeout_error[spi_sel].g_spi_error_timeout_us, g_spi_timeout_error[spi_sel].spi_timeout_handler, SPI_API_ERROR_TIMEOUT_TXFIFO_FULL)) {
+        return DRV_API_TIMEOUT;
+    }
+    return DRV_API_SUCCESS;
+}

@@ -38,6 +38,7 @@
 #include "compiler.h"
 #include "gpio.h"
 #include "reg_include/register.h"
+#include "pem.h"
 
 #ifndef INTERNAL_TEST_FUNC_EN
     #define INTERNAL_TEST_FUNC_EN 0 //only for internal test
@@ -255,7 +256,7 @@ typedef enum
  *           it is necessary to wait for a period of time to allow the ADC to stabilize.
  */
 /*!< BLE USED */
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 /*!< BLE USED END */
 void adc_power_on(void);
 /**
@@ -312,7 +313,7 @@ void adc_set_vbat_divider(adc_sample_chn_e chn, adc_vbat_div_e vbat_div);
  * @TODO  In DMA mode, the first code sampled after power on is an exception and needs to be discarded.
  */
 /*!< BLE USED */
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 /*!< BLE USED END */
 void adc_init(adc_chn_cnt_e channel_cnt);
 /**
@@ -322,7 +323,7 @@ void adc_init(adc_chn_cnt_e channel_cnt);
  * @return none
  */
 /*!< BLE USED */
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 /*!< BLE USED END */
 void adc_gpio_sample_init(adc_sample_chn_e chn, adc_gpio_cfg_t cfg);
 /**
@@ -363,7 +364,7 @@ unsigned short adc_calculate_temperature(unsigned short adc_code);
  * @return      adc_vol_mv  - the average value of adc voltage value(adc voltage value >= 0).
  */
 /*!< BLE USED */
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 /*!< BLE USED END */
 unsigned short adc_calculate_voltage(adc_sample_chn_e chn, unsigned short adc_code);
 
@@ -445,7 +446,7 @@ _attribute_ram_code_sec_noinline_ void adc_clr_irq_status_dma(void);
  *                        if the adc code is negative, bits [11:15] are all 0's and valid data bits are Bit[0:10],the valid range is 0~0x7FF.
  */
 /*!< BLE USED */
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 /*!< BLE USED END */
 unsigned short adc_get_raw_code(void);
 
@@ -474,7 +475,7 @@ static inline void adc_clr_irq_status(void)
  * @return  none
  */
 /*!< BLE USED */
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 /*!< BLE USED END */
 void adc_start_sample_nodma(void);
 

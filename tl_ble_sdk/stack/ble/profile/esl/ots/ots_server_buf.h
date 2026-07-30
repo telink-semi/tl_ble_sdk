@@ -43,6 +43,7 @@ typedef struct
     u16 otsOlcpCccHdl;
     u16 otsObjectListFilterHdl[3];
     u16 otsObjectChangedHdl;
+    u16 otsObjectChangedCccHdl;
 } blc_otp_server_t;
 
 typedef void (*blt_otss_timer_cb_t)(void *data);
@@ -71,6 +72,7 @@ typedef struct
     u8               oacpIndBuf[OACP_IND_SIZE];
     u8               olcpCccVal[sizeof(u16)];
     u8               oacpCccVal[sizeof(u16)];
+    u8               objectChangeCccVal[sizeof(u16)];
     u8               objectIdVal[6];
     u8               objectPropertiesVal[sizeof(u32)];
     u8               objectTypeVal[16];

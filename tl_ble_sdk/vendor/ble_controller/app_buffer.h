@@ -60,6 +60,27 @@ extern u8 app_extScanRspData_buf[];
 /*********************************** Extended ADV data buffer allocation, End** ************************************/
 #endif
 
+#if (APP_LE_CHANNEL_SOUNDING)
+/**************************************** CS rx Buffer allocation, Begin *******************************************/
+
+/**
+ * @brief   CS RX Data buffer length
+ */
+#if ANTENNA_SWITCHING_AUTO_EN
+#define     CS_RX_FIFO_SIZE            CHANNEL_SOUNDING_RX_FIFO_SIZE_ALIGN16(MAX_ANT_PATHS_SUPPORT, 40, 10)
+#else
+#define     CS_RX_FIFO_SIZE            CHANNEL_SOUNDING_RX_FIFO_SIZE_ALIGN16(2, 40, 10)
+#endif
+
+#define     CS_RX_FIFO_NUM              4
+
+#define     APP_CS_CONFIG_NUM           4
+
+extern  u8 app_cs_rx_buf[];
+extern u8 app_CsConfigParam[];
+/**************************************** CS Buffer allocation, End ***********************************************/
+#endif
+
 
 /********************* ACL connection LinkLayer TX & RX data FIFO allocation, Begin ************************************************/
 /**

@@ -23,7 +23,6 @@
  *******************************************************************************************************/
 #pragma once
 
-
 /**
  * @brief       Send ATT Mtu Size Exchange Request.
  * @param[in]   connHandle - connection handle.

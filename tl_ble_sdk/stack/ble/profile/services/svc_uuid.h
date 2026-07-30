@@ -34,12 +34,16 @@ extern const unsigned short characteristicPropertiesLen;
 
 extern const unsigned char charPropRead;
 extern const unsigned char charPropReadWrite;
+extern const unsigned char charPropReadWriteExtended;
 extern const unsigned char charPropReadWriteWithout;
 extern const unsigned char charPropReadWriteWriteWithout;
+extern const unsigned char charPropReadWriteWriteWithoutExtended;
 extern const unsigned char charPropReadWriteWriteWithoutNotify;
 extern const unsigned char charPropReadWriteNotify;
+extern const unsigned char charPropReadWriteIndicate;
 extern const unsigned char charPropReadWriteWithoutNotify;
 extern const unsigned char charPropReadNotfiy;
+extern const unsigned char charPropReadIndicate;
 
 extern const unsigned char charPropWrite;
 extern const unsigned char charPropWriteWithout;
@@ -52,9 +56,13 @@ extern const unsigned char charPropWriteWithoutIndicate;
 extern const unsigned char charPropNotify;
 extern const unsigned char charPropIndicate;
 extern const unsigned char charPropNotifyIndicate;
+extern const unsigned char charPropNotifyBroadcast;
 
 extern const unsigned char  clientCharacteristicConfiguration[2];
 extern const unsigned short clientCharacteristicConfigurationLen;
+
+extern const unsigned char  serverCharacteristicConfiguration[2];
+extern const unsigned short serverCharacteristicConfigurationLen;
 
 #define ATTS_CHARACTERISTIC_DECLARATIONS(properties) \
     {ATT_PERMISSIONS_READ, ATT_16_UUID_LEN, (u8 *)(size_t)declarationsCharacteristicUuid, (u16 *)(size_t) & characteristicPropertiesLen, CHARACTERISTIC_PROPERTIES_LENGTH, (u8 *)(size_t) & properties, ATTS_SET_ATTR_VALUE_PROPERTIES}
@@ -95,7 +103,27 @@ extern const unsigned short clientCharacteristicConfigurationLen;
 #define ATTS_COMMON_CCC_DEFINE              ATTS_CCC_DEFINE(clientCharacteristicConfiguration)
 #define ATTS_COMMON_CCC_DEFINE_CB           {ATT_PERMISSIONS_RDWR, ATT_16_UUID_LEN, (u8 *)(size_t)descriptorClientCharacteristicConfigurationUuid, (u16 *)NULL, 0, (u8 *)NULL, ATTS_SET_WRITE_CBACK | ATTS_SET_READ_CBACK}
 
-#define ATTS_INCLUDE_DEFINE(value)          {ATT_PERMISSIONS_READ, ATT_16_UUID_LEN, (u8 *)(size_t)declarationsIncludeUuid, (u16 *)(size_t) & gattIncludeValueLen, 6, (u8 *)(size_t)value, 0}
+#define ATTS_SCC_DEFINE_COMMON(scc, sccLen) {ATT_PERMISSIONS_RDWR, ATT_16_UUID_LEN, (u8 *)(size_t)descriptorServerCharacteristicConfigurationUuid, (u16 *)(size_t) & sccLen, sizeof(scc), (u8 *)(size_t)scc, 0}
+#define ATTS_SCC_DEFINE(scc)                ATTS_SCC_DEFINE_COMMON(scc, scc##Len)
+#define ATTS_COMMON_SCC_DEFINE              ATTS_SCC_DEFINE(serverCharacteristicConfiguration)
+#define ATTS_COMMON_SCC_DEFINE_CB           {ATT_PERMISSIONS_RDWR, ATT_16_UUID_LEN, (u8 *)(size_t)descriptorServerCharacteristicConfigurationUuid, (u16 *)NULL, 0, (u8 *)NULL, ATTS_SET_WRITE_CBACK | ATTS_SET_READ_CBACK}
+
+#define ATTS_DESCR_DEFINE_COMMON(perm, uuid, val_ptr, val_len_ptr, val_len_max, settings) \
+    {perm, ATT_16_UUID_LEN, (u8 *)(size_t)uuid, (u16 *)(size_t)val_len_ptr, val_len_max, (u8 *)(size_t)val_ptr, settings}
+
+#define ATTS_DESCR_DEFINE_READ(uuid, val_ptr, val_len_ptr, val_len_max, settings)  ATTS_DESCR_DEFINE_COMMON(ATT_PERMISSIONS_READ, uuid, val_ptr, val_len_ptr, val_len_max, settings)
+#define ATTS_DESCR_DEFINE_WRITE(uuid, val_ptr, val_len_ptr, val_len_max, settings) ATTS_DESCR_DEFINE_COMMON(ATT_PERMISSIONS_WRITE, uuid, val_ptr, val_len_ptr, val_len_max, settings)
+#define ATTS_DESCR_DEFINE_RDWR(uuid, val_ptr, val_len_ptr, val_len_max, settings)  ATTS_DESCR_DEFINE_COMMON(ATT_PERMISSIONS_RDWR, uuid, val_ptr, val_len_ptr, val_len_max, settings)
+
+#define ATTS_DESCR_DEFINE_NOCB_READ(uuid, val_ptr, val_len_ptr, val_len_max)       ATTS_DESCR_DEFINE_READ(uuid, val_ptr, val_len_ptr, val_len_max, 0)
+#define ATTS_DESCR_DEFINE_NOCB_WRITE(uuid, val_ptr, val_len_ptr, val_len_max)      ATTS_DESCR_DEFINE_WRITE(uuid, val_ptr, val_len_ptr, val_len_max, 0)
+#define ATTS_DESCR_DEFINE_NOCB_RDWR(uuid, val_ptr, val_len_ptr, val_len_max)       ATTS_DESCR_DEFINE_RDWR(uuid, val_ptr, val_len_ptr, val_len_max, 0)
+
+#define ATTS_DESCR_DEFINE_PTR_NOCB_READ(uuid, val)                                 ATTS_DESCR_DEFINE_NOCB_READ(uuid, val, &val##Len, sizeof(val))
+#define ATTS_DESCR_DEFINE_PTR_NOCB_WRITE(uuid, val)                                ATTS_DESCR_DEFINE_NOCB_READ(uuid, val, &val##Len, sizeof(val))
+#define ATTS_DESCR_DEFINE_PTR_NOCB_RDWR(uuid, val)                                 ATTS_DESCR_DEFINE_NOCB_READ(uuid, val, &val##Len, sizeof(val))
+
+#define ATTS_INCLUDE_DEFINE(value)                                                 {ATT_PERMISSIONS_READ, ATT_16_UUID_LEN, (u8 *)(size_t)declarationsIncludeUuid, (u16 *)(size_t) & gattIncludeValueLen, 6, (u8 *)(size_t)value, 0}
 
 #define ATTS_CHAR_UUID_ENCR_WRITE_NULL(properties, uuid)                                                        \
     ATTS_CHARACTERISTIC_DECLARATIONS(properties),                                                               \
@@ -112,7 +140,7 @@ extern const unsigned short clientCharacteristicConfigurationLen;
 #define ATTS_CHAR_UUID_ENCR_RDWR_NULL(properties, uuid)                                                                                   \
     ATTS_CHARACTERISTIC_DECLARATIONS(properties),                                                                                         \
     {                                                                                                                                     \
-        ATT_PERMISSIONS_ENCRYPT_RDWR, ATT_16_UUID_LEN, (u8 *)uuid, (u16 *)NULL, 0, (u8 *)NULL, ATTS_SET_WRITE_CBACK | ATTS_SET_READ_CBACK \
+        ATT_PERMISSIONS_ENCRYPT_RDWR, ATT_16_UUID_LEN, (u8 *)(size_t)uuid, (u16 *)NULL, 0, (u8 *)NULL, ATTS_SET_WRITE_CBACK | ATTS_SET_READ_CBACK \
     }
 
 #define ATTS_CHAR_UUID_WRITE_NULL(properties, uuid)                                                     \
@@ -124,6 +152,12 @@ extern const unsigned short clientCharacteristicConfigurationLen;
 
 #define ATTS_CHAR_UUID_NOTIF_ONLY(uuid)                          \
     ATTS_CHARACTERISTIC_DECLARATIONS(charPropNotify),            \
+    {                                                            \
+        0, ATT_16_UUID_LEN, (u8 *)(size_t)uuid, NULL, 0, NULL, 0 \
+    }
+
+#define ATTS_CHAR_UUID_NOTIF_BROADCAST_ONLY(uuid)                \
+    ATTS_CHARACTERISTIC_DECLARATIONS(charPropNotifyBroadcast),   \
     {                                                            \
         0, ATT_16_UUID_LEN, (u8 *)(size_t)uuid, NULL, 0, NULL, 0 \
     }

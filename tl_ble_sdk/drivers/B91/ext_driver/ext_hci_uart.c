@@ -151,7 +151,7 @@ _attribute_ram_code_sec_ void ext_hci_irq_handler(void){
          unsigned int rev_data_len = uart_get_dma_rev_data_len(EXT_HCI_UART_CHANNEL,EXT_HCI_UART_DMA_CHN_RX);
             /************************clr rx_irq****************************/
          uart_clr_irq_status(EXT_HCI_UART_CHANNEL,UART_CLR_RX);
-         unsigned char  * addr = ( unsigned char  *)&ReceAddr[0]-4;
+         volatile unsigned char  * addr = ( unsigned char  *)&ReceAddr[0]-4;
          addr[3] = (rev_data_len >> 24);
          addr[2] = rev_data_len >> 16;
          addr[1] = rev_data_len >> 8;
@@ -189,10 +189,10 @@ _attribute_ram_code_sec_
 unsigned char ext_hci_uartSendData(unsigned char *addr, unsigned int len)
 {
     unsigned char ret_val;
-    core_interrupt_disable();
+    u32 r = core_interrupt_disable();
     uart_dma_send_flag = 0;
     ret_val = uart_send_dma(EXT_HCI_UART_CHANNEL, addr, len);
-    core_interrupt_enable();
+    core_restore_interrupt(r);
     return ret_val;
 
 }
@@ -200,10 +200,15 @@ unsigned char ext_hci_uartSendData(unsigned char *addr, unsigned int len)
 _attribute_ram_code_sec_  //BLE SDK use:
 void ext_hci_uartReceData(unsigned char *addr, unsigned int len)
 {
-    core_interrupt_disable();
+    u32 r = core_interrupt_disable();
     uart_receive_dma(EXT_HCI_UART_CHANNEL, addr, len);
     ReceAddr = addr;
-    core_interrupt_enable();
+    core_restore_interrupt(r);
+}
+
+void ext_hci_uartDisRxIrq(void)
+{
+   //todo
 }
 #endif
 

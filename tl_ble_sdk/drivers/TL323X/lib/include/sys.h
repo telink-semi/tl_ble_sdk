@@ -141,9 +141,9 @@ typedef enum
 {
     INTERNAL_CAP_XTAL24M = 0, /**<    Use the chip's internal crystal capacitors,
                                  <p>  hardware boards can not have 24M crystal matching capacitors */
-    //    EXTERNAL_CAP_XTAL24M = 1, /**<    Use an external crystal capacitor,
-    //                                 <p>  the hardware board needs to have a matching capacitor for the 24M crystal,
-    //                                 <p>  the program will turn off the chip's internal capacitor */
+    EXTERNAL_CAP_XTAL24M = 1, /**<    Use an external crystal capacitor,
+                                 <p>  the hardware board needs to have a matching capacitor for the 24M crystal,
+                                 <p>  the program will turn off the chip's internal capacitor */
 } cap_typedef_e;
 
 /**
@@ -198,6 +198,10 @@ typedef enum
 
 extern unsigned int g_chip_version;
 
+#ifdef BLC_ZEPHYR_BLE_INTEGRATION
+extern unsigned int g_chip_protection_code;
+#endif /* BLC_ZEPHYR_BLE_INTEGRATION, MATTER USED */
+
 /**********************************************************************************************************************
  *                                      global function prototype                                                     *
  *********************************************************************************************************************/
@@ -205,7 +209,7 @@ extern unsigned int g_chip_version;
  * @brief      This function reboot mcu.
  * @return     none
  */
-#ifdef BLC_ZEPHYR_BLE_INTEGRATION
+#ifdef BLC_ZEPHYR_BLE_INTEGRATION   /* ble defined, compatible with zephyr */
 _attribute_text_sec_ void protected_sys_reboot(void);
 #else
 _attribute_text_sec_ void sys_reboot(void);

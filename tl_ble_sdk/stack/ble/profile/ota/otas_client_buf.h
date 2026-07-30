@@ -36,9 +36,9 @@ struct blc_otas_client{
     u8 reserved[2];
 }__attribute__((packed));
 
+
 struct blc_otas_client_ctrl{
     blc_prf_proc_t process;
     struct blc_otas_client pOtasClient[STACK_PRF_ACL_CONN_MAX_NUM];
-
 }__attribute__((packed));
 

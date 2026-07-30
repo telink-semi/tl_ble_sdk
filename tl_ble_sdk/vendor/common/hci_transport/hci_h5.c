@@ -163,6 +163,7 @@ u16 HCI_H5_CcittCrc16Calc(u16 crcInit, u8 *pPacket, u32 len)
  */
 u8 HCI_H5_CheckSumCalc(u8 *p, u32 len)
 {
+    (void)len;
     ASSERT(len == 3, HCI_TR_ERR_H5_HEAD_LEN);
 
     #if 0
@@ -439,6 +440,8 @@ void HCI_H5_SendConfigRsp(void)
  */
 void HCI_H5_DecodeLinkPdu(HciH5Head_t *pHciH5Head, u8 *pPacket, u32 len)
 {
+    (void)pHciH5Head;
+    (void)len;
     HciH5Config_t *pH5Config = &hciH5Cb.config;
     u8            *p         = pPacket + HCI_H5_HEAD_LEN;
 
@@ -503,7 +506,6 @@ void HCI_H5_DecodeLinkPdu(HciH5Head_t *pHciH5Head, u8 *pPacket, u32 len)
         } else if (msg == HCI_H5_MSG_SYNC) {
             hciH5Cb.linkState = HCI_H5_LINK_STATE_IDLE;
             HCI_H5_Reset();
-            extern ble_sts_t blc_hci_reset(void);
             blc_hci_reset();
             H5_TRACK_INFO("[ACTIVE]Rx SYNC >>> Reset to state: IDLE...\n");
 
@@ -703,12 +705,12 @@ void HCI_H5_PacketHandler(u8 *pPacket, u32 len)
 
     /* Check Payload length. */
     if (!hciH5Head.crc) {
-        if (HCI_H5_HEAD_LEN + hciH5Head.payloadLen != len) {
+        if ((u32)(HCI_H5_HEAD_LEN + hciH5Head.payloadLen) != len) {
             H5_TRACK_WRN("Payload length error(NO CRC)...\n");
             return; //discard.
         }
     } else {
-        if (HCI_H5_HEAD_LEN + hciH5Head.payloadLen + HCI_H5_CRC_LEN != len) {
+        if ((u32)(HCI_H5_HEAD_LEN + hciH5Head.payloadLen + HCI_H5_CRC_LEN) != len) {
             H5_TRACK_WRN("Payload length error(CRC)...\n");
             return; //discard.
         }

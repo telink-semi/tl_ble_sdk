@@ -27,13 +27,13 @@ typedef struct
 {
     gattc_sub_ccc_msg_t ntfInput;
     u16 sppDataHdl;
+    u16 sppNotifyHdl;
     u16 sppDataCccHdl;
 }blc_spps_client_t ;
 
 typedef struct
 {
-    blc_prf_proc_t     process;
-
+    blc_prf_proc_t process;
     blc_spps_client_t pSppsClient[STACK_PRF_ACL_CONN_MAX_NUM];
 } blc_spps_client_ctrl_t;
 

@@ -28,6 +28,7 @@
 #include "fonts.h"
 #include "gui.h"
 #include "app_vendor_image.h"
+#include <strings.h>
 
 #if APP_VENDOR_IMAGE
 

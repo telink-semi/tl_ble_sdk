@@ -52,7 +52,7 @@
  * 
  * | Power Supply Mode | Power Source                          | Output Power Characteristics                                                                 | Advantage                                  |
  * |-------------------|---------------------------------------|------------------------------------------------------------------------------------------------|-------------------------------------------|
- * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT 鈫?higher available power)          | Simple power path, suitable for high-power scenarios |
+ * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT → higher available power)          | Simple power path, suitable for high-power scenarios |
  * | VANT mode         | Powered by embedded DCDC + LDO        | Output power is stable (independent of VBAT voltage)                                          | Lower power consumption at the same transmit power |
  * 
  * @subsection rf_power_table TX Power Table (Driver-Provided)
@@ -109,19 +109,22 @@
 
 #define RF_TX_POWER     RF_TX_POWER_A3
 
+/* BLE move the macro here. */
+#define        RF_TX_HPMC_COMPENSATE_EN          0
 
 /**
  *  @brief This define serve to calculate the DMA length of packet.
  */
 #define rf_tx_packet_dma_len(rf_data_len) (((rf_data_len) + 3) / 4) | (((rf_data_len) % 4) << 22)
 
-
 /*
  *This macro definition is used to revert to the use of a hardware DCOC in the event of a problem with the debug software DCOC.
  *Note:Depending on the given scheme of the design, the software DCOC must be turned on, and this macro definition is only used
  *for internal debugging.Set this macro to 0 when the hardware DCOC needs to be restored(Modified by zhiwei,confirmed by kaixin,20250108)
  */
+#ifndef RF_RX_DCOC_SOFTWARE_CAL_EN
 #define        RF_RX_DCOC_SOFTWARE_CAL_EN        1 //BLE SDK move the macro here
+#endif /* RF_RX_DCOC_SOFTWARE_CAL_EN */
 
 /**
  *  @brief This macro provides an alternative name for the rf_get_latched_rssi() function to be compatible with older versions of code
@@ -615,7 +618,7 @@ typedef enum
     RF_MODE_PRI_GENERIC_500K = BIT(18),       /**< private generic 500K mode */
     RF_MODE_PRI_GENERIC_1M   = BIT(19),       /**< private generic 1M mode */
     RF_MODE_PRI_GENERIC_2M   = BIT(20),       /**< private generic 2M mode */
-    // For Channel sounding.
+#if (0)
     RF_MODE_ANT                    = BIT(10), /**< ant mode */
     RF_MODE_HYBEE_1M               = BIT(12), /**< hybee 1M mode */
     RF_MODE_HYBEE_2M               = BIT(13), /**< hybee 2M mode */
@@ -635,6 +638,7 @@ typedef enum
     RF_MODE_HYBEE_2M_2BYTE_SFD     = BIT(29), /**< hybee 2M 2byte sfd mode*/
     RF_MODE_HYBEE_2M_2BYTE_SFD_NEW = BIT(30), /**< hybee 2M 2byte sfd mode new*/
     RF_MODE_HR_2M                  = BIT(31), /**< hr 2M mode*/
+#endif
 
 } rf_mode_e;
 

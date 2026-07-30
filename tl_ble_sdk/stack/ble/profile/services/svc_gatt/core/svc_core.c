@@ -30,8 +30,11 @@ static u16                               defaultDevNameLen  = MAX_DEV_NAME_LEN;
 
 static const u16 defaultAppearance    = DEFAULT_DEV_APPEARE;
 static const u16 defaultAppearanceLen = sizeof(defaultAppearance);
-
+#if (TELINK_CS_TEST_WITH_PHONE)
+static const u16 defaultPeriConnParameters[]  = {48, 48, 0, 100}; //gap_periConnectParams_t
+#else
 static const u16 defaultPeriConnParameters[]  = {20, 40, 0, 100}; //gap_periConnectParams_t
+#endif
 static const u16 defaultPeriConnParametersLen = sizeof(defaultPeriConnParameters);
 
 /*
@@ -165,7 +168,7 @@ void blc_svc_calculateDatabaseHash(void)
  */
 void blc_svc_setDeviceName(const char *name)
 {
-    strncpy(defaultDevName, name, sizeof(defaultDevName));
+    strncpy((char*)defaultDevName, name, sizeof(defaultDevName));
     defaultDevNameLen = strlen(name);
 }
 

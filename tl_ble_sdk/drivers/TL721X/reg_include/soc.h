@@ -297,12 +297,12 @@ enum
 #define reg_clk_en7  REG_ADDR8(SC_BASE_ADDR + 0x47)
 
 
-#define reg_hclk_sel REG_ADDR8(SC_BASE_ADDR + 0x28)
+#define reg_cclk_sel REG_ADDR8(SC_BASE_ADDR + 0x28)
 
 enum
 {
     FLD_CLK_SCLK_DIV = BIT_RNG(0, 3),
-    FLD_CLK_SCLK_SEL = BIT_RNG(4, 6),
+    FLD_CLK_SCLK_SEL = BIT_RNG(4, 5),
 };
 
 #define reg_clkzb_set REG_ADDR8(SC_BASE_ADDR + 0x56)

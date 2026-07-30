@@ -37,7 +37,7 @@ u16 central_disconnect_connhandle; //mark the central connection which is in un_
 
 #if (UI_BUTTON_ENABLE)
 
-    /////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
     #define MAX_BTN_SIZE    2
     #define BTN_VALID_LEVEL 0
     #define BTN_PAIR        0x01
@@ -144,10 +144,13 @@ void proc_button(void)
 
     int det_key = vc_detect_button(1);
 
-    if (det_key) {                      //key change: press or release
+    if (det_key)                      //key change: press or release
+    {
         u8 key0 = vc_event.keycode[0];
-        if (vc_event.cnt == 2) {        //two key press
-        } else if (vc_event.cnt == 1) { //one key press
+        if (vc_event.cnt == 2)        //two key press
+        {
+        } else if (vc_event.cnt == 1) //one key press
+        {
             if (key0 == BTN_PAIR) {
                 central_pairing_enable = 1;
                 tlkapi_send_string_data(APP_PAIR_LOG_EN, "[UI][PAIR] Pair begin", 0, 0);
@@ -200,18 +203,22 @@ void key_change_proc(void)
 {
     u8 key0          = kb_event.keycode[0];
     key_not_released = 1;
-    if (kb_event.cnt == 2) {     //two key press
+    if (kb_event.cnt == 2)     //two key press
+    {
     } else if (kb_event.cnt == 1) {
-        if (key0 >= CR_VOL_UP) { //volume up/down
+        if (key0 >= CR_VOL_UP) //volume up/down
+        {
             key_type = CONSUMER_KEY;
 
         } else {
             key_type = PAIR_UNPAIR_KEY;
 
-            if (key0 == BTN_PAIR) {          //Manual pair triggered by Key Press
+            if (key0 == BTN_PAIR) //Manual pair triggered by Key Press
+            {
                 central_pairing_enable = 1;
                 tlkapi_send_string_data(APP_PAIR_LOG_EN, "[UI][PAIR] Pair begin", 0, 0);
-            } else if (key0 == BTN_UNPAIR) { //Manual un_pair triggered by Key Press
+            } else if (key0 == BTN_UNPAIR) //Manual un_pair triggered by Key Press
+            {
                 /*Here is just Telink Demonstration effect. Cause the demo board has limited key to use, only one "un_pair" key is
                  available. When "un_pair" key pressed, we will choose and un_pair one device in connection state */
                 if (acl_conn_central_num) {               //at least 1 central connection exist
@@ -231,7 +238,8 @@ void key_change_proc(void)
             }
         }
 
-    } else { //kb_event.cnt == 0,  key release
+    } else //kb_event.cnt == 0,  key release
+    {
         key_not_released = 0;
         if (key_type == CONSUMER_KEY) {
         } else if (key_type == KEYBOARD_KEY) {
@@ -300,7 +308,7 @@ void proc_central_role_unpair(void)
 
 
 #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
-                // delete ATT handle storage on flash
+                    // delete ATT handle storage on flash
                 dev_char_info_delete_peer_att_handle_by_peer_mac(dev_char_info->peer_adrType, dev_char_info->peer_addr);
 #endif
 

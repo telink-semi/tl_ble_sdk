@@ -31,19 +31,19 @@
 extern int central_pairing_enable;
 
 /**
-    * @brief      keyboard task handler
-    * @param[in]  e    - event type
-    * @param[in]  p    - Pointer point to event parameter.
-    * @param[in]  n    - the length of event parameter.
-    * @return     none.
-    */
+ * @brief      keyboard task handler
+ * @param[in]  e    - event type
+ * @param[in]  p    - Pointer point to event parameter.
+ * @param[in]  n    - the length of event parameter.
+ * @return     none.
+ */
 void proc_keyboard(u8 e, u8 *p, int n);
 
 /**
-    * @brief   BLE Unpair handle for central
-    * @param   none.
-    * @return  none.
-    */
+ * @brief   BLE Unpair handle for central
+ * @param   none.
+ * @return  none.
+ */
 void proc_central_role_unpair(void);
 
 

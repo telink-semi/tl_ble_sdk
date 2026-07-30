@@ -37,16 +37,6 @@
 
 
 
-/******************************* dbgErrorCode start ******************************************************************/
-/* SRAM 0x00014 ~ 0x0001F can be used to write some debug information */
-
-#define DBG_SRAM_ADDR                   0x00014
-
-#define write_log32(err_code)           write_sram32(DBG_SRAM_ADDR, err_code)
-
-/*addr - only 0x00014/0x00018/0x0001C can be used !!! */
-#define write_dbg32(addr, value)        write_sram32(addr, value)
-/******************************* dbgErrorCode end ********************************************************************/
 
 
 /******************************* pke_start ******************************************************************/
@@ -117,24 +107,6 @@ __INLINE void gpio_read_all(unsigned char *p)
     p[3] = REG_ADDR8(0x140318);
     p[4] = REG_ADDR8(0x140320);
 }
-
-/**
- *  @brief  Define pull up or down types
- */
-typedef enum {
-    PM_PIN_UP_DOWN_FLOAT    = 0,
-    PM_PIN_PULLUP_1M        = 1,
-    PM_PIN_PULLDOWN_100K    = 2,
-    PM_PIN_PULLUP_10K       = 3,
-}gpio_pull_type;
-
-/**
- * @brief     This function set a pin's pull-up/down resistor.
- * @param[in] gpio - the pin needs to set its pull-up/down resistor
- * @param[in] up_down - the type of the pull-up/down resistor
- * @return    none
- */
-void gpio_setup_up_down_resistor(gpio_pin_e gpio, gpio_pull_type up_down);
 /******************************* gpio end ********************************************************************/
 
 
@@ -268,18 +240,39 @@ void generateRandomNum(int len, unsigned char *data);
 *
 *  IQ sample_1us :  4[sample rate is 4Mhz] * 5[IQ_20_BIT] = 20 bytes
 *
-*  buffer_len = DMA_len(4us) + ExtraInfo(sizeof(cs_rx_para_t) = 50us) + Max_mode_len * IQ sample_1us
+*  buffer_len = DMA_len(bytes) + Max_mode_len * IQ sample_1us + ExtraInfo(sizeof(cs_rx_para_t) 80bytes already contains redundancy) 
 *
 *  RX buffer size must be be 16*n, due to MCU design
 *
 *  RX buffer size : ((buffer_len + 15)/16) *16
 *
 */
+#define     CS_EXTRAINFO_LEN                                                 50
 #define     CS_ALIGN_16(len)                                                 (((len + 15)>>4) <<4)
-#define     CS_RX_MODE0_FIFO_SIZE_MAX                                        CS_ALIGN_16(80*20 + 50 + 4)
-#define     CS_RX_MODE1_FIFO_SIZE_MAX                                        CS_ALIGN_16((5 + 44 + 128 + 15)*20 + 50 + 4)
-#define     CS_RX_MODE2_FIFO_SIZE_MAX(AP,PM, SW)                             CS_ALIGN_16((5 + (AP+1)*(PM+SW) - SW)*20 + 54 + 4)
+#define     CS_RX_MODE0_FIFO_SIZE_MAX                                        CS_ALIGN_16(80*20 + CS_EXTRAINFO_LEN + 4)
+#define     CS_RX_MODE1_FIFO_SIZE_MAX                                        CS_ALIGN_16((5 + 44 + 128 + 15)*20 + CS_EXTRAINFO_LEN + 4)
+#define     CS_RX_MODE2_FIFO_SIZE_MAX(AP,PM, SW)                             CS_ALIGN_16((5 + (AP+1)*(PM+SW) - SW)*20 + CS_EXTRAINFO_LEN + 4)
 #define     CHANNEL_SOUNDING_RX_FIFO_SIZE_ALIGN16(N_AP, T_PM_US, T_SW_US)    max3(CS_RX_MODE0_FIFO_SIZE_MAX,CS_RX_MODE1_FIFO_SIZE_MAX, CS_RX_MODE2_FIFO_SIZE_MAX(N_AP, T_PM_US, T_SW_US))
+
+/*
+*  transport_len(4 bytes)
+*
+*  Mode0_len: (10us) * 20 bytes(IQ sample_1us = 20 bytes) + 4 bytes(transport_len) + extend
+*  Mode1_len: rx_early_us(5us) + AA_Only(44us) + Sequence(maximum 128us) + extend
+*  Mode2_len: 4 bytes(transport_len) + ExtraInfo(sizeof(cs_rx_para_t) 80bytes already contains redundancy) + (T_PM(8us valid))*(AntPath +1) * 20 bytes(IQ sample_1us = 20 bytes)
+*
+*  Max_mode_len = max3(Mode2_len,Mode1_len,Mode0_len)
+*
+*  RX buffer size must be be 16*n, due to MCU design
+*
+*  RX buffer size : ((buffer_len + 15)/16) *16
+*
+*/
+#define CS_TRANSPORT_RX_MODE0_FIFO_SIZE_MAX                                        CS_ALIGN_16(10*20 + CS_EXTRAINFO_LEN + 4)
+#define CS_TRANSPORT_RX_MODE1_FIFO_SIZE_MAX                                        CS_ALIGN_16((5 + 44 + 128 + 15)*20 + CS_EXTRAINFO_LEN + 4)
+#define CS_TRANSPORT_RX_MODE2_FIFO_SIZE_MAX(AP,PM, SW)                             CS_ALIGN_16(((AP+1)*(8))*20 + CS_EXTRAINFO_LEN + 4)
+#define CHANNEL_SOUNDING_TRANSPORT_RX_FIFO_SIZE_WITHOUT_MODE1_ALIGN16(N_AP, T_PM_US, T_SW_US)    max2(CS_TRANSPORT_RX_MODE0_FIFO_SIZE_MAX, CS_TRANSPORT_RX_MODE2_FIFO_SIZE_MAX(N_AP, T_PM_US, T_SW_US))
+#define CHANNEL_SOUNDING_TRANSPORT_RX_FIFO_SIZE_ALIGN16(N_AP, T_PM_US, T_SW_US)                  max3(CS_TRANSPORT_RX_MODE0_FIFO_SIZE_MAX, CS_TRANSPORT_RX_MODE1_FIFO_SIZE_MAX, CS_TRANSPORT_RX_MODE2_FIFO_SIZE_MAX(N_AP, T_PM_US, T_SW_US))
 
 /******************************* dma_end ********************************************************************/
 

@@ -62,6 +62,8 @@
 
 #define TEST_FEATURE_BACKUP          200
 
+#define TEST_FEATURE_SCI             202
+
 #define FEATURE_TEST_MODE            TEST_FEATURE_BACKUP
 
 

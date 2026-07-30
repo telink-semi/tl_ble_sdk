@@ -39,6 +39,9 @@ _attribute_ble_data_retention_ int central_smp_pending = 0; // SMP: security & e
 
 
 /*********************************** Extended ADV data buffer allocation, Begin ************************************/
+#if defined(TLK_ONLY_BLE_HOST)
+#define ADV_SET_PARAM_LENGTH  0
+#endif
 
 _attribute_ble_data_retention_ u8 app_extAdvSetParam_buf[ADV_SET_PARAM_LENGTH * APP_EXT_ADV_SETS_NUMBER];
 
@@ -126,21 +129,26 @@ int app_le_connection_update_complete_event_handle(u8 *p)
 int app_controller_event_callback(u32 h, u8 *p, int n)
 {
     (void)n;
-    if (h & HCI_FLAG_EVENT_BT_STD) { //Controller HCI event
+    if (h & HCI_FLAG_EVENT_BT_STD) //Controller HCI event
+    {
         u8 evtCode = h & 0xff;
 
         //------------ disconnect -------------------------------------
-        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) { //connection terminate
+        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) //connection terminate
+        {
             app_disconnect_event_handle(p);
-        } else if (evtCode == HCI_EVT_LE_META) {         //LE Event
+        } else if (evtCode == HCI_EVT_LE_META)         //LE Event
+        {
             u8 subEvt_code = p[0];
 
             //------hci le event: le connection complete event---------------------------------
-            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) { // connection complete
+            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) // connection complete
+            {
                 app_le_connection_complete_event_handle(p);
             }
             //------hci le event: le connection update complete event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) { // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) // connection update
+            {
                 app_le_connection_update_complete_event_handle(p);
             }
         }
@@ -226,16 +234,18 @@ int app_host_event_callback(u32 h, u8 *para, int n)
  */
 int app_gatt_data_handler(u16 connHandle, u8 *pkt)
 {
-    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) { //GATT data for Central
+    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) //GATT data for Central
+    {
         rf_packet_att_t *pAtt = (rf_packet_att_t *)pkt;
 
         //so any ATT data before service discovery will be dropped
         dev_char_info_t *dev_info = dev_char_info_search_by_connhandle(connHandle);
         if (dev_info) {
             //-------   user process ------------------------------------------------
-            // u16 attHandle = pAtt->handle;
+            //          u16 attHandle = pAtt->handle;
 
-            if (pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI) { //peripheral handle notify
+            if (pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI) //peripheral handle notify
+            {
             } else if (pAtt->opcode == ATT_OP_HANDLE_VALUE_IND) {
             }
         }
@@ -305,7 +315,10 @@ _attribute_no_inline_ void user_init_normal(void)
 
     blc_initMacAddress(flash_sector_mac_address, mac_public, mac_random_static);
 
-
+    #if defined(TLK_ONLY_BLE_HOST)
+    sys_n22_start();
+    delay_ms(300);
+    #endif
     //////////// LinkLayer Initialization  Begin /////////////////////////
     blc_ll_initBasicMCU();
 
@@ -353,7 +366,7 @@ _attribute_no_inline_ void user_init_normal(void)
     u8 error_code = blc_contr_checkControllerInitialization();
     if (error_code != INIT_SUCCESS) {
         /* It's recommended that user set some UI alarm to know the exact error, e.g. LED shine, print log */
-        write_log32(0x88880000 | error_code);
+           
     #if (TLKAPI_DEBUG_ENABLE)
         tlkapi_printf(1, "Controller Init ERROR:0x%x", error_code);
         while (1) {

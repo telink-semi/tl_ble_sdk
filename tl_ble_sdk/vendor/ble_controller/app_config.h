@@ -57,9 +57,13 @@
         #define HCI_TR_RX_PIN              GPIO_FC_PD6 //UART0_RX_PB3 //--->EBQ TX
         #define HCI_TR_TX_PIN              GPIO_FC_PD7 //UART0_TX_PB2 //--->EBQ RX
         #define HCI_TR_BAUDRATE (1000000)
+    #elif (MCU_CORE_TYPE == MCU_CORE_TL521X)
+        #define HCI_TR_RX_PIN              GPIO_FC_PC4
+        #define HCI_TR_TX_PIN              GPIO_FC_PC5
+        #define HCI_TR_BAUDRATE (1000000)
     #elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
-        #define HCI_TR_RX_PIN              GPIO_FC_PA2 //--->EBQ TX
-        #define HCI_TR_TX_PIN              GPIO_FC_PA3 //--->EBQ RX
+        #define HCI_TR_RX_PIN              GPIO_FC_PB0
+        #define HCI_TR_TX_PIN              GPIO_FC_PB1
         #define HCI_TR_BAUDRATE (1000000)
     #endif
 
@@ -81,7 +85,6 @@
 #if MCU_CORE_TYPE == MCU_CORE_TL322X
     #define PLIC_ENABLE           1
     #define CLIC_ENABLE           0
-    #define HOST_V2_ENABLE        0
 #endif
 
 #define APP_CS_LOG_EN        0
@@ -96,15 +99,19 @@
 #elif (MCU_CORE_TYPE == MCU_CORE_TL721X)
     #define BOARD_SELECT BOARD_721X_EVK_C1T315A20
 #elif (MCU_CORE_TYPE == MCU_CORE_TL321X)
-    #define BOARD_SELECT BOARD_321X_EVK_C1T335A20 //BOARD_321X_EVK_C1T335A20
+    #define BOARD_SELECT BOARD_321X_EVK_C1T331A20 //BOARD_321X_EVK_C1T335A20
 #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
-    #define BOARD_SELECT BOARD_322X_EVK_C1T371A20
+    #define BOARD_SELECT BOARD_322X_EVK_C1T382A20
+#elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
+    #define BOARD_SELECT BOARD_323X_EVK_C1T388A20
+#elif (MCU_CORE_TYPE == MCU_CORE_TL521X)
+    #define BOARD_SELECT BOARD_521X_EVK_C1T416A20
 #endif
 
 ///////////////////////// DEBUG  Configuration ////////////////////////////////////////////////
 #define DEBUG_GPIO_ENABLE     0
 
-#define TLKAPI_DEBUG_ENABLE   0
+#define TLKAPI_DEBUG_ENABLE   1
 #define TLKAPI_DEBUG_CHANNEL  TLKAPI_DEBUG_CHANNEL_GSUART
 
 #define APP_LOG_EN            1

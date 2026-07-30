@@ -113,7 +113,7 @@ static inline int pm_is_deepPadWakeup(void)
  * @param[in]  none.
  * @return     mcu_status.
  */
-static inline int pm_get_mcu_status(void)
+static inline unsigned char pm_get_mcu_status(void)
 {
 #if !defined(MCU_CORE_TL322X_N22)
     return g_pm_status_info.mcu_status;
@@ -127,7 +127,7 @@ static inline int pm_get_mcu_status(void)
  * @param[in]  none.
  * @return     1- yes , 0- no.
  */
-static inline int pm_get_wake_src(void)
+static inline unsigned char pm_get_wake_src(void)
 {
 #if !defined(MCU_CORE_TL322X_N22)
     return g_pm_status_info.wakeup_src;
@@ -145,4 +145,13 @@ typedef enum{
     PM_MCU_WFI,       // MCU is in wait-for-interrupt state
     PM_MCU_RFU        // Reserved for future use
 }tlk_pm_mcuStatus_t;
+
+/**
+ * @brief      This function serves to set the working mode of MCU based on 32k crystal,e.g. suspend mode, deepsleep mode, deepsleep with SRAM retention mode and shutdown mode.
+ * @param[in]  sleep_mode - sleep mode type select.
+ * @param[in]  wakeup_src - wake up source select.
+ * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 5 minutes.
+ * @return     indicate whether the cpu is wake up successful.
+ */
+int  cpu_sleep_wakeup_32k_rc(pm_sleep_mode_e sleep_mode,  pm_sleep_wakeup_src_e wakeup_src, unsigned int  wakeup_tick);
 #endif /* DRIVERS_TL721X_DRIVER_EXT_EXT_PM_H_ */

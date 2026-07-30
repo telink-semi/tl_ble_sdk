@@ -88,11 +88,11 @@ int app_le_adv_report_event_handle(u8 *p)
     s8                  rssi = pa->data[pa->len];
 
     #if 0 //debug, print ADV report number every 5 seconds
-    AA_dbg_adv_rpt ++;
-    if (clock_time_exceed(tick_adv_rpt, 5000000)) {
-        tlkapi_send_string_data(APP_CONTR_EVT_LOG_EN, "[APP][EVT] Adv report", pa->mac, 6);
-        tick_adv_rpt = clock_time();
-    }
+        AA_dbg_adv_rpt ++;
+        if(clock_time_exceed(tick_adv_rpt, 5000000)){
+            tlkapi_send_string_data(APP_CONTR_EVT_LOG_EN, "[APP][EVT] Adv report", pa->mac, 6);
+            tick_adv_rpt = clock_time();
+        }
     #endif
 
     /*********************** Central Create connection demo: Key press or ADV pair packet triggers pair  ********************/
@@ -148,7 +148,8 @@ int app_le_connection_complete_event_handle(u8 *p)
 
         dev_char_info_insert_by_conn_event(pConnEvt);
 
-        if (pConnEvt->role == ACL_ROLE_CENTRAL) {       // central role, process SMP and SDP if necessary
+        if (pConnEvt->role == ACL_ROLE_CENTRAL)         // central role, process SMP and SDP if necessary
+        {
     #if (ACL_CENTRAL_SMP_ENABLE)
             central_smp_pending = pConnEvt->connHandle; // this connection need SMP
     #endif
@@ -177,7 +178,7 @@ int app_le_connection_complete_event_handle(u8 *p)
                 central_sdp_pending = pConnEvt->connHandle; // mark this connection need SDP
 
         #if (ACL_CENTRAL_SMP_ENABLE)
-                        //service discovery initiated after SMP done, trigger it in "GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE" event callBack.
+                    //service discovery initiated after SMP done, trigger it in "GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE" event callBack.
         #else
                 app_register_service(&app_service_discovery); //No SMP, service discovery can initiated now
         #endif
@@ -258,27 +259,33 @@ int app_le_connection_update_complete_event_handle(u8 *p)
 int app_controller_event_callback(u32 h, u8 *p, int n)
 {
     (void)n;
-    if (h & HCI_FLAG_EVENT_BT_STD) { //Controller HCI event
+    if (h & HCI_FLAG_EVENT_BT_STD) //Controller HCI event
+    {
         u8 evtCode = h & 0xff;
 
         //------------ disconnect -------------------------------------
-        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) { //connection terminate
+        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) //connection terminate
+        {
             app_disconnect_event_handle(p);
-        } else if (evtCode == HCI_EVT_LE_META) {         //LE Event
+        } else if (evtCode == HCI_EVT_LE_META)         //LE Event
+        {
             u8 subEvt_code = p[0];
 
             //------hci le event: le connection complete event---------------------------------
-            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) { // connection complete
+            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) // connection complete
+            {
                 app_le_connection_complete_event_handle(p);
             }
             //--------hci le event: le adv report event ----------------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT) { // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT) // ADV packet
+            {
                 //after controller is set to scan state, it will report all the adv packet it received by this event
 
                 app_le_adv_report_event_handle(p);
             }
             //------hci le event: le connection update complete event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) { // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) // connection update
+            {
                 app_le_connection_update_complete_event_handle(p);
             } else if (subEvt_code == HCI_SUB_EVT_LE_DATA_LENGTH_CHANGE) {
                 hci_le_dataLengthChangeEvt_t *pLen = (hci_le_dataLengthChangeEvt_t *)p;
@@ -400,9 +407,10 @@ int app_host_event_callback(u32 h, u8 *para, int n)
  */
 int app_gatt_data_handler(u16 connHandle, u8 *pkt)
 {
-    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) { //GATT data for Central
+    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) //GATT data for Central
+    {
     #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
-        if (central_sdp_pending == connHandle) {                                //ATT service discovery is ongoing on this conn_handle
+        if (central_sdp_pending == connHandle) {                              //ATT service discovery is ongoing on this conn_handle
             //when service discovery function is running, all the ATT data from peripheral
             //will be processed by it,  user can only send your own att cmd after  service discovery is over
             host_att_client_handler(connHandle, pkt); //handle this ATT data by service discovery process
@@ -417,15 +425,16 @@ int app_gatt_data_handler(u16 connHandle, u8 *pkt)
             //-------   user process ------------------------------------------------
             u16 attHandle = pAtt->handle;
 
-            if (pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI) { //peripheral handle notify
-                                                            //---------------   consumer key --------------------------
+            if (pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI) //peripheral handle notify
+            {
+                //---------------   consumer key --------------------------
     #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
-                if (attHandle == dev_info->char_handle[3])  // Consume Report In (Media Key)
+                if (attHandle == dev_info->char_handle[3]) // Consume Report In (Media Key)
     #else
                 if (attHandle == HID_HANDLE_CONSUME_REPORT) //Demo device(825x_ble_sample) Consume Report AttHandle value is 25
     #endif
                 {
-                    // att_keyboard_media (connHandle, pAtt->dat);
+                    //                      att_keyboard_media (connHandle, pAtt->dat);
                 }
                 //---------------   keyboard key --------------------------
     #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
@@ -434,7 +443,7 @@ int app_gatt_data_handler(u16 connHandle, u8 *pkt)
                 else if (attHandle == HID_HANDLE_KEYBOARD_REPORT) // Demo device(825x_ble_sample) Key Report AttHandle value is 29
     #endif
                 {
-                    // att_keyboard (connHandle, pAtt->dat);
+                    //                      att_keyboard (connHandle, pAtt->dat);
                 }
     #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
                 else if (attHandle == dev_info->char_handle[0]) // AUDIO Notify
@@ -514,7 +523,10 @@ _attribute_no_inline_ void user_init_normal(void)
 
     blc_initMacAddress(flash_sector_mac_address, mac_public, mac_random_static);
 
-
+    #if defined(TLK_ONLY_BLE_HOST)
+    sys_n22_start();
+    delay_ms(300);
+    #endif
     //////////// LinkLayer Initialization  Begin /////////////////////////
     blc_ll_initBasicMCU();
 
@@ -563,7 +575,7 @@ _attribute_no_inline_ void user_init_normal(void)
     u8 error_code = blc_contr_checkControllerInitialization();
     if (error_code != INIT_SUCCESS) {
         /* It's recommended that user set some UI alarm to know the exact error, e.g. LED shine, print log */
-        write_log32(0x88880000 | error_code);
+           
     #if (TLKAPI_DEBUG_ENABLE)
         tlkapi_send_string_data(APP_LOG_EN, "[APP][INI] Controller INIT ERROR", &error_code, 1);
         while (1) {
@@ -590,7 +602,7 @@ _attribute_no_inline_ void user_init_normal(void)
     blc_att_setPeripheralRxMtuSize(PERIPHR_ATT_RX_MTU); ///must be placed after "blc_gap_init"
 
     /* GATT Initialization */
-    // my_gatt_init();
+    //  my_gatt_init();
     #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
     host_att_register_idle_func(main_idle_loop);
     #endif

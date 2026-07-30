@@ -91,6 +91,21 @@ __INLINE void blc_app_system_init(void)
     wd_32k_stop();
     wd_stop();
     PLL_192M_CCLK_48M_HCLK_24M_PCLK_24M_MSPI_48M;
+#elif (MCU_CORE_TYPE == MCU_CORE_TL521X)
+    sys_init(DCDC_1P25_LDO_1P8, VBAT_MAX_VALUE_GREATER_THAN_3V6, INTERNAL_CAP_XTAL24M);
+    pm_update_status_info(1);
+    gpio_shutdown(GPIO_ALL);
+    gpio_set_up_down_res(GPIO_SWS, GPIO_PIN_PULLUP_1M);
+    wd_32k_stop();
+    wd_stop();
+    PLL_144M_CCLK_48M_HCLK_24M_PCLK_12M_MSPI_48M;
+#elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
+    sys_init(DCDC_1P25_LDO_1P8, VBAT_MAX_VALUE_GREATER_THAN_3V6, INTERNAL_CAP_XTAL24M);
+    pm_update_status_info(1);
+    gpio_set_up_down_res(GPIO_SWS, GPIO_PIN_PULLUP_1M);
+    wd_32k_stop();
+    wd_stop();
+    PLL_192M_CCLK_48M_HCLK_24M_PCLK_12M_MSPI_48M;
 #endif
 }
 
@@ -119,11 +134,6 @@ _attribute_ram_code_ int main(void)
         user_init_deepRetn();
     } else {             //MCU power_on or wake_up from deepSleep mode
         user_init_normal();
-        #if (MCU_CORE_TYPE == MCU_CORE_TL721X)
-            blc_pm_setDeepsleepRetentionType(DEEPSLEEP_MODE_RET_SRAM_LOW128K);
-        #else
-            blc_pm_setDeepsleepRetentionType(DEEPSLEEP_MODE_RET_SRAM_LOW64K);
-        #endif
     }
 
     irq_enable();

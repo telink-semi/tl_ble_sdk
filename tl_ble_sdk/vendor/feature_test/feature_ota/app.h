@@ -29,63 +29,63 @@
 #if (FEATURE_TEST_MODE == TEST_OTA)
 
 /**
-    * @brief       user initialization when MCU power on or wake_up from deepSleep mode
-    * @param[in]   none
-    * @return      none
-    */
+ * @brief       user initialization when MCU power on or wake_up from deepSleep mode
+ * @param[in]   none
+ * @return      none
+ */
 void user_init_normal(void);
 
 
 /**
-    * @brief       user initialization when MCU wake_up from deepSleep_retention mode
-    * @param[in]   none
-    * @return      none
-    */
+ * @brief       user initialization when MCU wake_up from deepSleep_retention mode
+ * @param[in]   none
+ * @return      none
+ */
 void user_init_deepRetn(void);
 
 
 /**
-    * @brief     BLE main idle loop
-    * @param[in]  none.
-    * @return     none.
-    */
+ * @brief     BLE main idle loop
+ * @param[in]  none.
+ * @return     none.
+ */
 int main_idle_loop(void);
 
 
 /**
-    * @brief     BLE main loop
-    * @param[in]  none.
-    * @return     none.
-    */
+ * @brief     BLE main loop
+ * @param[in]  none.
+ * @return     none.
+ */
 void main_loop(void);
 
 
 /**
-    * @brief      BLE controller event handler call-back.
-    * @param[in]  h       event type
-    * @param[in]  p       Pointer point to event parameter buffer.
-    * @param[in]  n       the length of event parameter.
-    * @return
-    */
+ * @brief      BLE controller event handler call-back.
+ * @param[in]  h       event type
+ * @param[in]  p       Pointer point to event parameter buffer.
+ * @param[in]  n       the length of event parameter.
+ * @return
+ */
 int app_controller_event_callback(u32 h, u8 *p, int n);
 
 
 /**
-    * @brief      BLE host event handler call-back.
-    * @param[in]  h       event type
-    * @param[in]  para    Pointer point to event parameter buffer.
-    * @param[in]  n       the length of event parameter.
-    * @return
-    */
+ * @brief      BLE host event handler call-back.
+ * @param[in]  h       event type
+ * @param[in]  para    Pointer point to event parameter buffer.
+ * @param[in]  n       the length of event parameter.
+ * @return
+ */
 int app_host_event_callback(u32 h, u8 *para, int n);
 
 
 /**
-    * @brief      BLE GATT data handler call-back.
-    * @param[in]  connHandle     connection handle.
-    * @param[in]  pkt             Pointer point to data packet buffer.
-    * @return
-    */
+ * @brief      BLE GATT data handler call-back.
+ * @param[in]  connHandle     connection handle.
+ * @param[in]  pkt             Pointer point to data packet buffer.
+ * @return
+ */
 int app_gatt_data_handler(u16 connHandle, u8 *pkt);
 
 

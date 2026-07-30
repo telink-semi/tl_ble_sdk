@@ -367,7 +367,18 @@ void mswi_handler(void)
 {
     A_mswi_cnt++;//Debug use
 
-    vTaskSwitchContext();   //RTOS task scheduling
+    /* Flash operation protection check:
+     * - Non-zero = Flash erase/write/read in progress
+     * - Prevents task switching during critical Flash operations
+     *   (Interrupting may corrupt Flash content or cause system crash)
+     */
+    uint32_t flash_operation_in_progress = reg_irq_threshold;
+    if (flash_operation_in_progress != 0) {
+        return;  // Skip task switching during protected Flash operations
+    }
+
+    /* Trigger RTOS task scheduling */
+    vTaskSwitchContext();
 }
 #endif
 

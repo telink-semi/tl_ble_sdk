@@ -326,6 +326,8 @@
        #define BOARD_SELECT BOARD_322X_EVK_C1T371A20
     #elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
         #define BOARD_SELECT BOARD_323X_EVK_C1T388A20
+    #elif (MCU_CORE_TYPE == MCU_CORE_TL521X)
+        #define BOARD_SELECT BOARD_521X_EVK_C1T416A20
     #else
         #error "SDK do not support this MCU!"
     #endif
@@ -353,6 +355,14 @@
     #define DEBUG_GPIO_ENABLE 0
 #endif
 
+#ifndef DEBUG_CS_GPIO_ENABLE
+    #define DEBUG_CS_GPIO_ENABLE 0
+#endif
+
+#ifndef DEBUG_HDT_GPIO_ENABLE
+    #define DEBUG_HDT_GPIO_ENABLE 0
+#endif
+
 #if (BOARD_SELECT == BOARD_951X_EVK_C1T213A20)
     #include "boards/B91_C1T213A20.h"
 #elif (BOARD_SELECT == BOARD_952X_EVK_C1T266A20)
@@ -363,22 +373,20 @@
     #include "boards/TL321X_C1T335A20.h"
 #elif (BOARD_SELECT == BOARD_321X_EVK_C1T335A78)
     #include "boards/TL321X_C1T335A78.h"
-#elif (BOARD_SELECT == BOARD_322X_EVK_C1T382A20)
-    #include "boards/TL322X_C1T382A20.h"
+#elif (BOARD_SELECT == BOARD_322X_EVK_C1T371A20)
+    #include "boards/TL322X_C1T371A20.h"
+#elif (BOARD_SELECT == BOARD_521X_EVK_C1T416A20)
+    #include "boards/TL521X_C1T416A20.h"
 #elif (BOARD_SELECT == BOARD_721X_EVK_C1T315A20)
     #include "boards/TL721X_C1T315A20.h"
 #elif (BOARD_SELECT == BOARD_721X_AIOT_DK1_ML7218D1)
     #include "boards/TL721X_ML7218D1.h"
 #elif (BOARD_SELECT == BOARD_721X_AIOT_DK1_ML7218A)
     #include "boards/TL721X_ML7218A.h"
-
-#elif (BOARD_SELECT == BOARD_322X_EVK_C1T371A20)
-    #include "boards/TL322X_C1T371A20.h"
 #elif (BOARD_SELECT == BOARD_323X_EVK_C1T388A20)
-     #include "boards/TL323X_C1T388A20.h"
-#elif (BOARD_SELECT == BOARD_323X_EVK_C1T401A20)
-     #include "boards/TL323X_C1T401A20.h"
+    #include "boards/TL323X_C1T388A20.h"
 #endif
+
 
 
 #if (DEBUG_GPIO_ENABLE)

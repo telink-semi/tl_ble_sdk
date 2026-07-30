@@ -27,11 +27,12 @@
 
 #include "tl_common.h"
 #include "drivers.h"
-#include <stdarg.h>
 #include "application/usbstd/usbdesc.h"
 #include "application/usbstd/usb.h"
 #include "application/app/usbcdc.h"
 #include "app_parse_char.h"
+#include <strings.h>
+#include <stdarg.h>
 
 typedef struct {
     u16 write_index;
@@ -47,6 +48,9 @@ const parse_fun_list_t* gParseList = NULL;
 int gParseSize = 0;
 static ring_buf_t appParseRingBuf;
 static u8 ringBuf[PARSE_CHAR_UART_BUFF_SIZE * 2];
+#if (APP_PARSE_CHAR_IFACE == APP_PARSE_CHAR_UART)
+static app_parse_notify_cb_t notify_cb;
+#endif
 
 /**
  * @brief       ring buffer initial function.
@@ -184,6 +188,10 @@ void app_UartRxIRQHandler(unsigned int * param)
     STREAM_TO_U32(rxLen,p);
 
     ring_buf_write(&appParseRingBuf, rxLen, uartRecvBuf + 4);
+
+    if (notify_cb) {
+        notify_cb();
+    }
 }
 
 
@@ -417,6 +425,15 @@ static void app_parse_complete(void)
             gParseList[i].fun(&argv[1], argc-1, gParseList[i].user_data);
         }
     }
+}
+
+void app_parse_set_uart_rx_notify(app_parse_notify_cb_t cb)
+{
+#if (APP_PARSE_CHAR_IFACE == APP_PARSE_CHAR_UART)
+    notify_cb = cb;
+#else
+    (void) cb;
+#endif
 }
 
 /**

@@ -34,7 +34,18 @@
 #define PA_ENABLE                           0
 #endif
 
+#define PA_CHIP_KCT8207L                    0
 
+#if(PA_CHIP_KCT8207L)
+/**
+ * @brief   GPIO to control PA for KCT8207L
+ */
+#define PA_CSD_PIN                         GPIO_PF3
+#define PA_CPS_PIN                         GPIO_PF5
+#define PA_CRX_PIN                         GPIO_PF2
+#define PA_CTX_PIN                         GPIO_PF1
+#define PA_CHL_PIN                         GPIO_PF0
+#else
 /**
  * @brief   GPIO to control PA TX EN, user should set it in app_config.h
  */
@@ -48,7 +59,7 @@
 #ifndef PA_RXEN_PIN
 #define PA_RXEN_PIN                         GPIO_PB3
 #endif
-
+#endif
 
 /**
  * @brief   PA control type

@@ -31,8 +31,8 @@
 #define HW_EVK                            1
 #define HW_C1T335A78                      2            // TL321X
 
-#define HARDWARE_BOARD_SELECT             HW_C1T335A78 //HW_C1T233A78
-#define BOARD_SELECT                      BOARD_321X_EVK_C1T335A78
+#define HARDWARE_BOARD_SELECT             HW_EVK
+#define BOARD_SELECT                      BOARD_321X_EVK_C1T335A20
 
 #define APP_IMAGE_STORAGE_FLASH                     1
 #if (APP_IMAGE_STORAGE_FLASH)
@@ -62,13 +62,19 @@
 
 #define BLE_APP_PM_ENABLE             1
 #define PM_DEEPSLEEP_RETENTION_ENABLE 1
-///////////////////////// ! OS settings////////////////////////////////////////////////
-#define FREERTOS_ENABLE                                0
 
+#define BATT_CHECK_ENABLE             0
 
-#define APP_DEFAULT_BUFFER_ACL_OCTETS_MTU_SIZE_MINIMUM 0
-#define APP_DEFAULT_HID_BATTERY_OTA_ATTRIBUTE_TABLE    1
-
+/* Flash Protection:
+ * 1. Flash protection is enabled by default in SDK. User must enable this function on their final mass production application.
+ * 2. User should use "Unlock" command in Telink BDT tool for Flash access during development and debugging phase.
+ * 3. Flash protection demonstration in SDK is a reference design based on sample code. Considering that user's final application may
+ *    different from sample code, for example, user's final firmware size is bigger, or user have a different OTA design, or user need
+ *    store more data in some other area of Flash, all these differences imply that Flash protection reference design in SDK can not
+ *    be directly used on user's mass production application without any change. User should refer to sample code, understand the
+ *    principles and methods, then change and implement a more appropriate mechanism according to their application if needed.
+ */
+#define APP_FLASH_PROTECTION_ENABLE 1
 
 ///////////////////////// UI Configuration ////////////////////////////////////////////////////
 #define UI_LED_ENABLE 1
@@ -97,7 +103,6 @@
 #define APP_KEY_LOG_EN        1
 
 
-#define JTAG_DEBUG_DISABLE    1
 
 
 #include "../common/default_config.h"

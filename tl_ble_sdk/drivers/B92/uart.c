@@ -598,7 +598,7 @@ unsigned char uart_send(uart_num_e uart_num, unsigned char *addr, unsigned char 
  *              -# After the DMA transfer is complete, the interface needs to be re-invoked to send the next batch of data.
  *              -# If the DMA transfer has not been completed when entering low-power suspend, after suspend, the interface needs to be re-invoked to send the next batch of data.
  */
-_attribute_ram_code_  //BLE SDK use
+_attribute_ram_code_sec_noinline_  //BLE SDK use
 unsigned char uart_send_dma(uart_num_e uart_num, unsigned char *addr, unsigned int len)
 {
     dma_chn_dis(uart_dma_tx_chn[uart_num]);
@@ -638,7 +638,7 @@ unsigned char uart_send_dma(uart_num_e uart_num, unsigned char *addr, unsigned i
         If the DMA transfer has not been completed when entering low-power suspend, after suspend, the interface needs to be re-invoked to receive the next data.
    @endverbatim
  */
-_attribute_ram_code_  //BLE SDK use
+_attribute_ram_code_sec_noinline_  //BLE SDK use
 void uart_receive_dma(uart_num_e uart_num, unsigned char *addr, unsigned int rev_size)
 {
     dma_chn_dis(uart_dma_rx_chn[uart_num]);

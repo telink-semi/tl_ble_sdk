@@ -44,8 +44,8 @@
  *  @brief  Keyboard Configuration
  */
 #if (UI_KEYBOARD_ENABLE)
-    #define MATRIX_ROW_PULL    PM_PIN_PULLDOWN_100K
-    #define MATRIX_COL_PULL    PM_PIN_PULLUP_10K
+    #define MATRIX_ROW_PULL    GPIO_PIN_PULLDOWN_100K
+    #define MATRIX_COL_PULL    GPIO_PIN_PULLUP_10K
 
     #define KB_LINE_HIGH_VALID 0 //drive pin output 0 when scan key, scan pin read 0 is valid
 
@@ -119,68 +119,40 @@
 
 #endif
 
-/**
- *  @brief  GPIO definition for JTAG
- */
-#if (JTAG_DEBUG_DISABLE)
-    //JTAG will cost some power
-    #define PC4_FUNC            AS_GPIO
-    #define PC5_FUNC            AS_GPIO
-    #define PC6_FUNC            AS_GPIO
-    #define PC7_FUNC            AS_GPIO
 
-    #define PC4_INPUT_ENABLE    0
-    #define PC5_INPUT_ENABLE    0
-    #define PC6_INPUT_ENABLE    0
-    #define PC7_INPUT_ENABLE    0
-
-    #define PULL_WAKEUP_SRC_PC4 0
-    #define PULL_WAKEUP_SRC_PC5 0
-    #define PULL_WAKEUP_SRC_PC6 0
-    #define PULL_WAKEUP_SRC_PC7 0
-
-#endif
 
 /**
  *  @brief  GPIO definition for debug_io
  */
 #if (DEBUG_GPIO_ENABLE)
-    #define GPIO_CHN0         GPIO_PA1
-    #define GPIO_CHN1         GPIO_PA2
-    #define GPIO_CHN2         GPIO_PA3
-    #define GPIO_CHN3         GPIO_PA4
-    #define GPIO_CHN4         GPIO_PB1
-    #define GPIO_CHN5         GPIO_PB2
-    #define GPIO_CHN6         GPIO_PB3
-    #define GPIO_CHN7         GPIO_PB4
-
-    #define GPIO_CHN8         GPIO_PB5
-    #define GPIO_CHN9         GPIO_PB6
-    #define GPIO_CHN10        GPIO_PB7
-    #define GPIO_CHN11        GPIO_PC0
-    #define GPIO_CHN12        GPIO_PE0
-    #define GPIO_CHN13        GPIO_PE1
-    #define GPIO_CHN14        GPIO_PE2
-    #define GPIO_CHN15        GPIO_PE3
+    #define GPIO_CHN0         GPIO_PA3
+    #define GPIO_CHN1         GPIO_PA4
+    #define GPIO_CHN2         GPIO_PB0
+    #define GPIO_CHN3         GPIO_PB1
+    #define GPIO_CHN4         GPIO_PB2
+    #define GPIO_CHN5         GPIO_PB3
+    #define GPIO_CHN6         GPIO_PB4
+    #define GPIO_CHN7         GPIO_PB5
+    #define GPIO_CHN8         GPIO_PB6
+    #define GPIO_CHN9         GPIO_PB7
+    #define GPIO_CHN10        GPIO_PC0
+    #define GPIO_CHN11        GPIO_PC1
+    #define GPIO_CHN12        GPIO_PC2
 
 
-    #define PA1_OUTPUT_ENABLE 1
-    #define PA2_OUTPUT_ENABLE 1
+
     #define PA3_OUTPUT_ENABLE 1
     #define PA4_OUTPUT_ENABLE 1
+    #define PB0_OUTPUT_ENABLE 1
     #define PB1_OUTPUT_ENABLE 1
-    #define PB2_OUTPUT_ENABLE 1
     #define PB3_OUTPUT_ENABLE 1
     #define PB4_OUTPUT_ENABLE 1
-
     #define PB5_OUTPUT_ENABLE 1
     #define PB6_OUTPUT_ENABLE 1
     #define PB7_OUTPUT_ENABLE 1
     #define PC0_OUTPUT_ENABLE 1
-    #define PE0_OUTPUT_ENABLE 1
-    #define PE1_OUTPUT_ENABLE 1
-    #define PE2_OUTPUT_ENABLE 1
-    #define PE3_OUTPUT_ENABLE 1
+    #define PC1_OUTPUT_ENABLE 1
+    #define PC2_OUTPUT_ENABLE 1
 
 #endif //end of DEBUG_GPIO_ENABLE
 
@@ -194,11 +166,8 @@
         /**     The battery voltage sample range is 1.8~3.5V    **/
     #else
         /**     if the battery voltage > 3.6V, should take some external voltage divider    **/
-        #define GPIO_BAT_DETECT   GPIO_PB1
-        #define PB1_FUNC          AS_GPIO
-        #define PB1_INPUT_ENABLE  0
-        #define PB1_DATA_OUT      0
-        #define ADC_INPUT_PIN_CHN ADC_GPIO_PB1
+        #define ADC_INPUT_PIN_CHN_P ADC_GPIO_PB1
+        #define ADC_INPUT_PIN_CHN_N 0
     #endif
 #endif
 

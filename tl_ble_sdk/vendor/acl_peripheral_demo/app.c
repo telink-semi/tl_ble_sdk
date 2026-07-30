@@ -29,8 +29,9 @@
 #include "app_buffer.h"
 #include "app_att.h"
 #include "app_ui.h"
-
-
+#if defined(TLK_ONLY_BLE_HOST)
+#include "stack/pm/pm_sys.h"
+#endif
 _attribute_ble_data_retention_ u8 ota_is_working = 0;
 
 
@@ -87,7 +88,6 @@ const u8 tbl_scanRsp[] = {
     'o',
 };
 
-
 /**
  * @brief      BLE Connection complete event handler
  * @param[in]  p         Pointer point to event parameter buffer.
@@ -113,7 +113,12 @@ int app_le_connection_complete_event_handle(u8 *p)
             //bls_l2cap_requestConnParamUpdate(pConnEvt->connHandle, CONN_INTERVAL_20MS, CONN_INTERVAL_20MS, 49, CONN_TIMEOUT_4S);  // 1 second
         }
     }
-
+#if defined(TLK_ONLY_BLE_HOST)
+    if(acl_conn_periphr_num < ACL_PERIPHR_MAX_NUM)
+    {
+         blc_ll_setAdvEnable(BLC_ADV_ENABLE); //ADV enable
+    }
+#endif
     return 0;
 }
 
@@ -144,6 +149,13 @@ int app_disconnect_event_handle(u8 *p)
     }
 
     dev_char_info_delete_by_connhandle(pDisConn->connHandle);
+
+#if defined(TLK_ONLY_BLE_HOST)
+    if(acl_conn_periphr_num < ACL_PERIPHR_MAX_NUM)
+    {
+         blc_ll_setAdvEnable(BLC_ADV_ENABLE); //ADV enable
+    }
+#endif
 
     return 0;
 }
@@ -177,24 +189,30 @@ int app_le_connection_update_complete_event_handle(u8 *p)
 int app_controller_event_callback(u32 h, u8 *p, int n)
 {
     (void)n;
-    if (h & HCI_FLAG_EVENT_BT_STD) { //Controller HCI event
+    if (h & HCI_FLAG_EVENT_BT_STD) //Controller HCI event
+    {
         u8 evtCode = h & 0xff;
 
         //------------ disconnect -------------------------------------
-        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) { //connection terminate
+        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) //connection terminate
+        {
             app_disconnect_event_handle(p);
-        } else if (evtCode == HCI_EVT_LE_META) {         //LE Event
+        } else if (evtCode == HCI_EVT_LE_META)         //LE Event
+        {
             u8 subEvt_code = p[0];
 
             //------hci le event: le connection complete event---------------------------------
-            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) { // connection complete
+            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) // connection complete
+            {
                 app_le_connection_complete_event_handle(p);
             }
             //--------hci le event: le adv report event ----------------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT) { // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT) // ADV packet
+            {
             }
             //------hci le event: le connection update complete event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) { // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) // connection update
+            {
                 app_le_connection_update_complete_event_handle(p);
             }
         }
@@ -278,7 +296,8 @@ int app_host_event_callback(u32 h, u8 *para, int n)
  */
 int app_gatt_data_handler(u16 connHandle, u8 *pkt)
 {
-    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) { //GATT data for Central
+    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) //GATT data for Central
+    {
         rf_packet_att_t *pAtt = (rf_packet_att_t *)pkt;
 
         dev_char_info_t *dev_info = dev_char_info_search_by_connhandle(connHandle);
@@ -335,6 +354,19 @@ _attribute_ram_code_ void user_set_flag_suspend_exit(u8 e, u8 *p, int n)
     (void)n;
 }
 
+_attribute_ram_code_ void user_set_flag_check_before_sleep_enter(u8 e, u8 *p, int n)
+{
+    (void)e;
+    (void)p;
+    (void)n;
+#if (BLE_APP_PM_ENABLE)
+    //Log needs to be output ASAP, and UART invalid after suspend. So Log disable sleep.
+    //User tasks can go into suspend, but no deep sleep. So we use manual latency.
+    if (tlkapi_debug_isBusy()) {
+        blc_pm_setSleepMask(PM_SLEEP_DISABLE);
+    }
+#endif
+}
 
 #if (BATT_CHECK_ENABLE) //battery check must do before OTA relative operation
 
@@ -500,6 +532,8 @@ _attribute_no_inline_ void user_init_normal(void)
     blc_debug_enableStackLog(STK_LOG_NONE);
 #endif
 
+
+
     blc_readFlashSize_autoConfigCustomFlashSector();
 
     /* attention that this function must be called after "blc readFlashSize_autoConfigCustomFlashSector" !!!*/
@@ -529,8 +563,7 @@ _attribute_no_inline_ void user_init_normal(void)
     blc_appRegisterStackFlashOperationCallback(app_flash_protection_operation); //register flash operation callback for stack
 #endif
 
-    //////////////////////////// basic hardware Initialization  End /////////////////////////////////
-
+                                                                                //////////////////////////// basic hardware Initialization  End /////////////////////////////////
 
     //////////////////////////// BLE stack Initialization  Begin //////////////////////////////////
 
@@ -539,8 +572,15 @@ _attribute_no_inline_ void user_init_normal(void)
 
     blc_initMacAddress(flash_sector_mac_address, mac_public, mac_random_static);
 
+
+
+
     //////////// LinkLayer Initialization  Begin /////////////////////////
     blc_ll_initBasicMCU();
+
+#if defined(TLK_ONLY_BLE_HOST)
+    irq_enable();
+#endif
 
     blc_ll_initStandby_module(mac_public);
 
@@ -589,7 +629,7 @@ _attribute_no_inline_ void user_init_normal(void)
 
     blc_gatt_register_data_handler(app_gatt_data_handler);
 
-    /* SMP Initialization */
+/* SMP Initialization */
 #if (ACL_PERIPHR_SMP_ENABLE || ACL_CENTRAL_SMP_ENABLE)
     /* Configure the storage address and size for SMP pairing security information */
     blc_smp_configPairingSecurityInfoStorageAddressAndSize(flash_sector_smp_storage, FLASH_SMP_PAIRING_MAX_SIZE);
@@ -630,7 +670,7 @@ _attribute_no_inline_ void user_init_normal(void)
     u32 error_code1 = blc_contr_checkControllerInitialization();
     u32 error_code2 = blc_host_checkHostInitialization();
     if (error_code1 != INIT_SUCCESS || error_code2 != INIT_SUCCESS) {
-        /* It's recommended that user set some UI alarm to know the exact error, e.g. LED shine, print log */
+/* It's recommended that user set some UI alarm to know the exact error, e.g. LED shine, print log */
 #if (UI_LED_ENABLE)
         gpio_write(GPIO_LED_RED, LED_ON_LEVEL);
 #endif
@@ -676,15 +716,23 @@ _attribute_no_inline_ void user_init_normal(void)
         #elif (MCU_CORE_TYPE == MCU_CORE_TL721X)
     blc_pm_setDeepsleepRetentionEarlyWakeupTiming(580);
        #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
+            #if defined(TLK_ONLY_BLE_HOST)
+    blc_pm_setDeepsleepRetentionEarlyWakeupTiming(26000);
+            #else
     blc_pm_setDeepsleepRetentionEarlyWakeupTiming(760);
+            #endif/* defined(TLK_ONLY_BLE_HOST) */
        #elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
-    blc_pm_setDeepsleepRetentionEarlyWakeupTiming(540);
-        #endif
+    blc_pm_setDeepsleepRetentionEarlyWakeupTiming(600);
+    #elif (MCU_CORE_TYPE == MCU_CORE_TL521X)
+        blc_pm_setDeepsleepRetentionEarlyWakeupTiming(600);
+    #endif/* MCU_CORE_TYPE */
     #else
     blc_pm_setDeepsleepRetentionEnable(PM_DeepRetn_Disable);
-    #endif
+    #endif/* PM_DEEPSLEEP_RETENTION_ENABLE */
 
     blc_ll_registerTelinkControllerEventCallback(BLT_EV_FLAG_SUSPEND_EXIT, &user_set_flag_suspend_exit);
+    blc_ll_registerTelinkControllerEventCallback(BLT_EV_FLAG_CHECK_BEFORE_SLEEP_ENTER, &user_set_flag_check_before_sleep_enter);
+
 #endif
 
 #if (UI_KEYBOARD_ENABLE)
@@ -703,6 +751,8 @@ _attribute_no_inline_ void user_init_normal(void)
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     tlkapi_send_string_data(APP_LOG_EN, "[APP][INI] acl peripheral demo init", 0, 0);
+    tlkapi_printf(APP_LOG_EN, "[APP][INI] MAC:%02X:%02X:%02X:%02X:%02X:%02X\n", mac_public[0], mac_public[1], mac_public[2],
+                                                                                mac_public[3], mac_public[4], mac_public[5]);
 }
 
 /**
@@ -804,7 +854,14 @@ int main_idle_loop(void)
 
     ////////////////////////////////////// PM entry /////////////////////////////////
     app_process_power_management();
-
+#if defined(TLK_ONLY_BLE_HOST)  &&  (BLE_APP_PM_ENABLE)
+    pm_set_suspend_power_cfg(FLD_PD_ZB_EN, 1);          //todo-jk: unified design for suspend and deepRet.
+    #if (PM_DEEPSLEEP_RETENTION_ENABLE)
+        tlksdk_pm_enterSleep(DEEPSLEEP_MODE_RET_SRAM_LOW384K,clock_time() + 10 * SYSTEM_TIMER_TICK_1S);
+    #else
+        tlksdk_pm_enterSleep(SUSPEND_MODE,clock_time() + 10 * SYSTEM_TIMER_TICK_1S);
+    #endif
+#endif
     return 0; //must return 0 due to SDP flow
 }
 

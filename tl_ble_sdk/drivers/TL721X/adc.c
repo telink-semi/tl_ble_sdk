@@ -250,7 +250,7 @@ static inline void adc_set_scan_chn_dis(void)
  * @attention During ADC operation, PD5 must be enabled, and the output level of PD5 should be monitored.
  */
 /*!< BLE USED */
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 /*!< BLE USED END */
 void adc_power_on(void)
 {
@@ -425,7 +425,7 @@ void adc_set_vbat_divider(adc_sample_chn_e chn, adc_vbat_div_e vbat_div)
  *            - During ADC operation, PD5 must be enabled, and the output level of PD5 should be monitored.
  */
 /*!< BLE USED */
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 /*!< BLE USED END */
 void adc_init(adc_chn_cnt_e channel_cnt)
 {
@@ -503,7 +503,7 @@ void adc_chn_config(adc_sample_chn_e chn, adc_chn_cfg_t adc_cfg)
  * @return none
  */
 /*!< BLE USED */
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 /*!< BLE USED END */
 void adc_gpio_sample_init(adc_sample_chn_e chn, adc_gpio_cfg_t cfg)
 {
@@ -670,7 +670,7 @@ unsigned short adc_calculate_temperature(unsigned short adc_code)
  * @attention   During ADC operation, PD5 must be enabled, and the output level of PD5 should be monitored.
  */
 /*!< BLE USED */
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 /*!< BLE USED END */
 unsigned short adc_calculate_voltage(adc_sample_chn_e chn, unsigned short adc_code)
 {
@@ -813,7 +813,7 @@ static inline unsigned char adc_get_m_chn_valid_status(void)
  * @attention           - During ADC operation, PD5 must be enabled, and the output level of PD5 should be monitored.
  */
 /*!< BLE USED */
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 /*!< BLE USED END */
 unsigned short adc_get_raw_code(void)
 {
@@ -842,7 +842,7 @@ unsigned short adc_get_raw_code(void)
  * @return  none
  */
 /*!< BLE USED */
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 /*!< BLE USED END */
 void adc_start_sample_nodma(void)
 {

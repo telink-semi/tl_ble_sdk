@@ -59,11 +59,12 @@ _attribute_ble_data_retention_ u8 key_type;
 void key_change_proc(void)
 {
     u8 key0 = kb_event.keycode[0];
-    // u8 key1 = kb_event.keycode[1];
-    // u8 key_buf[8] = {0,0,0,0,0,0,0,0};
+    //  u8 key1 = kb_event.keycode[1];
+    //  u8 key_buf[8] = {0,0,0,0,0,0,0,0};
 
     key_not_released = 1;
-    if (kb_event.cnt == 2) { //two key press
+    if (kb_event.cnt == 2) //two key press
+    {
     } else if (kb_event.cnt == 1) {
         static u32 last_singleKey_press_tick;
 
@@ -96,10 +97,12 @@ void key_change_proc(void)
 
         #endif
         }
-        if (key0 == BTN_PAIR) {          //Manual pair triggered by Key Press
+        if (key0 == BTN_PAIR) //Manual pair triggered by Key Press
+        {
             central_pairing_enable = 1;
             tlkapi_send_string_data(APP_PAIR_LOG_EN, "[UI][PAIR] Pair begin", 0, 0);
-        } else if (key0 == BTN_UNPAIR) { //Manual un_pair triggered by Key Press
+        } else if (key0 == BTN_UNPAIR) //Manual un_pair triggered by Key Press
+        {
             /*Here is just Telink Demonstration effect. Cause the demo board has limited key to use, only one "un_pair" key is
              available. When "un_pair" key pressed, we will choose and un_pair one device in connection state */
             if (acl_conn_central_num) {               //at least 1 ACL Central exist
@@ -119,7 +122,8 @@ void key_change_proc(void)
         }
 
         last_singleKey_press_tick = clock_time(); //update single key press tick
-    } else {                                      //kb_event.cnt == 0,  key release
+    } else                                        //kb_event.cnt == 0,  key release
+    {
         if (central_pairing_enable) {
             central_pairing_enable = 0;
         }
@@ -191,11 +195,11 @@ void app_ota_result(int result)
         gpio_write(GPIO_LED_GREEN, 0);
 
         #if 0 //this is only for debug,  can not use this in application code
-        irq_disable();
-        WATCHDOG_DISABLE;
+                irq_disable();
+                WATCHDOG_DISABLE;
 
-        while (1) {
-        }
+                while(1){
+                }
         #endif
     }
     #endif
@@ -203,7 +207,7 @@ void app_ota_result(int result)
     gpio_write(GPIO_LED_BLUE, 0);
     gpio_write(GPIO_LED_WHITE, 1);
 
-    // sleep_us(2000000);  //debug
+    //  sleep_us(2000000);  //debug
 }
 
 void app_ota_server_init(void)
@@ -249,7 +253,7 @@ void proc_central_role_unpair(void)
                 central_unpair_enable = 0;                                                          //every "un_pair" key can only triggers one connection disconnect
 
 
-                                                                                                    // delete this device information(mac_address and distributed keys...) on FLash
+    // delete this device information(mac_address and distributed keys...) on FLash
     #if (ACL_CENTRAL_SMP_ENABLE)
                 blc_smp_deleteBondingPeripheralInfo_by_PeerMacAddress(dev_char_info->peer_adrType, dev_char_info->peer_addr);
     #endif

@@ -33,6 +33,8 @@ enum
     FLD_POWER_ON_BBPLL_SUPPLY_SWITCH = BIT(7),
 };
 
+#define areg_0x102 0x102
+
 #define areg_0x108 0x108
 
 enum

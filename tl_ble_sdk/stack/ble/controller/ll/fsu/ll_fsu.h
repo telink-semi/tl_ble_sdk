@@ -28,10 +28,10 @@
 #include "common/types.h"
 #include "stack/ble/ble_common.h"
 
-extern volatile u16 gFsuValidFsVal[3][5];
-extern volatile u16 gFsuPreFsVal[3][5];
+/* Default frame space value (us) used when fsu_param is unbound (NULL) or on reset. */
+#define FSU_DEFAULT_FS_US       150
 
-#define FSU_ACL_MCES_DEFAULT    600
+#define FSU_ACL_MCES_DEFAULT    1250
 
 #define FSU_REQ_PENDING         BIT(0)
 #define FSU_RSP_PENDING         BIT(1)
@@ -73,7 +73,7 @@ enum{
     FSU_PROCEDURE_COMPLETE         = BIT(9),
 };
 
-#define SUPPORT_MIN_FS_US   80
+#define SUPPORT_MIN_FS_US   50
 #define SUPPORT_MAX_FS_US   6800//250//6800
 
 
@@ -93,6 +93,13 @@ typedef struct {
     u8  initiator;  //refet to 'enum fsu_initiator'
     u8  fsu_procedure_collision;
 
+    /* Per-connection frame space value tables (moved from global arrays).
+     * Index [phy][spacingType]: phy 0=1M,1=2M,2=Coded;
+     * spacingType 0=ACL_CP,1=ACL_PC,2=ACL_MCES,3=CIS_IFS,4=CIS_MSS. */
+    u16 gFsuValidFsVal[3][5]; //current effective frame space values
+    u16 gFsuPreFsVal[3][5];   //previous frame space values (snapshot before last update)
+    u16 rx_timeout;
+    u16 rsvd;
 } fsu_hci_param_t;
 
 typedef struct{
@@ -109,9 +116,31 @@ typedef struct{
 }fsu_cmplet_evt_t;
 
 extern fsu_cmplet_evt_t fsuCmpletEvt;
-void      blc_ll_initFrameSpaceUpdate_feature(void);
+
+/* FSU task callback flags ¡ª single callback handles all FSU operations.
+ * p parameter: FLAG_FSU_RESET/CONN_RESET/MAINLOOP -> (void*)(u32)connHandle,
+ *              FLAG_FSU_START/GET_MCES/TX_WAIT/POST -> (void*)st_ll_conn_t* */
+enum {
+    FLAG_FSU_RESET      = 0,  // full reset on disconnect/HCI reset
+    FLAG_FSU_CONN_RESET,      // light reset on new connection established
+    FLAG_FSU_START,           // set rx_timeout in blms_start_common_1
+    FLAG_FSU_TX_WAIT,         // set tx_wait in irq_acl_conn_tx
+    FLAG_FSU_POST,            // update fsu_procedure_status in blms_post_common_1
+    FLAG_FSU_MAINLOOP,        // mainloop processing
+};
+
+typedef int (*ll_fsu_task_cb_t)(int flag, void *p);
+extern ll_fsu_task_cb_t ll_fsu_task_cb;
+
+/**
+ * @brief   Initialize FSU feature and bind external buffer to each connection's fsu_param.
+ * @param   pFsuBuf    Pointer to external fsu_hci_param_t buffer array (one per connection).
+ * @param   buf_size   Size of pFsuBuf in bytes. Must be >= LL_MAX_ACL_CONN_NUM * sizeof(fsu_hci_param_t).
+ * @return  BLE_SUCCESS on success, HCI_ERR_INVALID_HCI_CMD_PARAMS on invalid parameter.
+ */
+ble_sts_t blc_ll_initFrameSpaceUpdate_feature(fsu_hci_param_t *pFsuBuf, u16 buf_size);
+
 ble_sts_t blc_ll_frameSpaceUpdate(u16 connHandle, u16 fs_min, u16 fs_max, u8 phyMask, u16 spacingType);
-void      blc_ll_fsu_reset(u16 connHandle);
 
 
 #endif

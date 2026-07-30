@@ -28,7 +28,10 @@
 #include "internal_flash/flash_mid146085.h" // P25Q80U
 #include "internal_flash/flash_mid156085.h" // P25Q16SU
 #include "internal_flash/flash_mid166085.h" // P25Q32SU
+#include "internal_flash/flash_mid14345e.h" // ZB25WQ80A
 #include "external_flash/flash_mid182085.h" // PY25Q128H
+
+
 
 /**
  * @brief       This function reads the status of flash.

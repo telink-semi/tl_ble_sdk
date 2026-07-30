@@ -45,6 +45,7 @@
     P25Q16SU    0x4b        0x156085    PUYA
     P25Q32SU    0x4b        0x166085    PUYA
     P25Q128L    0x4b        0x186085    PUYA
+    GD25LE80E   0x4b        0x1460c8    GD
     GD25LQ16E   0x4b        0x1560c8    GD
  */
 #define FLASH_P25Q80U_SUPPORT_EN                                1
@@ -54,7 +55,7 @@
 #define FLASH_GD25LQ16E_SUPPORT_EN                              1
 
 #define FLASH_P25Q80SU_SUPPORT_EN                               1
-#define FLASH_GD25LE80E_SUPPORT_EN                              0
+#define FLASH_GD25LE80E_SUPPORT_EN                              1
 #define FLASH_GD25LE16E_SUPPORT_EN                              0
 
 

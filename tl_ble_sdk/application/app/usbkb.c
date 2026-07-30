@@ -44,6 +44,7 @@ unsigned char usb_ff_wptr = 0;
 
 void usbkb_hid_report(kb_data_t *data);
 
+#if (MCU_CORE_TYPE != CHIP_TYPE_TL322X)
 static unsigned char vk_sys_map[VK_SYS_CNT] = {
     VK_POWER_V,
     VK_SLEEP_V,
@@ -69,6 +70,7 @@ static vk_ext_t vk_media_map[VK_MEDIA_CNT] = {
     {VK_VOL_UP_V},
     {VK_VOL_DN_V},
 };
+#endif
 
 enum
 {
@@ -217,6 +219,12 @@ int usbkb_hid_report_normal(unsigned char ctrl_key, unsigned char *keycode)
     reg_usb_ep_ctrl(USB_EDP_KEYBOARD_IN) = FLD_EP_DAT_ACK | (edp_toggle[USB_EDP_KEYBOARD_IN] ? FLD_USB_EP_DAT1 : FLD_USB_EP_DAT0); // ACK
     edp_toggle[USB_EDP_KEYBOARD_IN] ^= 1;
 #endif
+
+#if ((MCU_CORE_TYPE == CHIP_TYPE_TL322X) && (!USB_SOFTWARE_CRC_CHECK))
+    (void)ctrl_key;//avoid warning
+    (void)keycode;//avoid warning
+#endif
+
     return 1;
 }
 
@@ -242,6 +250,8 @@ static inline void usbkb_report_sys_key(unsigned char ext_key)
     } else {
         usbkb_release_sys_key();
     }
+#else
+    (void)ext_key;//avoid warning
 #endif
 }
 
@@ -264,6 +274,8 @@ static inline void usbkb_report_media_key(unsigned char ext_key)
     } else {
         usbkb_release_media_key();
     }
+#else
+    (void)ext_key;
 #endif
 }
 
@@ -285,6 +297,8 @@ void usbkb_report_consumer_key(unsigned short consumer_key)
     } else {
         usbkb_release_media_key();
     }
+#else
+    (void)consumer_key;
 #endif
 
     usbkb_data_report_time = stimer_get_tick();
@@ -356,8 +370,9 @@ int usb_hid_report_fifo_proc(void)
         return 0;
     }
 
-    unsigned char *pData = (unsigned char *)&usb_fifo[usb_ff_rptr & (USB_FIFO_NUM - 1)];
 #if (MCU_CORE_TYPE != CHIP_TYPE_TL322X)
+    unsigned char *pData = (unsigned char *)&usb_fifo[usb_ff_rptr & (USB_FIFO_NUM - 1)];
+
     if (pData[0] == DAT_TYPE_KB) {
         if (usbhw_is_ep_busy(USB_EDP_KEYBOARD_IN)) {
             return 0;

@@ -72,8 +72,11 @@ typedef enum
 
 /**
  *  @brief  Define GPIO types
- *  @note   the following one point need to noticed when using GPIOF groups:
- *          Since these GPIOs are used for connecting the flash and have been occupied, they cannot be used as wake-up pins.
+ *  @note  the following points need to be noticed when using GPIO pins:
+ *          1. Since the GPIOF groups are used for connecting the flash and have been occupied, they cannot be used as wake-up pins;
+ *          2. Recommend using 1M internal pull-up, do not use 10K pull-up;
+ *          3. If 10K pull-up must be used, do not use this IO as low-level wakeup IO;
+ *          4. If this IO must be used as low-level wakeup IO, set 1M pull-up before entering sleep and restore 10K pull-up after wakeup;
  */
 typedef enum
 {

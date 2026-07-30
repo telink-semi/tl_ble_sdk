@@ -37,12 +37,19 @@ _attribute_ble_data_retention_ tlk_dbg_t tlkDbgCtl = {
 _attribute_ble_data_retention_ my_fifo_t *tlkapi_print_fifo = NULL;
 _attribute_ble_data_retention_ u16        g_debug_serial    = 0;
 
+/* Reentrancy guard flag for FIFO operations */
+static volatile u8 s_tlkapi_debug_busy = 0;
 
 #if (TLKAPI_DEBUG_ENABLE)
 
 
 //MYFIFO_INIT_IRAM(print_fifo, TLKAPI_DEBUG_FIFO_SIZE, TLKAPI_DEBUG_FIFO_NUM);
+#if (FREERTOS_ENABLE)
+u8 print_fifo_b[TLKAPI_DEBUG_FIFO_SIZE * TLKAPI_DEBUG_FIFO_NUM];
+#else
 _attribute_iram_noinit_data_ u8 print_fifo_b[TLKAPI_DEBUG_FIFO_SIZE * TLKAPI_DEBUG_FIFO_NUM];
+#endif
+
 
 _attribute_ble_data_retention_ my_fifo_t print_fifo = {
     TLKAPI_DEBUG_FIFO_SIZE,
@@ -70,17 +77,15 @@ void tlkapi_debug_customize_usb_id(u16 cus_usb_id)
 
 _attribute_ble_data_retention_ static uint32 sTlkApiDebugBitIntv;
 
-_attribute_ram_code_sec_noinline_ void tlkapi_debug_putchar(uint08 byte)
+_attribute_ram_code_sec_optimize_o2_noinline_ void tlkapi_debug_putchar(uint08 byte)
 {
-    uint32 r = irq_disable();
-
         #if ((MCU_CORE_TYPE == MCU_CORE_B91) || (MCU_CORE_TYPE == MCU_CORE_B92))
     uint08 bits[14]  = {0};
     uint08 out_level = reg_gpio_out(TLKAPI_DEBUG_GPIO_PIN);
     uint08 bit0      = out_level & ~(TLKAPI_DEBUG_GPIO_PIN);
     uint08 bit1      = out_level | TLKAPI_DEBUG_GPIO_PIN;
         #elif (MCU_CORE_TYPE == MCU_CORE_TL721X || MCU_CORE_TYPE == MCU_CORE_TL321X || MCU_CORE_TYPE == MCU_CORE_TL322X \
-            || MCU_CORE_TYPE == MCU_CORE_TL323X \
+            || MCU_CORE_TYPE == MCU_CORE_TL323X || MCU_CORE_TYPE == MCU_CORE_TL521X \
             )
     uint16 bits[14] = {0};
     uint16 bit0     = (TLKAPI_DEBUG_GPIO_PIN & 0xff) << 8;
@@ -99,6 +104,7 @@ _attribute_ram_code_sec_noinline_ void tlkapi_debug_putchar(uint08 byte)
         }
     }
     bits[13] = bit1;
+    uint32 r = irq_disable();
     if (sys_clk.cclk <= 32 && TLKAPI_DEBUG_GSUART_BAUDRATE > 115200) {
         bits[0] = bit1;
         bits[1] = bit1;
@@ -129,6 +135,9 @@ _attribute_ram_code_sec_noinline_ void tlkapi_debug_putchar(uint08 byte)
                 time1 = clock_time();
             }
             reg_gpio_out(TLKAPI_DEBUG_GPIO_PIN) = bits[i];
+
+           // Timing calibration. Eliminate cycle extension caused by GPIO operation latency, avoid accumulated timing error.
+            time1 = time2 + sTlkApiDebugBitIntv;
         }
     }
     irq_restore(r);
@@ -145,8 +154,11 @@ _attribute_ram_code_sec_ void tlkapi_uart_irq_handler(void)
 
             if (tlkapi_print_fifo->wptr != tlkapi_print_fifo->rptr) {
                 u8 *pData = tlkapi_print_fifo->p + (tlkapi_print_fifo->rptr++ & (tlkapi_print_fifo->num - 1)) * tlkapi_print_fifo->size;
-                uart_debug_prepare_dma_data(pData + 4, pData[0]);
-                tlkDbgCtl.uartSendIsBusy = 1;
+                u16 dataLen = ((u16)pData[1] << 8) | pData[0];
+                if (dataLen != 0) {
+                    uart_debug_prepare_dma_data(pData + 4, dataLen);
+                    tlkDbgCtl.uartSendIsBusy = 1;
+                }
             }
         }
     }
@@ -165,7 +177,7 @@ _attribute_ram_code_sec_ void tlkapi_uart_irq_handler(void)
             PLIC_ISR_REGISTER(tlkapi_uart_irq_handler, IRQ_UART1)
         #endif
     #elif (TLKAPI_DEBUG_UART_PORT == DBG_UART_PORT2)
-        #if(CLIC_ENABLE == 1)
+        #if defined(CLIC_ENABLE) && (CLIC_ENABLE == 1)
             CLIC_ISR_REGISTER(tlkapi_uart_irq_handler, IRQ_UART2)
         #else
             PLIC_ISR_REGISTER(tlkapi_uart_irq_handler, IRQ_UART2)
@@ -228,23 +240,23 @@ int tlkapi_debug_init(void)
     #else
 
         #if (TLKAPI_DEBUG_CHANNEL == TLKAPI_DEBUG_CHANNEL_GSUART)
-    tlkDbgCtl.dbg_chn   = TLKAPI_DEBUG_CHANNEL_GSUART;
-    sTlkApiDebugBitIntv = SYSTEM_TIMER_TICK_1S / TLKAPI_DEBUG_GSUART_BAUDRATE;
-    gpio_set_gpio_en(TLKAPI_DEBUG_GPIO_PIN);
-    gpio_set_up_down_res(TLKAPI_DEBUG_GPIO_PIN, GPIO_PIN_PULLUP_1M);
-    gpio_set_output_en(TLKAPI_DEBUG_GPIO_PIN, 1);
-    gpio_write(TLKAPI_DEBUG_GPIO_PIN, 1);
+            tlkDbgCtl.dbg_chn   = TLKAPI_DEBUG_CHANNEL_GSUART;
+            sTlkApiDebugBitIntv = SYSTEM_TIMER_TICK_1S / TLKAPI_DEBUG_GSUART_BAUDRATE;
+            gpio_set_gpio_en(TLKAPI_DEBUG_GPIO_PIN);
+            gpio_set_up_down_res(TLKAPI_DEBUG_GPIO_PIN, GPIO_PIN_PULLUP_1M);
+            gpio_set_output_en(TLKAPI_DEBUG_GPIO_PIN, 1);
+            gpio_write(TLKAPI_DEBUG_GPIO_PIN, 1);
         #elif (TLKAPI_DEBUG_CHANNEL == TLKAPI_DEBUG_CHANNEL_UART)
-    tlkDbgCtl.dbg_chn = TLKAPI_DEBUG_CHANNEL_UART;
+            tlkDbgCtl.dbg_chn = TLKAPI_DEBUG_CHANNEL_UART;
 
-    tlkDbgCtl.uartSendIsBusy = 0;
-    uart_debug_init();
+            tlkDbgCtl.uartSendIsBusy = 0;
+            uart_debug_init();
         #endif
 
         #if (TLKAPI_USE_INTERNAL_SPECIAL_UART_TOOL)
     tlkDbgCtl.fifo_format_len = 12;
         #else
-    tlkDbgCtl.fifo_format_len = 0;
+    tlkDbgCtl.fifo_format_len = 4 + 6;//DMA len(4) + Serial num(6)
         #endif
     #endif
 
@@ -297,9 +309,11 @@ _attribute_ram_code_sec_noinline_ void tlkapi_debug_handler(void)
         u32 r = irq_disable();
         if (!tlkDbgCtl.uartSendIsBusy && tlkapi_print_fifo->wptr != tlkapi_print_fifo->rptr) {
             u8 *pData = tlkapi_print_fifo->p + (tlkapi_print_fifo->rptr & (tlkapi_print_fifo->num - 1)) * tlkapi_print_fifo->size;
-            uint16 dataLen = ((uint16)pData[1] << 8) | pData[0];
-            uart_debug_prepare_dma_data(pData + 4, dataLen);
-            tlkDbgCtl.uartSendIsBusy = 1;
+            u16 dataLen = ((u16)pData[1] << 8) | pData[0];
+            if (dataLen != 0) {
+                uart_debug_prepare_dma_data(pData + 4, dataLen);
+                tlkDbgCtl.uartSendIsBusy = 1;
+            }
             tlkapi_print_fifo->rptr++;
         }
         irq_restore(r);
@@ -328,6 +342,14 @@ bool tlkapi_debug_isBusy(void)
     } else {
         return 0;
     }
+}
+_attribute_ram_code_sec_noinline_
+u8 tlkapi_send_str_isFifoFull(my_fifo_t *fifo) {
+    // Calculate the number of used entries using modulo arithmetic
+    u8 used = (fifo->wptr - fifo->rptr) & (fifo->num - 1);
+
+    // Check if the number of used entries equals the buffer size
+    return (used == fifo->num - 1);
 }
 
 __attribute__((section(".data"))) unsigned char hex_table[] = "0123456789abcdef"; //improve: can not optimized to rodata
@@ -364,10 +386,14 @@ _attribute_ram_code_sec_noinline_ void tlkapi_send_str_data(char *str, u8 *pData
     temp_str[ind]   = '\0';
     printf("%s%s", str, temp_str);
 
-#else
-    if (data_len > 500) {
-        return;
-    }
+#elif (TLKAPI_DEBUG_ENABLE)
+    #if (0)
+        /* No need. The following already has length truncation. */
+        if (data_len > TLKAPI_DEBUG_FIFO_SIZE) {
+            return;
+        }
+    #endif
+
 
     extern int tlk_strlen(const char *str);
     int        ns = str ? tlk_strlen(str) : 0;
@@ -379,6 +405,22 @@ _attribute_ram_code_sec_noinline_ void tlkapi_send_str_data(char *str, u8 *pData
     }
 
     u32 r = irq_disable();
+
+    if (s_tlkapi_debug_busy) {
+       g_debug_serial++;
+       irq_restore(r);
+       return ;
+    }
+    s_tlkapi_debug_busy = 1;
+
+   if(tlkapi_send_str_isFifoFull(tlkapi_print_fifo))
+    {
+       g_debug_serial++;
+       s_tlkapi_debug_busy = 0;
+       irq_restore(r);
+       return ;
+    }
+
 
     u8 *pd = tlkapi_print_fifo->p + (tlkapi_print_fifo->wptr & (tlkapi_print_fifo->num - 1)) * tlkapi_print_fifo->size;
 
@@ -481,7 +523,19 @@ _attribute_ram_code_sec_noinline_ void tlkapi_send_str_data(char *str, u8 *pData
 
     tlkapi_print_fifo->wptr++;
 
+    s_tlkapi_debug_busy = 0;
+
     irq_restore(r);
+
+#if (TLKAPI_DEBUG_FORCE_FLUSH_ENABLE)
+    tlkapi_debug_handler();
+#endif
+
+
+#else
+    (void)str;
+    (void)pData;
+    (void)data_len;
 #endif
 }
 
@@ -530,6 +584,23 @@ __attribute__((used)) int _write(int fd, const unsigned char *buf, int size)
     if (!tlkapi_print_fifo) {
         return 0;
     }
+
+    u32 _r = irq_disable();
+    if (s_tlkapi_debug_busy) {
+        irq_restore(_r);
+        g_debug_serial++;
+        return 0;
+    }
+    s_tlkapi_debug_busy = 1;
+    irq_restore(_r);
+
+    if(tlkapi_send_str_isFifoFull(tlkapi_print_fifo))
+    {
+        g_debug_serial++;
+        s_tlkapi_debug_busy = 0;
+        return 0;
+    }
+
     u8 *pd = tlkapi_print_fifo->p + (tlkapi_print_fifo->wptr & (tlkapi_print_fifo->num - 1)) * tlkapi_print_fifo->size;
     if (tlkDbgCtl.dbg_chn == TLKAPI_DEBUG_CHANNEL_UDB) {
         memcpy((char *)(pd + 9), buf, size);
@@ -555,6 +626,13 @@ __attribute__((used)) int _write(int fd, const unsigned char *buf, int size)
         *pd++ = 0;
     }
     tlkapi_print_fifo->wptr++;
+
+#if (TLKAPI_DEBUG_FORCE_FLUSH_ENABLE)
+    tlkapi_debug_handler();
+#endif
+
+    s_tlkapi_debug_busy = 0;
+
     return size;
 #endif
 }
@@ -574,24 +652,47 @@ int tlk_printf(const char *format, ...)
     va_end(args);
     return ret;
 
-#else
+#elif (TLKAPI_DEBUG_ENABLE)
     if (!tlkapi_print_fifo) {
         return 0;
     }
+
+    u32 _r = irq_disable();
+    if (s_tlkapi_debug_busy) {
+        irq_restore(_r);
+        g_debug_serial++;
+        return 0;
+    }
+    s_tlkapi_debug_busy = 1;
+    irq_restore(_r);
+
+    if(tlkapi_send_str_isFifoFull(tlkapi_print_fifo))
+    {
+        g_debug_serial++;
+        s_tlkapi_debug_busy = 0;
+        return 0;
+    }
+
+
 
     u8 *pd = tlkapi_print_fifo->p + (tlkapi_print_fifo->wptr & (tlkapi_print_fifo->num - 1)) * tlkapi_print_fifo->size;
     int ret;
 
     #if ((MCU_CORE_TYPE == MCU_CORE_B91) || (MCU_CORE_TYPE == MCU_CORE_B92)  || (MCU_CORE_TYPE == MCU_CORE_TL721X) ||  (MCU_CORE_TYPE == MCU_CORE_TL321X) || (MCU_CORE_TYPE == MCU_CORE_TL322X)\
-            || (MCU_CORE_TYPE == MCU_CORE_TL323X)\
-        )
+            || (MCU_CORE_TYPE == MCU_CORE_TL323X) || (MCU_CORE_TYPE == MCU_CORE_TL521X))
     va_list args;
     va_start(args, format);
 
     if (tlkDbgCtl.dbg_chn == TLKAPI_DEBUG_CHANNEL_UDB) {
-        ret = vsnprintf((char *)(pd + 9 + 6), tlkDbgCtl.fifo_data_len, format, args);
+        ret = vsnprintf((char *)(pd + tlkDbgCtl.fifo_format_len), tlkDbgCtl.fifo_data_len, format, args);
     } else {
-        ret = vsnprintf((char *)(pd + 4 + 6), tlkDbgCtl.fifo_data_len, format, args);
+        ret = vsnprintf((char *)(pd + tlkDbgCtl.fifo_format_len), tlkDbgCtl.fifo_data_len, format, args);
+    }
+    if (ret > tlkDbgCtl.fifo_data_len) {
+        // Log message truncated! Need at least [ret + 1] bytes.
+        ret = tlkDbgCtl.fifo_data_len;
+        // Ensure a newline at the end to separate consecutive logs.
+        pd[tlkDbgCtl.fifo_format_len + tlkDbgCtl.fifo_data_len - 1] = '\n';
     }
 
     va_end(args);
@@ -639,6 +740,17 @@ int tlk_printf(const char *format, ...)
     }
 
     tlkapi_print_fifo->wptr++;
+
+#if (TLKAPI_DEBUG_FORCE_FLUSH_ENABLE)
+    tlkapi_debug_handler();
+#endif
+
+    s_tlkapi_debug_busy = 0;
+
     return ret;
+#else
+    (void)format;
+
+    return 0;
 #endif
 }

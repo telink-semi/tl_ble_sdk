@@ -73,38 +73,7 @@ int tx_to_uart_cb(void)
     return 0;
 }
 
-u8 led_status;
 
-unsigned char app_vendor_cb(u8 pCmdparaLen, u8 opCode_ocf, hci_vendor_CmdParams_t *pCmd, hci_vendor_EndStatusParam_t *pRetParam)
-{
-    u8 re_length;
-    u8 result;
-    re_length = 0;
-    switch (opCode_ocf) //1byte
-    {
-    case 0X00:
-        //01 00 FD 01 01 open  led
-        //01 00 FD 01 00 close led
-        if (pCmdparaLen == 1) {
-            gpio_write(GPIO_LED_GREEN, pCmd[0]);
-            led_status = pCmd[0];
-            result     = BLE_SUCCESS;
-            blt_hci_vendor_setEventCode(HCI_EVT_CMD_COMPLETE);
-            re_length = hci_cmdComplete_evt(1, opCode_ocf, HCI_CMD_VENDOR_OPCODE_OGF | HCI_VENDOR_CMD_FU_OPCODE_OGF, 1, &result, pRetParam);
-        }
-        break;
-    case 0X01:
-        //01 01 FD 01 00 get led status
-        result = led_status;
-        blt_hci_vendor_setEventCode(HCI_EVT_CMD_STATUS);
-        re_length = hci_cmdStatus_evt(1, opCode_ocf, HCI_CMD_VENDOR_OPCODE_OGF | HCI_VENDOR_CMD_FU_OPCODE_OGF, result, pRetParam);
-        break;
-    case 0x02:
-        //TODO
-        break;
-    }
-    return re_length;
-}
 
 
 #if APP_LE_PERIODIC_ADV_EN
@@ -117,11 +86,29 @@ unsigned char app_vendor_cb(u8 pCmdparaLen, u8 opCode_ocf, hci_vendor_CmdParams_
      * APP_PERID_ADV_DATA_LENGTH:
      * Maximum Periodic Advertising Data Length. can not exceed 1650.
      */
-    #define APP_PERID_ADV_SETS_NUMBER 2   //1//EBQ test need to change it to the supported value
+    #define APP_PERID_ADV_SETS_NUMBER 1   //1//EBQ test need to change it to the supported value
     #define APP_PERID_ADV_DATA_LENGTH 100 //1024
 
 _attribute_ble_data_retention_ u8 app_peridAdvSet_buffer[PERD_ADV_PARAM_LENGTH * APP_PERID_ADV_SETS_NUMBER];
 _attribute_iram_noinit_data_ u8   app_peridAdvData_buffer[APP_PERID_ADV_DATA_LENGTH * APP_PERID_ADV_SETS_NUMBER];
+#endif
+
+
+#if APP_LE_PAWR_ADV_EN
+
+    /*
+     * @brief   Periodic Advertising with Response data buffer length and data buffer number.
+     *
+     * APP_PAWR_SUBEVT_DATA_LENGTH:
+     * Maximum Periodic Advertising Subevent Data Length. can not exceed 251.
+     *
+     * APP_PAWR_SUBEVT_DATA_COUNT
+     * Maximum number of subevent data allowed to be updated at one time. can not exceed 15.
+     */
+     #define APP_PAWR_SUBEVT_DATA_LENGTH     251
+     #define APP_PAWR_SUBEVT_DATA_COUNT      4
+
+_attribute_ble_data_retention_ u8 app_peridAdvWrData_buffer[APP_PERID_ADV_SETS_NUMBER * APP_PAWR_SUBEVT_DATA_LENGTH * APP_PAWR_SUBEVT_DATA_COUNT];
 #endif
 
 ///////////////////////////////////////////
@@ -140,7 +127,7 @@ void user_init_normal(void)
 
 #if (TLKAPI_DEBUG_ENABLE)
     tlkapi_debug_init();
-    blc_debug_enableStackLog(STK_LOG_NONE);
+    blc_debug_enableStackLog(STK_LOG_HCI);
 #endif
 
     blc_readFlashSize_autoConfigCustomFlashSector();
@@ -164,11 +151,17 @@ void user_init_normal(void)
 
     blc_ll_initStandby_module(mac_public); //mandatory
 
+#if !APP_LE_EXTENDED_ADV_EN
     blc_ll_initLegacyAdvertising_module();
+#endif
 
+#if !APP_LE_EXTENDED_SCAN_EN
     blc_ll_initLegacyScanning_module();
+#endif
 
+#if !APP_LE_EXTENDED_INIT_EN
     blc_ll_initLegacyInitiating_module();
+#endif
 
     blc_ll_initAclConnection_module();
 #if ACL_CENTRAL_MAX_NUM
@@ -242,6 +235,14 @@ void user_init_normal(void)
     blc_ll_initPeriodicAdvDataBuffer(app_peridAdvData_buffer, APP_PERID_ADV_DATA_LENGTH);
 #endif
 
+#if APP_LE_PAWR_ADV_EN
+    blc_ll_initPeriodicAdvWrModule_initPeriodicdAdvWrSetParamBuffer(app_peridAdvSet_buffer, APP_PERID_ADV_SETS_NUMBER);
+    blc_ll_initPeriodicAdvWrDataBuffer(app_peridAdvWrData_buffer, APP_PAWR_SUBEVT_DATA_LENGTH, APP_PAWR_SUBEVT_DATA_COUNT);
+#endif
+
+#if APP_ADVERTISING_CODING_SELECT_EN
+    blc_ll_initAdvCodingSelection_feature();
+#endif
 
 #if APP_LE_EXTENDED_SCAN_EN
     blc_ll_initExtendedScanning_module();
@@ -251,7 +252,7 @@ void user_init_normal(void)
     blc_ll_initExtendedInitiating_module();
 #endif
 
-#if (APP_SYNCHRONIZED_RECEIVER_EN || APP_ISOCHRONOUS_BROADCASTER_SYNC_EN)
+#if (APP_SYNCHRONIZED_RECEIVER_EN)
     blc_ll_initPeriodicAdvertisingSynchronization_module();
 #endif
 
@@ -259,12 +260,25 @@ void user_init_normal(void)
     blc_ll_initPAST_module();
 #endif
 
+
+
 #if (APP_POWER_CONTROL)
     blc_ll_initPCL_module();
 #endif
 
 #if (APP_CHN_CLASS_EN)
     blc_ll_initChnClass_feature();
+#endif
+
+#if (APP_LE_CHANNEL_SOUNDING)
+    blc_ll_initCsConfigParam(app_CsConfigParam, APP_CS_CONFIG_NUM);
+    blc_ll_initCsRxFifo(app_cs_rx_buf, CS_RX_FIFO_SIZE, CS_RX_FIFO_NUM);
+
+    blc_cs_set_tx_power_level(RF_POWER_INDEX_P4p61dBm);
+
+    blc_ll_initCsInitiatorModule();
+
+    blc_ll_initCsReflectorModule();
 #endif
 
 #if APP_LE_2M_CODED_PHY_EN
@@ -285,7 +299,6 @@ void user_init_normal(void)
     u8 error_code = blc_contr_checkControllerInitialization();
     if (error_code != INIT_SUCCESS) {
         /* It's recommended that user set some UI alarm to know the exact error, e.g. LED shine, print log */
-        write_log32(0x88880000 | error_code);
 #if (TLKAPI_DEBUG_ENABLE)
         tlkapi_send_string_data(APP_LOG_EN, "[APP][INI] Controller INIT ERROR", &error_code, 1);
         while (1) {
@@ -305,7 +318,7 @@ void user_init_normal(void)
     DFU_Init();
 #endif
 
-    blt_hci_vendor_setFuVendorCallback(app_vendor_cb);
+    blc_hci_registerControllerVendorCmdProcess_Callback(hci_vendor_Process);
     tlkapi_send_string_data(APP_LOG_EN, "[APP][INI] BQB controller Init", 0, 0);
 }
 

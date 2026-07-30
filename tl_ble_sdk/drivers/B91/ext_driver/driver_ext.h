@@ -33,6 +33,7 @@
 #include "ext_hci_uart.h"
 #include "ext_misc.h"
 #include "ext_flash.h"
+#include "ext_adc.h"
 
 
 

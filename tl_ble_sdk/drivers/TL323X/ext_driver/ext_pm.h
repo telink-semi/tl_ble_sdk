@@ -124,11 +124,20 @@ static inline int pm_is_deepPadWakeup(void)
  * @param[in]  none.
  * @return     mcu_status.
  */
-static inline int pm_get_mcu_status(void)
+static inline unsigned char pm_get_mcu_status(void)
 {
     return g_pm_status_info.mcu_status;
 }
 
 #define cpu_set_gpio_wakeup             pm_set_gpio_wakeup
+
+/**
+ * @brief      This function serves to set the working mode of MCU based on 32k crystal,e.g. suspend mode, deepsleep mode, deepsleep with SRAM retention mode and shutdown mode.
+ * @param[in]  sleep_mode - sleep mode type select.
+ * @param[in]  wakeup_src - wake up source select.
+ * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 5 minutes.
+ * @return     indicate whether the cpu is wake up successful.
+ */
+int  cpu_sleep_wakeup_32k_rc(pm_sleep_mode_e sleep_mode,  pm_sleep_wakeup_src_e wakeup_src, unsigned int  wakeup_tick);
 
 #endif /* DRIVERS_TL323X_DRIVER_EXT_EXT_PM_H_ */

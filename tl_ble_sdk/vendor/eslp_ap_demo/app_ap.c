@@ -27,6 +27,7 @@
 #include "app_parse_char.h"
 #include "app_ota_client.h"
 #include "app_ap.h"
+#include <strings.h>
 
 #define DEFAULT_GROUP_ID            0
 #define MAX_SCAN_DEVICES            0x20
@@ -1812,6 +1813,7 @@ static void cmd_get_mtu(char *argv[], int argc, void *user_data)
     }
 
     conn_handle = app_parse_str2n(argv[0]);
+    extern u16 blt_gap_getEffectiveMTU(u16);
     mtu = blt_gap_getEffectiveMTU(conn_handle);
     app_parse_printf("MTU get conn_handle:%d mtu:%d\r\n", conn_handle, mtu);
 
@@ -2542,8 +2544,6 @@ int app_ap_prf_event_callback(u16 aclHandle, int evtID, u8 *pData, u16 dataLen)
 
 void app_ap_loop(void)
 {
-    app_parse_loop();
-
     if (clock_time_exceed(currentTimeTick, 10*1000))
     {
         currentTimeTick = clock_time();

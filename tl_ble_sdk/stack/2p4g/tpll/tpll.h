@@ -23,11 +23,11 @@
  *******************************************************************************************************/
 #pragma once
 
-#define TPLL_PIPE_NUM                            6
+#define TPLL_PIPE_NUM                            8
 #define TPLL_TX_FIFO_DEP                         2   // fifo num = 2^FIFO_DEP
 #define TPLL_TX_FIFO_SIZE                        128 /** The size of the transmission first-in, first-out buffer */
 #define TPLL_TX_FIFO_NUM                         4   /** The number of the transmission first-in, first-out buffer */
-#define TPLL_PIPE_RX_FIFO_SIZE                   128
+#define TPLL_PIPE_RX_FIFO_SIZE                   256 // must be >= 256 if use TPLL_MODE_GENERIC_FORMAT in TL321X
 #define TPLL_PIPE_RX_FIFO_NUM                    4
 
 #define TPLL_MAX_LEGACY_VARIABLE_PAYLOAD_LENGTH  63                        /** The maximum size of the payload */
@@ -178,6 +178,8 @@ typedef enum
     TPLL_PIPE3,            /**< Select pipe3 */
     TPLL_PIPE4,            /**< Select pipe4 */
     TPLL_PIPE5,            /**< Select pipe5 */
+    TPLL_PIPE6,            /**< Select pipe6 */
+    TPLL_PIPE7,            /**< Select pipe7 */
     TPLL_PIPE_NONE = 0x00, /**< none pipe */
     TPLL_PIPE_ALL  = 0xFF  /**< all pipes*/
 } TPLL_PipeIDTypeDef;

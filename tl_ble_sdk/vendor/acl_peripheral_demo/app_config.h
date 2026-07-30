@@ -26,17 +26,17 @@
 #include "config.h"
 
 
-#define ACL_CENTRAL_MAX_NUM 0 // ACL central maximum number
-#define ACL_PERIPHR_MAX_NUM 4 // ACL peripheral maximum number
+#define ACL_CENTRAL_MAX_NUM                         0 // ACL central maximum number
+#define ACL_PERIPHR_MAX_NUM                         4 // ACL peripheral maximum number
 
 ///////////////////////// Feature Configuration////////////////////////////////////////////////
-#define ACL_PERIPHR_SMP_ENABLE        1 //1 for smp,  0 no security
-#define BLE_OTA_SERVER_ENABLE         1
+#define ACL_PERIPHR_SMP_ENABLE                      1  //1 for smp,  0 no security
+#define BLE_OTA_SERVER_ENABLE                       1
 
-#define BLE_APP_PM_ENABLE             1
-#define PM_DEEPSLEEP_RETENTION_ENABLE 1
+#define BLE_APP_PM_ENABLE                           1
+#define PM_DEEPSLEEP_RETENTION_ENABLE               1
 
-#define BATT_CHECK_ENABLE             0
+#define BATT_CHECK_ENABLE                           0
 
 
 /* Flash Protection:
@@ -50,10 +50,7 @@
  */
 #define APP_FLASH_PROTECTION_ENABLE 1
 
-#if MCU_CORE_TYPE == MCU_CORE_TL322X
-    #define PLIC_ENABLE           1
-    #define CLIC_ENABLE           0
-#endif
+
 
 ///////////////////////// OS settings /////////////////////////////////////////////////////////
 #define FREERTOS_ENABLE           0
@@ -73,6 +70,10 @@
     #define BOARD_SELECT BOARD_321X_EVK_C1T335A20 // BOARD_321X_EVK_C1T331A20
 #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
     #define BOARD_SELECT BOARD_322X_EVK_C1T371A20
+#elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
+    #define BOARD_SELECT BOARD_323X_EVK_C1T388A20
+#elif (MCU_CORE_TYPE == MCU_CORE_TL521X)
+    #define BOARD_SELECT BOARD_521X_EVK_C1T416A20
 #endif
 
 ///////////////////////// UI Configuration ////////////////////////////////////////////////////
@@ -85,7 +86,7 @@
 #define DEBUG_GPIO_ENABLE    0
 
 #define TLKAPI_DEBUG_ENABLE  1
-#define TLKAPI_DEBUG_CHANNEL TLKAPI_DEBUG_CHANNEL_GSUART
+#define TLKAPI_DEBUG_CHANNEL TLKAPI_DEBUG_CHANNEL_UART
 
 #define APP_LOG_EN           1
 #define APP_CONTR_EVT_LOG_EN 1 //controller event
@@ -93,7 +94,7 @@
 #define APP_KEY_LOG_EN       1
 #define APP_BUTTON_LOG_EN    1
 
-#define JTAG_DEBUG_DISABLE   1 //if use JTAG, change this
+   
 
 
 /////////////////// DEEP SAVE FLG //////////////////////////////////
@@ -103,7 +104,7 @@
 
 
 #if FREERTOS_ENABLE
-    /////////////////////////////////////// PRINT DEBUG INFO ///////////////////////////////////////
+/////////////////////////////////////// PRINT DEBUG INFO ///////////////////////////////////////
     #undef UI_KEYBOARD_ENABLE
     #define UI_KEYBOARD_ENABLE           0
 

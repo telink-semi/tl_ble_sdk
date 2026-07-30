@@ -65,7 +65,7 @@
     #define APP_PAIR_LOG_EN       1
     #define APP_KEY_LOG_EN        1
 
-    #define JTAG_DEBUG_DISABLE    1 //if use JTAG, change this
+       
 
 
     #include "../../common/default_config.h"

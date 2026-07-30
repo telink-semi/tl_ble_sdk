@@ -35,9 +35,7 @@
     #define HCI_TR_EN 0
 #endif
 
-#if (__PROJECT_BQB_CONTROLLER__)
-    #include "vendor/BQB_controller/app_buffer.h"
-#elif (__PROJECT_BLE_CONTROLLER__)
+#if (__PROJECT_BLE_CONTROLLER__)
     #include "vendor/ble_controller/app_buffer.h"
 #endif
 

@@ -39,6 +39,10 @@
     #define EATT_SUPPORTED_FLAG 0
 #endif
 
+#ifndef TELINK_CS_TEST_WITH_PHONE
+    #define TELINK_CS_TEST_WITH_PHONE 0
+#endif
+
 /**
  * @brief      for user add default GATT and GAP service in all GAP server.
  * @param[in]  none.

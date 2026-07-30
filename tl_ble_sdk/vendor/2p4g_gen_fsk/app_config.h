@@ -38,7 +38,12 @@ extern "C"
 #define GEN_FSK_TX     5
 #define GEN_FSK_RX     6
 
-#define GEN_FSK_MODE   GEN_FSK_SRX
+#if (MCU_CORE_TYPE == MCU_CORE_TL323X)
+#define GEN_FSK_STX_3BIT    7
+#define GEN_FSK_SRX_3BIT    8
+#endif
+
+#define GEN_FSK_MODE   GEN_FSK_STX
 
 
 /* Flash Protection:
@@ -50,7 +55,7 @@ extern "C"
  *    be directly used on user's mass production application without any change. User should refer to sample code, understand the
  *    principles and methods, then change and implement a more appropriate mechanism according to their application if needed.
  */
-#define APP_FLASH_PROTECTION_ENABLE 0
+#define APP_FLASH_PROTECTION_ENABLE 1
 
 /////////////////////// Board Select Configuration ///////////////////////////////
 #if (MCU_CORE_TYPE == MCU_CORE_B91)
@@ -61,6 +66,8 @@ extern "C"
     #define BOARD_SELECT BOARD_721X_EVK_C1T315A20
 #elif (MCU_CORE_TYPE == MCU_CORE_TL321X)
     #define BOARD_SELECT BOARD_321X_EVK_C1T335A20 //BOARD_321X_EVK_C1T335A20
+#elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
+    #define BOARD_SELECT BOARD_323X_EVK_C1T388A20
 #endif
 
 #define rf_stimer_get_tick()     stimer_get_tick()
@@ -76,13 +83,13 @@ extern "C"
 
 #define RF_DEBUG_IO_ENABLE   1
 
-#define TLKAPI_DEBUG_ENABLE  0
+#define TLKAPI_DEBUG_ENABLE  1
 #define TLKAPI_DEBUG_CHANNEL TLKAPI_DEBUG_CHANNEL_GSUART
 
 #define APP_LOG_EN           1
 #define APP_KEY_LOG_EN       1
 
-#define JTAG_DEBUG_DISABLE   1 //if use JTAG, change this
+   
 
 
 #include "../common/default_config.h"

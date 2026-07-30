@@ -28,7 +28,7 @@
 #define HW_EVK                                      1
 #define HW_DONGLE                                   2
 
-#define HARDWARE_BOARD_SELECT                       HW_DONGLE
+#define HARDWARE_BOARD_SELECT                       HW_EVK
 
 #define ACL_CENTRAL_MAX_NUM                         1 // ACL central maximum number
 #define ACL_PERIPHR_MAX_NUM                         0 // ACL peripheral maximum number
@@ -75,16 +75,23 @@
 
 #define BLE_APP_PM_ENABLE                           0
 
+#define BATT_CHECK_ENABLE             0
+
+
+/* Flash Protection:
+ * 1. Flash protection is enabled by default in SDK. User must enable this function on their final mass production application.
+ * 2. User should use "Unlock" command in Telink BDT tool for Flash access during development and debugging phase.
+ * 3. Flash protection demonstration in SDK is a reference design based on sample code. Considering that user's final application may
+ *    different from sample code, for example, user's final firmware size is bigger, or user have a different OTA design, or user need
+ *    store more data in some other area of Flash, all these differences imply that Flash protection reference design in SDK can not
+ *    be directly used on user's mass production application without any change. User should refer to sample code, understand the
+ *    principles and methods, then change and implement a more appropriate mechanism according to their application if needed.
+ */
+#define APP_FLASH_PROTECTION_ENABLE 1
 ///////////////////////// ! OS settings////////////////////////////////////////////////
-/* note only B91 & B92 support FreeRtos*/
 #define FREERTOS_ENABLE                             0
 #define MODULE_USB_ENABLE                           1
 #define USB_CDC_ENABLE                              1
-
-#define APP_DEFAULT_BUFFER_ACL_OCTETS_MTU_SIZE_MINIMUM      0
-#define APP_DEFAULT_HID_BATTERY_OTA_ATTRIBUTE_TABLE         1
-
-#define FIX_AUX_CONN_SLOT_IDX_CAL                   1 //fix aux_conn_req sslot_idx_next bug TODO: remove latter
 
 ///////////////////////// UI Configuration ////////////////////////////////////////////////////
 #define UI_LED_ENABLE                               1
@@ -109,7 +116,6 @@
 #define APP_KEY_LOG_EN                              1
 
 
-#define JTAG_DEBUG_DISABLE                          1
 
 #if (MCU_CORE_TYPE == MCU_CORE_B91)
     #define PARSE_CHAR_UART_TX_PIN         UART1_TX_PC6
@@ -131,8 +137,8 @@
 
 ///////////////////////// OS settings /////////////////////////////////////////////////////////
 #define OS_SEPARATE_STACK_SPACE                     1   //Separate the task stack and interrupt stack space
-#define configTOTAL_HEAP_SIZE                       (16*1024)
-#define configISR_PLIC_STACK_SIZE                   640
+#define configTOTAL_HEAP_SIZE                       (24*1024)
+#define configISR_PLIC_STACK_SIZE                   2048
 
 #if FREERTOS_ENABLE
     #define traceAPP_LED_Task_Toggle()  //gpio_toggle(GPIO_CH01);

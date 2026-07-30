@@ -71,6 +71,8 @@ typedef struct{
     char maxSize;   //
 } set_param_list_t;
 
+typedef void (* app_parse_notify_cb_t)(void);
+
 /**
  * @brief       parse initial function.
  * @param[in]   parseList: parse command list.
@@ -99,3 +101,10 @@ int app_parse_str2n (char * ps);
  * @return      none.
  */
 void app_parse_printf(const char *format, ...);
+
+/**
+ * @brief       set UART RX ISR callback
+ * @param[in]   cb: UART RX ISR notification callback
+ * @return      none.
+ */
+void app_parse_set_uart_rx_notify(app_parse_notify_cb_t cb);

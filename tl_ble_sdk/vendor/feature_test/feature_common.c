@@ -64,9 +64,11 @@ _attribute_ram_code_ void blc_app_system_init(void)
     gpio_set_up_down_res(GPIO_SWS, GPIO_PIN_PULLUP_1M);
     wd_32k_stop();
     wd_stop();
-    PLL_192M_D25F_48M_HCLK_N22_24M_PCLK_24M_MSPI_48M;
-    pm_set_dig_module_power_switch(FLD_PD_ZB_EN, PM_POWER_UP);
+    PLL_192M_D25F_64M_HCLK_N22_32M_PCLK_32M_MSPI_48M;
+    sys_n22_init(N22_FW_DOWNLOAD_FLASH_ADDR);
+    #if !defined(TLK_ONLY_BLE_HOST)
     rf_n22_dig_init();
+    #endif
 #elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
     sys_init(DCDC_1P25_LDO_1P8, VBAT_MAX_VALUE_GREATER_THAN_3V6, INTERNAL_CAP_XTAL24M);
     pm_update_status_info(1);
@@ -74,5 +76,13 @@ _attribute_ram_code_ void blc_app_system_init(void)
     wd_32k_stop();
     wd_stop();
     PLL_192M_CCLK_48M_HCLK_24M_PCLK_12M_MSPI_48M;
+#elif (MCU_CORE_TYPE == MCU_CORE_TL521X)
+    sys_init(DCDC_1P25_LDO_1P8, VBAT_MAX_VALUE_GREATER_THAN_3V6, INTERNAL_CAP_XTAL24M);
+    pm_update_status_info(1);
+    gpio_shutdown(GPIO_ALL);
+    gpio_set_up_down_res(GPIO_SWS, GPIO_PIN_PULLUP_1M);
+    wd_32k_stop();
+    wd_stop();
+    PLL_144M_CCLK_48M_HCLK_24M_PCLK_12M_MSPI_48M;
 #endif
 }

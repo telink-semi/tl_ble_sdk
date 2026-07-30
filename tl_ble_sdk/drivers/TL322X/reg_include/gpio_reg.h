@@ -377,7 +377,19 @@
 #define reg_gpio_irq7_en(i)       REG_ADDR8(GPIO_BASE_ADDR + 0x10f + ((i >> 8) << 4))
 
 #define reg_gpio_func_mux(i)      REG_ADDR8(GPIO_BASE_ADDR + 0xb0 + ((i >> 8) << 3) + BIT_LOW_BIT(i))
-#define reg_gpio_pana_in          REG_ADDR8(GPIO_BASE_ADDR + 0x100)
+#define reg_gpio_bb_mux_dbug0     REG_ADDR8(GPIO_BASE_ADDR + 0x100)
+
+enum
+{
+    FLD_GPIO_DBG_IN          = BIT(0),
+    FLD_GPIO_SEL_BB_L        = BIT(1),
+    FLD_GPIO_SEL_BB_H        = BIT(2),
+    FLD_GPIO_DBG_SEL_BT      = BIT(3),
+    FLD_GPIO_WIFI_SEL2W      = BIT(4),
+    FLD_GPIO_DBG_AXON_BB_SEL = BIT(5),
+    FLD_GPIO_WIFI_CO_SEL     = BIT(6),
+    FLD_GPIO_WIFI_CO_ACT_INV = BIT(7),
+};
 #define reg_gpio_irq_ctrl         REG_ADDR8(GPIO_BASE_ADDR + 0x102)
 
 enum

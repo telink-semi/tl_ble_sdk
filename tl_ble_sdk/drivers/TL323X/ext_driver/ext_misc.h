@@ -29,9 +29,7 @@
 #include "../driver.h"
 #include <stdbool.h>
 
-/*
- * addr - only 0x00012 ~ 0x00021 can be used !!! */
-#define write_log32(err_code)           write_sram32(0x00014, err_code)
+
 
 /******************************* pke_start ******************************************************************/
 #define ismemzero4(a, len)              uint32_BigNum_Check_Zero(a, len)    //For compatible with B91

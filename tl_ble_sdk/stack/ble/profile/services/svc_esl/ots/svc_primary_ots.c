@@ -90,7 +90,7 @@ static const atts_attribute_t primaryOtsList[] =
 #endif
 
 #if OTS_OBJECT_CHANGED_SUPPORTED
-        ATTS_CHAR_UUID_INDICATE_ONLY(characteristicObjectChangedUuid),
+        ATTS_CHAR_UUID_INDIC_ONLY(characteristicObjectChangedUuid),
         ATTS_COMMON_CCC_DEFINE_CB,
 #endif
 };

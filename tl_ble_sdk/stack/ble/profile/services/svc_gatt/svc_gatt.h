@@ -47,9 +47,12 @@
     #define BAS_MAX_HDL_NUM                0x30
     #define SERVICE_SCAN_PARAMETERS_HDL    SERVICE_BATTERY_HDL + BAS_MAX_HDL_NUM
     #define SCPS_MAX_HDL_NUM               0x10
+    #define SERVICE_TX_POWER_HDL           SERVICE_SCAN_PARAMETERS_HDL + SCPS_MAX_HDL_NUM
+    #define TPS_MAX_HDL_NUM                0x04
 #endif
 
 #include "bas/svc_battery.h"
 #include "core/svc_core.h"
 #include "dis/svc_dis.h"
 #include "scps/svc_scps.h"
+

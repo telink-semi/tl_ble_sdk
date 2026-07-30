@@ -118,6 +118,7 @@ typedef enum
     FLASH_SONOS_PUYA = 0x02006085, // 6085     bit[25]:SONOS:Byte Program Time == Page Programming Time
     FLASH_SONOS_TH   = 0x020060EB, // 60EB
     FLASH_SST_TH     = 0x040060CD, // 60CD     bit[26]:SST:  Byte Program Time != Page Programming Time
+    FLASH_NORD_TH    = 0x100070CD, // 70CD/71CD/51CD        bit[27]=1:NORD: Byte Program Time != Page Programming Time
 } flash_vendor_e;
 
 /**
@@ -147,10 +148,13 @@ typedef enum
 typedef enum
 {
     MID146085 = 0x146085, //P25Q80SU
+    MID1471CD = 0x1471cd, //TH25Q80U
+    MID1571CD = 0x1571cd, //TH25Q16U
     MID156085 = 0x156085, //P25Q16SU
     MID1460C8 = 0x1460c8, //GD25LE80E
     MID1560C8 = 0x1560c8, //GD25LE16E
     MID166085 = 0x166085, //P25Q32SU
+    MID1660CD = 0x1660cd, //TH25Q32UB
 } flash_mid_e;
 
 typedef struct

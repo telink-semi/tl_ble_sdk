@@ -430,7 +430,7 @@ void audio_set_dma_rx_burst(audio_fifo_chn_e fifo_chn, dma_chn_e dma_chn, dma_bu
  */
 void audio_power_on(void)
 {
-    pm_set_dig_module_power_switch(FLD_PD_AUDIO_EN, PM_POWER_UP);
+//    pm_set_dig_module_power_switch(FLD_PD_AUDIO_EN, PM_POWER_UP);
     BM_SET(reg_rst2, FLD_RST2_AUDIO);
     BM_SET(reg_clk_en2, FLD_CLK2_AUDIO_EN);
 }
@@ -443,7 +443,13 @@ void audio_power_down(void)
 {
     BM_CLR(reg_rst2, FLD_RST2_AUDIO);
     BM_CLR(reg_clk_en2, FLD_CLK2_AUDIO_EN);
-    pm_set_dig_module_power_switch(FLD_PD_AUDIO_EN, PM_POWER_DOWN);
+//    pm_set_dig_module_power_switch(FLD_PD_AUDIO_EN, PM_POWER_DOWN);
+    /*
+     * If use amic before, mic_sel should be selected dmic(default) here if audio power not power down.
+     * Otherwise, sd adc does not work normally.
+     * changed by nanshun.ouyang, comfired by shiyi.wu. 2026.04.23
+     */
+    reg_codec_vol = (reg_codec_vol & (~FLD_MIC_SEL)) | MASK_VAL(FLD_MIC_SEL, 1);
 }
 
 /**

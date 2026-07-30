@@ -37,3 +37,4 @@ struct blc_scps_client_ctrl
     blc_prf_proc_t          process;
     struct blc_scps_client *pScpsClient[STACK_PRF_ACL_CENTRAL_MAX_NUM];
 } __attribute__((packed));
+

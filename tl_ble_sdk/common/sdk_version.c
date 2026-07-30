@@ -22,7 +22,7 @@
  *
  *******************************************************************************************************/
 #include "sdk_version.h"
-
+#include <string.h>
 /*
  * Release Tool need to change this macro to match the release version,
  * the replace rules is: "$$$B85m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
@@ -37,3 +37,33 @@ volatile __attribute__((section(".sdk_version"))) unsigned char patch_version[] 
 #if (CUSTOM_MAJOR_VERSION || CUSTOM_MINOR_VERSION)
 volatile __attribute__((section(".sdk_version"))) unsigned char custom_version[] = {CUSTOM_VERSION(CUSTOM_VERSION_NUM)};
 #endif
+
+
+unsigned char tlk_get_sdk_version(unsigned char *pbuf, unsigned char pbuf_size)
+{
+    /*
+    struct {
+        SDKVer: V4.0.4.4_P0001
+        Custom Version: C0.0    //Only specific customers will use this
+    }
+    */
+    const char version[] = {
+        //SDKVer:
+        'S','D','K','V', 'e', 'r', ':',
+        //Version
+        'V', CERTIFICATION_MARK+0x30, '.', SOFT_STRUCTURE+0x30, '.', MAJOR_VERSION+0x30, '.', MINOR_VERSION+0x30,
+        //Patch
+        '_', 'P', '0', '0', '0', PATCH_NUM+0x30, ' ',
+        //Custom Version
+        'C', CUSTOM_MAJOR_VERSION+0x30, '.', CUSTOM_MINOR_VERSION+0x30, ' ',
+    };
+
+    unsigned char required_size = sizeof(version);
+    if (required_size > pbuf_size) {
+        return 0;                                                                                   // Buffer is too small
+    }
+
+    memcpy(pbuf, version, sizeof(version));
+
+    return required_size;
+}

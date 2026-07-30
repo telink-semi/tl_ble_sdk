@@ -1,3 +1,385 @@
+## V4.0.4.8(PR)
+
+### Version
+
+* SDK Version: tl_ble_sdk V4.0.4.8
+* Chip Version: 
+    - TLSR921X(B91):           A2
+    - TLSR922X/TLSR952X(B92):  A3/A4
+    - TL721X:                  A2/A3
+    - TL321X:                  A1/A2/A3
+    - TL322X:                  A1
+    - TL323X:                  A0/A1
+    - TL521X:                  A0
+* Hardware EVK Version:
+    - TLSR921X:                C1T213A20_V1.3
+    - TLSR952X:                C1T266A20_V1.3
+    - TL721X:                  C1T315A20_V1.2/AIOT_DK1:ML7218D1/ML7218A
+    - TL321X:                  C1T331A20_V1.0/C1T335A20_V1.3/C1T335A78_V1.0
+    - TL322X:                  C1T371A20_V1.2
+    - TL323X:                  C1T388A20_V1.1
+    - TL521X:                  C1T416A20_V1.0
+* Platform Version: 
+    - TLSR921X:                tl_platform_sdk V4.0.0
+    - TLSR922X/TLSR952X:       tl_platform_sdk V4.0.0
+    - TL721X:                  tl_platform_sdk V4.0.0
+    - TL321X:                  tl_platform_sdk V4.0.0
+    - TL322X:                  tl_platform_sdk V4.0.0
+    - TL323X:                  tl_platform_sdk V4.0.0
+    - TL521X:                  tl_platform_sdk V4.0.0
+* Toolchain Version:
+    - TLSR921X:                TL32 ELF MCULIB V5F GCC7.4  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+    - TLSR922X/TLSR952X:       TL32 ELF MCULIB V5F GCC12.2  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+    - TL721X                   TL32 ELF MCULIB V5F GCC12.2  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+    - TL321X:                  TL32 ELF MCULIB V5 GCC12.2  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+    - TL322X:                  TL32 ELF MCULIB V5F GCC12.2  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+    - TL323X:                  TL32 ELF MCULIB V5F GCC12.2  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+    - TL521X:                  TL32 ELF MCULIB V5F GCC12.2  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+
+### Note
+
+   * N/A
+
+
+### Bug Fixes
+
+* **Drivers**
+
+	* **sar adc**
+		* (TL322X): Fixed the prolonged settling time issue following the adc_power_on operation. (merge_requests/@2624)
+		* Detailed description: Previously, to ensure the accuracy and consistency of Analog-to-Digital Converter (ADC) sampling data, a 30μs stabilization period was required after executing the adc_power_on instruction. Insufficient settling time could lead to data deviations or sampling errors.
+		* Fixing effect: Application-level software delays are no longer required after calling the adc_power_on interface. The system now supports immediate sampling, with the underlying driver ensuring precise and reliable conversion results.
+		* Update suggestion: The adc must be updated.
+	* **watchdog**
+		* (TL323X):Fixed an issue where the 32k watchdog reset time could be shorter than the configured interval due to hardware inaccuracies. (merge_requests/@2829)
+		* Detailed description:To ensure that the watchdog reset time never falls below the set interval, software compensation has been introduced by adding a maximum allowable timing error as an offset during interval configuration.  
+		* Fixing effect:The 32k watchdog reset time will never be less than the configured interval. 
+		* Update suggestion: Using the watchdog must be updated.
+	* **rz**
+		* (TL322X): Fixed the issue that an incorrect offset address configuration in `rz_t0l_t1l_jitter_config` and `rz_t0h_t1h_jitter_config` caused jitter configuration to have no effect. (merge_requests/@2842)
+		* Detailed description: Previously, the jitter enable/disable functions mistakenly wrote to `reg_rz_ctrl0` (RZ_CTRL0, offset 0x00), but the jitter control bits `FLD_RZ_JITTER_L_EN` (bit[0]) and `FLD_RZ_JITTER_H_EN` (bit[1]) are actually located in `reg_rz_ctrl1` (RZ_CTRL1, offset 0x01). This caused jitter configuration to have no effect.
+		* Fixing effect: The jitter functions now correctly operate on the jitter register address, ensuring that jitter on T0L/T1L and T0H/T1H can be properly enabled or disabled.
+		* Update suggestion: The rz driver must be updated.
+	* **rf**
+		* (TL751X): Fixed the abnormal RX performance issue occurring with partial access codes. (merge_requests/@2868)
+		* Detailed description: Abnormal RX performance under certain access codes (packet loss rate exceeds 80% at 0 dBm transmit power).
+		* Fixing effect: After repair, RX performance of the problematic access codes returns to normal.
+		* Update suggestion: must be updated.
+	* **GPIO**
+		* (TL322X): Fixed the issues with abnormal IO functions of PC2 and PC3. (merge_requests/@2886)
+		* Detailed description: In crystal_manual_settle, a 32k XTAL was enabled, causing PC2/PC3 to be forcibly used as the crystal oscillator pin. This resulted in the loss of GPIO functionality, affecting 3.11.0-3.11.3 versions.  
+		* Fixing effect: After the fix, pc2 and pc3 functions operate normally.  
+		* Update suggestion: must be updated when using PC2 and PC3.
+
+* **BLE general function** 
+	* **LL**
+		* Fixed rare reception timing loss of PAwR response packets.
+	* **HCI**
+		* Fixed max length of reported PAwR advertising events
+	* **ATT**
+		* Fixed missing response of ATT_ERR_INVALID_HANDLE when receiving an invalid handle for ATT_OP_FIND_INFO_REQ command.
+	* **PM**
+		* Fixed the incorrect parameter length of the `BLT_EV_FLAG_SUSPEND_EXIT` event callback.
+
+* **2.4G general function** 
+    * Resolved a rare issue where receiving incorrect packets in GENERIC variable packet format causes buffer overflow for TL321X.		
+	
+* **Others**
+   * Fixed potential softtimer issue when del/add timer in timer callback.
+
+### BREAKING CHANGES
+
+* **BLE general function** 
+    * Added TL521X A0
+	* For all chips, synchronized tl_platform_sdk V4.0.0.
+
+### Features
+
+* **2.4G general function** 
+    * Support TL323X
+		* Support 2.4G TPLL mode and GenFsk mode.
+		* Support 3bits header format packet.
+		* Reference design illustration:
+			* 2p4g_tpll_demo
+			* 2p4g_genfsk_demo
+			* 2p4g_feature_test
+
+* **Others**
+    * Added `BLT_EV_FLAG_CHECK_BEFORE_SLEEP_ENTER` event flag to allow application-layer inspection before entering sleep. This helps diagnose conditions that prevent sleep entry.
+
+### Refactoring
+
+* **Drivers**
+	* **rf**
+	  * (TL323X)  Update RF Tx Power Table to match actual output power.(merge_requests/@2813)
+	
+### Performance Improvements
+
+* **Others**
+    *  Added reentrancy guard to debug FIFO write functions (`tlkapi_send_str_data()`, `_write()`, `tlk_printf()`) to prevent data corruption when called from both main context and interrupt context.
+    *  Optimize interrupt-off duration in tlkapi_debug_handler().	
+
+### Known issues
+
+	* N/A
+
+### CodeSize
+
+* TLSR921X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 108.22                     | 55.98                        | 0.38                 |
+| acl_connection_demo                 | 130.61                     | 67.23                        | 0.57                 |
+| acl_peripheral_demo                 | 114.30                     | 57.23                        | 0.50                 |
+
+* TLSR922X/TLSR952X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 107.72                     | 56.08                        | 0.41                 |
+| acl_connection_demo                 | 130.22                     | 67.33                        | 0.66                 |
+| acl_peripheral_demo                 | 115.00                     | 57.58                        | 0.62                 |
+| eslp_ap_demo                        | 284.32                     | 118.27                       | 29.57                |
+
+* TL721X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 114.41                     | 61.39                        | 0.45                 |
+| acl_connection_demo                 | 136.88                     | 72.64                        | 0.70                 |
+| acl_peripheral_demo                 | 121.54                     | 62.89                        | 0.67                 |
+| eslp_ap_demo                        | 294.68                     | 122.39                       | 21.62                |
+
+* TL321X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 116.14                     | 59.64                        | 0.42                 |
+| acl_connection_demo                 | 138.99                     | 71.14                        | 0.67                 |
+| acl_peripheral_demo                 | 123.58                     | 61.39                        | 0.65                 |
+| eslp_esl_demo                       | 197.75                     | 68.14                        | 2.69                 |
+
+* TL322X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 119.83                     | 64.15                        | 0.46                 |
+| acl_connection_demo                 | 143.46                     | 75.65                        | 0.71                 |
+| acl_peripheral_demo                 | 128.30                     | 65.90                        | 0.72                 |
+
+* TL323X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 118.46                     | 62.64                        | 0.43                 |
+| acl_connection_demo                 | 141.55                     | 74.39                        | 0.68                 |
+| acl_peripheral_demo                 | 125.99                     | 64.64                        | 0.69                 |
+| eslp_esl_demo                       | 199.72                     | 70.64                        | 2.70                 |
+
+* TL521X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 118.71                     | 62.90                        | 0.43                 |
+| acl_connection_demo                 | 142.27                     | 75.15                        | 0.67                 |
+| acl_peripheral_demo                 | 126.46                     | 65.15                        | 0.69                 |
+| ble_remote                          | 127.29                     | 63.90                        | 2.18                 |
+
+**Note:** The above IRAM usage includes the FIFO buffer required for the debug logging functionality. Disabling the `TLKAPI_DEBUG_ENABLE` macro can save approximately 4.76 KB of IRAM.
+
+
+
+### 版本
+
+* SDK Version: tl_ble_sdk V4.0.4.8
+* Chip Version: 
+    - TLSR921X(B91):           A2
+    - TLSR922X/TLSR952X(B92):  A3/A4
+    - TL721X:                  A2/A3
+    - TL321X:                  A1/A2/A3
+    - TL322X:                  A1
+    - TL323X:                  A0/A1
+    - TL521X:                  A0
+* Hardware EVK Version:
+    - TLSR921X:                C1T213A20_V1.3
+    - TLSR952X:                C1T266A20_V1.3
+    - TL721X:                  C1T315A20_V1.2/AIOT_DK1:ML7218D1/ML7218A
+    - TL321X:                  C1T331A20_V1.0/C1T335A20_V1.3/C1T335A78_V1.0
+    - TL322X:                  C1T371A20_V1.2
+    - TL323X:                  C1T388A20_V1.1
+    - TL521X:                  C1T416A20_V1.0
+* Platform Version: 
+    - TLSR921X:                tl_platform_sdk V4.0.0
+    - TLSR922X/TLSR952X:       tl_platform_sdk V4.0.0
+    - TL721X:                  tl_platform_sdk V4.0.0
+    - TL321X:                  tl_platform_sdk V4.0.0
+    - TL322X:                  tl_platform_sdk V4.0.0
+    - TL323X:                  tl_platform_sdk V4.0.0
+    - TL521X:                  tl_platform_sdk V4.0.0
+* Toolchain Version:
+    - TLSR921X:                TL32 ELF MCULIB V5F GCC7.4  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+    - TLSR922X/TLSR952X:       TL32 ELF MCULIB V5F GCC12.2  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+    - TL721X                   TL32 ELF MCULIB V5F GCC12.2  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+    - TL321X:                  TL32 ELF MCULIB V5 GCC12.2  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+    - TL322X:                  TL32 ELF MCULIB V5F GCC12.2  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+    - TL323X:                  TL32 ELF MCULIB V5F GCC12.2  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+    - TL521X:                  TL32 ELF MCULIB V5F GCC12.2  (IDE: [TelinkIoTStudio](https://www.telink-semi.com/development-tools))
+
+
+### Note
+
+   * N/A
+
+### Bug Fixes
+
+* **Drivers**
+	* **sar adc**
+	  * (TL322X): 修复了adc_power_on后建立时间长的问题。(merge_requests/@2624)
+	  * 详细描述：为了确保模数转换器 (ADC) 采样数据的精确性与一致性，在执行 adc_power_on 指令后，模数转换器需要预留 30us 的稳定时间。未提供充足的建立时间可能导致采样结果出现偏差或错误。
+	  * 修复效果：调用 adc_power_on 接口后无需在应用层插入任何软件延时，系统支持立即发起采样操作，并由底层确保转换结果的绝对精准。
+	  * 更新建议：使用adc必须更新。
+	* **watchdog**
+		* (TL323X): 修复了32k watchdog因硬件误差导致复位时间可能小于设置时间的问题(merge_requests/@2829)
+		* 详细描述: 为了保证在设置interval时，watchdog的复位时间不会小于设置时间，在设置interval时，软件上增加了最大的时间误差，作为补偿值。
+		* 修复效果: 32k watchdog复位时间永远不会小于设置时间。
+		* 更新建议：使用watchdog必须更新。
+	* **rz**
+		* (TL322X): 修复了 `rz_t0l_t1l_jitter_config` 和 `rz_t0h_t1h_jitter_config` 两个接口中偏移地址配置错误导致 jitter 配置无效的问题。(merge_requests/@2842)
+		* 详细描述：此前 jitter 使能/禁能函数错误地写入了 `reg_rz_ctrl0`（RZ_CTRL0，偏移 0x00），但 jitter 控制位 `FLD_RZ_JITTER_L_EN`（bit[0]）和 `FLD_RZ_JITTER_H_EN`（bit[1]）实际位于 `reg_rz_ctrl1`（RZ_CTRL1，偏移 0x01），导致 jitter 配置无效。
+		* 修复效果：jitter 函数现正确操作 jitter 寄存器地址，确保 T0L/T1L 和 T0H/T1H 上的抖动可正常使能或禁能。
+		* 更新建议：使用 rz 驱动必须更新。
+	* **rf**
+		* (TL751X)： 修复了部分access code rx 性能异常的问题。 (merge_requests/@2868)
+		* 详细描述： 部分 access code 下 rx 性能异常（0dbm 发送下，丢包率超过 80%）。
+		* 修复效果： 修复后异常 access code rx 性能恢复正常。
+		* 更新建议： 必须更新。
+	* **GPIO**
+		* (TL322X)：修复pc2和pc3 IO功能异常问题。(merge_requests/@2886) 
+		* 详细描述： 因 crystal_manual_settle 中开启了32k XTAL，PC2/PC3 强制作为晶振引脚，导致其 GPIO 功能不可用，影响3.11.0-3.11.3版本。
+		* 修复效果： 修复后pc2和pc3功能正常。
+		* 更新建议： 使用PC2和PC3时必须更新。
+		
+* **BLE通用功能** 
+	* **LL**
+		* 修复PAwR小概率丢失response packet接收时序。
+	* **HCI**
+		* 修复上报PAwR广播事件的最大长度。
+	* **ATT**
+		* 修复当 ATT_OP_FIND_INFO_REQ 命令收到非法 handle 时，没有回复 ATT_ERR_INVALID_HANDLE 的问题。 
+	* **PM**
+	    * 修复 `BLT_EV_FLAG_SUSPEND_EXIT` 事件回调参数长度错误的问题。
+		
+* **2.4G general function** 
+    * 修复了TL321X在GENERIC灵活包格式下，因偶发收错包导致缓冲区溢出的问题
+
+* **Others** 
+    * softtimer 在定时器回调中删除/添加定时器的潜在问题修复。
+
+### BREAKING CHANGES
+
+* **BLE通用功能** 
+    * 增加TL521X A0
+	* 对于所有芯片，同步 tl_platform_sdk V4.0.0。
+
+### Features
+	
+* **2.4G general function** 
+    * 支持 TL323X
+		* 支持 2.4G TPLL模式和GenFsk模式.
+		* 支持 3bits header特殊包格式.
+		* 参考设计示例:
+			* 2p4g_tpll_demo
+			* 2p4g_genfsk_demo
+			* 2p4g_feature_test
+			
+* **Others**
+    * 添加 `BLT_EV_FLAG_CHECK_BEFORE_SLEEP_ENTER` 事件标志，允许应用层在进入睡眠前进行检查，用于诊断阻止睡眠进入的条件。
+	
+### Refactoring
+
+* **Drivers**
+	* **rf**
+	  * (TL323X)  更新rf tx power表以保证与实际输出power一致。(merge_requests/@2813) 
+
+
+### Performance Improvements
+
+* **Others**
+    * 为调试 FIFO 写入函数 (`tlkapi_send_str_data()`, `_write()`, `tlk_printf()`) 添加重入保护，防止主循环和中断上下文同时调用导致数据损坏。
+    * 优化 `tlkapi_debug_handler()` 调用位置，减少关中断时间。
+
+### Known issues
+
+	* N/A
+
+### CodeSize
+
+* TLSR921X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 108.22                     | 55.98                        | 0.38                 |
+| acl_connection_demo                 | 130.61                     | 67.23                        | 0.57                 |
+| acl_peripheral_demo                 | 114.30                     | 57.23                        | 0.50                 |
+
+* TLSR922X/TLSR952X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 107.72                     | 56.08                        | 0.41                 |
+| acl_connection_demo                 | 130.22                     | 67.33                        | 0.66                 |
+| acl_peripheral_demo                 | 115.00                     | 57.58                        | 0.62                 |
+| eslp_ap_demo                        | 284.32                     | 118.27                       | 29.57                |
+
+* TL721X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 114.41                     | 61.39                        | 0.45                 |
+| acl_connection_demo                 | 136.88                     | 72.64                        | 0.70                 |
+| acl_peripheral_demo                 | 121.54                     | 62.89                        | 0.67                 |
+| eslp_ap_demo                        | 294.68                     | 122.39                       | 21.62                |
+
+* TL321X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 116.14                     | 59.64                        | 0.42                 |
+| acl_connection_demo                 | 138.99                     | 71.14                        | 0.67                 |
+| acl_peripheral_demo                 | 123.58                     | 61.39                        | 0.65                 |
+| eslp_esl_demo                       | 197.75                     | 68.14                        | 2.69                 |
+
+* TL322X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 119.83                     | 64.15                        | 0.46                 |
+| acl_connection_demo                 | 143.46                     | 75.65                        | 0.71                 |
+| acl_peripheral_demo                 | 128.30                     | 65.90                        | 0.72                 |
+
+* TL323X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 118.46                     | 62.64                        | 0.43                 |
+| acl_connection_demo                 | 141.55                     | 74.39                        | 0.68                 |
+| acl_peripheral_demo                 | 125.99                     | 64.64                        | 0.69                 |
+| eslp_esl_demo                       | 199.72                     | 70.64                        | 2.70                 |
+
+* TL521X
+
+| reference design                    | Flash bin size (kBytes)    | IRAM size (kBytes)           | DRAM size (kBytes)   |
+| :-------------                      | :-----------------------:  | :--------------------------: | :------------------: |
+| acl_central_demo                    | 118.71                     | 62.90                        | 0.43                 |
+| acl_connection_demo                 | 142.27                     | 75.15                        | 0.67                 |
+| acl_peripheral_demo                 | 126.46                     | 65.15                        | 0.69                 |
+| ble_remote                          | 127.29                     | 63.90                        | 2.18                 |
+
+**Note:** 上述 IRAM 统计包含了打印功能所需的 FIFO，关闭宏 TLKAPI_DEBUG_ENABLE，可以节省约 4.76 KB 的 IRAM。
+
+
+
 ## V4.0.4.7_Patch_0002(PR)
 
 

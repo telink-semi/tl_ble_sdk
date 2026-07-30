@@ -27,6 +27,56 @@
 #include "drivers.h"
 #include "vendor/common/user_config.h"
 
+#ifndef FLASH_P25Q80U_SUPPORT_EN
+    #define FLASH_P25Q80U_SUPPORT_EN 0
+#endif
+
+#ifndef FLASH_P25Q16SU_SUPPORT_EN
+    #define FLASH_P25Q16SU_SUPPORT_EN 0
+#endif
+
+#ifndef FLASH_P25Q32SU_SUPPORT_EN
+    #define FLASH_P25Q32SU_SUPPORT_EN 0
+#endif
+
+#ifndef FLASH_P25Q128H_SUPPORT_EN
+    #define FLASH_P25Q128H_SUPPORT_EN 0
+#endif
+
+#ifndef FLASH_P25Q80SU_SUPPORT_EN
+    #define FLASH_P25Q80SU_SUPPORT_EN 0
+#endif
+
+#ifndef FLASH_GD25LE80E_SUPPORT_EN
+    #define FLASH_GD25LE80E_SUPPORT_EN 0
+#endif
+
+#ifndef FLASH_GD25LE80E_SUPPORT_EN
+    #define FLASH_GD25LE80E_SUPPORT_EN 0
+#endif
+
+#ifndef FLASH_GD25LQ16E_SUPPORT_EN
+    #define FLASH_GD25LQ16E_SUPPORT_EN 0
+#endif
+
+#ifndef FLASH_GD25LE16E_SUPPORT_EN
+    #define FLASH_GD25LE16E_SUPPORT_EN 0
+#endif
+
+#ifndef FLASH_P25Q128L_SUPPORT_EN
+    #define FLASH_P25Q128L_SUPPORT_EN 0
+#endif
+
+#ifndef FLASH_GD25LQ80E_SUPPORT_EN
+    #define FLASH_GD25LQ80E_SUPPORT_EN 0
+#endif
+
+#ifndef FLASH_TH25Q32U_SUPPORT_EN
+    #define FLASH_TH25Q32U_SUPPORT_EN 0
+#endif
+
+
+
 /*Configure slave num (mspi_slave_device_num_e)*/
 #ifndef APP_FLASH_SLAVE_DEVICE_NUM
     #define APP_FLASH_SLAVE_DEVICE_NUM 0 //default slave 0
@@ -89,11 +139,6 @@
 
 #ifndef CFG_ADR_CALIBRATION_2M_FLASH
     #define CFG_ADR_CALIBRATION_2M_FLASH 0x1FE000
-#endif
-
-/* SMP pairing and key information area */
-#ifndef FLASH_ADR_SMP_PAIRING_2M_FLASH
-    #define FLASH_ADR_SMP_PAIRING_2M_FLASH 0x1EC000 //1EC000 & 1ED000 & 1EE000 & 1EF000
 #endif
 
 /* SMP pairing and key information area */
@@ -166,6 +211,18 @@
 #define CALIB_OFFSET_CALI_TABLE_PACKET_1M_INFO 0x3a2
 
 #define CALIB_OFFSET_CALI_TABLE_PACKET_2M_INFO 0x3f1
+
+#ifdef MCU_STARTUP_FLASH
+    #define MCU_RUN_IN_FLASH          1
+#else
+    #define MCU_RUN_IN_FLASH          0
+#endif
+
+#ifdef MCU_STARTUP_NVM
+    #define MCU_RUN_IN_NVM            1
+#else
+    #define MCU_RUN_IN_NVM            0
+#endif
 
 /**
  * @brief       This function can automatically recognize the flash size,

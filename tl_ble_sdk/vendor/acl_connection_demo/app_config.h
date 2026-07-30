@@ -33,10 +33,10 @@
 #define ACL_PERIPHR_SMP_ENABLE        1 //1 for smp,  0 no security
 #define ACL_CENTRAL_SMP_ENABLE        1 //1 for smp,  0 no security
 #define ACL_CENTRAL_SIMPLE_SDP_ENABLE 1 //simple service discovery for ACL central
+
 #define BLE_OTA_SERVER_ENABLE         1
 
 #define BLE_APP_PM_ENABLE             1
-
 #define BATT_CHECK_ENABLE             0
 
 
@@ -76,6 +76,10 @@
     #define BOARD_SELECT BOARD_321X_EVK_C1T335A20 // BOARD_321X_EVK_C1T331A20
 #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
     #define BOARD_SELECT BOARD_322X_EVK_C1T371A20
+#elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
+    #define BOARD_SELECT BOARD_323X_EVK_C1T388A20
+#elif (MCU_CORE_TYPE == MCU_CORE_TL521X)
+    #define BOARD_SELECT BOARD_521X_EVK_C1T416A20
 #endif
 
 ///////////////////////// UI Configuration ////////////////////////////////////////////////////
@@ -98,7 +102,7 @@
 #define APP_PAIR_LOG_EN       1
 #define APP_KEY_LOG_EN        1
 
-#define JTAG_DEBUG_DISABLE    1 //if use JTAG, change this
+   
 
 
 /////////////////// DEEP SAVE FLG //////////////////////////////////

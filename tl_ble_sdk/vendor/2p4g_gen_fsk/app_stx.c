@@ -98,7 +98,7 @@ void user_init_normal(void)
     //generic FSK Link Layer configuratioin
     gen_fsk_packet_format_set(GEN_FSK_MODE_FIXED_FORMAT, TX_PAYLOAD_LEN);
     gen_fsk_datarate_set(GEN_FSK_DATARATE_1MBPS);    //Note that this API must be invoked first before all other APIs
-    gen_fsk_preamble_len_set(4);
+    gen_fsk_preamble_len_set(8);
     gen_fsk_sync_word_len_set(SYNC_WORD_LEN_4BYTE);
     gen_fsk_sync_word_set(GEN_FSK_PIPE0, sync_word); //set pipe0's sync word
     gen_fsk_pipe_open(GEN_FSK_PIPE0);                //enable pipe0's reception

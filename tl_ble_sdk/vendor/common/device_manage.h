@@ -75,7 +75,8 @@ typedef struct
     u8  conn_state;       // 1: connect;  0: disconnect
 
     u8 char_handle_valid; // 1: peer device's attHandle is available;   0: peer device's attHandle not available
-    u8 rsvd[3];           // for 4 Byte align
+    u8 advHandle;
+    u8 rsvd[2];           // for 4 Byte align
 
     u8 peer_adrType;
     u8 peer_addr[6];
@@ -117,6 +118,15 @@ int dev_char_info_insert_by_conn_event(hci_le_connectionCompleteEvt_t *pConnEvt)
  *              0xFF: insert failed
  */
 int dev_char_info_insert_by_enhanced_conn_event(hci_le_enhancedConnCompleteEvt_t *pConnEvt);
+
+
+/**
+ * @brief       Used for update advHandle in conn_dev_list by LE Advertising Set Terminated event.
+ * @param[in]   pEvt - LE Advertising Set Terminated event data buffer address.
+ * @return      0: update success
+ *              1: no find matching connHandle
+ */
+int dev_char_info_insert_by_adv_terminated_event(hci_le_advSetTerminatedEvt_t *pEvt);
 
 
 /**
@@ -180,6 +190,24 @@ int dev_char_get_conn_role_by_connhandle(u16 connhandle);
  *              others:   connection index
  */
 int dev_char_get_conn_index_by_connhandle(u16 connhandle);
+
+
+/**
+ * @brief       Get advHandle by connection handle.
+ * @param[in]   connhandle       - connection handle.
+ * @return      advHandle value: 0x00 ~ 0xEF
+ *              0xFF: connection handle invalid
+ */
+int dev_char_get_adv_handle_by_connhandle(u16 connhandle);
+
+
+/**
+ * @brief       Get connection handle by advHandle.
+ * @param[in]   advHandle       - advertising handle.
+ * @return      connHandle value
+ *              0xFFFF: advHandle invalid
+ */
+int dev_char_get_conn_handle_by_adv_handle(u8 advHandle);
 
 
 /* compatible with previous released SDK */

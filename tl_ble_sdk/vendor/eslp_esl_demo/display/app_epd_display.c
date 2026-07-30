@@ -36,16 +36,7 @@
 
 #define Simulation                 1
 
-#if HARDWARE_BOARD_SELECT == HW_C1T233A78
-    #define EPD_SPI_CS_PIN   GPIO_PB6
-    #define EPD_SPI_CK_PIN   GPIO_PB4
-    #define EPD_SPI_DO_PIN   GPIO_PB3
-    #define EPD_RESET_PIN    GPIO_PB1
-    #define EPD_BS1_PIN      GPIO_PA6
-    #define EPD_PWR_CTRL_PIN GPIO_PB5
-    #define EPD_BUSY_PIN     GPIO_PB0
-    #define EPD_DC_PIN       GPIO_PB2
-#elif HARDWARE_BOARD_SELECT == HW_C1T335A78
+#if HARDWARE_BOARD_SELECT == HW_C1T335A78
     #define EPD_BS1_PIN      GPIO_PE7
     #define EPD_BUSY_PIN     GPIO_PE3
     #define EPD_RESET_PIN    GPIO_PE2

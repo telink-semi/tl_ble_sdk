@@ -156,6 +156,7 @@ typedef enum
     PRF_PROC_DEINIT,        /* process when unregister SVC node */
 } prf_proc_type_enum;
 
+
 typedef struct
 {
     //if load nv data, ptr is NV block start address.
@@ -171,11 +172,14 @@ typedef struct
 
 typedef int (*prf_evt_cb_t)(u16 connHandle, int evtID, u8 *pData, u16 dataLen);
 
+
+
 typedef void (*prf_read_cb_t)(u16 connHandle, att_err_t err);
 
 typedef void (*prf_write_cb_t)(u16 connHandle, att_err_t err);
 
 typedef void (*prf_ind_cb_t)(u16 connHandle, u16 scid);
+
 
 typedef struct blc_prf_proc
 {
@@ -197,12 +201,15 @@ typedef struct
     int (*evtCb)(u16 connHandle, u8 *pData, u16 dataLen);
 } app_prf_evtCb_t;
 
+
+
 /**
  *  @brief  Event Parameters for "PRF_EVTID_ACL_CONNECT"
  * The LE protocol stack event is taken over by the Audio Profile, and
  * the event is wrapped and used as a callback for the profile event.
  */
 typedef struct
+
 {
     u16 aclHandle;
     u16 connInterval;
@@ -213,11 +220,14 @@ typedef struct
 /**
  *  @brief  Event Parameters for "PRF_EVTID_ACL_DISCONNECT"
  */
+
 typedef struct
 {
     u16 aclHandle;
     u8  reason;
 } blc_prf_aclDisconnEvt_t;
+
+
 
 /**
  *  @brief  Event Parameters for "PRF_EVTID_SERVICE_ACL_ROLE_FAIL"
@@ -277,6 +287,7 @@ typedef struct
     }
 
 void blc_prf_initialModule(prf_evt_cb_t evtCb,void *base, u32 size);
+
 /**
  * @brief       This function retrieves the ACL connection index.
  * @param[in]   connHandle - The connection handle.
@@ -298,7 +309,9 @@ void blc_prf_main_loop(void);
  * @param[in]   param       - setting parameters.
  * @return      none.
  */
+
 void blc_prf_registerServiceModule(prf_bound_acl_role_enum usedAclRole, blc_prf_proc_t *pSvc, const void *param);
+
 /**
  * @brief       This function use read Attribute Value finish callback to high layer.
  * @param[in]   connHandle - ACL Connect.

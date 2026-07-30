@@ -33,8 +33,12 @@ extern "C"
 ///////////////////////// Feature Configuration////////////////////////////////////////////////
 #define TPLL_PTX  1
 #define TPLL_PRX  2
+#if (MCU_CORE_TYPE == MCU_CORE_TL323X)
+#define TPLL_PTX_3BIT  3  // only tl323x support this mode
+#define TPLL_PRX_3BIT  4  // only tl323x support this mode
+#endif
 
-#define TPLL_MODE TPLL_PRX
+#define TPLL_MODE TPLL_PTX
 
 /* Flash Protection:
  * 1. Flash protection is enabled by default in SDK. User must enable this function on their final mass production application.
@@ -45,7 +49,7 @@ extern "C"
  *    be directly used on user's mass production application without any change. User should refer to sample code, understand the
  *    principles and methods, then change and implement a more appropriate mechanism according to their application if needed.
  */
-#define APP_FLASH_PROTECTION_ENABLE 0
+#define APP_FLASH_PROTECTION_ENABLE 1
 
 /////////////////////// Board Select Configuration ///////////////////////////////
 #if (MCU_CORE_TYPE == MCU_CORE_B91)
@@ -56,6 +60,8 @@ extern "C"
     #define BOARD_SELECT BOARD_721X_EVK_C1T315A20
 #elif (MCU_CORE_TYPE == MCU_CORE_TL321X)
     #define BOARD_SELECT BOARD_321X_EVK_C1T335A20 //BOARD_321X_EVK_C1T335A20
+#elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
+    #define BOARD_SELECT BOARD_323X_EVK_C1T388A20
 #endif
 
 #define rf_stimer_get_tick()     stimer_get_tick()
@@ -70,13 +76,13 @@ extern "C"
 
 #define RF_DEBUG_IO_ENABLE   1
 
-#define TLKAPI_DEBUG_ENABLE  0
+#define TLKAPI_DEBUG_ENABLE  1
 #define TLKAPI_DEBUG_CHANNEL TLKAPI_DEBUG_CHANNEL_GSUART
 
 #define APP_LOG_EN           1
 #define APP_KEY_LOG_EN       1
 
-#define JTAG_DEBUG_DISABLE   1 //if use JTAG, change this
+   
 
 
 #include "../common/default_config.h"

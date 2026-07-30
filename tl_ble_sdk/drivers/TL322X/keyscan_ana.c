@@ -139,7 +139,7 @@ static void ks_ana_sar_adc_init(ks_ana_mode_e ks_ana_mode)
  */
 static void ks_ana_mode_config(ks_ana_mode_e ks_ana_mode, unsigned char hall_init_time)
 {
-    ks_ana_config_t ks_ana_cfg;
+    ks_ana_config_t ks_ana_cfg = {0};
     switch (ks_ana_mode)
     {
     case KEYSCAN_1XADC_8K_ONCE_MODE:

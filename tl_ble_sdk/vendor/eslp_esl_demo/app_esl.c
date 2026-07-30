@@ -882,7 +882,9 @@ static void app_esl_add_objects(void)
             .allocatedSize = app_image_storage_get_max_image_length(),
         };
 
-        app_image_storage_get_image_length(i, &size.currentSize);
+        u32 temp_current_size = 0;
+        app_image_storage_get_image_length(i, &temp_current_size);
+        size.currentSize = temp_current_size;
 
         if (blc_otss_objectAdd(&size, &type, props, &objectIds[i]) == BLE_SUCCESS) {
             u64 obj_id = bstream_to_u48_le(objectIds[i].objectId);
@@ -929,7 +931,7 @@ static void app_esl_add_objects(void)
 
     eslsRegParam.maxImageIndex = maxImageNum > 0 ? maxImageNum - 1 : maxImageNum;
 }
-#define HOST_MALLOC_BUFF_SIZE      (4 * 1024)
+#define HOST_MALLOC_BUFF_SIZE      (512)
 
 static _attribute_data_retention_ u8 hostMallocBuffer[HOST_MALLOC_BUFF_SIZE];
 void app_esl_init(void)

@@ -67,6 +67,10 @@
     #define BOARD_SELECT BOARD_321X_EVK_C1T335A20 //BOARD_321X_EVK_C1T335A20
 #elif (MCU_CORE_TYPE == MCU_CORE_TL322X)
     #define BOARD_SELECT BOARD_322X_EVK_C1T371A20
+#elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
+    #define BOARD_SELECT BOARD_323X_EVK_C1T388A20
+#elif (MCU_CORE_TYPE == MCU_CORE_TL521X)
+    #define BOARD_SELECT BOARD_521X_EVK_C1T416A20
 #endif
 
 
@@ -89,7 +93,7 @@
 #define APP_PAIR_LOG_EN       1
 #define APP_KEY_LOG_EN        1
 
-#define JTAG_DEBUG_DISABLE    1 //if use JTAG, change this
+   
 
 
 /////////////////// DEEP SAVE FLG //////////////////////////////////

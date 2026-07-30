@@ -30,9 +30,10 @@
 
 #if (BATT_CHECK_ENABLE)
 
-_attribute_data_retention_ u8  lowBattDet_enable  = 1;
+// Battery detection related global variables
+_attribute_data_retention_ u8  lowBattDet_enable  = 1; // Battery detection enable flag
 u8                             adc_hw_initialized = 0; //note: can not be retention variable
-_attribute_data_retention_ u16 batt_vol_mv;
+_attribute_data_retention_ signed int batt_vol_mv;     // Battery voltage value
 
 /**
  * @brief      This function serves to enable battery detect.
@@ -44,7 +45,7 @@ void battery_set_detect_enable(int en)
     lowBattDet_enable = en;
 
     if (!en) {
-        adc_hw_initialized = 0; //need initialized again
+        adc_hw_initialized = 0; //// ADC needs re-initialization when disabled
     }
 }
 
@@ -59,15 +60,6 @@ int battery_get_detect_enable(void)
     return lowBattDet_enable;
 }
 
-extern unsigned short g_adc_vref;
-extern unsigned short g_adc_gpio_calib_vref;
-extern unsigned char  g_adc_pre_scale;
-extern unsigned char  g_adc_vbat_divider;
-extern signed char    g_adc_vref_offset;
-extern signed char    g_adc_gpio_calib_vref_offset;
-extern unsigned short g_adc_vbat_calib_vref;
-extern signed char    g_adc_vbat_calib_vref_offset;
-
 /**
  * @brief      this function is used for user to initialize battery detect.
  * @param      none
@@ -75,113 +67,27 @@ extern signed char    g_adc_vbat_calib_vref_offset;
  */
 _attribute_ram_code_ void adc_bat_detect_init(void)
 {
-    #if (MCU_CORE_TYPE == MCU_CORE_B91)
-    g_adc_vref = g_adc_gpio_calib_vref; //set gpio sample calib vref
-        #if VBAT_CHANNEL_EN             //vbat mode, vbat channel
-    g_adc_vref_offset = 0;              //Vbat has no two-point calibration, offset must be set to 0.
-        #else
-    g_adc_vref_offset = g_adc_gpio_calib_vref_offset; //set adc_vref_offset as adc_gpio_calib_vref_offset
-        #endif
-    /******power off sar adc********/
-    adc_power_off();
-
-    //reset whole digital adc module
-    adc_reset();
-
-    /******set adc sample clk as 4MHz******/
-    adc_clk_en();   //enable signal of 24M clock to sar adc
-    adc_set_clk(5); //default adc_clk 4M = 24M/(1+div),
-
-    //set misc channel vref 1.2V
-    analog_write_reg8(areg_adc_vref, ADC_VREF_1P2V);
-    analog_write_reg8(areg_ain_scale, (analog_read_reg8(areg_ain_scale) & (0xC0)) | 0x3d);
-    g_adc_vref = 1175;
-
-    //set Analog input pre-scaling,ADC_PRESCALE_1F4
-    analog_write_reg8(areg_ain_scale, (analog_read_reg8(areg_ain_scale) & (~FLD_SEL_AIN_SCALE)) | (ADC_PRESCALE_1F4 << 6));
-    g_adc_pre_scale = 1 << (unsigned char)ADC_PRESCALE_1F4;
-
-    //set sample frequency.96k
-    adc_set_state_length(240, 10);
-
-    //set misc t_sample 6 cycle of adc clock:  6 * 1/4M
-    adc_set_tsample_cycle(ADC_SAMPLE_CYC_6);
-
-    //default adc_resolution set as 14bit ,BIT(13) is sign bit
-    adc_set_resolution(ADC_RES14);
-
-    //enable adc channel.
-    adc_set_m_chn_en();
-
-    //set vbat divider : ADC_VBAT_DIV_OFF
-    analog_write_reg8(areg_adc_vref_vbat_div, (analog_read_reg8(areg_adc_vref_vbat_div) & (~FLD_ADC_VREF_VBAT_DIV)) | (ADC_VBAT_DIV_OFF << 2));
-    g_adc_vbat_divider = 1;
-
-        #if VBAT_CHANNEL_EN //vbat mode, vbat channel
-    adc_set_diff_input(ADC_VBAT, GND);
-        #else               //base mode, gpio channel
-    adc_set_diff_input(ADC_INPUT_PIN_CHN >> 12, GND);
-        #endif
-    #elif (MCU_CORE_TYPE == MCU_CORE_B92)
-        #if VBAT_CHANNEL_EN //vbat mode, vbat channel
-    g_adc_vref        = g_adc_vbat_calib_vref; //set vbat sample calib vref
-    g_adc_vref_offset = g_adc_vbat_calib_vref_offset;
-    adc_init(ADC_VREF_1P2V, ADC_PRESCALE_1, ADC_SAMPLE_FREQ_96K);
-    adc_set_vbat_divider(ADC_VBAT_DIV_1F4);
-    adc_set_diff_input(ADC_VBAT, GND);
-        #else               //base mode, gpio channel
-    g_adc_vref        = g_adc_gpio_calib_vref;        //set gpio sample calib vref
-    g_adc_vref_offset = g_adc_gpio_calib_vref_offset; //set adc_vref_offset as adc_gpio_calib_vref_offset
-    adc_init(ADC_VREF_1P2V, ADC_PRESCALE_1F4, ADC_SAMPLE_FREQ_96K);
-    adc_set_vbat_divider(ADC_VBAT_DIV_OFF);
-    adc_pin_config(ADC_GPIO_MODE, ADC_INPUT_PIN_CHN);
-    adc_set_diff_input(ADC_INPUT_PIN_CHN >> 12, GND);
-        #endif
-    #elif (MCU_CORE_TYPE == MCU_CORE_TL721X || MCU_CORE_TYPE == MCU_CORE_TL321X)
-    adc_init(NDMA_M_CHN);
-        #if VBAT_CHANNEL_EN //vbat mode, vbat channel
-    adc_vbat_sample_init(ADC_M_CHANNEL);
-        #else               //base mode, gpio channel
-    adc_gpio_cfg_t adc_gpio_cfg_m =
-        {
-            #if (MCU_CORE_TYPE == MCU_CORE_TL721X)
-            .v_ref = ADC_VREF_1P2V,
-            .pre_scale = ADC_PRESCALE_1F4,
-            #elif (MCU_CORE_TYPE == MCU_CORE_TL321X)
-            .v_ref = ADC_VREF_1P2V,
-            .pre_scale = ADC_PRESCALE_1F4,
-            #endif
-            .sample_freq = ADC_SAMPLE_FREQ_96K,
-            .pin         = ADC_INPUT_PIN_CHN,
-        };
-    adc_gpio_sample_init(ADC_M_CHANNEL, adc_gpio_cfg_m);
-        #endif /*!< END OF VBAT_CHANNEL_EN */
-    #elif (MCU_CORE_TYPE == MCU_CORE_TL322X) || (MCU_CORE_TYPE == MCU_CORE_TL323X)
-        sd_adc_init(SD_ADC_SINGLE_DC_MODE);
-        sd_adc_gpio_cfg_t sd_adc_gpio_cfg =
-        {
-            .clk_freq           = SD_ADC_SAPMPLE_CLK_2M,
-            .downsample_rate    = SD_ADC_DOWNSAMPLE_RATE_128,
-            .gpio_div           = SD_ADC_GPIO_CHN_DIV_1F4,
-            .input_p            = ADC_INPUT_PIN_CHN,
-            .input_n            = SD_ADC_GNDN,
-        };
-        #if(SD_ADC_MODE==SD_ADC_GPIO_MODE )
-            sd_adc_gpio_sample_init(&sd_adc_gpio_cfg);
-        #elif(SD_ADC_MODE==SD_ADC_VBAT_MODE )
-            sd_adc_vbat_sample_init(SD_ADC_SAPMPLE_CLK_2M, SD_ADC_VBAT_DIV_1F4, SD_ADC_DOWNSAMPLE_RATE_128);
-        #elif(SD_ADC_MODE==SD_ADC_TEMP_MODE)
-            sd_adc_temp_init(SD_ADC_SAPMPLE_CLK_2M, SD_ADC_DOWNSAMPLE_RATE_128);
-        #endif
+    hal_adc_cfg_t adc_cfg = {0};
+#if VBAT_CHANNEL_EN
+    adc_cfg.adc_mode = HAL_ADC_MODE_VBAT;  // Configure ADC to VBAT mode
+    #if (MCU_CORE_TYPE == MCU_CORE_TL521X)
+        adc_cfg.dma_chn  = 0xFF;
     #endif
-    /******power on sar adc********/
-
-#if (MCU_CORE_TYPE == MCU_CORE_TL322X) || (MCU_CORE_TYPE == MCU_CORE_TL323X)
-    sd_adc_power_on(SD_ADC_SAMPLE_MODE);
 #else
-    //note: this setting must be set after all other settings
-    adc_power_on();
+    adc_cfg.adc_mode = HAL_ADC_MODE_GPIO;  // Configure ADC to GPIO mode
+    adc_cfg.dma_chn  = 0xFF;      // no used
+    adc_cfg.gpio_cfg.input_p  = ADC_INPUT_PIN_CHN_P;
+    adc_cfg.gpio_cfg.input_n  = ADC_INPUT_PIN_CHN_N;
+    adc_cfg.hw_priv  = NULL;               // No hardware private data
 #endif
+    // Initialize external ADC
+    ext_adc_init(&adc_cfg);
+
+    // Power on ADC
+    ext_adc_power_on();
+
+    // Start ADC sampling
+    ext_adc_start();
 
     /* wait at least 2 sample cycle(f = 96K, T = 10.4us),
      * Wait >30us after adc_power_on() for ADC to be stable.
@@ -190,72 +96,9 @@ _attribute_ram_code_ void adc_bat_detect_init(void)
     sleep_us(50);
     #elif (MCU_CORE_TYPE == MCU_CORE_TL321X && VBAT_CHANNEL_EN)
     sleep_us(100);
-    #elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
-    sleep_us(200);
     #else
-    sleep_us(30);
+    sleep_us(30); // Default minimum 30us delay
     #endif
-}
-
-#if (MCU_CORE_TYPE == MCU_CORE_TL322X) || (MCU_CORE_TYPE == MCU_CORE_TL323X)
-_attribute_ram_code_ static signed int sd_adc_sort_and_get_average_code(signed int *sample_buffer)
-{
-    int i, j;
-    signed int sd_adc_code_average = 0;
-    signed int temp;
-
-    /**** insert Sort and get average value ******/
-    for(i = 1 ;i < SD_ADC_SAMPLE_CNT; i++)
-    {
-        if(sample_buffer[i] < sample_buffer[i-1])
-        {
-            temp = sample_buffer[i];
-            sample_buffer[i] = sample_buffer[i-1];
-            for(j=i-1; j>=0 && sample_buffer[j] > temp;j--)
-            {
-                sample_buffer[j+1] = sample_buffer[j];
-            }
-            sample_buffer[j+1] = temp;
-        }
-    }
-    //get average value from raw data(abandon 1/4 small and 1/4 big data)
-    for (i = SD_ADC_SAMPLE_CNT>>2; i < (SD_ADC_SAMPLE_CNT - (SD_ADC_SAMPLE_CNT>>2)); i++)
-    {
-        sd_adc_code_average += sample_buffer[i]/(SD_ADC_SAMPLE_CNT>>1);
-    }
-    return sd_adc_code_average;
-}
-
-#endif
-
-/**
- * @brief This function serves to sort adc sample code and get average value.
- * @param[in]   channel_sample_buffer - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception.
- *              and the actual buffer size defined by the user needs to be not smaller than the sample_num, otherwise there may be an out-of-bounds problem.
- * @return      adc_code_average    - the average value of adc sample code.
- */
-_attribute_ram_code_ static unsigned short adc_sort_and_get_average_code(unsigned short *channel_sample_buffer)
-{
-    int            i, j;
-    unsigned short adc_code_average = 0;
-    unsigned short temp;
-
-    /**** insert Sort and get average value ******/
-    for (i = 1; i < 8; i++) {
-        if (channel_sample_buffer[i] < channel_sample_buffer[i - 1]) {
-            temp                     = channel_sample_buffer[i];
-            channel_sample_buffer[i] = channel_sample_buffer[i - 1];
-            for (j = i - 1; j >= 0 && channel_sample_buffer[j] > temp; j--) {
-                channel_sample_buffer[j + 1] = channel_sample_buffer[j];
-            }
-            channel_sample_buffer[j + 1] = temp;
-        }
-    }
-    //get average value from raw data(abandon 1/4 small and 1/4 big data)
-    for (i = 8 >> 2; i < (8 - (8 >> 2)); i++) {
-        adc_code_average += channel_sample_buffer[i] / (8 >> 1);
-    }
-    return adc_code_average;
 }
 
 /**
@@ -267,96 +110,15 @@ _attribute_ram_code_ int app_battery_power_check(u16 alarm_vol_mv)
 {
     //when MCU powered up or wakeup from deep/deep with retention, adc need be initialized
     if (!adc_hw_initialized) {
-        adc_hw_initialized = 1;
+        adc_hw_initialized = 1;   // Mark ADC as initialized
         adc_bat_detect_init();
-    }
-    //Note:25us should be reserved between each reading(wait at least 2 sample cycle(f = 96K, T = 10.4us)).
-    //The sdk is only sampled once, and the user can redesign the filtering algorithm according to the actual application.
-    unsigned short adc_misc_data;
-    u32            adc_average = 0;
-    #if ((MCU_CORE_TYPE == MCU_CORE_B91) || (MCU_CORE_TYPE == MCU_CORE_B92))
-        #if DCDC_ADC_SOFTWARE_FILTER
-    u8 adc_sample_num = 6;
-    for (int i = 0; i < adc_sample_num; i++) {
-        u8 ana_read_f3 = analog_read_reg8(areg_adc_data_sample_control);
-        analog_write_reg8(areg_adc_data_sample_control, ana_read_f3 | FLD_NOT_SAMPLE_ADC_DATA);
-        adc_misc_data = analog_read_reg16(areg_adc_misc_l);
-        analog_write_reg8(areg_adc_data_sample_control, ana_read_f3 & (~FLD_NOT_SAMPLE_ADC_DATA));
-        if (adc_misc_data & BIT(13)) {
-            adc_misc_data = 0;
-            return 1;
-        } else {
-            adc_misc_data &= 0x1FFF;
-        }
-        adc_average += adc_misc_data;
-    }
-    adc_average = adc_average / adc_sample_num;
-        #else
-    analog_write_reg8(areg_adc_data_sample_control, analog_read_reg8(areg_adc_data_sample_control) | FLD_NOT_SAMPLE_ADC_DATA);
-    adc_misc_data = analog_read_reg16(areg_adc_misc_l);
-    analog_write_reg8(areg_adc_data_sample_control, analog_read_reg8(areg_adc_data_sample_control) & (~FLD_NOT_SAMPLE_ADC_DATA));
-
-
-    if (adc_misc_data & BIT(13)) {
-        adc_misc_data = 0;
-        return 1;
-    } else {
-        adc_misc_data &= 0x1FFF;
+        adc_hw_initialized = 1;  // Mark ADC as initialized
     }
 
-    adc_average = adc_misc_data;
-        #endif //#if DCDC_ADC_SOFTWARE_FILTER
-        ////////////////// adc sample data convert to voltage(mv) ////////////////
-        #if (MCU_CORE_TYPE == MCU_CORE_B91)
-    batt_vol_mv = (((adc_average * g_adc_vbat_divider * g_adc_pre_scale * g_adc_vref) >> 13) + g_adc_vref_offset);
-        #elif (MCU_CORE_TYPE == MCU_CORE_B92)
-    batt_vol_mv = (((adc_average * g_adc_vbat_divider * g_adc_pre_scale * g_adc_vref) >> 13) + g_adc_vref_offset);
-        #endif
+    // Read current battery voltage
+    batt_vol_mv = ext_adc_read_data();
 
-
-    #elif ((MCU_CORE_TYPE == MCU_CORE_TL721X) || (MCU_CORE_TYPE == MCU_CORE_TL321X))
-
-    unsigned short                             code_average;
-    unsigned int                               cnt                = 0;
-    __attribute__((aligned(4))) unsigned short channel_buffers[8] = {0};
-
-    adc_start_sample_nodma();
-    while (cnt < 8) {
-        if (adc_get_rxfifo_cnt() <= 0) {
-            continue;
-        }
-        channel_buffers[cnt] = adc_get_raw_code();
-        if (channel_buffers[cnt] & BIT(11)) { //12 bit resolution, BIT(11) is sign bit, 1 means negative voltage in differential_mode
-            channel_buffers[cnt] = 0;
-        } else {
-            channel_buffers[cnt] &= 0x7FF;    //BIT(10..0) is valid adc code
-        }
-        cnt++;
-    }
-
-    code_average = adc_sort_and_get_average_code(channel_buffers);
-    batt_vol_mv  = adc_calculate_voltage(ADC_M_CHANNEL, code_average);
-    #elif (MCU_CORE_TYPE == MCU_CORE_TL322X) || (MCU_CORE_TYPE == MCU_CORE_TL323X)
-
-        signed int sd_adc_sample_buffer[SD_ADC_SAMPLE_CNT] __attribute__((aligned(4))) = {0};
-
-        sd_adc_sample_start();
-        signed int                             code_average;
-        unsigned int                               cnt = 0;
-        signed int  cal_volmv;
-        while (cnt < SD_ADC_SAMPLE_CNT) {
-            int sample_cnt = sd_adc_get_rxfifo_cnt();
-            if (sample_cnt > 0) {
-                sd_adc_sample_buffer[cnt] = sd_adc_get_raw_code();
-                cnt++;
-            }
-        }
-        code_average = sd_adc_sort_and_get_average_code(sd_adc_sample_buffer);
-        cal_volmv = sd_adc_calculate_voltage(code_average,SD_ADC_VOLTAGE_MV);
-        batt_vol_mv = cal_volmv > 0 ? (u16)cal_volmv : 0;
-        tlk_printf("batt_vol_mv: %u\n", batt_vol_mv);
-    #endif
-
+    // Compare with alarm threshold and return result
     if (batt_vol_mv < alarm_vol_mv) {
         return 0;
     }

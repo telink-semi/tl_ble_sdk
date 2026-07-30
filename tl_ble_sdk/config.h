@@ -30,6 +30,7 @@
 #define CHIP_TYPE_TL321X    6
 #define CHIP_TYPE_TL322X    7
 #define CHIP_TYPE_TL323X    8
+#define CHIP_TYPE_TL521X    9
 
 #ifndef CHIP_TYPE
 #define CHIP_TYPE           CHIP_TYPE_B91
@@ -46,6 +47,7 @@
 #define MCU_CORE_TL321X     6
 #define MCU_CORE_TL322X     7
 #define MCU_CORE_TL323X     8
+#define MCU_CORE_TL521X     9
 
 #if(CHIP_TYPE == CHIP_TYPE_B91)
     #define MCU_CORE_TYPE   MCU_CORE_B91
@@ -59,4 +61,14 @@
     #define MCU_CORE_TYPE   MCU_CORE_TL322X
 #elif(CHIP_TYPE == CHIP_TYPE_TL323X)
     #define MCU_CORE_TYPE   MCU_CORE_TL323X
+#elif(CHIP_TYPE == CHIP_TYPE_TL521X)
+    #define MCU_CORE_TYPE   MCU_CORE_TL521X
+#endif
+
+#if (MCU_CORE_TYPE == MCU_CORE_TL322X) && defined(TLK_ONLY_BLE_HOST)
+    #define TLK_MESSAGE_D25F    1
+    #define TLK_MESSAGE_N22     0
+#else
+    #define TLK_MESSAGE_D25F    0
+    #define TLK_MESSAGE_N22     0
 #endif

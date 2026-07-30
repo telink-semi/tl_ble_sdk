@@ -78,7 +78,7 @@ void HCI_Slip_RegisterPktHandler(HciH5PacketHandler_t func)
 
 static u8 HCI_Slip_GetUnencoded(u16 escapeSeq)
 {
-    for (int i = 0; i < COUNTOF(slipEscapeTbl); i++) {
+    for (unsigned int i = 0; i < COUNTOF(slipEscapeTbl); i++) {
         if (escapeSeq == slipEscapeTbl[i].escapeSeq) {
             return slipEscapeTbl[i].unencoded;
         }
@@ -88,7 +88,7 @@ static u8 HCI_Slip_GetUnencoded(u16 escapeSeq)
 
 static u16 HCI_SLip_GetEscapeCode(u8 unencoded)
 {
-    for (int i = 0; i < COUNTOF(slipEscapeTbl); i++) {
+    for (unsigned int i = 0; i < COUNTOF(slipEscapeTbl); i++) {
         if (unencoded == slipEscapeTbl[i].unencoded) {
             return slipEscapeTbl[i].escapeSeq;
         }
@@ -168,7 +168,7 @@ void HCI_Slip_EncodePacket(u8 *pPacket, u32 len)
     u8 *pBuf      = pPacket;
     u16 escapeSeq = 0;
 
-    for (int i = 0; i < len; i++) {
+    for (unsigned int i = 0; i < len; i++) {
         switch (pBuf[i]) {
         case 0xC0:
         case 0xDB:
@@ -232,6 +232,8 @@ bool HCI_Slip_Send(u8 *pPacket, u32 len)
 
 static void HCI_Slip_DefaultPktHandler(u8 *pPacket, u32 len)
 {
+    (void)pPacket;
+    (void)len;
 }
 
 /**

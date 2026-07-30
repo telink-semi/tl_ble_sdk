@@ -21,8 +21,8 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#ifndef VENDOR_COMMON_BOARDS_TL323X_C1T315115_H_
-#define VENDOR_COMMON_BOARDS_TL323X_C1T315115_H_
+#ifndef VENDOR_COMMON_BOARDS_TL323X_C1T388A20_H_
+#define VENDOR_COMMON_BOARDS_TL323X_C1T388A20_H_
 
 /**
  *  @brief  Antenna Switch Configuration
@@ -44,7 +44,7 @@
  */
 #if (UI_KEYBOARD_ENABLE)
     #define MATRIX_ROW_PULL    PM_PIN_PULLDOWN_100K
-    #define MATRIX_COL_PULL    PM_PIN_PULLUP_10K
+    #define MATRIX_COL_PULL    GPIO_PIN_PULLUP_10K
 
     #define KB_LINE_HIGH_VALID 0 //drive pin output 0 when scan key, scan pin read 0 is valid
 
@@ -118,30 +118,6 @@
 
 #endif
 
-#ifndef JTAG_DEBUG_DISABLE
-    #define JTAG_DEBUG_DISABLE 1
-#endif
-/**
- *  @brief  GPIO definition for JTAG
- */
-#if (JTAG_DEBUG_DISABLE)
-    //JTAG will cost some power
-    #define PD4_FUNC            AS_GPIO
-    #define PD5_FUNC            AS_GPIO
-    #define PD6_FUNC            AS_GPIO
-    #define PD7_FUNC            AS_GPIO
-
-    #define PD4_INPUT_ENABLE    0
-    #define PD5_INPUT_ENABLE    0
-    #define PD6_INPUT_ENABLE    0
-    #define PD7_INPUT_ENABLE    0
-
-    #define PULL_WAKEUP_SRC_PD4 0
-    #define PULL_WAKEUP_SRC_PD5 0
-    #define PULL_WAKEUP_SRC_PD6 0
-    #define PULL_WAKEUP_SRC_PD7 0
-
-#endif
 
 /**
  *  @brief  Battery_check Configuration
@@ -203,4 +179,4 @@
 
 #define TLKAPI_DEBUG_GPIO_PIN GPIO_PA0
 
-#endif /* VENDOR_COMMON_BOARDS_TL323X_C1T315115_H_ */
+#endif /* VENDOR_COMMON_BOARDS_TL323X_C1T388A20_H_ */

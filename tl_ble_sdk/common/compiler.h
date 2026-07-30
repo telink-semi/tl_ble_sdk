@@ -76,12 +76,12 @@
 #define _attribute_session_(s)               __attribute__((section(s)))
 
 #define _attribute_no_inline_                __attribute__((noinline))
-#define _attribute_noinline_                 __attribute__((noinline))        //
 #define _attribute_data_dlm_                 _attribute_session_(".dlm_data")   // dlm:Data Local Memory
 #define _attribute_data_sec_                 __attribute__((section(".data")))  // Force only read data to be stored in data segments to avoid compiler optimization
 
 #define _attribute_iram_noinit_data_         __attribute__((section(".iram_noinit_data")))
 #define _attribute_iram_bss_                 __attribute__((section(".iram_bss")))
+#define _attribute_iram_rbt_ret_data_        __attribute__((section(".iram_rbt_ret")))  // iram reboot retention data
 
 #if (BLC_PM_DEEP_RETENTION_MODE_EN)
     #define _attribute_data_retention_sec_   __attribute__((section(".retention_data")))
@@ -94,9 +94,15 @@
         #define _attribute_ble_data_retention_   __attribute__((section(".retention_data_ble")))    // used for ble
     #endif
 #else
-    #define _attribute_data_retention_sec_
-    #define _attribute_data_retention_
-    #define _attribute_ble_data_retention_
+    #ifndef BLC_ZEPHYR_BLE_INTEGRATION
+        #define _attribute_data_retention_sec_
+        #define _attribute_data_retention_
+        #define _attribute_ble_data_retention_
+    #else
+        #define _attribute_data_retention_sec_   __attribute__((section(".retention_data")))
+        #define _attribute_data_retention_       __attribute__((section(".retention_data")))
+        #define _attribute_ble_data_retention_   __attribute__((section(".retention_data")))
+    #endif
 #endif
 
 #ifndef BLC_ZEPHYR_BLE_INTEGRATION
@@ -129,6 +135,14 @@
 /// define the force inlining attribute for this compiler
 #define __INLINE static __attribute__((__always_inline__)) inline
 
+#ifdef BLC_ZIGBEE_INTEGRATION
+    #undef _attribute_data_retention_sec_
+    #define _attribute_data_retention_sec_
 
+    #undef  _attribute_data_retention_
+    #define _attribute_data_retention_
+    #undef  _attribute_ble_data_retention_
+    #define _attribute_ble_data_retention_
+#endif /* BLC_ZIGBEE_INTEGRATION */
 
 #endif

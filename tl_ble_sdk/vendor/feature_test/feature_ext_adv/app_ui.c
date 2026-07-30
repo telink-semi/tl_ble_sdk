@@ -53,12 +53,14 @@ _attribute_ble_data_retention_ u8 key_type;
 void key_change_proc(void)
 {
     u8 key0 = kb_event.keycode[0];
-    // u8 key_buf[8] = {0,0,0,0,0,0,0,0};
+    //  u8 key_buf[8] = {0,0,0,0,0,0,0,0};
 
     key_not_released = 1;
-    if (kb_event.cnt == 2) {                //two key press
+    if (kb_event.cnt == 2)     //two key press
+    {
     } else if (kb_event.cnt == 1) {
-        if (key0 >= CR_VOL_UP) {            //volume up/down
+        if (key0 >= CR_VOL_UP) //volume up/down
+        {
             key_type = CONSUMER_KEY;
             u16 consumer_key;
             if (key0 == CR_VOL_UP) {        //volume up
@@ -83,14 +85,17 @@ void key_change_proc(void)
         } else {
             key_type = PAIR_UNPAIR_KEY;
 
-            if (key0 == BTN_PAIR) {          //Manual pair triggered by Key Press
+            if (key0 == BTN_PAIR) //Manual pair triggered by Key Press
+            {
                 extern void app_ext_adv_set_change(void);
                 app_ext_adv_set_change();
-            } else if (key0 == BTN_UNPAIR) { //Manual un_pair triggered by Key Press
+            } else if (key0 == BTN_UNPAIR) //Manual un_pair triggered by Key Press
+            {
             }
         }
 
-    } else { //kb_event.cnt == 0,  key release
+    } else //kb_event.cnt == 0,  key release
+    {
         key_not_released = 0;
         if (key_type == CONSUMER_KEY) {
             u16 consumer_key = 0;

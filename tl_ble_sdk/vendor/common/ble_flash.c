@@ -58,7 +58,10 @@ _attribute_data_retention_ u32 flash_sector_simple_sdp_att = FLASH_SDP_ATT_ADDRE
 _attribute_data_retention_ unsigned int  blc_flash_mid    = 0;
 _attribute_data_retention_ unsigned int  blc_flash_vendor = 0;
 _attribute_data_retention_ unsigned char blc_flash_capacity;
-
+#if MCU_RUN_IN_NVM
+extern void write_storage_from_ram(unsigned int addr, unsigned int len, unsigned int *data);
+extern void read_storage_to_ram(unsigned int addr, unsigned int len, unsigned char *data);
+#endif
 /**
  * @brief       This function is used to read flash mid, get flash vendor, and set flash capacity
  * @param[in]   none
@@ -126,7 +129,7 @@ void blc_readFlashSize_autoConfigCustomFlashSector(void)
         tlkapi_printf(APP_FLASH_INIT_LOG_EN, "[FLASH][INI] 2M Flash, MAC on %x\r\n", flash_sector_mac_address);
     }
 #endif
-#if (FLASH_P25Q32SU_SUPPORT_EN) //4M
+#if (FLASH_P25Q32SU_SUPPORT_EN || FLASH_TH25Q32U_SUPPORT_EN) //4M
     else if (blc_flash_capacity == FLASH_SIZE_4M) {
         flash_sector_mac_address = CFG_ADR_MAC_4M_FLASH;
         flash_sector_calibration = CFG_ADR_CALIBRATION_4M_FLASH;
@@ -177,7 +180,11 @@ unsigned char user_calib_freq_offset(user_calib_from_e velfrom, unsigned int add
 {
     unsigned char frequency_offset_value = 0xff;
     if (velfrom == USER_CALIB_FROM_FLASH) {
+#if MCU_RUN_IN_NVM
+        read_storage_to_ram(addr, 1, &frequency_offset_value);
+#else
         flash_read_page(addr, 1, &frequency_offset_value);
+#endif
     }
     if (0xff != frequency_offset_value) {
         /*<! BLE USED */
@@ -204,7 +211,11 @@ unsigned short user_calib_rf_rx_dcoc(user_calib_from_e velfrom, unsigned int add
 {
     unsigned short flash_iq_code = 0xffff;
     if (velfrom == USER_CALIB_FROM_FLASH) {
+#if MCU_RUN_IN_NVM
+        read_storage_to_ram(addr, 2, (unsigned char *)&flash_iq_code);
+#else
         flash_read_page(addr, 2, (unsigned char *)&flash_iq_code);
+#endif
     }
 
     if ((0xffff != flash_iq_code) &&
@@ -256,7 +267,11 @@ unsigned char user_calib_adc_vref(user_calib_from_e velfrom, unsigned int addr)
         }
     } else {
         if (velfrom == USER_CALIB_FROM_FLASH) {
+#if MCU_RUN_IN_NVM
+            read_storage_to_ram(addr, 7, adc_vref_calib_value);
+#else
             flash_read_page(addr, 7, adc_vref_calib_value);
+#endif
         }
         /****** Check the two-point gpio calibration value whether is exist ********/
         if ((adc_vref_calib_value[4] != 0xff) && (adc_vref_calib_value[4] <= 0x7f) && (((adc_vref_calib_value[6] << 8) + adc_vref_calib_value[5]) != 0xffff)) {
@@ -300,29 +315,30 @@ unsigned char user_calib_adc_vref(user_calib_from_e velfrom, unsigned int addr)
  */
 void blc_app_loadCustomizedParameters_normal(void)
 {
-    // Check if flash sector for calibration is valid
+// Check if flash sector for calibration is valid
 #if  (MCU_CORE_TYPE == MCU_CORE_TL721X)
-       otp_calib_adc_vref();
+   otp_calib_adc_vref();
 #endif
 
 #if  (MCU_CORE_TYPE == MCU_CORE_TL321X)
-        efuse_calib_adc_vref();
+    efuse_calib_adc_vref();
 #endif
-
 #if (MCU_CORE_TYPE == MCU_CORE_TL322X)
     /******get sar adc calibration value from EFUSE********/
     extern drv_api_status_e efuse_calib_sar_adc_vref(void);
     efuse_calib_sar_adc_vref();
-
-    pm_efuse_calib_ret_ldo_voltage();
-#endif
-
-#if (MCU_CORE_TYPE == MCU_CORE_TL322X || MCU_CORE_TYPE == MCU_CORE_TL323X)
     /******get sd_adc calibration value from EFUSE********/
     extern drv_api_status_e efuse_calib_sd_adc_vref(void);
     efuse_calib_sd_adc_vref();
 #endif
 
+#if (MCU_CORE_TYPE == MCU_CORE_TL323X)
+    /******get sd_adc calibration value from EFUSE********/
+    extern drv_api_status_e efuse_calib_sd_adc_vref(void);
+    efuse_calib_sd_adc_vref();
+#endif
+
+    // Check if flash sector for calibration is valid
     if (flash_sector_calibration) {
 #if ((MCU_CORE_TYPE == MCU_CORE_B91) || (MCU_CORE_TYPE == MCU_CORE_B92) || \
     (MCU_CORE_TYPE == MCU_CORE_TL721X) || (MCU_CORE_TYPE == MCU_CORE_TL321X) || MCU_CORE_TYPE == MCU_CORE_TL322X) || \
@@ -338,9 +354,6 @@ void blc_app_loadCustomizedParameters_normal(void)
 #elif (MCU_CORE_TYPE == MCU_CORE_B92)
         // Load RF RX DCOC calibration
         user_calib_rf_rx_dcoc(USER_CALIB_FROM_FLASH, (flash_sector_calibration + CALIB_OFFSET_RF_RX_DCOC_CALI_VALUE));
-#endif
-#if (MCU_CORE_TYPE == MCU_CORE_TL323X)
-        pm_efuse_calib_vdd1v8_voltage();
 #endif
     }
 }
@@ -384,12 +397,20 @@ _attribute_no_inline_ void blc_initMacAddress(int flash_addr, u8 *mac_public, u8
 
     u8  mac_read[8];
 
+#if MCU_RUN_IN_NVM
+    read_storage_to_ram(flash_addr, 8, mac_read);
+#else
     flash_read_page(flash_addr, 8, mac_read);
+#endif
 
     u8 value_rand[5];
     generateRandomNum(5, value_rand);
 
+#if MCU_RUN_IN_NVM
+    u8 ff_six_byte[6] = {0};
+#else
     u8 ff_six_byte[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+#endif
     if (memcmp(mac_read, ff_six_byte, 6)) { //read MAC address on flash success
         memcpy(mac_public, mac_read, 6);    //copy public address from flash
 
@@ -420,7 +441,23 @@ _attribute_no_inline_ void blc_initMacAddress(int flash_addr, u8 *mac_public, u8
             mac_public[4] = U32_BYTE1(PDA_COMPANY_ID);
             mac_public[5] = U32_BYTE2(PDA_COMPANY_ID);
 
+#if MCU_RUN_IN_FLASH
+            if(flash_prot_op_cb){
+                flash_prot_op_cb(FLASH_OP_EVT_APP_WRITE_MAC_ADDR_BEGIN, flash_addr, flash_addr + 6);
+            }
+#endif
+
+#if MCU_RUN_IN_NVM
+            write_storage_from_ram(flash_addr, 6, (unsigned int*)mac_public); //store public address on flash for future use
+#else
             flash_write_page(flash_addr, 6, mac_public); //store public address on flash for future use
+#endif
+
+#if MCU_RUN_IN_FLASH
+            if(flash_prot_op_cb){
+                flash_prot_op_cb(FLASH_OP_EVT_APP_WRITE_MAC_ADDR_END, flash_addr, flash_addr + 6);
+            }
+#endif
         }
     }
 
@@ -434,6 +471,22 @@ _attribute_no_inline_ void blc_initMacAddress(int flash_addr, u8 *mac_public, u8
         mac_random_static[3] = value_rand[3];
         mac_random_static[4] = value_rand[4];
 
+#if MCU_RUN_IN_FLASH
+        if(flash_prot_op_cb){
+            flash_prot_op_cb(FLASH_OP_EVT_APP_WRITE_MAC_ADDR_BEGIN, flash_addr + 6, flash_addr + 8);
+        }
+#endif
+
+#if MCU_RUN_IN_NVM
+        write_storage_from_ram(flash_addr + 6, 2, (unsigned int*)(mac_random_static + 3)); //store random address on flash for future use
+#else
         flash_write_page(flash_addr + 6, 2, (u8 *)(mac_random_static + 3)); //store random address on flash for future use
+#endif
+        
+#if MCU_RUN_IN_FLASH
+        if(flash_prot_op_cb){
+            flash_prot_op_cb(FLASH_OP_EVT_APP_WRITE_MAC_ADDR_END, flash_addr + 6, flash_addr + 8);
+        }
+#endif
     }
 }

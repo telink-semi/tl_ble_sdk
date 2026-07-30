@@ -559,6 +559,22 @@ void audio_set_dac_fifo_output_mode_config(audio_fifo_chn_e fifo_chn, audio_dac_
 }
 
 /**
+ * @brief      This function serves to config i2s line mode.
+ * 
+ * @param[in]  i2s_sel   - i2s select.
+ * @param[in]  io_mode - line mode.
+ * @return     none
+ */
+void audio_i2s_set_io_mode(audio_i2s_select_e i2s_sel, i2s_io_mode_e io_mode)
+{
+    if (i2s_sel == I2S0) {
+        reg_i2s_en(0) = (reg_i2s_en(0) & (~FLD_AUDIO_I2S0_MODE)) | (io_mode << 2);
+    } else {
+        reg_i2s_en(0) = (reg_i2s_en(0) & (~FLD_AUDIO_I2S1_MODE)) | (io_mode << 4);
+    }
+}
+
+/**
  * @brief     This function serves to set i2s data input data bit width mode.
  * @param[in] fifo_chn      - fifo select
  * @param[in] i2s_select    - i2s channel select

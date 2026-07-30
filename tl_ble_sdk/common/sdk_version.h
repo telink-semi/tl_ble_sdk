@@ -32,17 +32,22 @@
 #define CERTIFICATION_MARK   4
 #define SOFT_STRUCTURE       0
 #define MAJOR_VERSION        4
-#define MINOR_VERSION        7
+#define MINOR_VERSION        8
 #define PATCH_NUM            0
 
 #define CUSTOM_MAJOR_VERSION 0
 #define CUSTOM_MINOR_VERSION 0
 
+/*
+ * Release Tool need to change this macro to match the release version,
+ * the replace rules is: "$$$B91m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
+ * will replace with this macro value.
+ */
 
-#define TL_BLE_SDK_VERSION_NUM              CERTIFICATION_MARK.SOFT_STRUCTURE.MAJOR_VERSION.MINOR_VERSION
-#define SDK_VERSION_NUM                     TL_BLE_SDK_VERSION_NUM
+#define TL_BLE_SDK_VERSION_NUM        CERTIFICATION_MARK.SOFT_STRUCTURE.MAJOR_VERSION.MINOR_VERSION
+#define SDK_VERSION_NUM               TL_BLE_SDK_VERSION_NUM
 
-#define SDK_VERSION1(sdk_version_num)   "$$$tl_ble_sdk_V"#sdk_version_num"$$$"
+#define SDK_VERSION1(sdk_version_num) "$$$tl_ble_sdk_V" #sdk_version_num "$$$"
 
 
 
@@ -55,3 +60,13 @@
 
 #define CUSTOM_VERSION1(cunstom_version_num) "$$$custom_" #cunstom_version_num "$$$"
 #define CUSTOM_VERSION(cunstom_version_num)  CUSTOM_VERSION1(cunstom_version_num)
+
+/**
+ * @brief      get SDK version information
+ * @param[in]  pbuf - the pointer to the version string.
+ *             eg. "LibVer:V4.0.4.4_P0001 C0.0 "
+ * @param[in]  number - the size of the buffer.
+ * @return     the actual length of version string.
+ */
+unsigned char tlk_get_sdk_version(unsigned char *pbuf, unsigned char number);
+#define blc_get_sdk_version tlk_get_sdk_version

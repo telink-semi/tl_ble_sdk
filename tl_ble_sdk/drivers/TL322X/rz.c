@@ -76,9 +76,9 @@ void rz_set_dma(dma_chn_e rz_dma_chn, unsigned int *src_addr,unsigned int size_b
  */
 void rz_t0l_t1l_jitter_config(rz_jitter_ctrl_tl_e jitter_ctrl_tl) {
     if (ENABLE_JITTER_ON_T0L_T1L == jitter_ctrl_tl) {
-        reg_rz_ctrl0 |= FLD_RZ_JITTER_L_EN;
+        reg_rz_ctrl1 |= FLD_RZ_JITTER_L_EN;
     } else if (DISABLE_JITTER_ON_T0L_T1L == jitter_ctrl_tl) {
-        reg_rz_ctrl0 &= ~FLD_RZ_JITTER_L_EN;
+        reg_rz_ctrl1 &= ~FLD_RZ_JITTER_L_EN;
     }
 }
 
@@ -89,9 +89,9 @@ void rz_t0l_t1l_jitter_config(rz_jitter_ctrl_tl_e jitter_ctrl_tl) {
  */
 void rz_t0h_t1h_jitter_config(rz_jitter_ctrl_th_e jitter_ctrl_th) {
     if (ENABLE_JITTER_ON_T0H_T1H == jitter_ctrl_th) {
-        reg_rz_ctrl0 |= FLD_RZ_JITTER_H_EN;
+        reg_rz_ctrl1 |= FLD_RZ_JITTER_H_EN;
     } else if (DISABLE_JITTER_ON_T0H_T1H == jitter_ctrl_th) {
-        reg_rz_ctrl0 &= ~FLD_RZ_JITTER_H_EN;
+        reg_rz_ctrl1 &= ~FLD_RZ_JITTER_H_EN;
     }
 }
 

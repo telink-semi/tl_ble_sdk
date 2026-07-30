@@ -25,6 +25,7 @@
 #include "audio.h"
 #include "compiler.h"
 #include "lib/include/stimer.h"
+
 /**********************************************************************************************************************
  *                                           Declare variables                                                             *
  *********************************************************************************************************************/
@@ -58,6 +59,11 @@ _attribute_data_retention_sec_ signed char    g_adc_sar0_vbat_calib_vref_offset 
 _attribute_data_retention_sec_ unsigned short g_adc_sar1_gpio_calib_vref        = SAR1_ADC_GPIO_VREF_DEFAULT_VALUE;              //sar1 gpio calibration value voltage (unit:mV)(used for gpio voltage sample).
 _attribute_data_retention_sec_ signed char    g_adc_sar1_gpio_calib_vref_offset = SAR1_ADC_GPIO_VREF_OFFSET_DEFAULT_VALUE;       //sar1 gpio calibration value voltage offset (unit:mV)(used for vbat voltage sample).
 
+unsigned char g_adc_res_m_shadow[ADC_SAR_CNT] = {0x02,0x02};
+unsigned char g_adc_pga_ctrl_shadow[ADC_SAR_CNT] = {0x20,0x20};
+unsigned char g_ain_scale_shadow[ADC_SAR_CNT] = {0x00,0x00};
+unsigned char g_adc_data_transfer_control_shadow[ADC_SAR_CNT] = {0x00,0x00};
+unsigned char g_adc_vref_fast_startup_shadow[ADC_SAR_CNT] = {0x00,0x00};
 
 volatile unsigned char g_adc_pre_scale[ADC_SAR_CNT][ADC_CHN_CNT];
 unsigned char          g_adc_rx_fifo_index[ADC_SAR_CNT];
@@ -104,7 +110,7 @@ pem_event_config_t adc_pem_event_config={
             .sig_sel        = 0,
             .clk_sel        = PCLK,
             .lvl            = PULSE,
-            .edge_detect    = RISING_EDGE,
+            .edge_detect    = 0,
             .inv            = 0,
 };
 
@@ -121,23 +127,6 @@ pem_task_config_t adc_pem_task_config={
 /**********************************************************************************************************************
  *                                         DMA and NDMA common interface                                              *
  **********************************************************************************************************************/
-/**
- * @brief      This function is used to reset sar_adc module.
- * @param[in]  sar_adc_num - SAR0/SAR1.
- * @return     none
- */
-static inline void adc_reset(adc_num_e sar_adc_num)
-{
-    if(sar_adc_num == 0){
-        reg_rst3 &= (~FLD_RST3_SARADC );
-        reg_rst3 |=FLD_RST3_SARADC;
-    }
-    else{
-        reg_rst5 &= (~FLD_RST5_SAR1ADC );
-        reg_rst5 |=FLD_RST5_SAR1ADC;
-    }
-    adc_clr_rx_index(sar_adc_num);
-}
 
 /**
  * @brief      This function enable adc source clock: xtal_24M
@@ -200,7 +189,8 @@ static inline void adc_set_chn_en(adc_num_e sar_adc_num,adc_sample_chn_e chn)
  */
 static inline void adc_set_resolution(adc_num_e sar_adc_num,adc_res_e res)
 {
-    analog_write_reg8(areg_adc_res_m(sar_adc_num), (analog_read_reg8(areg_adc_res_m(sar_adc_num) )&(~FLD_ADC_RES_M)) | res);
+    g_adc_res_m_shadow[sar_adc_num] = (g_adc_res_m_shadow[sar_adc_num] & (~FLD_ADC_RES_M)) | res;
+    analog_write_reg8(areg_adc_res_m(sar_adc_num), g_adc_res_m_shadow[sar_adc_num]);
 }
 /**
  * @brief      This function serves to set ADC sample time(the number of adc clocks for sample cycles) for M channel,L channel or R channel.
@@ -250,7 +240,8 @@ static inline void adc_set_state_length(adc_num_e sar_adc_num,adc_sample_chn_e c
  */
 static inline void adc_all_chn_data_to_fifo_en(adc_num_e sar_adc_num)
 {
-    analog_write_reg8(areg_adc_data_transfer_control(sar_adc_num) ,analog_read_reg8(areg_adc_data_transfer_control(sar_adc_num) ) & (~FLD_AUTO_NOT_EN));
+    g_adc_data_transfer_control_shadow[sar_adc_num] &= (~FLD_AUTO_NOT_EN);
+    analog_write_reg8(areg_adc_data_transfer_control(sar_adc_num) , g_adc_data_transfer_control_shadow[sar_adc_num]);
 }
 
 /**
@@ -260,7 +251,8 @@ static inline void adc_all_chn_data_to_fifo_en(adc_num_e sar_adc_num)
  */
 static inline void adc_all_chn_data_to_fifo_dis(adc_num_e sar_adc_num)
 {
-    analog_write_reg8(areg_adc_data_transfer_control(sar_adc_num),FLD_AUTO_NOT_EN);
+    g_adc_data_transfer_control_shadow[sar_adc_num] |= FLD_AUTO_NOT_EN;
+    analog_write_reg8(areg_adc_data_transfer_control(sar_adc_num), g_adc_data_transfer_control_shadow[sar_adc_num]);
 }
 
 /**
@@ -310,19 +302,37 @@ static inline void adc_set_scan_chn_dis(adc_num_e sar_adc_num)
     reg_adc_config0(sar_adc_num) = ((reg_adc_config0(sar_adc_num) & (~FLD_SCANT_MAX)) | (1 << 4));
 }
 /**
+ * @brief      This function is used to reset sar_adc module.
+ * @param[in]  sar_adc_num - SAR0/SAR1.
+ * @return     none
+ */
+void adc_reset(adc_num_e sar_adc_num)
+{
+    if(sar_adc_num == 0){
+        reg_rst3 &= (~FLD_RST3_SARADC );
+        reg_rst3 |=FLD_RST3_SARADC;
+    }
+    else{
+        reg_rst5 &= (~FLD_RST5_SAR1ADC );
+        reg_rst5 |=FLD_RST5_SAR1ADC;
+    }
+    adc_clr_rx_index(sar_adc_num);
+}
+
+/**
  * @brief    This function is used to power on sar_adc.
  * @param[in]  sar_adc_num - SAR0/SAR1.
  * @return   none.
- * @note     -# User need to wait >30us after adc_power_on() for ADC to be stable.
- *           -# If you calling adc_power_off(), because all analog circuits of ADC are turned off after adc_power_off(),
- *            it is necessary to wait >30us after re-adc_power_on() for ADC to be stable.
  */
 void adc_power_on(adc_num_e sar_adc_num)
 {
     adc_set_scan_chn_dis(sar_adc_num);
     adc_reset(sar_adc_num);
     adc_set_scan_chn_cnt(sar_adc_num, 1);
-    analog_write_reg8(areg_adc_pga_ctrl(sar_adc_num), (analog_read_reg8(areg_adc_pga_ctrl(sar_adc_num))&(~FLD_SAR_ADC_POWER_DOWN)));
+    g_adc_pga_ctrl_shadow[sar_adc_num] &= (~FLD_SAR_ADC_POWER_DOWN);
+    power_adc_protected_mode(PROTECT_VOLTAGE_PROTECT_MODE);
+    analog_write_reg8(areg_adc_pga_ctrl(sar_adc_num), g_adc_pga_ctrl_shadow[sar_adc_num]);
+    power_adc_protected_mode(PROTECT_VOLTAGE_RECOVER_MODE);
     adc_dig_clk_en(sar_adc_num);
 
 }
@@ -334,7 +344,10 @@ void adc_power_on(adc_num_e sar_adc_num)
 void adc_power_off(adc_num_e sar_adc_num)
 {
     adc_dig_clk_dis(sar_adc_num);
-    analog_write_reg8(areg_adc_pga_ctrl(sar_adc_num), (analog_read_reg8(areg_adc_pga_ctrl(sar_adc_num))|FLD_SAR_ADC_POWER_DOWN));
+    g_adc_pga_ctrl_shadow[sar_adc_num] |= FLD_SAR_ADC_POWER_DOWN;
+    power_adc_protected_mode(PROTECT_VOLTAGE_PROTECT_MODE);
+    analog_write_reg8(areg_adc_pga_ctrl(sar_adc_num), g_adc_pga_ctrl_shadow[sar_adc_num]);
+    power_adc_protected_mode(PROTECT_VOLTAGE_RECOVER_MODE);
 
 }
 /**
@@ -359,7 +372,7 @@ void adc_pin_config(gpio_pin_e pin)
  * @param[in]  chn - enum variable of ADC sample channel.
  * @return none
  * @note       1. adc_set_ref_voltage does not take effect immediately after configuration, it needs to be delayed 100us after calling adc_dig_clk_en().
- *             2. If you call adc_set_ref_voltage() alone, please change the value of g_adc_vref of the corresponding channel, otherwise the voltage conversion will be wrong.
+ * 2. If you call adc_set_ref_voltage() alone, please change the value of g_adc_vref of the corresponding channel, otherwise the voltage conversion will be wrong.
  *
  */
 static void adc_set_ref_voltage(adc_num_e sar_adc_num,adc_sample_chn_e chn)
@@ -375,9 +388,11 @@ static void adc_set_ref_voltage(adc_num_e sar_adc_num,adc_sample_chn_e chn)
      * To balance the ADC performance of the old chips, the following compatible logic was used.*/
     ret = efuse_get_sar_drv_flag(&flag);
     if (!flag || ret) { // if read efuse fail unlikely, also use high drive capability .
-        analog_write_reg8(areg_ain_scale(sar_adc_num), (analog_read_reg8(areg_ain_scale(sar_adc_num)  )&(0xC0)) | 0x1d );
+        g_ain_scale_shadow[sar_adc_num] = (g_ain_scale_shadow[sar_adc_num]  &(0xC0)) | 0x1d;
+        analog_write_reg8(areg_ain_scale(sar_adc_num), g_ain_scale_shadow[sar_adc_num]);
     } else {
-        analog_write_reg8(areg_ain_scale(sar_adc_num), (analog_read_reg8(areg_ain_scale(sar_adc_num)  )&(0xC0)) | 0x15 );
+        g_ain_scale_shadow[sar_adc_num] = (g_ain_scale_shadow[sar_adc_num]  &(0xC0)) | 0x15;
+        analog_write_reg8(areg_ain_scale(sar_adc_num), g_ain_scale_shadow[sar_adc_num]);
 
     }
 }
@@ -430,7 +445,7 @@ void adc_set_vbat_divider(adc_num_e sar_adc_num,adc_sample_chn_e chn)
  */
 static inline void adc_ana_read_en(adc_num_e sar_adc_num)
 {
-    analog_write_reg8(areg_adc_data_sample_control(sar_adc_num),  analog_read_reg8(areg_adc_data_sample_control(sar_adc_num)) | FLD_ANA_RD_EN);
+    analog_write_reg8(areg_adc_data_sample_control(sar_adc_num), g_adc_data_sample_control_shadow[sar_adc_num]);
 }
 
 /**
@@ -540,6 +555,31 @@ void adc_set_pem_event(adc_num_e sar_adc_num,pem_chn_e chn,unsigned char adc_sel
 
 #endif
 
+void adc_set_pem_event(adc_num_e sar_adc_num, pem_chn_e chn, adc_event_e event_signal)
+{
+    reg_pem_enable(sar_adc_num) |= FLD_PEM_EVENT1_ENABLE;
+
+    adc_pem_event_config.sig_sel = event_signal;
+    if(event_signal == ADC_EVENT_RX_THRESHOLD)
+    {
+        adc_pem_event_config.lvl = LEVEL;
+    }
+    else
+    {
+        adc_pem_event_config.lvl = PULSE;
+    }
+
+    pem_event_config(chn, adc_pem_event_config);
+}
+
+void adc_set_pem_task(adc_num_e sar_adc_num, pem_chn_e chn, adc_task_e task_signal)
+{
+    reg_pem_enable(sar_adc_num) |= FLD_PEM_TASK_ENABLE;
+
+    adc_pem_task_config.sig_sel = task_signal;
+    pem_task_config(chn, adc_pem_task_config);
+}
+
 /**
  * @brief This function is used to initialize the ADC.
  * @param[in]  sar_adc_num - SAR0/SAR1.
@@ -551,7 +591,12 @@ void adc_set_pem_event(adc_num_e sar_adc_num,pem_chn_e chn,unsigned char adc_sel
  */
 void adc_init(adc_num_e sar_adc_num,adc_chn_cnt_e channel_cnt)
 {
+    /**
+     * 322 Due to the issue of incorrect operation of the ADC register, before operating the ADC-related registers, 
+     * the LDO voltage should be raised first, and then restored to its original state after the operation is completed.(confirmed by wenfen jira:CONDOR-70 20250422)
+     */
     adc_power_off(sar_adc_num);//power off sar adc
+    power_adc_protected_mode(PROTECT_VOLTAGE_PROTECT_MODE);
     adc_reset(sar_adc_num);
     adc_clk_en(sar_adc_num);
     adc_set_resolution(sar_adc_num,ADC_RES12);//default adc_resolution set as 12bit ,BIT(11) is sign bit
@@ -562,6 +607,7 @@ void adc_init(adc_num_e sar_adc_num,adc_chn_cnt_e channel_cnt)
         reg_adc_config2(sar_adc_num) &= ~FLD_RX_DMA_ENABLE;//In NDMA mode,RX DMA needs to be disabled.
         reg_adc_config2(sar_adc_num) |= FLD_SAR_RX_INTERRUPT_ENABLE;//SAR_RX_INTERRUPT must be enabled to call adc_get_irq_status() to get adc irq status.
     }
+    power_adc_protected_mode(PROTECT_VOLTAGE_RECOVER_MODE);
     /**
      * The set and capture of RNG channel are configured to 0 by default, and the actual state machine scanning time of RNG channel is the maximum time(about 25us),
      * and by configuring both of them to 1 (the minimum scanning time), the state machine scanning time of RNG channel is only (1+1)/24M=83ns,
@@ -582,6 +628,11 @@ void adc_init(adc_num_e sar_adc_num,adc_chn_cnt_e channel_cnt)
  */
 void adc_chn_config(adc_num_e sar_adc_num, adc_sample_chn_e chn, adc_chn_cfg_t *adc_cfg)
 {
+    /**
+     * 322 Due to the issue of incorrect operation of the ADC register, before operating the ADC-related registers, 
+     * the LDO voltage should be raised first, and then restored to its original state after the operation is completed.(confirmed by wenfen jira:CONDOR-70 20250422)
+     */
+    power_adc_protected_mode(PROTECT_VOLTAGE_PROTECT_MODE);
     adc_set_diff_input(sar_adc_num,chn, adc_cfg->input_p, adc_cfg->input_n);
     adc_set_vbat_divider(sar_adc_num,chn);
     adc_set_ref_voltage(sar_adc_num,chn);
@@ -596,7 +647,7 @@ void adc_chn_config(adc_num_e sar_adc_num, adc_sample_chn_e chn, adc_chn_cfg_t *
         adc_select_clk(sar_adc_num,FLD_CLOCK_PLL,sys_clk.pll_clk/48);
         adc_set_clk(sar_adc_num,0);//set adc digital clk to 48MHz and adc analog clk to 48MHz
     }
-
+    power_adc_protected_mode(PROTECT_VOLTAGE_RECOVER_MODE);
 }
 /**
  * @brief This function is used to initialize the ADC for sampling.
@@ -608,6 +659,11 @@ void adc_chn_config(adc_num_e sar_adc_num, adc_sample_chn_e chn, adc_chn_cfg_t *
  */
 void adc_channel_sample_init(adc_num_e sar_adc_num,adc_mode_e mode,adc_sample_chn_e chn , adc_chn_cfg_t *cfg)
 {   
+    /**
+     * 322 Due to the issue of incorrect operation of the ADC register, before operating the ADC-related registers, 
+     * the LDO voltage should be raised first, and then restored to its original state after the operation is completed.(confirmed by wenfen jira:CONDOR-70 20250422)
+     */
+    power_adc_protected_mode(PROTECT_VOLTAGE_PROTECT_MODE);
     if(mode == ADC_GPIO_MODE){
         adc_pin_config(cfg->input_p & 0xfff);
     }else if(mode == ADC_VBAT_MODE){
@@ -636,7 +692,8 @@ void adc_channel_sample_init(adc_num_e sar_adc_num,adc_mode_e mode,adc_sample_ch
 #endif
 
     //The Vref voltage switch should be pre-established. Once it is enabled, ensure that Vref is stabilized before the PD is turned off, in order to avoid fluctuations during the initial few code cycles.
-    analog_write_reg8(areg_adc_vref_fast_startup_sampled_inuput(sar_adc_num),FLD_VREF_FAST_STARTUP|FLD_SAMPLED_INPUT_MODEBAR);
+    g_adc_vref_fast_startup_shadow[sar_adc_num] |= FLD_VREF_FAST_STARTUP|FLD_SAMPLED_INPUT_MODEBAR;
+    analog_write_reg8(areg_adc_vref_fast_startup_sampled_inuput(sar_adc_num), g_adc_vref_fast_startup_shadow[sar_adc_num]);
 
     /**
      * At present, the reference voltage is 1.2V by default, and the calibration is also based on 1.2V. If other chips have different gears in the future,
@@ -653,6 +710,8 @@ void adc_channel_sample_init(adc_num_e sar_adc_num,adc_mode_e mode,adc_sample_ch
         g_adc_vref[sar_adc_num][chn]        = g_adc_sar1_gpio_calib_vref;        
         g_adc_vref_offset[sar_adc_num][chn] = g_adc_sar1_gpio_calib_vref_offset; 
     }
+
+    power_adc_protected_mode(PROTECT_VOLTAGE_RECOVER_MODE);
 }
 
 /**
@@ -664,6 +723,11 @@ void adc_channel_sample_init(adc_num_e sar_adc_num,adc_mode_e mode,adc_sample_ch
  */
 void adc_keyscan_sample_init(adc_num_e sar_adc_num)
 {
+    /**
+     * 322 Due to the issue of incorrect operation of the ADC register, before operating the ADC-related registers, 
+     * the LDO voltage should be raised first, and then restored to its original state after the operation is completed.(confirmed by wenfen jira:CONDOR-70 20250422)
+     */
+    power_adc_protected_mode(PROTECT_VOLTAGE_PROTECT_MODE);
     adc_chn_cfg_t chn_cfg =
     {
         .pre_scale = ADC_PRESCALE_1F4,
@@ -701,7 +765,9 @@ void adc_keyscan_sample_init(adc_num_e sar_adc_num)
         reg_pad_auto_p(ADC1) = 0x43214321;
         reg_pad_auto_n(ADC1) = 0xbbbbbbbb;//GND
     }
-    analog_write_reg8(areg_adc_vref_fast_startup_sampled_inuput(sar_adc_num),FLD_VREF_FAST_STARTUP|FLD_SAMPLED_INPUT_MODEBAR); //Quickly start the ADC
+    g_adc_vref_fast_startup_shadow[sar_adc_num] |= FLD_VREF_FAST_STARTUP|FLD_SAMPLED_INPUT_MODEBAR;
+    analog_write_reg8(areg_adc_vref_fast_startup_sampled_inuput(sar_adc_num), g_adc_vref_fast_startup_shadow[sar_adc_num]); //Quickly start the ADC
+    power_adc_protected_mode(PROTECT_VOLTAGE_RECOVER_MODE);
 }
 /**
  * @brief This function serves to calculate voltage from adc sample code.

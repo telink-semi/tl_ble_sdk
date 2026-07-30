@@ -92,7 +92,7 @@ static inline unsigned int plic_sw_interrupt_claim(void)
  * @return   none
  * @note     Software interrupts need to be completed before exiting the interrupt service routine to ensure that software interrupts are fully released..
  */
-static inline void plic_sw_interrupt_complete()
+static inline void plic_sw_interrupt_complete(void)
 {
     reg_irq_sw_done = FLD_PLIC_SW_ID;
 }

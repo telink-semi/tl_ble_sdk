@@ -387,7 +387,7 @@ void app_ext_adv_set_test(void)
         app_Advertising_Event_Properties++;
     } break;
 
-    // Extended, None_Connectable_None_Scannable undirected, without auxiliary packet
+        // Extended, None_Connectable_None_Scannable undirected, without auxiliary packet
     case APP_EXT_NONE_CONN_NONE_SCAN_UNDIRECTED__WITHOUT_AUX_PKT:
     {
         tlkapi_printf(APP_LOG_EN, "Extended, None_Connectable_None_Scannable undirected, without auxiliary packet");
@@ -399,7 +399,7 @@ void app_ext_adv_set_test(void)
         app_Advertising_Event_Properties++;
     } break;
 
-    // Extended, None_Connectable_None_Scannable directed, without auxiliary packet
+        // Extended, None_Connectable_None_Scannable directed, without auxiliary packet
     case APP_EXT_NONE_CONN_NONE_SCAN_DIRECTED__WITHOUT_AUX_PKT:
     {
         tlkapi_printf(APP_LOG_EN, "Extended, None_Connectable_None_Scannable directed, without auxiliary packet");
@@ -440,7 +440,7 @@ void app_ext_adv_set_test(void)
         app_Advertising_Event_Properties++;
     } break;
 
-    // Extended, Scannable, Undirected
+        // Extended, Scannable, Undirected
     case APP_EXT_SCAN_UNDIRECTED:
     {
         tlkapi_printf(APP_LOG_EN, "Extended, Scannable, Undirected");
@@ -460,7 +460,7 @@ void app_ext_adv_set_test(void)
     {
         tlkapi_printf(APP_LOG_EN, "Extended, Connectable, Undirected");
         blc_ll_initChannelSelectionAlgorithm_2_feature();
-        // blc_ll_setDefaultConnCodingIndication(CODED_PHY_PREFER_S2);
+        //  blc_ll_setDefaultConnCodingIndication(CODED_PHY_PREFER_S2);
         blc_ll_setExtAdvParam(ADV_HANDLE0, ADV_EVT_PROP_EXTENDED_CONNECTABLE_UNDIRECTED, ADV_INTERVAL_50MS, ADV_INTERVAL_100MS, BLT_ENABLE_ADV_ALL, OWN_ADDRESS_PUBLIC, BLE_ADDR_PUBLIC, NULL, ADV_FP_NONE, TX_POWER_3dBm, BLE_PHY_1M, 0, BLE_PHY_2M, ADV_SID_0, 0);
 
         blc_ll_setExtAdvData(ADV_HANDLE0, sizeof(tbl_advData), (const u8 *)tbl_advData);
@@ -615,7 +615,7 @@ void app_ext_adv_set_test(void)
         }
         break;
     }
-    // blc_ll_setMaxAdvDelay_for_AdvEvent(MAX_DELAY_0MS);  //debug
+    //  blc_ll_setMaxAdvDelay_for_AdvEvent(MAX_DELAY_0MS);  //debug
 }
 
 #endif //end of (FEATURE_TEST_MODE == ...)

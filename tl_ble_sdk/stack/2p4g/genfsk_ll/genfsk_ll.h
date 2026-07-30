@@ -664,7 +664,7 @@ extern "C"
  *  @return      0                   -  Correct configuration.
  *              -1                   -  Incorrect configuration.
  */
-    signed char gen_fsk_fast_settle_config(GEN_FSK_TxSettleTimeTypeDef tx_settle_us, GEN_FSK_RxSettleTimeTypeDef rx_settle_us);
+    void gen_fsk_fast_settle_config(GEN_FSK_TxSettleTimeTypeDef tx_settle_us, GEN_FSK_RxSettleTimeTypeDef rx_settle_us);
 
     /**
  *  @brief      this function serve to enable the fast tx timing sequence adjusted.

@@ -705,6 +705,8 @@ unsigned int flash_get_vendor(unsigned int flash_mid)
         return FLASH_SONOS_TH;
     case 0x000060CD:
         return FLASH_SST_TH;
+    case 0x000071CD:
+        return FLASH_NORD_TH;
     default:
         return 0;
     }

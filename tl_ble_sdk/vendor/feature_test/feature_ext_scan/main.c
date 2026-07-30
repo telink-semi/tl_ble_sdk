@@ -79,7 +79,10 @@ _attribute_ram_code_ int main(void)
     int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup(); //MCU deep retention wakeUp
 
 
+    #if !defined(TLK_ONLY_BLE_HOST)
+    /* Place the RF in the N22 initialization. */
     rf_drv_ble_init();
+    #endif
 
     gpio_init(!deepRetWakeUp);
 

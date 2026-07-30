@@ -31,12 +31,15 @@
 #include "../default_att.h"
 #include "app_ui.h"
 
+#include "../feature_app_parse_char.h"
+
 
 #if (FEATURE_TEST_MODE == TEST_2M_CODED_PHY_CONNECTION)
 
 
 _attribute_ble_data_retention_ int central_smp_pending = 0; // SMP: security & encryption;
 
+static void print_hex_array(u8 *data, u16 data_length);
 
 /**
  * @brief   BLE Advertising data
@@ -118,10 +121,11 @@ void feature_2m_phy_test_init(void)
 void feature_2m_phy_test_mainloop(void)
 {
     u16 connHandle;
-    if (feature_test_data_tick && clock_time_exceed(feature_test_data_tick, 1 * 1000 * 1000)) { //1S
+    if (feature_test_data_tick && clock_time_exceed(feature_test_data_tick, 1 * 1000 * 1000)) //1S
+    {
         feature_test_data_tick = clock_time() | 0x01;
     #if UI_LED_ENABLE
-        gpio_toggle(GPIO_LED_BLUE);                                                             //led
+        gpio_toggle(GPIO_LED_BLUE); //led
     #endif
         for (u8 i = 0; i < (DEVICE_CHAR_INFO_MAX_NUM); i++) {
             if (!conn_dev_list[i].conn_state) {
@@ -145,10 +149,11 @@ void feature_2m_phy_test_mainloop(void)
         }
     }
 
-    if (feature_phy_update_tick && clock_time_exceed(feature_phy_update_tick, 1250 * 1000)) { //1.25S * DEVICE_CHAR_INFO_MAX_NUM = 10 s
+    if (feature_phy_update_tick && clock_time_exceed(feature_phy_update_tick, 1250 * 1000)) //1.25S * DEVICE_CHAR_INFO_MAX_NUM = 10 s
+    {
         feature_phy_update_tick = clock_time() | 0x01;
     #if UI_LED_ENABLE
-        gpio_toggle(GPIO_LED_BLUE);                                                           //led
+        gpio_toggle(GPIO_LED_BLUE); //led
     #endif
         static unsigned char char_num = 0;
         if (conn_dev_list[char_num].conn_state) {
@@ -182,11 +187,11 @@ int app_le_adv_report_event_handle(u8 *p)
     s8                  rssi = pa->data[pa->len];
 
     #if 0 //debug, print ADV report number every 5 seconds
-    AA_dbg_adv_rpt ++;
-    if (clock_time_exceed(tick_adv_rpt, 5000000)) {
-        tlkapi_send_string_data(APP_CONTR_EVT_LOG_EN, "[APP][EVT] Adv report", pa->mac, 6);
-        tick_adv_rpt = clock_time();
-    }
+        AA_dbg_adv_rpt ++;
+        if(clock_time_exceed(tick_adv_rpt, 5000000)){
+            tlkapi_send_string_data(APP_CONTR_EVT_LOG_EN, "[APP][EVT] Adv report", pa->mac, 6);
+            tick_adv_rpt = clock_time();
+        }
     #endif
 
     /*********************** Central Create connection demo: Key press or ADV pair packet triggers pair  ********************/
@@ -237,6 +242,49 @@ int app_le_adv_report_event_handle(u8 *p)
 
     return 0;
 }
+static void print_hex_array(u8 *data, u16 data_length)
+{
+    u8 print_buffer[64] = {0};
+
+    while (data_length) {
+        snprintf(print_buffer + strlen(print_buffer), sizeof(print_buffer), "%02X", *data);
+
+        data++;
+        data_length--;
+
+        if (sizeof(print_buffer) - strlen(print_buffer) < 2) {
+            // No more space in print buffer - print it
+            app_parse_printf("%s", print_buffer);
+            print_buffer[0] = 0;
+        }
+    }
+
+    if (strlen(print_buffer)) {
+        app_parse_printf("%s", print_buffer);
+    }
+}
+static int app_le_adv_report_event_handle_console(u8 *p)
+{
+    event_adv_report_t *pa   = (event_adv_report_t *)p;
+//    s8                  rssi = pa->data[pa->len];
+
+    app_parse_printf("EXT Adv report type:%04X addr_type: %02X [%02X:%02X:%02X:%02X:%02X:%02X]:",
+                        pa->event_type,
+                        pa->adr_type,
+                        pa->mac[0],
+                        pa->mac[1],
+                        pa->mac[2],
+                        pa->mac[3],
+                        pa->mac[4],
+                        pa->mac[5]);
+
+    print_hex_array(pa->data, pa->len);
+
+    app_parse_printf("\r\n");
+
+    return 0;
+}
+
 
 /**
  * @brief      BLE Connection complete event handler
@@ -250,10 +298,14 @@ int app_le_connection_complete_event_handle(u8 *p)
     if (pConnEvt->status == BLE_SUCCESS) {
         tlkapi_printf(APP_CONTR_EVT_LOG_EN, "[APP][EVT]le_connection_complete connHandle:%04X mac:%02X %02X %02X %02X %02X %02X", pConnEvt->connHandle, pConnEvt->peerAddr[0], pConnEvt->peerAddr[1], pConnEvt->peerAddr[2], pConnEvt->peerAddr[3], pConnEvt->peerAddr[4], pConnEvt->peerAddr[5]);
         tlkapi_printf(APP_CONTR_EVT_LOG_EN, "[APP][EVT]connection_complete Interval:%04X Latency:%04X Timeout:%04X", pConnEvt->connInterval, pConnEvt->peripheralLatency, pConnEvt->supervisionTimeout);
-
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("[APP][EVT]le_connection_complete connHandle:%04X mac:%02X %02X %02X %02X %02X %02X\r\n", pConnEvt->connHandle, pConnEvt->peerAddr[0], pConnEvt->peerAddr[1], pConnEvt->peerAddr[2], pConnEvt->peerAddr[3], pConnEvt->peerAddr[4], pConnEvt->peerAddr[5]);
+        app_parse_printf("[APP][EVT]connection_complete Interval:%04X Latency:%04X Timeout:%04X\r\n", pConnEvt->connInterval, pConnEvt->peripheralLatency, pConnEvt->supervisionTimeout);
+#endif
         dev_char_info_insert_by_conn_event(pConnEvt);
 
-        if (pConnEvt->role == ACL_ROLE_CENTRAL) {       // central role, process SMP and SDP if necessary
+        if (pConnEvt->role == ACL_ROLE_CENTRAL)         // central role, process SMP and SDP if necessary
+        {
     #if (ACL_CENTRAL_SMP_ENABLE)
             central_smp_pending = pConnEvt->connHandle; // this connection need SMP
     #endif
@@ -279,11 +331,14 @@ int app_le_connection_complete_event_handle(u8 *p)
 
                 /* add the peer device att_handle value to conn_dev_list */
                 dev_char_info_add_peer_att_handle(&cur_sdp_device);
+                #if (APP_PARSE_CHAR_ENABLE)
+                    app_parse_printf("SDP done:flash\r\n");  // Needed to inform automated test
+                #endif
             } else {
                 central_sdp_pending = pConnEvt->connHandle; // mark this connection need SDP
 
         #if (ACL_CENTRAL_SMP_ENABLE)
-                        //service discovery initiated after SMP done, trigger it in "GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE" event callBack.
+                    //service discovery initiated after SMP done, trigger it in "GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE" event callBack.
         #else
                 app_register_service(&app_service_discovery); //No SMP, service discovery can initiated now
         #endif
@@ -355,9 +410,14 @@ int app_le_connection_update_complete_event_handle(u8 *p)
         //connLatency
         //supervisionTimeout  ->   conn_tm_t
         tlkapi_printf(APP_CONTR_EVT_LOG_EN, "[APP][EVT] Connection Update Event handle:%04X Interval:%04X Latency:%04X Timeout:%04X ", pUpt->connHandle, pUpt->connInterval, pUpt->connLatency, pUpt->supervisionTimeout);
-
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("[APP][EVT] Connection Update Event handle:%04X Interval:%04X Latency:%04X Timeout:%04X\r\n", pUpt->connHandle, pUpt->connInterval, pUpt->connLatency, pUpt->supervisionTimeout);
+#endif
     } else {
         tlkapi_printf(APP_CONTR_EVT_LOG_EN, "[APP][EVT] Connection Update Event error code:%02X", pUpt->status);
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("[APP][EVT] Connection Update Event error code:%02X", pUpt->status);
+#endif
     }
     return 0;
 }
@@ -373,13 +433,18 @@ int app_le_phy_update_complete_event_handle(u8 *p)
 
     if (pPhy->status == BLE_SUCCESS) {
         //rx|tx phy Value |   Parameter Description
-        // 0x01        |   The receiver PHY for the connection is LE 1M
-        // 0x02        |   The receiver PHY for the connection is LE 2M
-        // 0x03        |   The receiver PHY for the connection is LE Coded
+        //    0x01        |   The receiver PHY for the connection is LE 1M
+        //    0x02        |   The receiver PHY for the connection is LE 2M
+        //    0x03        |   The receiver PHY for the connection is LE Coded
         tlkapi_printf(APP_CONTR_EVT_LOG_EN, "[APP][EVT] phy Update Event handle:%04X rx_phy:%02X tx_phy:%02X", pPhy->connHandle, pPhy->rx_phy, pPhy->tx_phy);
-
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("[APP][EVT] phy Update Event handle:%04X rx_phy:%02X tx_phy:%02X\r\n", pPhy->connHandle, pPhy->rx_phy, pPhy->tx_phy);
+#endif
     } else {
         tlkapi_printf(APP_CONTR_EVT_LOG_EN, "[APP][EVT] phy Update Event error code:%02X", pPhy->status);
+#if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("[APP][EVT] phy Update Event error code:%02X\r\n", pPhy->status);
+#endif
     }
 
     return 0;
@@ -397,28 +462,36 @@ int app_le_phy_update_complete_event_handle(u8 *p)
  */
 int app_controller_event_callback(u32 h, u8 *p, int n)
 {
-    (void)n;
-    if (h & HCI_FLAG_EVENT_BT_STD) { //Controller HCI event
+    if (h & HCI_FLAG_EVENT_BT_STD) //Controller HCI event
+    {
         u8 evtCode = h & 0xff;
 
         //------------ disconnect -------------------------------------
-        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) { //connection terminate
+        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) //connection terminate
+        {
             app_disconnect_event_handle(p);
-        } else if (evtCode == HCI_EVT_LE_META) {         //LE Event
+        } else if (evtCode == HCI_EVT_LE_META)         //LE Event
+        {
             u8 subEvt_code = p[0];
 
             //------hci le event: le connection complete event---------------------------------
-            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) { // connection complete
+            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) // connection complete
+            {
                 app_le_connection_complete_event_handle(p);
             }
             //--------hci le event: le adv report event ----------------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT) { // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT) // ADV packet
+            {
                 //after controller is set to scan state, it will report all the adv packet it received by this event
-
+                #if (APP_PARSE_CHAR_ENABLE)
+                app_le_adv_report_event_handle_console(p);
+                #else
                 app_le_adv_report_event_handle(p);
+                #endif
             }
             //------hci le event: le connection update complete event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) { // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) // connection update
+            {
                 app_le_connection_update_complete_event_handle(p);
             } else if (subEvt_code == HCI_SUB_EVT_LE_PHY_UPDATE_COMPLETE) {
                 app_le_phy_update_complete_event_handle(p);
@@ -439,7 +512,6 @@ int app_controller_event_callback(u32 h, u8 *p, int n)
  */
 int app_host_event_callback(u32 h, u8 *para, int n)
 {
-    (void)n;
     u8 event = h & 0xFF;
 
     switch (event) {
@@ -475,7 +547,9 @@ int app_host_event_callback(u32 h, u8 *para, int n)
     {
         gap_smp_connEncDoneEvt_t *pEvt = (gap_smp_connEncDoneEvt_t *)para;
         tlkapi_send_string_data(APP_SMP_LOG_EN, "[APP][SMP] Security process done event", &pEvt->connHandle, sizeof(gap_smp_connEncDoneEvt_t));
-
+        #if (APP_PARSE_CHAR_ENABLE)
+            app_parse_printf("GAP_EVT_SMP_SECURITY_PROCESS_DONE\r\n");
+        #endif
         if (dev_char_get_conn_role_by_connhandle(pEvt->connHandle) == ACL_ROLE_CENTRAL) {
     #if (ACL_CENTRAL_SMP_ENABLE)
             if (dev_char_get_conn_role_by_connhandle(pEvt->connHandle) == ACL_ROLE_CENTRAL) {
@@ -537,9 +611,10 @@ int app_host_event_callback(u32 h, u8 *para, int n)
  */
 int app_gatt_data_handler(u16 connHandle, u8 *pkt)
 {
-    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) { //GATT data for Central
+    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) //GATT data for Central
+    {
     #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
-        if (central_sdp_pending == connHandle) {                                //ATT service discovery is ongoing on this conn_handle
+        if (central_sdp_pending == connHandle) {                              //ATT service discovery is ongoing on this conn_handle
             //when service discovery function is running, all the ATT data from peripheral
             //will be processed by it,  user can only send your own att cmd after  service discovery is over
             host_att_client_handler(connHandle, pkt); //handle this ATT data by service discovery process
@@ -548,16 +623,23 @@ int app_gatt_data_handler(u16 connHandle, u8 *pkt)
 
         rf_packet_att_t *pAtt = (rf_packet_att_t *)pkt;
 
+        #if (APP_PARSE_CHAR_ENABLE)
+            app_parse_printf("Data:");
+            print_hex_array(pAtt->dat, 20); // magic number in structure definition
+            app_parse_printf("\r\n");
+        #endif
+
         //so any ATT data before service discovery will be dropped
         dev_char_info_t *dev_info = dev_char_info_search_by_connhandle(connHandle);
         if (dev_info) {
             //-------   user process ------------------------------------------------
             u16 attHandle = pAtt->handle;
 
-            if (pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI) { //peripheral handle notify
-                                                            //---------------   consumer key --------------------------
+            if (pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI) //peripheral handle notify
+            {
+                //---------------   consumer key --------------------------
     #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
-                if (attHandle == dev_info->char_handle[3])  // Consume Report In (Media Key)
+                if (attHandle == dev_info->char_handle[3]) // Consume Report In (Media Key)
     #else
                 if (attHandle == HID_HANDLE_CONSUME_REPORT) //Demo device(825x_ble_sample) Consume Report AttHandle value is 25
     #endif
@@ -618,7 +700,217 @@ int app_gatt_data_handler(u16 connHandle, u8 *pkt)
     return 0;
 }
 
+#if (APP_PARSE_CHAR_ENABLE)
+static void help_fun(char *argv[], int argc, void *user_data);
+
+static void ping_fun(char *argv[], int argc, void *user_data)
+{
+     app_parse_printf("pong\r\n");
+
+    return;
+
+}
+
+static void scan_fun(char *argv[], int argc, void *user_data)
+{
+    dupFilter_en_t filter = DUP_FILTER_DISABLE;
+    ble_sts_t      status;
+    scan_en_t      en;
+    tlkapi_send_string_data(APP_LOG_EN, "[APP][EXE] scan en", 0, 0);
+    if (argc < 1) {
+        goto help;
+    }
+
+    if (!strcasecmp(argv[0], "on")) {
+        en = BLC_SCAN_ENABLE;
+    } else if (!strcasecmp(argv[0], "off")) {
+        en = BLC_SCAN_DISABLE;
+    } else {
+        goto help;
+    }
+
+    if (argc > 1 && !strcasecmp(argv[1], "--dup_en")) {
+        filter = DUP_FILTER_ENABLE;
+    }
+
+    status = blc_ll_setScanEnable(en, filter);
+    app_parse_printf("scan_en status:0x%02X\r\n", status);
+
+    return;
+
+help:
+    app_parse_printf("scan_en <on|off> [--dup_en]\r\n");
+}
+
+static void read_bdaddr(char *argv[], int argc, void *user_data)
+{
+    u8 addr[6];
+
+    if (blc_ll_readBDAddr(addr) == BLE_SUCCESS) {
+        app_parse_printf("read_bdaddr: %02X:%02X:%02X:%02X:%02X:%02X\r\n",
+                         addr[0],
+                         addr[1],
+                         addr[2],
+                         addr[3],
+                         addr[4],
+                         addr[5]);
+    } else {
+        app_parse_printf("read_bdaddr: failed\r\n");
+    }
+}
+
+static bool app_parse_bdaddr(const char *str, u8 *addr)
+{
+    u8 pos = 0;
+
+    if (strlen(str) != 17) {
+        return false;
+    }
+
+    for (u8 i = 0; i < 6; i++) {
+        u8 temp[3] = {str[pos], str[pos + 1], 0};
+
+        app_parse_str2hex(temp, &addr[i], 1);
+        pos += 2;
+        if (i < 5 && str[pos++] != ':') {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+static void cc_fun(char *argv[], int argc, void *user_data)
+{
+    u8        addr_type = PEERATYPE_PUBLIC_DEVICE_ADDRESS;
+    int       argc_addr = 0;
+    ble_sts_t status;
+    u8        addr[6];
+
+    if (argc < 1) {
+        goto help;
+    }
+
+    if (argc > 1) {
+        addr_type = app_parse_str2n(argv[argc_addr++]);
+    }
+
+    if (!app_parse_bdaddr(argv[argc_addr], addr)) {
+        goto help;
+    }
+
+    status = blc_ll_createConnection(SCAN_INTERVAL_100MS, SCAN_WINDOW_100MS, INITIATE_FP_ADV_SPECIFY, addr_type, addr, OWN_ADDRESS_PUBLIC, CONN_INTERVAL_31P25MS, CONN_INTERVAL_48P75MS, 0, CONN_TIMEOUT_4S, 0, 0xFFFF);
+    //status = blc_ll_extended_createConnection(INITIATE_FP_ADV_SPECIFY, OWN_ADDRESS_PUBLIC, addr_type, addr, INIT_PHY_1M, SCAN_INTERVAL_100MS, SCAN_WINDOW_100MS, CONN_INTERVAL_100MS, CONN_INTERVAL_100MS, CONN_TIMEOUT_4S, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+    app_parse_printf("Connect %02X:%02X:%02X:%02X:%02X:%02X status:%02X\r\n", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5], status);
+
+    return;
+
+help:
+    app_parse_printf("cc [addr_type] <bdaddr>\r\n");
+}
+
+static void data_fun(char *argv[], int argc, void *user_data) {
+
+    u16 connHandle;
+    u16 att_spp_handle;
+
+    if (argc < 1) {
+        goto help;
+    }
+    connHandle = app_parse_str2n(argv[0]);
+
+    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) {
+        att_spp_handle = SPP_CLIENT_TO_SERVER_DP_H;
+        ble_sts_t st =blc_gatt_pushWriteCommand(connHandle, att_spp_handle, (u8 *)&spp_data[0], SPP_DATA_LEN);                                                              //blc_gatt_pushWriteCommand ///blc_gatt_pushHandleValueWriteReq
+        if (BLE_SUCCESS == st ) {
+            app_parse_printf("OK\r\n");
+        } else {
+            app_parse_printf("ERROR:%d\r\n", st);
+        }
+    } else {
+        att_spp_handle = SPP_SERVER_TO_CLIENT_DP_H;
+        ble_sts_t st   = blc_gatt_pushHandleValueNotify(connHandle, att_spp_handle, (u8 *)&spp_data[0], SPP_DATA_LEN);
+        if (BLE_SUCCESS == st) { //sizeof(spp_data)
+            app_parse_printf("OK\r\n");
+        } else {
+            app_parse_printf("ERROR:%d\r\n", st);
+        }
+    }
+    return;
+help:
+    app_parse_printf("data <connHandle>\r\n");
+}
+
+static void phy_fun(char *argv[], int argc, void *user_data) {
+
+    u16 connHandle;
+    ble_sts_t retVal = HCI_ERR_CMD_DISALLOWED;
+
+    if (argc < 2) {
+        goto help;
+    }
+    connHandle = app_parse_str2n(argv[0]);
+
+    if(strcmp(argv[1], "CD") == 0) {
+         retVal = blc_ll_setPhy(connHandle, PHY_TRX_PREFER, PHY_PREFER_CODED, PHY_PREFER_CODED, CODED_PHY_PREFER_S8);
+    } else if(strcmp(argv[1], "2M") == 0) {
+        retVal = blc_ll_setPhy(connHandle, PHY_TRX_PREFER, PHY_PREFER_2M, PHY_PREFER_2M, CODED_PHY_PREFER_NONE);
+    } else if (strcmp(argv[1], "1M") == 0) {
+        retVal = blc_ll_setPhy(connHandle, PHY_TRX_PREFER, PHY_PREFER_1M, PHY_PREFER_1M, CODED_PHY_PREFER_NONE);
+    }
+
+    if(retVal == BLE_SUCCESS) {
+        app_parse_printf("OK\r\n");
+    } else {
+        app_parse_printf("ERROR:%d\r\n", retVal);
+    }
+    return;
+help:
+    app_parse_printf("phy <connHandle> <PHY:1M or 2M or CD>\r\n");
+}
+
+static const parse_fun_list_t app_funcs[] = {
+    {"help",        help_fun,    NULL},
+    {"ping",        ping_fun,    NULL},
+    {"scan",        scan_fun,    NULL},
+    {"read_bdaddr", read_bdaddr, NULL},
+    {"cc",          cc_fun,      NULL},
+    {"data",        data_fun,    NULL},
+    {"phy",         phy_fun,     NULL},
+};
+
+static void help_fun(char *argv[], int argc, void *user_data)
+{
+    app_parse_printf("Commands:\r\n");
+
+    foreach_arr(i, app_funcs)
+    {
+        app_parse_printf("\t%s\r\n", app_funcs[i].fun_name);
+    }
+}
+
+int my_client_2_server_write_callback(u16 connHandle, void *p)
+{
+    rf_packet_att_data_t *req = (rf_packet_att_data_t *)p;
+
+    #if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("Data:");
+        print_hex_array(req->dat, 20); // magic number in structure definition
+        app_parse_printf("\r\n");
+    #endif
+}
+
+#endif
 ///////////////////////////////////////////
+
+#if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
+int cb_simple_discovery_done(u32 current_flash_adr, void *p) {
+    #if (APP_PARSE_CHAR_ENABLE)
+        app_parse_printf("SDP done:discovery\r\n");  // Needed to inform automated test
+    #endif
+}
+#endif
 
 /**
  * @brief       user initialization when MCU power on or wake_up from deepSleep mode
@@ -651,6 +943,10 @@ _attribute_no_inline_ void user_init_normal(void)
 
     blc_initMacAddress(flash_sector_mac_address, mac_public, mac_random_static);
 
+    #if defined(TLK_ONLY_BLE_HOST)
+    sys_n22_start();
+    delay_ms(300);
+    #endif
 
     //////////// LinkLayer Initialization  Begin /////////////////////////
     blc_ll_initBasicMCU();
@@ -700,7 +996,7 @@ _attribute_no_inline_ void user_init_normal(void)
     u8 error_code = blc_contr_checkControllerInitialization();
     if (error_code != INIT_SUCCESS) {
         /* It's recommended that user set some UI alarm to know the exact error, e.g. LED shine, print log */
-        write_log32(0x88880000 | error_code);
+           
     #if (TLKAPI_DEBUG_ENABLE)
         tlkapi_send_string_data(APP_LOG_EN, "[APP][INI] Controller INIT ERROR", &error_code, 1);
         while (1) {
@@ -730,8 +1026,13 @@ _attribute_no_inline_ void user_init_normal(void)
     my_gatt_init();
     #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
     host_att_register_idle_func(main_idle_loop);
+    simple_sdp_register_store_info_callback(cb_simple_discovery_done);
     #endif
     blc_gatt_register_data_handler(app_gatt_data_handler);
+
+    #if (APP_PARSE_CHAR_ENABLE)
+    blc_spp_registerWriteCallback(my_client_2_server_write_callback);
+    #endif
 
     /* SMP Initialization */
     #if (ACL_PERIPHR_SMP_ENABLE || ACL_CENTRAL_SMP_ENABLE)
@@ -760,6 +1061,7 @@ _attribute_no_inline_ void user_init_normal(void)
                          GAP_EVT_MASK_SMP_PAIRING_SUCCESS |
                          GAP_EVT_MASK_SMP_PAIRING_FAIL |
                          GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE);
+    blc_att_setServerDataPendingTime_upon_ClientCmd(0);
     //////////// Host Initialization  End /////////////////////////
 
     //////////////////////////// BLE stack Initialization  End //////////////////////////////////
@@ -772,8 +1074,9 @@ _attribute_no_inline_ void user_init_normal(void)
     blc_ll_setAdvEnable(BLC_ADV_ENABLE); //ADV enable
 
     blc_ll_setScanParameter(SCAN_TYPE_PASSIVE, SCAN_INTERVAL_100MS, SCAN_WINDOW_50MS, OWN_ADDRESS_PUBLIC, SCAN_FP_ALLOW_ADV_ANY);
+#if !(APP_PARSE_CHAR_ENABLE) // scanning will be enabled via console
     blc_ll_setScanEnable(BLC_SCAN_ENABLE, DUP_FILTER_DISABLE);
-
+#endif
     rf_set_power_level_index(RF_POWER_P3dBm);
 
     #if (BLE_APP_PM_ENABLE)
@@ -783,6 +1086,10 @@ _attribute_no_inline_ void user_init_normal(void)
 
 
     tlkapi_printf(APP_CONTR_EVT_LOG_EN, "[APP][INI] feature_2m_coded_phy_test init");
+#if (APP_PARSE_CHAR_ENABLE)
+    app_parse_init(app_funcs, ARRAY_SIZE(app_funcs));
+    app_parse_printf("feature_2M_coded_phy init\r\n");
+#endif
 
     feature_2m_phy_test_init();
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -822,10 +1129,17 @@ int main_idle_loop(void)
     proc_keyboard(0, 0, 0);
     #endif
 
+    #if (APP_PARSE_CHAR_ENABLE)
+    app_parse_loop();
+    #endif
+
+
     proc_central_role_unpair();
 
+    #if !(APP_PARSE_CHAR_ENABLE)
     #if (FEATURE_TEST_MODE == TEST_2M_CODED_PHY_CONNECTION)
     feature_2m_phy_test_mainloop();
+    #endif
     #endif
 
     return 0; //must return 0 due to SDP flow

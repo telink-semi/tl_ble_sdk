@@ -58,9 +58,9 @@
     #define PE5_FUNC AS_GPIO        //SW6
     #define PF4_FUNC AS_GPIO        //SW5, not used in demo now.
 
-    #define PULL_WAKEUP_SRC_PE3 PM_PIN_PULLUP_10K
-    #define PULL_WAKEUP_SRC_PE5 PM_PIN_PULLUP_10K
-    #define PULL_WAKEUP_SRC_PF4 PM_PIN_PULLUP_10K
+    #define PULL_WAKEUP_SRC_PE3 GPIO_PIN_PULLUP_10K
+    #define PULL_WAKEUP_SRC_PE5 GPIO_PIN_PULLUP_10K
+    #define PULL_WAKEUP_SRC_PF4 GPIO_PIN_PULLUP_10K
 
     #define PE3_INPUT_ENABLE 1
     #define PE5_INPUT_ENABLE 1
@@ -90,30 +90,6 @@
 
 #endif
 
-#ifndef JTAG_DEBUG_DISABLE
-    #define JTAG_DEBUG_DISABLE 1
-#endif
-/**
- *  @brief  GPIO definition for JTAG
- */
-#if (JTAG_DEBUG_DISABLE)
-    //JTAG will cost some power
-    #define PC4_FUNC            AS_GPIO
-    #define PC5_FUNC            AS_GPIO
-    #define PC6_FUNC            AS_GPIO
-    #define PC7_FUNC            AS_GPIO
-
-    #define PC4_INPUT_ENABLE    0
-    #define PC5_INPUT_ENABLE    0
-    #define PC6_INPUT_ENABLE    0
-    #define PC7_INPUT_ENABLE    0
-
-    #define PULL_WAKEUP_SRC_PC4 0
-    #define PULL_WAKEUP_SRC_PC5 0
-    #define PULL_WAKEUP_SRC_PC6 0
-    #define PULL_WAKEUP_SRC_PC7 0
-
-#endif
 
 /**
  *  @brief  Battery_check Configuration
@@ -125,7 +101,8 @@
         /**     The battery voltage sample range is 1.8~3.5V    **/
     #else
         /**     if the battery voltage > 3.6V, should take some external voltage divider    **/
-        #define ADC_INPUT_PIN_CHN ADC_GPIO_PB0
+        #define ADC_INPUT_PIN_CHN_P ADC_GPIO_PB0
+        #define ADC_INPUT_PIN_CHN_N 0
     #endif
 #endif
 

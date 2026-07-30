@@ -55,7 +55,7 @@ void usb0hw_init(usb0_speed_e speed_sel)
     gpio_set_up_down_res(GPIO_PA3, GPIO_PIN_UP_DOWN_FLOAT); /* USB0_DM */
     gpio_set_up_down_res(GPIO_PA4, GPIO_PIN_UP_DOWN_FLOAT); /* USB0_DP */
 
-    pm_set_dig_module_power_switch(FLD_PD_USB_EN, PM_POWER_UP);
+//    pm_set_dig_module_power_switch(FLD_PD_USB_EN, PM_POWER_UP);
     BM_SET(reg_rst0, FLD_RST0_USB);
     BM_SET(reg_clk_en0, FLD_RST0_USB);
 
@@ -85,7 +85,7 @@ void usb0hw_power_down(void)
     usb0hw_phy_pll_dis();
     BM_CLR(reg_clk_en0, FLD_RST0_USB);
     BM_CLR(reg_rst0, FLD_RST0_USB);
-    pm_set_dig_module_power_switch(FLD_PD_USB_EN, PM_POWER_DOWN);
+//    pm_set_dig_module_power_switch(FLD_PD_USB_EN, PM_POWER_DOWN);
 }
 
 /**

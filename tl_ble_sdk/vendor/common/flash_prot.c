@@ -139,6 +139,15 @@ void flash_protection_init(void)
         break;
     #endif
 
+    #if (FLASH_TH25Q32U_SUPPORT_EN)
+    case MID1660CD:
+        flash_lock_mid            = flash_lock_mid1660cd;
+        flash_unlock_mid          = flash_unlock_mid1660cd;
+        flash_get_lock_status_mid = (flash_get_lock_status_t)(size_t)flash_get_lock_block_mid1660cd;
+        flash_unlock_status       = FLASH_LOCK_NONE_MID1660CD;
+        break;
+    #endif
+
     default:
         /*This SDK do not support other flash type except what listed above. If code stop here, please check current Flash */
         tlkapi_send_string_u32s(APP_FLASH_PROT_LOG_EN, "[FLASH][INI] unsupported flash type !!!", blc_flash_mid);
@@ -331,6 +340,27 @@ u16 flash_change_app_lock_block_to_flash_lock_block(flash_app_lock_e app_lock_bl
             tlkapi_printf(APP_FLASH_PROT_LOG_EN, "[FLASH][PROT] flash lock low 1M block!\n");
         } else if (app_lock_block == FLASH_LOCK_ALL_AREA) {
             flash_lock_block_size = FLASH_LOCK_ALL_2M_MID1560C8;
+            tlkapi_printf(APP_FLASH_PROT_LOG_EN, "[FLASH][PROT] flash lock all area!\n");
+        } else {
+            blc_flashProt.init_err = 1;
+        }
+
+        break;
+    #endif
+
+    #if (FLASH_TH25Q32U_SUPPORT_EN) //4M capacity
+    case MID1660CD:
+        if (app_lock_block == FLASH_LOCK_FW_LOW_256K) {
+            flash_lock_block_size = FLASH_LOCK_LOW_256K_MID1660CD;
+            tlkapi_printf(APP_FLASH_PROT_LOG_EN, "[FLASH][PROT] flash lock low 256K block!\n");
+        } else if (app_lock_block == FLASH_LOCK_FW_LOW_512K) {
+            flash_lock_block_size = FLASH_LOCK_LOW_512K_MID1660CD;
+            tlkapi_printf(APP_FLASH_PROT_LOG_EN, "[FLASH][PROT] flash lock low 512K block!\n");
+        } else if (app_lock_block == FLASH_LOCK_FW_LOW_1M) {
+            flash_lock_block_size = FLASH_LOCK_LOW_1M_MID1660CD;
+            tlkapi_printf(APP_FLASH_PROT_LOG_EN, "[FLASH][PROT] flash lock low 1M block!\n");
+        } else if (app_lock_block == FLASH_LOCK_ALL_AREA) {
+            flash_lock_block_size = FLASH_LOCK_ALL_4M_MID1660CD;
             tlkapi_printf(APP_FLASH_PROT_LOG_EN, "[FLASH][PROT] flash lock all area!\n");
         } else {
             blc_flashProt.init_err = 1;

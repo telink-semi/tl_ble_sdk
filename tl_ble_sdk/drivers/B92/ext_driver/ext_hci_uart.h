@@ -102,4 +102,6 @@ unsigned char ext_hci_uartSendData(unsigned char *addr, unsigned int len);
  */
 void ext_hci_uartReceData(unsigned char *addr, unsigned int len);
 
+void ext_hci_uartDisRxIrq(void);
+
 #endif /* DRIVERS_B92_EXT_DRIVER_EXT_HCI_UART_H_ */

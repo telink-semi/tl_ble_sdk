@@ -28,9 +28,10 @@
 
 _attribute_data_retention_sec_  rf_pa_callback_t  blc_rf_pa_cb = 0;
 
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 void app_rf_pa_handler(int type)
 {
+   (void)type;
 #if(PA_ENABLE)
     if(type == PA_TYPE_TX_ON){
         gpio_set_low_level(PA_RXEN_PIN);

@@ -26,32 +26,67 @@
 
 #define SPP_START_HDL SERVICE_TELINK_SPP_HDL
 
+#define SPP_CCC_PROPERTIES_DISABLE      0x00
+#define SPP_CCC_NOTIFY_MASK             0x01
+#define SPP_CCC_INDICATE_MASK           0x02
+#define SPP_CCC_INDICATE_NOTIFY_MASK    0x03
+
+#define SPPS_LOG_EN                     1
+
 static const u8 serviceSppUuid[16] = {TELINK_SPP_UUID_SERVICE};
 
-_attribute_ble_data_retention_ u8  sppInData[100];
+static const u8 sppInUuid[16] = {TELINK_SPP_DATA_CLIENT2SERVER};
+_attribute_ble_data_retention_ u8  sppInData[256];
 _attribute_ble_data_retention_ u16 sppInDataLen = 0;
 
-static const u8 sppInUuid[16] = {TELINK_SPP_DATA_CLIENT2SERVER};
-
-_attribute_ble_data_retention_ u8  sppOutData[256];
-_attribute_ble_data_retention_ u16 sppOutDataLen = 0;
+static const u8 sppOutUuid[16] = {TELINK_SPP_DATA_SERVER2CLIENT};
+_attribute_ble_data_retention_ u16 sppOutProperties = SPP_CCC_PROPERTIES_DISABLE;
 
 static const atts_attribute_t sppList[] =
-    {
+{
         ATTS_PRIMARY_SERVICE_128(serviceSppUuid),
-        ATTS_CHARACTERISTIC_DECLARATIONS(charPropReadWriteWithoutNotify),
-        {ATT_PERMISSIONS_RDWR, ATT_128_UUID_LEN, (u8 *)(size_t)&sppInUuid[0], (u16 *)(size_t)&sppOutData, sizeof(sppOutData), (u8 *)(size_t)&sppOutData, ATTS_SET_WRITE_CBACK},
-        ATTS_COMMON_CCC_DEFINE,
+
+        ATTS_CHARACTERISTIC_DECLARATIONS(charPropReadWriteWriteWithout),
+        {ATT_PERMISSIONS_RDWR, ATT_128_UUID_LEN, (u8 *)(size_t)&sppInUuid[0], (u16 *)(size_t)&sppInData, sizeof(sppInData), (u8 *)(size_t)&sppInData, ATTS_SET_WRITE_CBACK},
+
+        ATTS_CHARACTERISTIC_DECLARATIONS(charPropNotifyIndicate),
+        {0, ATT_128_UUID_LEN, (u8 *)(size_t)sppOutUuid, NULL, 0, NULL, 0 },
+        {ATT_PERMISSIONS_WRITE, ATT_16_UUID_LEN, (u8 *)(size_t)descriptorClientCharacteristicConfigurationUuid, (u16 *)(size_t) & clientCharacteristicConfigurationLen, 0, (u8 *)NULL, ATTS_SET_WRITE_CBACK},
 };
+
+ble_sts_t blc_spp_pushHandleValue(u16 connHandle, u8 *p, int len){
+    if (sppOutProperties & SPP_CCC_NOTIFY_MASK) {
+        return blc_gatt_pushHandleValueNotify(connHandle, SPP_START_HDL + 4, p, len);
+    } else if (sppOutProperties & SPP_CCC_INDICATE_MASK) {
+        return blc_gatt_pushHandleValueIndicate(connHandle, SPP_START_HDL + 4, p, len);
+    } else {
+        tlkapi_printf(SPPS_LOG_EN, "Notify and indicate disabled!");
+        return PRF_ERR_INVALID_PARAMETER;
+    }
+}
 
 int telinkSppWrite(u16 connHandle, u8 opcode, u16 attrHandle, u8 *writeValue, u16 valueLen)
 {
-    (void)connHandle;
     (void)opcode;
-    (void)attrHandle;
+    if (attrHandle == SPP_START_HDL + 2) {
+        // sppInData
+        sppInDataLen = valueLen > sizeof(sppInData) ? sizeof(sppInData) : valueLen;
+        memcpy(sppInData, writeValue, sppInDataLen);
+        tlkapi_send_string_data(SPPS_LOG_EN, "[PRF][SPPS]Receive from client", writeValue, valueLen);
+        // send back
+        blc_spp_pushHandleValue(connHandle, writeValue, valueLen);
+    } else if (attrHandle == SPP_START_HDL + 5) {
+        // sppOut CCC
+        sppOutProperties = (*(u16 *) writeValue) & SPP_CCC_INDICATE_NOTIFY_MASK;
+        if (sppOutProperties == SPP_CCC_PROPERTIES_DISABLE) {
+            tlkapi_printf(SPPS_LOG_EN, "Client disabled notify and indicate\r\n");
+        } else if (sppOutProperties & SPP_CCC_NOTIFY_MASK) {
+            tlkapi_printf(SPPS_LOG_EN, "Client enabled notify\r\n");
+        } else if (sppOutProperties & SPP_CCC_INDICATE_MASK) {
+            tlkapi_printf(SPPS_LOG_EN, "Client enabled indicate\r\n");
+        }
+    }
 
-    memcpy(sppOutData, writeValue, valueLen);
-    sppOutDataLen = valueLen;
     return 0;
 }
 

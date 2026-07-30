@@ -30,7 +30,7 @@
  */
 #if (UI_KEYBOARD_ENABLE)
     #define MATRIX_ROW_PULL    PM_PIN_PULLDOWN_100K
-    #define MATRIX_COL_PULL    PM_PIN_PULLUP_10K
+    #define MATRIX_COL_PULL    GPIO_PIN_PULLUP_10K
 
     #define KB_LINE_HIGH_VALID 0 //drive pin output 0 when scan key, scan pin read 0 is valid
 
@@ -104,30 +104,6 @@
 
 #endif
 
-#ifndef JTAG_DEBUG_DISABLE
-    #define JTAG_DEBUG_DISABLE 1
-#endif
-/**
- *  @brief  GPIO definition for JTAG
- */
-#if (JTAG_DEBUG_DISABLE)
-    //JTAG will cost some power
-    #define PC4_FUNC            AS_GPIO
-    #define PC5_FUNC            AS_GPIO
-    #define PC6_FUNC            AS_GPIO
-    #define PC7_FUNC            AS_GPIO
-
-    #define PC4_INPUT_ENABLE    0
-    #define PC5_INPUT_ENABLE    0
-    #define PC6_INPUT_ENABLE    0
-    #define PC7_INPUT_ENABLE    0
-
-    #define PULL_WAKEUP_SRC_PC4 0
-    #define PULL_WAKEUP_SRC_PC5 0
-    #define PULL_WAKEUP_SRC_PC6 0
-    #define PULL_WAKEUP_SRC_PC7 0
-
-#endif
 
 /**
  *  @brief  Battery_check Configuration
@@ -139,7 +115,8 @@
         /**     The battery voltage sample range is 1.8~3.5V    **/
     #else
         /**     if the battery voltage > 3.6V, should take some external voltage divider    **/
-        #define ADC_INPUT_PIN_CHN ADC_GPIO_PB0
+        #define ADC_INPUT_PIN_CHN_P ADC_GPIO_PB0
+        #define ADC_INPUT_PIN_CHN_N 0
     #endif
 #endif
 

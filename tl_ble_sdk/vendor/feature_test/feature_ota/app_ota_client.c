@@ -263,7 +263,7 @@ void app_proc_ota_update(void)
             app_updateOtaFlow(OTA_STEP_4_WAIT_OTA_HANDLE);
         }
     } else if (blotaClt.ota_update_flow == OTA_STEP_5_REQ_FW_VERSION) {
-            /* OTA_STEP_5_REQ_FW_VERSION & OTA_STEP_6_WAIT_FW_VERSION are optional
+        /* OTA_STEP_5_REQ_FW_VERSION & OTA_STEP_6_WAIT_FW_VERSION are optional
          * if do not need this function, jump to OTA_STEP_7_OTA_START directly
          *  */
         #if (OTA_FW_VERSION_EXCHANGE_ENABLE)
@@ -323,7 +323,8 @@ void app_proc_ota_update(void)
 
             blotaClt.ota_start_tick = clock_time() | 1;
         }
-    } else if (blotaClt.ota_update_flow == OTA_STEP_8_OTA_SIGNATURE) { //send OTA data form address 0 ~ firmware_size
+    } else if (blotaClt.ota_update_flow == OTA_STEP_8_OTA_SIGNATURE) //send OTA data form address 0 ~ firmware_size
+    {
         #if (OTA_CLIENT_SEND_SECURE_BOOT_SIGNATURE_ENABLE)
         /* delay some time after OTA start send, maybe peer device will send some error back */
         if (!clock_time_exceed(blotaClt.ota_start_tick, 50000)) { //50mS
@@ -369,7 +370,8 @@ void app_proc_ota_update(void)
             tlkapi_send_string_u32s(APP_OTA_CLIENT_LOG_EN, "[APP][OTA] push err", ret_status, blotaClt.ota_connHandle, blotaClt.ota_attHandle, 0);
         }
         #endif
-    } else if (blotaClt.ota_update_flow == OTA_STEP_9_OTA_DATA) { //send OTA data form address 0 ~ firmware_size
+    } else if (blotaClt.ota_update_flow == OTA_STEP_9_OTA_DATA) //send OTA data form address 0 ~ firmware_size
+    {
         /* delay some time after OTA start send, maybe peer device will send some error back */
         if (!clock_time_exceed(blotaClt.ota_start_tick, 50000)) { //50mS
             return;
@@ -390,10 +392,10 @@ void app_proc_ota_update(void)
         }
 
         #if 0 //special test mode
-        if (blotaClt.cur_adr_index >= 2) {
-            sleep_ms(3000); //trigger OTA process timeout
-            sleep_ms(6000); //trigger OTA  data packet timeout
-        }
+                if(blotaClt.cur_adr_index >= 2){
+                    sleep_ms(3000); //trigger OTA process timeout
+                    sleep_ms(6000); //trigger OTA  data packet timeout
+                }
         #endif
 
         ota_pdu_t *pPdu = (ota_pdu_t *)ota_buffer;
@@ -433,15 +435,15 @@ void app_proc_ota_update(void)
 
 
         #if 0 //special test mode: trigger OTA data PDU length error
-            if (blotaClt.cur_adr_index == 3) {
-                actual_pdu_len -= 1;
-            }
+                if(blotaClt.cur_adr_index == 3){
+                    actual_pdu_len -= 1;
+                }
         #endif
 
             DBG_CHN8_TOGGLE;
             u8 ret_status = blc_gatt_pushWriteCommand(blotaClt.ota_connHandle, blotaClt.ota_attHandle, ota_buffer, 4 + actual_pdu_len);
             if (ret_status == BLE_SUCCESS) {
-                // tlkapi_send_string_u32s(APP_OTA_CLIENT_LOG_EN, "[APP][OTA] ota data", pPdu->adr_index, 0, 0, 0);
+                //                  tlkapi_send_string_u32s(APP_OTA_CLIENT_LOG_EN, "[APP][OTA] ota data", pPdu->adr_index, 0, 0, 0);
                 DBG_CHN9_TOGGLE;
                 blotaClt.cur_adr_index++;
             } else {

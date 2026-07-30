@@ -43,14 +43,20 @@
     #define APP_DEFAULT_BUFFER_ACL_OCTETS_MTU_SIZE_MINIMUM 1
     #define APP_DEFAULT_HID_BATTERY_OTA_ATTRIBUTE_TABLE    1
 
+    #if MCU_CORE_TYPE == MCU_CORE_TL322X
+        #define PLIC_ENABLE           1
+        #define CLIC_ENABLE           0
+        #define HOST_V2_ENABLE        0
+    #endif
+
     ///////////////////////// UI Configuration ////////////////////////////////////////////////////
     #define UI_LED_ENABLE      1
     #define UI_KEYBOARD_ENABLE 1
 
     ///////////////////PHYTEST CONFIGURATION//////////////////////////////////////////////////////
     /**
-    *  @brief  Choose phytest mode
-    */
+ *  @brief  Choose phytest mode
+ */
     #define PHYTEST_MODE_THROUGH_2_WIRE_UART 1 //Direct Test Mode through a 2-wire UART interface
     #define PHYTEST_MODE_OVER_HCI_WITH_UART  2 //Direct Test Mode over HCI(UART hardware interface)
 
@@ -79,10 +85,14 @@
         #define UART_TX_PIN GPIO_PD7
         #define UART_RX_PIN GPIO_PD6
         #define BAUDRATE    115200
+    #elif (MCU_CORE_TYPE == MCU_CORE_TL521X)
+        #define UART_TX_PIN GPIO_PC4
+        #define UART_RX_PIN GPIO_PC5
+        #define BAUDRATE    115200
     #endif
     /**
-    *  @brief phytest buffer related setting.
-    */
+ *  @brief phytest buffer related setting.
+ */
     #define UART_TX_BUFFER_NUM  4
     #define UART_TX_BUFFER_SIZE 300
     #define UART_RX_BUFFER_NUM  4
@@ -103,7 +113,7 @@
     #define APP_PAIR_LOG_EN       1
     #define APP_KEY_LOG_EN        1
 
-    #define JTAG_DEBUG_DISABLE    1 //if use JTAG, change this
+       
 
 
     #include "../../common/default_config.h"

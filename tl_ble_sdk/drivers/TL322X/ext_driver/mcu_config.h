@@ -35,7 +35,7 @@
 /**
  * @brief   Public Device Address Company ID for this chip
  */
-#define PDA_COMPANY_ID                                          0x3CCFB4    //todo
+#define PDA_COMPANY_ID                                          0xBC9D37    //todo
 
 
 

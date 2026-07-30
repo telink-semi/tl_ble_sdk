@@ -60,11 +60,8 @@
 #define SRAM_384K      0 //256K SRAM, all-Retention
 #define SRAM_256K      1 //384K SRAM, all-Retention
 
-#if (__PROJECT_SNIF_SUB_NODE__) || (__PROJECT_SNIF_FOB_NODE__)
-    #define SRAM_SIZE  SRAM_256K
-#else
-    #define SRAM_SIZE  SRAM_384K
-#endif
+#define SRAM_SIZE  SRAM_384K
+
 
 #if (SRAM_SIZE == SRAM_256K)
     #ifdef MCU_CORE_D25F_ENABLE
@@ -106,11 +103,6 @@
         .equ __D25F_DRAM_SIZE,   2 //64KB
         .equ __N22_IRAM_SIZE,    5 //160KB
         .equ __N22_DRAM_SIZE,    2 //64KB
-    #elif __PROJECT_SNIF_MAIN_NODE__ || defined(__CHANNEL_SOUNDING_EN__)
-        .equ __D25F_IRAM_SIZE,   7 //224KB
-        .equ __D25F_DRAM_SIZE,   5 //160KB
-        .equ __N22_IRAM_SIZE,    0
-        .equ __N22_DRAM_SIZE,    0
     #elif !defined(TLK_ONLY_BLE_HOST)
         .equ __D25F_IRAM_SIZE,   7 //128KB
         .equ __D25F_DRAM_SIZE,   5 //96KBd

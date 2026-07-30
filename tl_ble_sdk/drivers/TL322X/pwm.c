@@ -22,6 +22,8 @@
  *
  *******************************************************************************************************/
 #include "pwm.h"
+
+
 #define PWM_MAX_NUM 23
 
 
@@ -40,6 +42,23 @@ dma_config_t pwm_tx_dma_config = {
     .write_num_en   = 0,
     .auto_en        = 0,
 };
+
+pem_event_config_t pwm_pem_event_config={
+            .module         = PEM_EVENT_PWM,
+            .sig_sel        = 0,
+            .clk_sel        = PCLK,
+            .lvl            = PULSE,
+            .edge_detect    = 0,
+            .inv            = 0,
+};
+
+pem_task_config_t pwm_pem_task_config={
+            .module         = PEM_TASK_PWM,
+            .sig_sel        = 0,
+            .clk_sel        = PCLK,
+            .lvl            = PULSE,
+};
+
 
 /**
  * @brief      This function serves to set the pwm function.
@@ -270,5 +289,40 @@ void pwm_clr_irq_status(pwm_id_e id, pwm_irq_type_e type)
             reg_pwm_irq_sta = valid_mask;
         }
     }
+}
+
+/**
+ * @brief      This function serves to configure the PWM PEM event.
+ * @param[in]  chn - to select the PEM channel.
+ * @param[in]  pin - the PWM event signal selection.
+ * @return     none.
+ */
+void pwm_set_pem_event(pem_chn_e chn, pwm_event_e event_signal)
+{
+    unsigned char pwm_sel = event_signal>>8;
+    unsigned char pwm_signal = event_signal&0x00ff;
+
+    reg_pwm_ctrl_b3 = (reg_pwm_ctrl_b3&0xf8)|(FLD_PWM_PEM_EVENT_EN|pwm_sel);
+
+    pwm_pem_event_config.sig_sel = pwm_signal;
+    pem_event_config(chn, pwm_pem_event_config);
+}
+
+/**
+ * @brief      This function serves to configure the PWM PEM task.
+ * @param[in]  chn - to select the PEM channel.
+ * @param[in]  pin - the PWM task signal selection.
+ * @return     none.
+ */
+void pwm_set_pem_task(pem_chn_e chn, pwm_task_e task_signal)
+{
+    unsigned char pwm_sel = task_signal>>8;
+    unsigned char pwm_signal = task_signal&0x00ff;
+
+    reg_pwm_ctrl_b3 = (reg_pwm_ctrl_b3&0xf7)|(pwm_sel<<3);
+    reg_pwm_task_en |= (1<<pwm_signal);
+
+    pwm_pem_task_config.sig_sel = pwm_signal;
+    pem_task_config(chn, pwm_pem_task_config);
 }
 

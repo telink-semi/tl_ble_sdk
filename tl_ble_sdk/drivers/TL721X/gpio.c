@@ -42,6 +42,28 @@
  *                                              global variable                                                       *
  *********************************************************************************************************************/
 
+/**
+ * @brief      This setting serves to set the configuration of stimer PEM event.
+ */
+pem_event_config_t gpio_pem_event_config = {
+    .module      = PEM_EVENT_GPIO,
+    .sig_sel     = 0,
+    .clk_sel     = ASYNC_CLK,
+    .lvl         = LEVEL,
+    .edge_detect = 0,
+    .inv         = 0,
+};
+
+/**
+ * @brief      This setting serves to set the configuration of stimer PEM task.
+ */
+pem_task_config_t gpio_pem_task_config = {
+    .module  = PEM_TASK_GPIO,
+    .sig_sel = 0,
+    .clk_sel = PCLK,
+    .lvl     = PULSE,
+};
+
 /**********************************************************************************************************************
  *                                              local variable                                                     *
  *********************************************************************************************************************/
@@ -166,6 +188,9 @@ void gpio_ds_dis(gpio_pin_e pin)
  * @param[in]  pin  - select the specified GPIO.
  * @return     none.
  */
+#ifdef BLC_ZEPHYR_BLE_INTEGRATION
+    _attribute_ram_code_sec_noinline_ /* ble used */
+#endif
 void gpio_shutdown(gpio_pin_e pin)
 {
     unsigned short group = pin & 0xf00;
@@ -248,8 +273,11 @@ void gpio_shutdown(gpio_pin_e pin)
 void gpio_set_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_type)
 {
     /*
-        When selecting pull-up resistance and rising edge to trigger gpio interrupt, gpio_irq_en should be placed before setting gpio_set_irq,
-        otherwise an interrupt will be triggered by mistake.
+     * Incorrect sequence during GPIO interrupt configuration often leads to spurious interrupts. 
+     * The configuration must strictly follow the following sequence (jira DRIV-4162):
+     * Enable irq first (before setting Polarity)  
+     * Set irq config
+     * Finally, clear the interrupt status flag 
      */
     gpio_irq_en(pin);
     switch (trigger_type) {
@@ -284,9 +312,12 @@ void gpio_set_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_type)
 void gpio_set_gpio2risc0_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_type)
 {
     /*
-       When selecting pull-up resistance and rising edge to trigger gpio interrupt, gpio_gpio2risc0_irq_en should be placed before setting gpio_set_gpio2risc0_irq,
-       otherwise an interrupt will be triggered by mistake.
-    */
+     * Incorrect sequence during GPIO interrupt configuration often leads to spurious interrupts. 
+     * The configuration must strictly follow the following sequence (jira DRIV-4162):
+     * Enable irq first (before setting Polarity)  
+     * Set irq config
+     * Finally, clear the interrupt status flag 
+     */
     gpio_gpio2risc0_irq_en(pin);
     switch (trigger_type) {
     case INTR_RISING_EDGE:
@@ -319,9 +350,12 @@ void gpio_set_gpio2risc0_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_typ
 void gpio_set_gpio2risc1_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_type)
 {
     /*
-       When selecting pull-up resistance and rising edge to trigger gpio interrupt, gpio_gpio2risc1_irq_en should be placed before setting gpio_set_gpio2risc1_irq,
-       otherwise an interrupt will be triggered by mistake.
-    */
+     * Incorrect sequence during GPIO interrupt configuration often leads to spurious interrupts. 
+     * The configuration must strictly follow the following sequence (jira DRIV-4162):
+     * Enable irq first (before setting Polarity)  
+     * Set irq config
+     * Finally, clear the interrupt status flag 
+     */
     gpio_gpio2risc1_irq_en(pin);
     switch (trigger_type) {
     case INTR_RISING_EDGE:
@@ -358,6 +392,13 @@ void gpio_set_gpio2risc1_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_typ
  */
 void gpio_set_src_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_type)
 {
+    /*
+     * Incorrect sequence during GPIO interrupt configuration often leads to spurious interrupts. 
+     * The configuration must strictly follow the following sequence (jira DRIV-4162):
+     * Enable irq first (before setting Polarity)  
+     * Set irq config
+     * Finally, clear the interrupt status flag 
+     */
     unsigned char bit = pin & 0xff;
     switch (trigger_type) {
     case INTR_RISING_EDGE:
@@ -387,7 +428,7 @@ void gpio_set_src_irq(gpio_pin_e pin, gpio_irq_trigger_type_e trigger_type)
  * @param[in] up_down_res - the type of the pull-up/down resistor.
  * @return    none.
  */
-_attribute_ram_code_  //BLE SDK use
+_attribute_ram_code_sec_noinline_  //BLE SDK use
 void gpio_set_up_down_res(gpio_pin_e pin, gpio_pull_type_e up_down_res)
 {
     ///////////////////////////////////////////////////////////
@@ -475,6 +516,47 @@ void gpio_set_probe_clk_function(gpio_func_pin_e pin, probe_clk_sel_e sel_clk)
     reg_probe_clk_sel = (reg_probe_clk_sel & 0xe0) | sel_clk; //probe_clk_sel_e
     gpio_set_mux_function(pin, DBG_PROBE_CLK);                //sel probe_clk function
     gpio_function_dis((gpio_pin_e)pin);
+}
+
+/**
+ * @brief      This function serves to configure the GPIO PEM event.
+ * @param[in]  chn - to select the PEM channel.
+ * @param[in]  pin - the GPIO event signal selection.
+ * @param[in]  pol - the GPIO event signal edge selection
+ * @return     none.
+ */
+void gpio_set_pem_event(pem_chn_e chn, gpio_event_e pin, pem_event_pol_e pol)
+{
+    unsigned char group = (pin & 0xf00) >> 8;
+    unsigned char bit   = pin & 0xff;
+
+    reg_gpio_irq_sel |= FLD_GPIO_PEM_EVENT_EN;
+
+    reg_gpio_pem_ctrl1 = (reg_gpio_pem_ctrl1&0xf0)|group;
+
+    gpio_pem_event_config.sig_sel = bit;
+    gpio_pem_event_config.edge_detect = pol&0x01;
+    gpio_pem_event_config.inv = (pol&0x04)>>2;
+    pem_event_config(chn, gpio_pem_event_config);
+}
+
+/**
+ * @brief      This function serves to configure the GPIO PEM task.
+ * @param[in]  chn - to select the PEM channel.
+ * @param[in]  pin - the GPIO task signal selection.
+ * @return     none.
+ */
+void gpio_set_pem_task(pem_chn_e chn, gpio_task_e pin)
+{
+    unsigned short group = (pin & 0xf00) >> 8;
+    unsigned char  bit   = pin & 0xff;
+
+    reg_gpio_pem_ctrl0 |= (1 << bit);
+
+    reg_gpio_pem_ctrl1 = (reg_gpio_pem_ctrl1&0x0f)|(group << 4);
+
+    gpio_pem_task_config.sig_sel = bit;
+    pem_task_config(chn, gpio_pem_task_config);
 }
 
 /**

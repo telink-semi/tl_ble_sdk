@@ -29,14 +29,6 @@
     #define BATT_CHECK_ENABLE 0
 #endif
 
-#if (MCU_CORE_TYPE == MCU_CORE_TL322X) || (MCU_CORE_TYPE == MCU_CORE_TL323X)
-    #define SD_ADC_GPIO_MODE    1
-    #define SD_ADC_VBAT_MODE    2
-    #define SD_ADC_TEMP_MODE    3
-
-    #define SD_ADC_MODE         SD_ADC_GPIO_MODE
-    #define SD_ADC_SAMPLE_CNT   16
-#endif
 
 #if (MCU_CORE_TYPE != MCU_CORE_TL323X)
 #define BAT_DEEP_THRESHOLD_MV    2000 // 2000 mV low battery alarm

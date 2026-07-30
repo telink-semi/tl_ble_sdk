@@ -48,7 +48,7 @@
  * 
  * | Power Supply Mode | Power Source                          | Output Power Characteristics                                                                 | Advantage                                  |
  * |-------------------|---------------------------------------|------------------------------------------------------------------------------------------------|-------------------------------------------|
- * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT 鈫?higher available power)          | Simple power path, suitable for high-power scenarios |
+ * | VBAT mode         | Directly powered by VBAT              | Maximum output power varies with VBAT voltage (higher VBAT → higher available power)          | Simple power path, suitable for high-power scenarios |
  * | VANT mode         | Powered by embedded DCDC + LDO        | Output power is stable (independent of VBAT voltage)                                          | Lower power consumption at the same transmit power |
  * 
  * @subsection rf_power_table TX Power Table (Driver-Provided)

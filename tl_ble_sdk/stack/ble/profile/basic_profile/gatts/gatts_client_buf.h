@@ -4,9 +4,9 @@
  * @brief   This is the header file for BLE SDK
  *
  * @author  BLE GROUP
- * @date    06,2022
+ * @date    04,2024
  *
- * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2024, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -42,8 +42,10 @@ typedef struct __attribute__((packed))  {
     prf_read_cb_t databaseHashReadCb;
 } blc_gatts_client_t;
 
+
 typedef struct __attribute__((packed))  blc_gatts_client_ctrl{
     blc_prf_proc_t process;
+
     blc_gatts_client_t* pGattsClient[STACK_PRF_ACL_CONN_MAX_NUM];
 } blc_gatts_client_ctrl_t;
 

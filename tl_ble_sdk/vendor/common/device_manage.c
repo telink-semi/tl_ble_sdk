@@ -138,6 +138,7 @@ int dev_char_info_insert_by_conn_event(hci_le_connectionCompleteEvt_t *pConnEvt)
         conn_dev_list[index].conn_handle  = pConnEvt->connHandle;
         conn_dev_list[index].conn_role    = pConnEvt->role;
         conn_dev_list[index].conn_state   = 1;
+        conn_dev_list[index].advHandle    = 0xFF;
         conn_dev_list[index].peer_adrType = pConnEvt->peerAddrType;
         memcpy(conn_dev_list[index].peer_addr, pConnEvt->peerAddr, 6);
     }
@@ -178,11 +179,34 @@ int dev_char_info_insert_by_enhanced_conn_event(hci_le_enhancedConnCompleteEvt_t
         conn_dev_list[index].conn_handle  = pConnEvt->connHandle;
         conn_dev_list[index].conn_role    = pConnEvt->role;
         conn_dev_list[index].conn_state   = 1;
+        conn_dev_list[index].advHandle    = 0xFF;
         conn_dev_list[index].peer_adrType = pConnEvt->PeerAddrType;
         memcpy(conn_dev_list[index].peer_addr, pConnEvt->PeerAddr, 6);
     }
 
     return index;
+}
+
+/**
+ * @brief       Used for update advHandle in conn_dev_list by LE Advertising Set Terminated event.
+ * @param[in]   pEvt - LE Advertising Set Terminated event data buffer address.
+ * @return      0: update success
+ *              1: no find matching connHandle
+ */
+int dev_char_info_insert_by_adv_terminated_event(hci_le_advSetTerminatedEvt_t *pEvt)
+{
+    if (pEvt->status != 0) {
+        return 1;
+    }
+
+    foreach (i, DEVICE_CHAR_INFO_MAX_NUM) {
+        if (conn_dev_list[i].conn_handle == pEvt->connHandle && conn_dev_list[i].conn_state) {
+            conn_dev_list[i].advHandle = pEvt->advHandle;
+            return 0;
+        }
+    }
+
+    return 1;
 }
 
 /**
@@ -344,4 +368,38 @@ int dev_char_get_conn_index_by_connhandle(u16 connhandle)
     }
 
     return INVALID_CONN_IDX; //no connection index match
+}
+
+/**
+ * @brief       Get advHandle by connection handle.
+ * @param[in]   connhandle       - connection handle.
+ * @return      advHandle value: 0x00 ~ 0xEF
+ *              0xFF: connection handle invalid
+ */
+int dev_char_get_adv_handle_by_connhandle(u16 connhandle)
+{
+    foreach (i, DEVICE_CHAR_INFO_MAX_NUM) {
+        if (conn_dev_list[i].conn_handle == connhandle && conn_dev_list[i].conn_state) {
+            return conn_dev_list[i].advHandle;
+        }
+    }
+
+    return 0xFF; //no connection match
+}
+
+/**
+ * @brief       Get connection handle by advHandle.
+ * @param[in]   advHandle       - advertising handle.
+ * @return      connHandle value
+ *              0xFFFF: advHandle invalid
+ */
+int dev_char_get_conn_handle_by_adv_handle(u8 advHandle)
+{
+    foreach (i, DEVICE_CHAR_INFO_MAX_NUM) {
+        if (conn_dev_list[i].advHandle == advHandle && conn_dev_list[i].conn_state) {
+            return conn_dev_list[i].conn_handle;
+        }
+    }
+
+    return 0xFFFF; //no advHandle match
 }

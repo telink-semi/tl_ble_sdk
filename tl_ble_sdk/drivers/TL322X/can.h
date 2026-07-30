@@ -1033,6 +1033,7 @@ static inline void can_exit_freeze_mode(can_chn_e chn){
  *  @return     none
  */
 static inline void can_loop_back_enable(can_chn_e chn){
+    reg_can_etdc_3(chn) &= ~FLD_CAN_ETDCEN;
     reg_can_ctrl1_1(chn) |= FLD_CAN_LPB;
 }
 

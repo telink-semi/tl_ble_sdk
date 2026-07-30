@@ -320,11 +320,11 @@ enum
 
 typedef enum
 {
-    FLD_PEM_EVENT1_SEL = BIT(0), /**<pem sub sel.*/
-    FLD_PEM_EVENT1_EN  = BIT(1),
-    FLD_PEM_EVENT0_EN  = BIT(2),
-    FLD_PEM_TASK1_EN   = BIT(3),
-    FLD_PEM_TASK0_EN   = BIT(4),
+    FLD_PWM_PEM_EVENT1_SEL = BIT(0), /**<pem sub sel.*/
+    FLD_PWM_PEM_EVENT1_EN  = BIT(1),
+    FLD_PWM_PEM_EVENT0_EN  = BIT(2),
+    FLD_PWM_PEM_TASK1_EN   = BIT(3),
+    FLD_PWM_PEM_TASK0_EN   = BIT(4),
 } pwm_pem_ctrl_e;
 
 /**

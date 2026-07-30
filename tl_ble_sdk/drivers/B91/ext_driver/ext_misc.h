@@ -42,16 +42,7 @@
 #include "../compatibility_pack/cmpt.h"
 
 
-/******************************* dbgErrorCode start ******************************************************************/
-/* SRAM 0x00014 ~ 0x0001F can be used to write some debug information */
 
-#define DBG_SRAM_ADDR                   0x00014
-
-#define write_log32(err_code)           write_sram32(DBG_SRAM_ADDR, err_code)
-
-/*addr - only 0x00014/0x00018/0x0001C can be used !!! */
-#define write_dbg32(addr, value)        write_sram32(addr, value)
-/******************************* dbgErrorCode end ********************************************************************/
 
 
 #define HW_AES_CCM_ALG_EN                                       0
@@ -105,23 +96,6 @@ static inline void gpio_read_all(unsigned char *p)
     p[4] = REG_ADDR8(0x140320);
 }
 
-/**
- *  @brief  Define pull up or down types
- */
-typedef enum {
-    PM_PIN_UP_DOWN_FLOAT    = 0,
-    PM_PIN_PULLUP_1M        = 1,
-    PM_PIN_PULLDOWN_100K    = 2,
-    PM_PIN_PULLUP_10K       = 3,
-}gpio_pull_type;
-
-/**
- * @brief     This function set a pin's pull-up/down resistor.
- * @param[in] gpio - the pin needs to set its pull-up/down resistor
- * @param[in] up_down - the type of the pull-up/down resistor
- * @return    none
- */
-void gpio_setup_up_down_resistor(gpio_pin_e gpio, gpio_pull_type up_down);
 /******************************* gpio end ********************************************************************/
 
 

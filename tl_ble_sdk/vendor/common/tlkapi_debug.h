@@ -33,6 +33,15 @@
     #define TLKAPI_DEBUG_ENABLE 0
 #endif
 
+/**
+ * @brief   Telink debug log force flush enable or disable
+ *          When enabled, call tlkapi_debug_handler immediately after log buffer write.
+ *          Mitigate log data loss caused by continuous buffer enqueue without timely handler execution.
+ *          user can set it in app_config.h, default disable if user not set it
+ */
+#ifndef TLKAPI_DEBUG_FORCE_FLUSH_ENABLE
+    #define TLKAPI_DEBUG_FORCE_FLUSH_ENABLE 0
+#endif
 
 /**
  * @brief   Telink debug log channel select
@@ -42,7 +51,11 @@
 #define TLKAPI_DEBUG_CHANNEL_GSUART 2 //GPIO simulate UART
 #define TLKAPI_DEBUG_CHANNEL_UART   3 //hardware UART
 
-/* if user enable debug log but not select log channel, will use "GPIO simulate UART" as default */
+/**
+ * @brief   Default debug log channel selection
+ * @note    Automatically uses GPIO-simulated UART if no channel is explicitly defined
+ * @note    Override in app_config.h using #define TLKAPI_DEBUG_CHANNEL <channel_type>
+ */
 #ifndef TLKAPI_DEBUG_CHANNEL
     #define TLKAPI_DEBUG_CHANNEL TLKAPI_DEBUG_CHANNEL_GSUART
 #endif
@@ -50,14 +63,17 @@
 
 #if (TLKAPI_DEBUG_CHANNEL == TLKAPI_DEBUG_CHANNEL_GSUART)
     /**
-     * @brief   some default setting for "GPIO simulate UART" log channel
-     */
-    /* default GPIO, user can change it in app_config.h */
+    * @brief   Telink debug log channel configuration for GPIO-simulated UART
+    * @note    Override these default settings in app_config.h
+    */
     #ifndef TLKAPI_DEBUG_GPIO_PIN
         #define TLKAPI_DEBUG_GPIO_PIN GPIO_PD4
     #endif
 
-    /* default UART baudrate, user can change it in app_config.h */
+    /**
+    * @brief   Default baud rate for simulated UART (1M recommended)
+    *  Override these default settings in app_config.h
+    */
     #ifndef TLKAPI_DEBUG_GSUART_BAUDRATE
         #define TLKAPI_DEBUG_GSUART_BAUDRATE 1000000
     #endif
@@ -65,7 +81,7 @@
     /**
      * @brief   Compilation constraint for minimum baud rate
      * @note    Compilation will fail if baud rate is set below 200K.
-     *          This is due to scheduler's maximum interrupt disable time (50μs).
+     *          This is due to scheduler's maximum interrupt disable time (50us).
      */
     #if TLKAPI_DEBUG_GSUART_BAUDRATE < 200000
         #error "Baud rate must be at least 200K."
@@ -181,11 +197,14 @@ void tlkapi_send_str_u32s(char *str, int size, ...);
  * @param[in]   len - length of data
  * @return      1: send to FIFO success; 0: send to FIFO fail
  */
+#ifndef BLC_ZEPHYR_BLE_INTEGRATION
 #define tlkapi_send_string_data(en, str, pData, len)        \
     if (en) {                                               \
         tlkapi_send_str_data(str, (u8 *)(u32)(pData), len); \
     }
-
+#else
+#define tlkapi_send_string_data(en, str, pData, len)
+#endif
 
 /**
  * @brief       Send debug log to log FIFO, character string and data mixed mode, with variable length data, data in "unsigned int" format
@@ -196,11 +215,14 @@ void tlkapi_send_str_u32s(char *str, int size, ...);
  * @param[in]   data_len - length of data
  * @return      1: send to FIFO success; 0: send to FIFO fail
  */
+#ifndef BLC_ZEPHYR_BLE_INTEGRATION
 #define tlkapi_send_string_u32s(en, str, ...)                              \
     if (en) {                                                              \
         tlkapi_send_str_u32s(str, COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__); \
     }
-
+#else
+#define tlkapi_send_string_u32s(en, str, ...)
+#endif
 
 /**
  * @brief       Send debug log to log FIFO, character string and data mixed mode, with variable length data, data in "unsigned char" format
@@ -211,11 +233,14 @@ void tlkapi_send_str_u32s(char *str, int size, ...);
  * @param[in]   data_len - length of data
  * @return      1: send to FIFO success; 0: send to FIFO fail
  */
+#ifndef BLC_ZEPHYR_BLE_INTEGRATION
 #define tlkapi_send_string_u8s(en, str, ...)                              \
     if (en) {                                                             \
         tlkapi_send_str_u8s(str, COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__); \
     }
-
+#else
+#define tlkapi_send_string_u8s(en, str, ...)
+#endif
 
 /**
  * @brief       Send debug log to log FIFO, string only mode
@@ -232,11 +257,14 @@ int tlk_printf(const char *fmt, ...);
  * @param[in]   fmt - please refer to standard C function "printf"
  * @return      none
  */
+#ifndef BLC_ZEPHYR_BLE_INTEGRATION
 #define tlkapi_printf(en, fmt, ...)     \
     if (en) {                           \
         tlk_printf(fmt, ##__VA_ARGS__); \
     }
-
+#else
+#define tlkapi_printf(en, fmt, ...)
+#endif
 
 /* remove later */
 #ifndef APP_LOG_EN

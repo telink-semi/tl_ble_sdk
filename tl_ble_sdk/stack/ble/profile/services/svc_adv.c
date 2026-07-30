@@ -23,8 +23,10 @@
  *******************************************************************************************************/
 #include "common/utility.h"
 
+
 #include "svc_adv.h"
 #include <string.h>
+
 #include "stack/ble/ble_format.h"
 
 #include "stack/ble/service/uuid.h"
@@ -112,9 +114,8 @@ u8 *blc_adv_getManufacturerDataInformation(u8 *advData, u16 len, u8 *outLen)
 
 u8 *blc_adv_get16BitServiceDataInformation(u8 *advData, u16 len, u16 serviceUuid, u8 *outLen)
 {
-    return blc_adv_getAdvTypeInformationWithCmpValue(advData, len, DT_SERVICE_DATA_16BIT_UUID, (u8 *) &serviceUuid, 2, outLen);
+    return blc_adv_getAdvTypeInformationWithCmpValue(advData, len, DT_SERVICE_DATA_16BIT_UUID, (u8 *)&serviceUuid, 2, outLen);
 }
-
 
 bool blc_advGetBroadcastID(u8 *advData, u16 len, u8 broadcastID[3])
 {
@@ -131,7 +132,7 @@ bool blc_advGetBroadcastID(u8 *advData, u16 len, u8 broadcastID[3])
 
 u8 *blc_adv_getManufacturerDataInformationByCompanyId(u8 *advData, u16 len, u16 companyId, u8 *outLen)
 {
-    return blc_adv_getAdvTypeInformationWithCmpValue(advData, len, DT_MANUFACTURER_SPECIFIC_DATA, (u8 *) &companyId, 2, outLen);
+    return blc_adv_getAdvTypeInformationWithCmpValue(advData, len, DT_MANUFACTURER_SPECIFIC_DATA, (u8 *)&companyId, 2, outLen);
 }
 
 bool blc_adv_getCsipRSI(u8 *advData, u16 len, u8 rsi[6])
@@ -147,10 +148,10 @@ bool blc_adv_getCsipRSI(u8 *advData, u16 len, u8 rsi[6])
     return false;
 }
 
-bool blc_adv_get16BitServiceUuid(u8 *advData, u16 len, u16 uuid)
+static bool blt_get16BitServiceUuid(u8 *advData, u16 len, u16 uuid, data_type_t type)
 {
     u8   uuidLen = 0;
-    u16 *pUuid   = (u16 *)blc_adv_getAdvTypeInformation(advData, len, DT_COMPLETE_LIST_16BIT_SERVICE_UUID, &uuidLen);
+    u16 *pUuid   = (u16 *)blc_adv_getAdvTypeInformation(advData, len, type, &uuidLen);
 
     for (int i = 0; i < (uuidLen >> 1); i++) {
         //tlkapi_printf(1, "pUuid is %x, uuid is %x", *pUuid, uuid);
@@ -160,4 +161,14 @@ bool blc_adv_get16BitServiceUuid(u8 *advData, u16 len, u16 uuid)
         pUuid++;
     }
     return false;
+}
+
+bool blc_adv_get16BitServiceUuid(u8 *advData, u16 len, u16 uuid)
+{
+    return blt_get16BitServiceUuid(advData, len, uuid, DT_COMPLETE_LIST_16BIT_SERVICE_UUID);
+}
+
+bool blc_adv_get16BitIncompleteServiceUuid(u8 *advData, u16 len, u16 uuid)
+{
+    return blt_get16BitServiceUuid(advData, len, uuid, DT_INCOMPLETE_LIST_16BIT_SERVICE_UUID);
 }

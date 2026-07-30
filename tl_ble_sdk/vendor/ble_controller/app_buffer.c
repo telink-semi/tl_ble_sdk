@@ -96,6 +96,16 @@ u8 app_acl_cache_Txfifo[260 * 32] = {0};
 #endif
 
 
+#if (APP_LE_CHANNEL_SOUNDING)
+/*************************************** CSrx Buffer allocation, Begin *********************************************/
+
+u8 app_cs_rx_buf[CS_RX_FIFO_NUM * CS_RX_FIFO_SIZE];
+
+_attribute_iram_bss_ u8 app_CsConfigParam[CS_PARAM_LENGTH*APP_CS_CONFIG_NUM] = {0};
+/*************************************** CS Rx Buffer allocation, End **********************************************/
+#endif
+
+
 /***************************** HCI TX & RX data FIFO allocation, Begin *********************************************/
 //_attribute_iram_noinit_data_
 u8 app_hci_rxfifo[HCI_RX_FIFO_SIZE * HCI_RX_FIFO_NUM] = {0};

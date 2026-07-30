@@ -180,6 +180,7 @@ typedef enum
 
 } ble_sts_t;
 
+
 /**
  *  @brief  Definition for Error Response of ATTRIBUTE PROTOCOL PDUS
  *  See the Core_v5.0(Vol 3/Part F/3.4.1.1, "Error Response") for more information.
@@ -209,6 +210,10 @@ typedef enum
     ATT_ERR_DATABASE_OUT_OF_SYNC   = 0x12, //!< The server requests the client to rediscover the database
     ATT_ERR_VALUE_NOT_ALLOWED      = 0x13, //!< The attribute parameter value was not allowed
 
+#ifdef BLC_ZIGBEE_INTEGRATION
+    ATT_ERR_ZIGBEE_DIRECT_APP_ERROR = 0x80,//!<The attribute PDU was invalid for zigbee direct
+#endif /* BLC_ZIGBEE_INTEGRATION */
+
     /* List of Common Profile and Service Error Codes */
     ATT_ERR_WRITE_REQUEST_REJECT = 0xFC,          //!< Write Request Rejected
     ATT_ERR_CCC_DESCRIPTOR_IMPROPERLY_CONFIGURED, //!< Client Characteristic Configuration Descriptor Improperly Configured
@@ -216,6 +221,7 @@ typedef enum
     ATT_ERR_OUT_OF_RANGE,                         //!< Out of Range
 
 } att_err_t;
+
 
 /**
  *  @brief  error code for user initialization error
@@ -375,10 +381,13 @@ typedef enum
 } att_pdu_type;
 
 /**
- * @brief   HCI ACL DATA buffer length = LE_ACL_Data_Packet_Length + 4, pkt_len is integer multiple of 4, so result is 4 Byte align
- *          4 = 2(connHandle) + 1(PBFlag) + 1(length)
+ * @brief   In Spec and HCI final pkt, HCI ACL DATA buffer length = LE_ACL_Data_Packet_Length + 4.
+ *          pkt_len is integer multiple of 4, so result is 4 Byte align.
+ *          See the Core_v5.0(Vol 3/Part F/3.4.1.1, "Error Response") for more information.
+ *          However when dealing with RxFifo to HCI, Telink use a byte to PBFlag.
+ *          So Telink Controller used 5 = 2(connHandle) + 1(PBFlag) + 2(length)
  */
-#define CALCULATE_HCI_ACL_DATA_FIFO_SIZE(pkt_len) ((pkt_len + 4 + 3) / 4 * 4)
+#define CALCULATE_HCI_ACL_DATA_FIFO_SIZE(pkt_len) ((pkt_len + 5 + 3) / 4 * 4)
 
 
 /**
@@ -487,17 +496,12 @@ unsigned short blt_Crc16ComputeInternal (unsigned char *pD, int len);
 
 
 /**
- * @brief      get SDK and library version information
- * @param[in]  pbuf - the pointer to the version information string.
- *             eg. "V4.0.4.4_P0001 C0.0 Develop 105b2c862 Thu Jun 19 21:09:30 2025 +0800 Dirty 2025-06-19 23:29:58"
- *             The format is
- *                SDK Version: V4.0.4.4_P0001
- *                Custom Version: C0.0    //Only specific customers will use this
- *                Lib version: Branch CID LogTime GitStatus BuildTime     //When users feedback issues, this will be more helpful
- * @param[in]  number - the size of the string user give.
- * @return     the actual length or version information string.
+ * @brief      get library build information (branch, commit, timestamps)
+ * @param[in]  pbuf - the pointer to the lib info string.
+ *             eg. "develop 105b2c862 Thu Jun 19 21:09:30 2025 +0800 Dirty 2025-06-19 23:29:58"
+ * @param[in]  number - the size of the buffer.
+ * @return     the actual length of lib info string.
  */
-unsigned char blc_get_sdk_version(unsigned char *pbuf, unsigned char number);
-
+unsigned char blc_get_sdk_ble_lib_info(unsigned char *pbuf, unsigned char number);
 
 #endif

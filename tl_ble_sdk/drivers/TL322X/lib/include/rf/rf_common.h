@@ -558,6 +558,25 @@ typedef enum
     RF_PA_RAMP_STEP_P1000p0 = 7,
 }rf_pa_ramp_step_e;
 
+/**
+ *  @brief  Define the mode of 3-wire PTA.
+ */
+typedef enum
+{
+    PTA_BLE_STATUS_TX = 0,
+    PTA_BLE_STATUS_RX = 1,
+} pta_3wire_mode_e;
+
+/**
+ *  @brief  Define the mode of 2-wire PTA.
+ */
+typedef enum
+{
+    PTA_BLE_PRIORITY_TX  = 0,
+    PTA_BLE_PRIORITY_RX  = 1,
+    PTA_BLE_PRIORITY_TRX = 2,
+} pta_2wire_mode_e;
+
 /**********************************************************************************************************************
  *                                         RF global constants                                                        *
  *********************************************************************************************************************/
@@ -679,7 +698,7 @@ static inline void rf_tx_acc_code_pipe_en(unsigned char pipe)
  * @brief     This function serves to reset RF Tx/Rx mode.
  * @return    none.
  */
-static _always_inline void rf_set_tx_rx_off(void)
+static inline void rf_set_tx_rx_off(void)
 {
     write_reg8(0x80170216, 0x29);
     write_reg8(0x80170028, 0x80); // rx disable
@@ -1603,6 +1622,57 @@ void rf_set_rx_modulation_index(rf_mi_value_e mi_value);
  * @return      none.
  */
 void rf_set_tx_modulation_index(rf_mi_value_e mi_value);
+
+/**
+ * @brief      This function serves to init the 2-wire-PTA.
+ * @param[in]  ble_priority_pin - the pin of ble_priority.
+ * @param[in]  wlan_active_pin  - the pin of wlan_active.
+ * @param[in]  ble_priority_mode- the mode of ble_priority pin.
+ *             when the mode is PTA_BLE_PRIORITY_TX,the pin of ble_priority will be high if tx.
+ *             when the mode is PTA_BLE_PRIORITY_RX,the pin of ble_priority will be high if rx.
+ *             when the mode is PTA_BLE_PRIORITY_TRX,the pin of ble_priority will be high if tx and rx.
+ * @return     none
+ */
+void rf_2wire_pta_init(gpio_func_pin_e ble_priority_pin, gpio_func_pin_e wlan_active_pin, pta_2wire_mode_e ble_priority_mode);
+
+/**
+ * @brief      This function serves to init the 3-wire-PTA.
+ * @param[in]  ble_active_pin - the pin of ble_active.
+ * @param[in]  ble_status_pin - the pin of ble_status.
+ * @param[in]  wlan_deny_pin  - the pin of wlan_deny.
+ * @param[in]  ble_status_mode  - the mode of ble_status.
+               when the mode is PTA_BLE_STATUS_TX,the ble_status pin will be high if stx.
+               when the mode is PTA_BLE_STATUS_RX,the ble_status pin will be high if srx.
+ * @return     none
+ * @note       Attention:In the three-wire PTA mode, there will be a period of time t1 to
+ *             detect wlan_active and a time t2 to switch the ble_status state before the
+ *             action is triggered.The actual start time of the corresponding RF action will
+ *             shift backward by the larger of the two.These two periods of time can be set
+ *             by function rf_set_pta_t1_time and function rf_set_pta_t2_time respectively.
+ */
+void rf_3wire_pta_init(gpio_func_pin_e ble_active_pin, gpio_func_pin_e ble_status_pin, gpio_func_pin_e wlan_deny_pin, pta_3wire_mode_e ble_status_mode);
+
+ /**
+  * @brief        Specifies the time after assertion of BLE_ACTIVITY signal at which the WLAN_DENY should be stable and is sampled by BLE device to determine whether to launch transaction.
+  * @param[in]    time_us - Set the time value of the conversion,the unit is "us".The default value is 0x31, and the maximum value is 0xff. No special requirements do not need to call
+  *                 this function to make changes.
+  * @return         none.
+  */
+ static inline void rf_set_pta_t1_time(unsigned char time_us)
+ {
+    reg_rf_t_coex_t1 = (time_us - 1);
+ }
+
+ /**
+  * @brief        The state switch of ble_status from the last trigger event to the next trigger event should be completed within this period of time.
+  * @param[in]    time_us - Set the time value of the conversion,the unit is "us".The default value is 0x13, and the maximum value is 0xff. No special requirements do not need to call
+  *                 this function to make changes.
+  * @return         none.
+  */
+ static inline void rf_set_pta_t2_time(unsigned char time_us)
+ {
+     reg_rf_t_coex_t2 = (time_us - 1);
+ }
 
 
 #endif

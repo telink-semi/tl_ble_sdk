@@ -2048,4 +2048,7 @@ void spi_tx_dma_add_list_element(spi_sel_e spi_sel, dma_chn_e chn, dma_chain_con
  */
 void spi_slave_tx_dma_chain_init(spi_sel_e spi_sel, dma_chn_e chn, unsigned char *dst_addr, unsigned int data_len);
 /** @} */
+
+//2.4g used
+drv_api_status_e spi_status_check(spi_sel_e spi_sel);
 #endif

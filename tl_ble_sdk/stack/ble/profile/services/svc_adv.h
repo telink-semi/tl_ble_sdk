@@ -48,3 +48,4 @@ u8 *blc_adv_getManufacturerDataInformationByCompanyId(u8 *advData, u16 len, u16 
 
 bool blc_adv_get16BitServiceUuid(u8 *advData, u16 len, u16 uuid);
 
+bool blc_adv_get16BitIncompleteServiceUuid(u8 *advData, u16 len, u16 uuid);

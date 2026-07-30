@@ -29,6 +29,9 @@
 #include "app_att.h"
 #include "app_ui.h"
 
+#if defined(TLK_ONLY_BLE_HOST)
+#include "stack/pm/pm_sys.h"
+#endif
 
 #if (UI_KEYBOARD_ENABLE)
 
@@ -49,7 +52,7 @@ _attribute_ble_data_retention_ u8 key_type;
 void key_change_proc(void)
 {
     u8 key0 = kb_event.keycode[0];
-    // u8 key_buf[8] = {0,0,0,0,0,0,0,0};
+    //  u8 key_buf[8] = {0,0,0,0,0,0,0,0};
 
     key_not_released = 1;
     if (kb_event.cnt == 1) {
@@ -84,14 +87,16 @@ void key_change_proc(void)
                 static _attribute_ble_data_retention_ u8 adv_status = 0;
                 blc_ll_setAdvEnable(adv_status);
                 adv_status = !adv_status;
-            } else if (key0 == BTN_UNPAIR) {
+            }
+            else if (key0 == BTN_UNPAIR) {
                 for (int i = ACL_CENTRAL_MAX_NUM; i < (ACL_CENTRAL_MAX_NUM + ACL_PERIPHR_MAX_NUM); i++) { //peripheral index is from "ACL_CENTRAL_MAX_NUM" to "ACL_CENTRAL_MAX_NUM + ACL_PERIPHR_MAX_NUM - 1"
                     if (conn_dev_list[i].conn_state) {
                         static _attribute_ble_data_retention_ u16 latency = 0;
                         bls_l2cap_requestConnParamUpdate(conn_dev_list[i].conn_handle, CONN_INTERVAL_15MS, CONN_INTERVAL_15MS, latency, CONN_TIMEOUT_4S);
                         if (latency) {
                             latency = 0;
-                        } else {
+                        }
+                        else {
                             latency = 99;
                         }
                     }
@@ -100,14 +105,21 @@ void key_change_proc(void)
     #endif
         }
 
-    } else { //kb_event.cnt == 0,  key release
+    } else //kb_event.cnt == 0,  key release
+    {
         key_not_released = 0;
         if (key_type == CONSUMER_KEY) {
             u16 consumer_key = 0;
             //Here is just Telink Demonstration effect. for all peripheral in connection, send release for previous "Vol+" or "Vol-" to central
             for (int i = ACL_CENTRAL_MAX_NUM; i < (ACL_CENTRAL_MAX_NUM + ACL_PERIPHR_MAX_NUM); i++) { //peripheral index is from "ACL_CENTRAL_MAX_NUM" to "ACL_CENTRAL_MAX_NUM + ACL_PERIPHR_MAX_NUM - 1"
                 if (conn_dev_list[i].conn_state) {
-                    blc_gatt_pushHandleValueNotify(conn_dev_list[i].conn_handle, HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+                    ble_sts_t value = blc_gatt_pushHandleValueNotify(conn_dev_list[i].conn_handle, HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+                    if(value != BLE_SUCCESS)
+                    {
+                        tlkapi_printf(APP_KEY_LOG_EN, "[UI][KEY] blc_gatt_pushHandleValueNotify fail %X",value);
+                    }
+
+
                 }
             }
         } else if (key_type == KEYBOARD_KEY) {
@@ -132,12 +144,13 @@ void proc_keyboard(u8 e, u8 *p, int n)
     (void)n;
     (void)p;
     //when key press GPIO wake_up sleep, process key_scan at least GPIO_WAKEUP_KEYPROC_CNT times
+#if BLE_APP_PM_ENABLE
     if (e == BLT_EV_FLAG_GPIO_EARLY_WAKEUP) {
         gpioWakeup_keyProc_cnt = GPIO_WAKEUP_KEYPROC_CNT;
     } else if (gpioWakeup_keyProc_cnt) {
         gpioWakeup_keyProc_cnt--;
     }
-
+#endif
     if (gpioWakeup_keyProc_cnt || clock_time_exceed(keyScanTick, 10 * 1000)) { //keyScan interval: 10mS
         keyScanTick = clock_time();
     } else {

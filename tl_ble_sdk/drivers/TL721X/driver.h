@@ -58,6 +58,7 @@
 #include "qdec.h"
 #include "plic_sw.h"
 #include "plmt.h"
+#include "pem.h"
 #include "lib/include/otp/otp.h"
 #include "flash/flash_type.h"
 #include "flash/flash_common.h"

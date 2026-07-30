@@ -42,17 +42,17 @@ _attribute_ble_data_retention_ u8 app_acl_rx_fifo[ACL_RX_FIFO_SIZE * ACL_RX_FIFO
 
 
     /**
-* @brief   ACL Central TX buffer, shared by all central connections to hold LinkLayer RF TX data.
-*          ACL Central TX buffer should be defined only when ACl connection central role is used.
-*/
+ * @brief   ACL Central TX buffer, shared by all central connections to hold LinkLayer RF TX data.
+ *          ACL Central TX buffer should be defined only when ACl connection central role is used.
+ */
     #if (ACL_CENTRAL_MAX_NUM > 0)
 _attribute_ble_data_retention_ u8 app_acl_cen_tx_fifo[ACL_CENTRAL_TX_FIFO_SIZE * ACL_CENTRAL_TX_FIFO_NUM * ACL_CENTRAL_MAX_NUM] = {0};
     #endif
 
     /**
-* @brief   ACL Peripheral TX buffer, shared by all peripheral connections to hold LinkLayer RF TX data.
-*          ACL Peripheral TX buffer should be defined only when ACl connection peripheral role is used.
-*/
+ * @brief   ACL Peripheral TX buffer, shared by all peripheral connections to hold LinkLayer RF TX data.
+ *          ACL Peripheral TX buffer should be defined only when ACl connection peripheral role is used.
+ */
     #if (ACL_PERIPHR_MAX_NUM > 0)
 _attribute_ble_data_retention_ u8 app_acl_per_tx_fifo[ACL_PERIPHR_TX_FIFO_SIZE * ACL_PERIPHR_TX_FIFO_NUM * ACL_PERIPHR_MAX_NUM] = {0};
     #endif

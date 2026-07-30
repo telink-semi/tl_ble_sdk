@@ -557,30 +557,6 @@ _attribute_text_sec_ void flash_erase_otp(unsigned long addr)
 }
 
 /**
- * @brief       This function serves to read MID of flash(MAC id). Before reading UID of flash,
- *              you must read MID of flash. and then you can look up the related table to select
- *              the idcmd and read UID of flash.
- * @return      MID of the flash.
- * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
- *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
- *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
- *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
- *              to the specific application and hardware circuit.
- *
- *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
- *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
- *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
- */
-_attribute_text_sec_ unsigned int flash_read_mid(void)
-{
-    unsigned int flash_mid = 0;
-    DISABLE_BTB;
-    flash_mspi_read_ram(FLASH_GET_JEDEC_ID, 0, (unsigned char *)&flash_mid, 3);
-    ENABLE_BTB;
-    return flash_mid;
-}
-
-/**
  * @brief       This function serves to read UID of flash.Before reading UID of flash, you must read MID of flash.
  *              and then you can look up the related table to select the idcmd and read UID of flash.
  * @param[in]   idcmd   - different flash vendor have different read-uid command. E.g: GD/PUYA:0x4B; XTX: 0x5A.
@@ -706,6 +682,10 @@ unsigned int flash_get_vendor(unsigned int flash_mid)
     case 0x000060EB:
         return FLASH_SONOS_TH;
     case 0x000060CD:
+        return FLASH_SST_TH;
+    case 0x000051CD:
+        return FLASH_SST_TH;
+    case 0x000071CD:
         return FLASH_SST_TH;
     default:
         return 0;

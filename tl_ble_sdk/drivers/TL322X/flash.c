@@ -34,7 +34,7 @@
 #include <string.h>
 #include "watchdog.h" //BLE SDK use
 
-#if 1 // !defined(MCU_CORE_TL322X_N22)
+#if !defined(MCU_CORE_TL322X_N22)
 _attribute_data_retention_sec_ flash_handler_t flash_read_page  = flash_dread;
 _attribute_data_retention_sec_ flash_handler_t flash_write_page = flash_page_program;
 /*

@@ -547,8 +547,6 @@ enum
     FLD_RF_PKT_DEC_ERR = BIT_RNG(4, 7),
 };
 
-#define    reg_rf_tx_frac_time_pose_time    REG_ADDR32(REG_BASEBAND_BASE_ADDR+0x48) // BLE SDK USE
-
 #define reg_rf_timestamp REG_ADDR32(REG_BASEBAND_BASE_ADDR + 0x50)
 #define reg_rf_tstamp0   REG_ADDR8(REG_BASEBAND_BASE_ADDR + 0x50)
 
@@ -1134,12 +1132,6 @@ enum
     //BLE mode
     FLD_RF_INIT_PRX_PID = BIT_RNG(4, 5),
     FLD_RF_INIT_PTX_PID = BIT_RNG(6, 7),
-
-    //BLE SDK use
-    FLD_RF_BRX_SN_INIT          = BIT(4),
-    FLD_RF_BRX_NESN_INIT        = BIT(5),
-    FLD_RF_BTX_SN_INIT          = BIT(6),
-    FLD_RF_BTX_NESN_INIT        = BIT(7),
 };
 
 #define FSM_TIMEOUT_ENABLE  (reg_rf_ll_ctrl_1 |= FLD_RF_FSM_TIMEOUT_EN)
@@ -1267,7 +1259,6 @@ enum
 {
     FLD_RF_R_TX_ID       = BIT_RNG(0, 6),
     FLD_RF_R_LL_IRQ_MASK = BIT(7),
-    FLD_RF_R_TX_PRE_EN = BIT(7), // modify by BLE SDK
 };
 
 #define reg_rf_irq_status    REG_ADDR16(REG_BB_LL_BASE_ADDR + 0x20)

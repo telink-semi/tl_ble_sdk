@@ -35,12 +35,21 @@
 #include "stack/ble/os_sup/os_sup.h"
 
 #include "app_ap.h"
+#include "app_parse_char.h"
+
+#define BLE_NOTIFICATION        0x01
+#define PARSE_CHAR_NOTIFICATION 0x02
 
 
 _attribute_ble_data_retention_ static TaskHandle_t hBleTask = NULL;  //Handle for the BLE task
 
 _attribute_ble_data_retention_ static SemaphoreHandle_t xBleSendDataMutex = NULL;  //xBleSendDataMutex (lock) to ensure thread-safe access to BLE data sending operations
 
+#if (APP_PARSE_CHAR_IFACE == APP_PARSE_CHAR_USB_CDC)
+static void parse_notify(void);
+#elif (APP_PARSE_CHAR_IFACE == APP_PARSE_CHAR_UART)
+static _attribute_ram_code_ void parse_notify_from_isr(void);
+#endif
 
 /**
  * @brief        vPreSleepProcessing
@@ -90,9 +99,12 @@ void vApplicationIdleHook( void )
     traceAPP_BAT_Task_END();
     #endif
 
-    #if (TLKAPI_DEBUG_ENABLE)
-        tlkapi_debug_handler();
-    #endif
+#if (TLKAPI_DEBUG_ENABLE)
+    tlkapi_debug_handler();
+#endif
+#if (APP_PARSE_CHAR_IFACE == APP_PARSE_CHAR_USB_CDC)
+    parse_notify();
+#endif
 }
 
 
@@ -139,8 +151,13 @@ void os_give_sem_from_isr(void)
 {
     if(hBleTask == NULL)
         return;
+
+
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    vTaskNotifyGiveFromISR(hBleTask, &xHigherPriorityTaskWoken);
+    xTaskNotifyFromISR( hBleTask,
+                        BLE_NOTIFICATION,
+                        eSetBits,
+                        &xHigherPriorityTaskWoken );
 
     // yield from the low priority to high priority
     portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
@@ -157,8 +174,10 @@ void os_give_sem(void)
 {
     if(hBleTask == NULL)
         return;
-    xTaskNotifyGive(hBleTask);
 
+    xTaskNotify( hBleTask,
+                         BLE_NOTIFICATION,
+                         eSetBits);
 }
 
 
@@ -193,6 +212,30 @@ void os_give_mutex_sem(void)
     }
 }
 
+#if (APP_PARSE_CHAR_IFACE == APP_PARSE_CHAR_UART)
+static _attribute_ram_code_ void parse_notify_from_isr(void)
+{
+    if(hBleTask == NULL)
+        return;
+
+
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    xTaskNotifyFromISR( hBleTask,
+                        PARSE_CHAR_NOTIFICATION,
+                        eSetBits,
+                        &xHigherPriorityTaskWoken );
+}
+#elif (APP_PARSE_CHAR_IFACE == APP_PARSE_CHAR_USB_CDC)
+static void parse_notify(void)
+{
+    if (hBleTask == NULL) {
+        return;
+    }
+
+    xTaskNotify(hBleTask, PARSE_CHAR_NOTIFICATION, eSetBits);
+}
+#endif
+
 /**
  * @brief        This function is the BLE task
  * @param[in]    none
@@ -200,27 +243,44 @@ void os_give_mutex_sem(void)
  */
 static void ble_task( void *pvParameters )
 {
+    BaseType_t xResult;
+    uint32_t ulNotifiedValue;
     (void)pvParameters;
+
+#if (APP_PARSE_CHAR_IFACE == APP_PARSE_CHAR_UART)
+    app_parse_set_uart_rx_notify(parse_notify_from_isr);
+#endif
 
     while(1)
     {
-        ulTaskNotifyTake(pdTRUE,  portMAX_DELAY);
+        xResult = xTaskNotifyWait( pdFALSE,          /* Don't clear bits on entry. */
+                                   0xffffffff,        /* Clear all bits on exit. */
+                                   &ulNotifiedValue, /* Stores the notified value. */
+                                   portMAX_DELAY );
+        if (xResult == pdPASS) {
+            if (ulNotifiedValue & BLE_NOTIFICATION) {
+                traceAPP_BLE_Task_BEGIN();
 
-        traceAPP_BLE_Task_BEGIN();
+                ////////////////////////////////////// BLE entry /////////////////////////////////
+                blc_sdk_main_loop();
+                blc_prf_main_loop();
 
-        ////////////////////////////////////// BLE entry /////////////////////////////////
-        blc_sdk_main_loop();
-        blc_prf_main_loop();
+                app_ap_loop();
 
-        app_ap_loop();
-
-        ////////////////////////////////////// Debug entry /////////////////////////////////
-        #if (TLKAPI_DEBUG_ENABLE)
-            tlkapi_debug_handler();
-        #endif
+////////////////////////////////////// Debug entry /////////////////////////////////
+#if (TLKAPI_DEBUG_ENABLE)
+                tlkapi_debug_handler();
+#endif
 
 
-        traceAPP_BLE_Task_END();
+                traceAPP_BLE_Task_END();
+            }
+
+            if (ulNotifiedValue & PARSE_CHAR_NOTIFICATION) {
+                app_parse_loop();
+            }
+        }
+
         //debug
         //uxTaskGetStackHighWaterMark(NULL);
     }
@@ -242,7 +302,7 @@ void app_BleTaskCreate(void)
 
      configASSERT( xBleSendDataMutex );
 
-     ret =  xTaskCreate( ble_task, "tble", 1024, (void*)0, (tskIDLE_PRIORITY+2), &hBleTask );
+     ret =  xTaskCreate( ble_task, "tble", 4096, (void*)0, (tskIDLE_PRIORITY+2), &hBleTask );
 
      configASSERT( ret == pdPASS );
 }

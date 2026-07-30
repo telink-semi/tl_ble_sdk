@@ -39,17 +39,34 @@
     #define __PROJECT_FEATURE_TEST__ 0
 #endif
 
-#ifndef __PROJECT_ESLP_ESL_DEMO__
-    #define __PROJECT_ESLP_ESL_DEMO__ 0
-#endif
-
-#ifndef __PROJECT_ESLP_AP_DEMO__
-    #define __PROJECT_AP_ESL_DEMO__ 0
+#ifndef __PROJECT_BLE_REMOTE__
+    #define __PROJECT_BLE_REMOTE__ 0
 #endif
 
 #ifndef __PROJECT_BLE_CONTROLLER__
     #define __PROJECT_BLE_CONTROLLER__ 0
 #endif
+
+#ifndef __PROJECT_TPLL_DEMOE__
+    #define __PROJECT_TPLL_DEMOE__ 0
+#endif
+
+#ifndef __PROJECT_GEN_FSK_DEMOE__
+    #define __PROJECT_GEN_FSK_DEMOE__ 0
+#endif
+
+#ifndef __PROJECT_2P4G_FEATURE_DEMOE__
+    #define __PROJECT_2P4G_FEATURE_DEMOE__ 0
+#endif
+
+#ifndef __PROJECT_ESLP_ESL_DEMO__
+    #define __PROJECT_ESLP_ESL_DEMO__ 0
+#endif
+
+#ifndef __PROJECT_ESLP_AP_DEMO__
+    #define __PROJECT_ESLP_AP_DEMO__ 0
+#endif
+
 
 #if (__PROJECT_ACL_CONN_DEMO__)
     #include "vendor/acl_connection_demo/app_config.h"
@@ -59,6 +76,10 @@
     #include "vendor/acl_peripheral_demo/app_config.h"
 #elif (__PROJECT_FEATURE_TEST__)
     #include "vendor/feature_test/app_config.h"
+#elif (__PROJECT_BLE_REMOTE__)
+    #include "vendor/ble_remote/app_config.h"
+#elif (__PROJECT_BLE_CONTROLLER__)
+    #include "vendor/ble_controller/app_config.h"
 #elif (__PROJECT_ESLP_ESL_DEMO__)
     #include "vendor/eslp_esl_demo/app_config.h"
 #elif (__PROJECT_ESLP_AP_DEMO__)
@@ -69,8 +90,6 @@
     #include "vendor/2p4g_gen_fsk/app_config.h"
 #elif (__PROJECT_2P4G_FEATURE_DEMOE__)
     #include "vendor/2p4g_feature_test/app_config.h"
-#elif (__PROJECT_BLE_CONTROLLER__)
-    #include "vendor/ble_controller/app_config.h"
 #else
     #include "vendor/common/default_config.h"
 #endif

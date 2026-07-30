@@ -27,6 +27,10 @@
 #include "app.h"
 #include "app_config.h"
 
+#if (MCU_CORE_TYPE == MCU_CORE_TL322X) && defined(TLK_ONLY_BLE_HOST)
+#include "stack/multicore_comm/service/service_d25f.h"
+#endif
+
 #if (FREERTOS_ENABLE)
     #include "tlk_riscv.h"
     #include <FreeRTOS.h>
@@ -42,9 +46,7 @@
 _attribute_ram_code_ void rf_irq_handler(void)
 {
     DBG_CHN14_HIGH;
-
     blc_sdk_irq_handler();
-
     DBG_CHN14_LOW;
 }
 #if (FREERTOS_ENABLE)
@@ -60,9 +62,7 @@ PLIC_ISR_REGISTER(rf_irq_handler, IRQ_ZB_RT)
 _attribute_ram_code_ void stimer_irq_handler(void)
 {
     DBG_CHN15_HIGH;
-
     blc_sdk_irq_handler();
-
     DBG_CHN15_LOW;
 }
 #if (FREERTOS_ENABLE)
@@ -110,9 +110,12 @@ __INLINE void blc_app_system_init(void)
     gpio_set_up_down_res(GPIO_SWS, GPIO_PIN_PULLUP_1M);
     wd_32k_stop();
     wd_stop();
-    PLL_192M_D25F_48M_HCLK_N22_24M_PCLK_24M_MSPI_48M;
-    pm_set_dig_module_power_switch(FLD_PD_ZB_EN, PM_POWER_UP);
+    PLL_192M_D25F_64M_HCLK_N22_32M_PCLK_32M_MSPI_48M;
+    
+# if !defined(TLK_ONLY_BLE_HOST)
+//    pm_set_dig_module_power_switch(FLD_PD_ZB_EN, PM_POWER_UP); //Temporarily placed, wait for the driver to confirm afterwards
     rf_n22_dig_init();
+# endif /* !defined(TLK_ONLY_BLE_HOST) */
 #elif (MCU_CORE_TYPE == MCU_CORE_TL323X)
     sys_init(DCDC_1P25_LDO_1P8, VBAT_MAX_VALUE_GREATER_THAN_3V6, INTERNAL_CAP_XTAL24M);
     pm_update_status_info(1);
@@ -120,6 +123,14 @@ __INLINE void blc_app_system_init(void)
     wd_32k_stop();
     wd_stop();
     PLL_192M_CCLK_48M_HCLK_24M_PCLK_12M_MSPI_48M;
+#elif (MCU_CORE_TYPE == MCU_CORE_TL521X)
+    sys_init(DCDC_1P25_LDO_1P8, VBAT_MAX_VALUE_GREATER_THAN_3V6, INTERNAL_CAP_XTAL24M);
+    pm_update_status_info(1);
+    gpio_shutdown(GPIO_ALL);
+    gpio_set_up_down_res(GPIO_SWS, GPIO_PIN_PULLUP_1M);
+    wd_32k_stop();
+    wd_stop();
+    PLL_144M_CCLK_48M_HCLK_24M_PCLK_12M_MSPI_48M;
 #else
     #error "Not Supported Chip!!!"
 #endif
@@ -142,10 +153,23 @@ _attribute_ram_code_ int main(void)
     /* detect if MCU is wake_up from deep retention mode */
     int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup(); //MCU deep retention wakeUp
 
-
+    #if !defined(TLK_ONLY_BLE_HOST)
+    /* Place the RF in the N22 initialization. */
     rf_drv_ble_init();
+    #endif
 
     gpio_init(!deepRetWakeUp);
+
+
+#if defined(TLK_ONLY_BLE_HOST)
+    if (deepRetWakeUp) {
+        sys_n22_init(N22_IRAM_STARTUP_ADDR);
+    } else {
+        sys_n22_init(N22_FW_DOWNLOAD_FLASH_ADDR);
+    }
+    sys_n22_start();
+    mcc_d25f_service_init();
+#endif
 
     if (deepRetWakeUp) { //MCU wake_up from deepSleep retention mode
 #if (FREERTOS_ENABLE)
@@ -163,8 +187,7 @@ _attribute_ram_code_ int main(void)
     app_TaskCreate();
 
     vTaskStartScheduler();
-    while (1)
-        ;
+    while (1);
 #else
 
     while (1) {

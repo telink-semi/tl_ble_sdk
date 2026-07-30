@@ -154,6 +154,9 @@ static void lin_reset(lin_num_e lin_num)
  */
 static void lin_uart_init(lin_num_e lin_num)
 {
+    if(lin_num >= LIN_NUM){
+        return;
+    }
     reg_lin_uart_ctrl0(lin_num)   = ((reg_lin_uart_ctrl0(lin_num) & (~FLD_LIN_UART_BPWC_O)) | s_lin_hw_ctb[lin_num].bwpc); // set bwpc
     reg_lin_uart_clk_div(lin_num) = (s_lin_hw_ctb[lin_num].div | FLD_LIN_UART_CLK_DIV_EN);                                 // set div_clock
 

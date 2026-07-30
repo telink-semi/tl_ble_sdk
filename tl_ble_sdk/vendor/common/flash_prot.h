@@ -153,15 +153,15 @@ extern flash_prot_op_callback_t flash_prot_op_cb;
  */
 
 /* stack layer event, OTA initialization, clear old firmware begin, may need unlock flash */
-#define FLASH_OP_EVT_STACK_OTA_CLEAR_OLD_FW_BEGIN 10
+#define FLASH_OP_EVT_STACK_OTA_CLEAR_OLD_FW_BEGIN                   10
 /* stack layer event, OTA initialization, clear old firmware end , may need restore locking flash */
-#define FLASH_OP_EVT_STACK_OTA_CLEAR_OLD_FW_END 11
+#define FLASH_OP_EVT_STACK_OTA_CLEAR_OLD_FW_END                     11
 
 
 /* stack layer event, OTA initialization, write new firmware begin, may need unlock flash */
-#define FLASH_OP_EVT_STACK_OTA_WRITE_NEW_FW_BEGIN 12
+#define FLASH_OP_EVT_STACK_OTA_WRITE_NEW_FW_BEGIN                   12
 /* stack layer event, OTA initialization, write new firmware begin, may need restore locking flash */
-#define FLASH_OP_EVT_STACK_OTA_WRITE_NEW_FW_END 13
+#define FLASH_OP_EVT_STACK_OTA_WRITE_NEW_FW_END                     13
 
 
 /*
@@ -180,33 +180,39 @@ extern flash_prot_op_callback_t flash_prot_op_cb;
  */
 
 /* stack layer event, SMP select pairing information area begin(write a special mark), may need unlock flash */
-#define FLASH_OP_EVT_STACK_SMP_SELECT_PAIRING_INFO_AREA_BEGIN 20
+#define FLASH_OP_EVT_STACK_SMP_SELECT_PAIRING_INFO_AREA_BEGIN       20
 /* stack layer event, SMP select pairing information area begin , may need restore locking flash */
-#define FLASH_OP_EVT_STACK_SMP_SELECT_PAIRING_INFO_AREA_END 21
+#define FLASH_OP_EVT_STACK_SMP_SELECT_PAIRING_INFO_AREA_END         21
 
 
 /* stack layer event, SMP save pairing information begin, may need unlock flash */
-#define FLASH_OP_EVT_STACK_SMP_SAVE_PAIRING_INFO_BEGIN 22
+#define FLASH_OP_EVT_STACK_SMP_SAVE_PAIRING_INFO_BEGIN              22
 /* stack layer event, SMP save pairing information end , may need restore locking flash */
-#define FLASH_OP_EVT_STACK_SMP_SAVE_PAIRING_INFO_END 23
+#define FLASH_OP_EVT_STACK_SMP_SAVE_PAIRING_INFO_END                23
 
 
 /* stack layer event, SMP delete pairing information begin, may need unlock flash */
-#define FLASH_OP_EVT_STACK_SMP_DELETE_DEVICE_BEGIN 24
+#define FLASH_OP_EVT_STACK_SMP_DELETE_DEVICE_BEGIN                  24
 /* stack layer event, SMP delete pairing information end , may need restore locking flash */
-#define FLASH_OP_EVT_STACK_SMP_DELETE_DEVICE_END 25
+#define FLASH_OP_EVT_STACK_SMP_DELETE_DEVICE_END                    25
 
 
 /* stack layer event, SMP switch pairing information area begin, may need unlock flash */
-#define FLASH_OP_EVT_STACK_SMP_SWITCH_PAIRING_INFO_BEGIN 26
+#define FLASH_OP_EVT_STACK_SMP_SWITCH_PAIRING_INFO_BEGIN            26
 /* stack layer event, SMP switch pairing information area end , may need restore locking flash */
-#define FLASH_OP_EVT_STACK_SMP_SWITCH_PAIRING_INFO_END 27
+#define FLASH_OP_EVT_STACK_SMP_SWITCH_PAIRING_INFO_END              27
 
 /* may need unlock flash */
-#define FLASH_OP_EVT_APP_TAG_INFO_BEGIN 28
+#define FLASH_OP_EVT_APP_TAG_INFO_BEGIN                             28
 /*  may need restore locking flash */
-#define FLASH_OP_EVT_APP_TAG_INFO_END 29
+#define FLASH_OP_EVT_APP_TAG_INFO_END                               29
 
+
+/* app layer event, flash write MAC address begin , may need unlock flash */
+#define FLASH_OP_EVT_APP_WRITE_MAC_ADDR_BEGIN                       30
+
+/* app layer event, flash write MAC address end , may need restore locking flash */
+#define FLASH_OP_EVT_APP_WRITE_MAC_ADDR_END                         31
 
 /**
  * @brief      this function is used to initialize flash protection.

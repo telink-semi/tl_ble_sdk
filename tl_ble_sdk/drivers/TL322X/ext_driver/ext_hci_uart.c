@@ -91,7 +91,7 @@ ext_hci_StatusTypeDef_e ext_hci_uartInit(ext_hci_InitTypeDef * uart)
         return EXT_UART_OK;
     }
 
-#if CLIC_ENABLE
+#if defined(CLIC_ENABLE) && (CLIC_ENABLE == 1)
     uart_hw_fsm_reset(EXT_HCI_UART_CHANNEL);
     uart_set_pin(EXT_HCI_UART_CHANNEL, uart->tx_Pin, uart->rx_Pin);
     uart_cal_div_and_bwpc(uart->baudrate, sys_clk.pclk*1000*1000, &div, &bwpc);
@@ -181,7 +181,7 @@ _attribute_ram_code_sec_ void ext_hci_irq_handler(void)
          }
      }
 }
-#if(CLIC_ENABLE == 1)
+#if defined(CLIC_ENABLE) && (CLIC_ENABLE == 1)
 CLIC_ISR_REGISTER(ext_hci_irq_handler, EXT_HCI_UART_IRQ)
 #else
 PLIC_ISR_REGISTER(ext_hci_irq_handler, EXT_HCI_UART_IRQ)
@@ -207,7 +207,7 @@ void ext_hci_dma_irq_handler(void)
         RxCpltCallback(NULL);
     }
 }
-#if(CLIC_ENABLE == 1)
+#if defined(CLIC_ENABLE) && (CLIC_ENABLE == 1)
 CLIC_ISR_REGISTER(ext_hci_dma_irq_handler, IRQ_DMA)
 #else
 PLIC_ISR_REGISTER(ext_hci_dma_irq_handler, IRQ_DMA)
@@ -237,10 +237,10 @@ unsigned char ext_hci_uartSendData(unsigned char *addr, unsigned int len)
 {
     unsigned char ret_val;
 
-    core_interrupt_disable();
+    u32 r = core_interrupt_disable();
     uart_dma_send_flag = 0;
     ret_val = uart_send_dma(EXT_HCI_UART_CHANNEL, addr, len);
-    core_interrupt_enable();
+    core_restore_interrupt(r);
 
     return ret_val;
 }
@@ -248,18 +248,11 @@ unsigned char ext_hci_uartSendData(unsigned char *addr, unsigned int len)
 _attribute_ram_code_sec_  //BLE SDK use:
 void ext_hci_uartReceData(unsigned char *addr, unsigned int len)
 {
-    #if (HCI_COM_CHANNEL == HCI_UART)
-    {
-        core_interrupt_disable();
-        uart_receive_dma(EXT_HCI_UART_CHANNEL, addr, len);
-        ReceAddr = addr;
-        core_interrupt_enable();
-    }
-    #else
-    {
-        ReceAddr = addr;
-    }
-    #endif
+
+     u32 r = core_interrupt_disable();
+     uart_receive_dma(EXT_HCI_UART_CHANNEL, addr, len);
+     ReceAddr = addr;
+     core_restore_interrupt(r);
 }
 
 #endif

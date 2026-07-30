@@ -47,11 +47,11 @@ int app_le_adv_report_event_handle(u8 *p)
     s8                  rssi = pa->data[pa->len];
 
 #if 0 //debug, print ADV report number every 5 seconds
-    AA_dbg_adv_rpt ++;
-    if (clock_time_exceed(tick_adv_rpt, 5000000)) {
-        tlkapi_send_string_data(APP_CONTR_EVT_LOG_EN, "[APP][EVT] Adv report", pa->mac, 6);
-        tick_adv_rpt = clock_time();
-    }
+        AA_dbg_adv_rpt ++;
+        if(clock_time_exceed(tick_adv_rpt, 5000000)){
+            tlkapi_send_string_data(APP_CONTR_EVT_LOG_EN, "[APP][EVT] Adv report", pa->mac, 6);
+            tick_adv_rpt = clock_time();
+        }
 #endif
 
     /*********************** Central Create connection demo: Key press or ADV pair packet triggers pair  ********************/
@@ -80,8 +80,9 @@ int app_le_adv_report_event_handle(u8 *p)
 #if (ACL_CENTRAL_SMP_ENABLE)
     central_auto_connect = blc_smp_searchBondingPeripheralDevice_by_PeerMacAddress(pa->adr_type, pa->mac);
 #endif
-
-    if (central_auto_connect || user_manual_pairing) {
+    u8 mac[3] = {0x12 ,0x12, 0x12};
+    if(!memcmp(pa->mac, mac, 3)) {
+    //if (central_auto_connect || user_manual_pairing) {
         /* send create connection command to Controller, trigger it switch to initiating state. After this command, Controller
          * will scan all the ADV packets it received but not report to host, to find the specified device(mac_adr_type & mac_adr),
          * then send a "CONN_REQ" packet, enter to connection state and send a connection complete event
@@ -120,7 +121,8 @@ int app_le_connection_complete_event_handle(u8 *p)
 
         dev_char_info_insert_by_conn_event(pConnEvt);
 
-        if (pConnEvt->role == ACL_ROLE_CENTRAL) {       // central role, process SMP and SDP if necessary
+        if (pConnEvt->role == ACL_ROLE_CENTRAL)         // central role, process SMP and SDP if necessary
+        {
 #if (ACL_CENTRAL_SMP_ENABLE)
             central_smp_pending = pConnEvt->connHandle; // this connection need SMP
 #endif
@@ -243,27 +245,33 @@ int app_le_connection_update_complete_event_handle(u8 *p)
 int app_controller_event_callback(u32 h, u8 *p, int n)
 {
     (void)n;
-    if (h & HCI_FLAG_EVENT_BT_STD) { //Controller HCI event
+    if (h & HCI_FLAG_EVENT_BT_STD) //Controller HCI event
+    {
         u8 evtCode = h & 0xff;
 
         //------------ disconnect -------------------------------------
-        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) { //connection terminate
+        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) //connection terminate
+        {
             app_disconnect_event_handle(p);
-        } else if (evtCode == HCI_EVT_LE_META) {         //LE Event
+        } else if (evtCode == HCI_EVT_LE_META)         //LE Event
+        {
             u8 subEvt_code = p[0];
 
             //------hci le event: le connection complete event---------------------------------
-            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) { // connection complete
+            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) // connection complete
+            {
                 app_le_connection_complete_event_handle(p);
             }
             //--------hci le event: le adv report event ----------------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT) { // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT) // ADV packet
+            {
                 //after controller is set to scan state, it will report all the adv packet it received by this event
 
                 app_le_adv_report_event_handle(p);
             }
             //------hci le event: le connection update complete event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) { // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) // connection update
+            {
                 app_le_connection_update_complete_event_handle(p);
             }
         }
@@ -374,9 +382,10 @@ int app_host_event_callback(u32 h, u8 *para, int n)
  */
 int app_gatt_data_handler(u16 connHandle, u8 *pkt)
 {
-    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) { //GATT data for Central
+    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) //GATT data for Central
+    {
 #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
-        if (central_sdp_pending == connHandle) {                                //ATT service discovery is ongoing on this conn_handle
+        if (central_sdp_pending == connHandle) {                              //ATT service discovery is ongoing on this conn_handle
             //when service discovery function is running, all the ATT data from peripheral
             //will be processed by it,  user can only send your own att cmd after  service discovery is over
             host_att_client_handler(connHandle, pkt); //handle this ATT data by service discovery process
@@ -604,7 +613,7 @@ _attribute_no_inline_ void user_init_normal(void)
     blc_appRegisterStackFlashOperationCallback(app_flash_protection_operation); //register flash operation callback for stack
 #endif
 
-    //////////////////////////// basic hardware Initialization  End //////////////////////////////////
+                                                                                //////////////////////////// basic hardware Initialization  End //////////////////////////////////
 
 
     //////////////////////////// BLE stack Initialization  Begin //////////////////////////////////
@@ -614,9 +623,15 @@ _attribute_no_inline_ void user_init_normal(void)
 
     blc_initMacAddress(flash_sector_mac_address, mac_public, mac_random_static);
 
+
+
     //////////// LinkLayer Initialization  Begin /////////////////////////
 
     blc_ll_initBasicMCU();
+    
+#if defined(TLK_ONLY_BLE_HOST)
+    irq_enable();
+#endif
 
     blc_ll_initStandby_module(mac_public);
 
@@ -670,13 +685,13 @@ _attribute_no_inline_ void user_init_normal(void)
 
     blc_att_setCentralRxMtuSize(CENTRAL_ATT_RX_MTU); ///must be placed after "blc_gap_init"
 
-    /* GATT Initialization */
+/* GATT Initialization */
 #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
     host_att_register_idle_func(main_idle_loop);
 #endif
     blc_gatt_register_data_handler(app_gatt_data_handler);
 
-    /* SMP Initialization */
+/* SMP Initialization */
 #if (ACL_PERIPHR_SMP_ENABLE || ACL_CENTRAL_SMP_ENABLE)
     /* Configure the storage address and size for SMP pairing security information */
     blc_smp_configPairingSecurityInfoStorageAddressAndSize(flash_sector_smp_storage, FLASH_SMP_PAIRING_MAX_SIZE);
@@ -716,7 +731,7 @@ _attribute_no_inline_ void user_init_normal(void)
     u32 error_code1 = blc_contr_checkControllerInitialization();
     u32 error_code2 = blc_host_checkHostInitialization();
     if (error_code1 != INIT_SUCCESS || error_code2 != INIT_SUCCESS) {
-        /* It's recommended that user set some UI alarm to know the exact error, e.g. LED shine, print log */
+/* It's recommended that user set some UI alarm to know the exact error, e.g. LED shine, print log */
 #if (UI_LED_ENABLE)
         gpio_write(GPIO_LED_RED, LED_ON_LEVEL);
 #endif

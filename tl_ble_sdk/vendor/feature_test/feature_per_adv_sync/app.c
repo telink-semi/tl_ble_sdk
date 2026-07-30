@@ -31,11 +31,17 @@
 #include "../default_att.h"
 #include "app_ui.h"
 
+#include "../feature_app_parse_char.h"
 
 #if (FEATURE_TEST_MODE == TEST_PER_ADV_SYNC)
 
 
 _attribute_ble_data_retention_ int central_smp_pending = 0; // SMP: security & encryption;
+
+#if (APP_PARSE_CHAR_ENABLE)
+_attribute_ble_data_retention_ static u8 sync_address[6];
+_attribute_ble_data_retention_ static u8 sync_address_type;
+#endif
 
 
 /**
@@ -113,13 +119,16 @@ int app_le_ext_adv_report_event_handle(u8 *p, int evt_data_len)
             int user_manual_pairing  = 0;
             //manual pairing methods 1: key press triggers
             user_manual_pairing = central_pairing_enable && (rssi > -50); //button trigger pairing(RSSI threshold, short distance)
-
+#if (APP_PARSE_CHAR_ENABLE)
+            if ((central_auto_connect || user_manual_pairing) && (sync_address_type == pExtAdvInfo->address_type) && !memcmp(sync_address, pExtAdvInfo->address, sizeof(pExtAdvInfo->address))) {
+#else
             if (central_auto_connect || user_manual_pairing) {
+#endif
                 if (pExtAdvInfo->perd_adv_inter != PERIODIC_ADV_INTER_NO_PERIODIC_ADV) {
     #if 1
                     u8 status = blc_ll_periodicAdvertisingCreateSync(SYNC_ADV_SPECIFY | REPORTING_INITIALLY_EN, pExtAdvInfo->advertising_sid, pExtAdvInfo->address_type, pExtAdvInfo->address, 0, SYNC_TIMEOUT_2S, 0);
 
-                    tlkapi_printf(APP_LOG_EN, "blc_ll_createConnection error code :%02X", status);
+                    tlkapi_printf(APP_LOG_EN, "blc_ll_periodicAdvertisingCreateSync error code :%02X", status);
     #endif
                 }
             }
@@ -142,11 +151,11 @@ int app_le_adv_report_event_handle(u8 *p)
     s8                  rssi = pa->data[pa->len];
 
     #if 0 //debug, print ADV report number every 5 seconds
-    AA_dbg_adv_rpt ++;
-    if (clock_time_exceed(tick_adv_rpt, 5000000)) {
-        tlkapi_send_string_data(APP_CONTR_EVT_LOG_EN, "[APP][EVT] Adv report", pa->mac, 6);
-        tick_adv_rpt = clock_time();
-    }
+        AA_dbg_adv_rpt ++;
+        if(clock_time_exceed(tick_adv_rpt, 5000000)){
+            tlkapi_send_string_data(APP_CONTR_EVT_LOG_EN, "[APP][EVT] Adv report", pa->mac, 6);
+            tick_adv_rpt = clock_time();
+        }
     #endif
 
     /*********************** Central Create connection demo: Key press or ADV pair packet triggers pair  ********************/
@@ -210,7 +219,8 @@ int app_le_connection_complete_event_handle(u8 *p)
     if (pConnEvt->status == BLE_SUCCESS) {
         dev_char_info_insert_by_conn_event(pConnEvt);
 
-        if (pConnEvt->role == ACL_ROLE_CENTRAL) {       // central role, process SMP and SDP if necessary
+        if (pConnEvt->role == ACL_ROLE_CENTRAL)         // central role, process SMP and SDP if necessary
+        {
     #if (ACL_CENTRAL_SMP_ENABLE)
             central_smp_pending = pConnEvt->connHandle; // this connection need SMP
     #endif
@@ -240,7 +250,7 @@ int app_le_connection_complete_event_handle(u8 *p)
                 central_sdp_pending = pConnEvt->connHandle; // mark this connection need SDP
 
         #if (ACL_CENTRAL_SMP_ENABLE)
-                        //service discovery initiated after SMP done, trigger it in "GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE" event callBack.
+                    //service discovery initiated after SMP done, trigger it in "GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE" event callBack.
         #else
                 app_register_service(&app_service_discovery); //No SMP, service discovery can initiated now
         #endif
@@ -322,6 +332,11 @@ int app_le_periodic_adv_sync_established_event_handle(u8 *p)
     hci_le_periodicAdvSyncEstablishedEvt_t *pExt = (hci_le_periodicAdvSyncEstablishedEvt_t *)p;
 
     tlkapi_printf(APP_CONTR_EVT_LOG_EN, "[APP][EVENT]periodic_adv_sync_established syncHandle:%04X mac:%02X %02X %02X %02X %02X %02X", pExt->syncHandle, pExt->advAddr[0], pExt->advAddr[1], pExt->advAddr[2], pExt->advAddr[3], pExt->advAddr[4], pExt->advAddr[5]);
+#if (APP_PARSE_CHAR_ENABLE)
+    app_parse_printf("PA sync established sync_h:%d %02X:%02X:%02X:%02X:%02X:%02X\r\n", pExt->syncHandle, pExt->advAddr[0], pExt->advAddr[1], pExt->advAddr[2], pExt->advAddr[3], pExt->advAddr[4],
+                     pExt->advAddr[5]);
+#endif
+
     return 0;
 }
 
@@ -336,6 +351,11 @@ int app_le_periodic_adv_report_event_handle(u8 *p)
     #if UI_LED_ENABLE
     gpio_toggle(GPIO_LED_BLUE);
     #endif
+#if (APP_PARSE_CHAR_ENABLE)
+    hci_le_periodicAdvReportEvt_t *pEvt = (hci_le_periodicAdvReportEvt_t *) p;
+
+    app_parse_printf("PA adv report received %d\r\n", pEvt->syncHandle);
+#endif
     return 0;
 }
 
@@ -349,6 +369,10 @@ int app_le_periodic_adv_sync_lost_event_handle(u8 *p)
     hci_le_periodicAdvSyncLostEvt_t *pExt = (hci_le_periodicAdvSyncLostEvt_t *)p;
 
     tlkapi_printf(APP_CONTR_EVT_LOG_EN, "[APP][EVENT]periodic_adv_sync_lost syncHandle:%04X EventCode:%02X", pExt->syncHandle, pExt->subEventCode);
+
+#if (APP_PARSE_CHAR_ENABLE)
+    app_parse_printf("PA sync lost, sync_h:%d\r\n", pExt->syncHandle);
+#endif
 
     return 0;
 }
@@ -365,31 +389,38 @@ int app_le_periodic_adv_sync_lost_event_handle(u8 *p)
  */
 int app_controller_event_callback(u32 h, u8 *p, int n)
 {
-    if (h & HCI_FLAG_EVENT_BT_STD) { //Controller HCI event
+    if (h & HCI_FLAG_EVENT_BT_STD) //Controller HCI event
+    {
         u8 evtCode = h & 0xff;
 
         //------------ disconnect -------------------------------------
-        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) { //connection terminate
+        if (evtCode == HCI_EVT_DISCONNECTION_COMPLETE) //connection terminate
+        {
             app_disconnect_event_handle(p);
-        } else if (evtCode == HCI_EVT_LE_META) {         //LE Event
+        } else if (evtCode == HCI_EVT_LE_META)         //LE Event
+        {
             u8 subEvt_code = p[0];
 
             //------hci le event: le connection complete event---------------------------------
-            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) { // connection complete
+            if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_COMPLETE) // connection complete
+            {
                 app_le_connection_complete_event_handle(p);
             }
             //--------hci le event: le adv report event ----------------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT) { // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_ADVERTISING_REPORT) // ADV packet
+            {
                 //after controller is set to scan state, it will report all the adv packet it received by this event
 
                 app_le_adv_report_event_handle(p);
             }
             //------hci le event: le connection update complete event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) { // connection update
+            else if (subEvt_code == HCI_SUB_EVT_LE_CONNECTION_UPDATE_COMPLETE) // connection update
+            {
                 app_le_connection_update_complete_event_handle(p);
             }
             //------hci le event: LE extended advertising report event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_EXTENDED_ADVERTISING_REPORT) { // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_EXTENDED_ADVERTISING_REPORT) // ADV packet
+            {
                 app_le_ext_adv_report_event_handle(p, n);
             }
             //------hci le event: LE periodic advertising sync established event-------------------------------
@@ -397,11 +428,13 @@ int app_controller_event_callback(u32 h, u8 *p, int n)
                 app_le_periodic_adv_sync_established_event_handle(p);
             }
             //------hci le event: LE periodic advertising report event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_PERIODIC_ADVERTISING_REPORT) { // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_PERIODIC_ADVERTISING_REPORT) // ADV packet
+            {
                 app_le_periodic_adv_report_event_handle(p);
             }
             //------hci le event: LE periodic advertising sync lost event-------------------------------
-            else if (subEvt_code == HCI_SUB_EVT_LE_PERIODIC_ADVERTISING_SYNC_LOST) { // ADV packet
+            else if (subEvt_code == HCI_SUB_EVT_LE_PERIODIC_ADVERTISING_SYNC_LOST) // ADV packet
+            {
                 app_le_periodic_adv_sync_lost_event_handle(p);
             }
         }
@@ -518,9 +551,10 @@ int app_host_event_callback(u32 h, u8 *para, int n)
  */
 int app_gatt_data_handler(u16 connHandle, u8 *pkt)
 {
-    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) { //GATT data for Central
+    if (dev_char_get_conn_role_by_connhandle(connHandle) == ACL_ROLE_CENTRAL) //GATT data for Central
+    {
     #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
-        if (central_sdp_pending == connHandle) {                                //ATT service discovery is ongoing on this conn_handle
+        if (central_sdp_pending == connHandle) {                              //ATT service discovery is ongoing on this conn_handle
             //when service discovery function is running, all the ATT data from peripheral
             //will be processed by it,  user can only send your own att cmd after  service discovery is over
             host_att_client_handler(connHandle, pkt); //handle this ATT data by service discovery process
@@ -535,10 +569,11 @@ int app_gatt_data_handler(u16 connHandle, u8 *pkt)
             //-------   user process ------------------------------------------------
             u16 attHandle = pAtt->handle;
 
-            if (pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI) { //peripheral handle notify
-                                                            //---------------   consumer key --------------------------
+            if (pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI) //peripheral handle notify
+            {
+                //---------------   consumer key --------------------------
     #if (ACL_CENTRAL_SIMPLE_SDP_ENABLE)
-                if (attHandle == dev_info->char_handle[3])  // Consume Report In (Media Key)
+                if (attHandle == dev_info->char_handle[3]) // Consume Report In (Media Key)
     #else
                 if (attHandle == HID_HANDLE_CONSUME_REPORT) //Demo device(825x_ble_sample) Consume Report AttHandle value is 25
     #endif
@@ -599,6 +634,83 @@ int app_gatt_data_handler(u16 connHandle, u8 *pkt)
     return 0;
 }
 
+#if (APP_PARSE_CHAR_ENABLE)
+#define BDADDR_STR_LEN 17
+
+static bool app_parse_bdaddr(const char *str, u8 *addr)
+{
+    u8 pos = 0;
+
+    if (strlen(str) != BDADDR_STR_LEN) {
+        return false;
+    }
+
+    for (u8 i = 0; i < 6; i++) {
+        char temp[3] = {str[pos], str[pos + 1], 0};
+
+        app_parse_str2hex(temp, &addr[i], 2);
+        pos += 2;
+        if (i < 5 && str[pos++] != ':') {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+static void pairing_fun(char *argv[], int argc, void *user_data)
+{
+    if (argc < 1) {
+        goto failed;
+    }
+
+    if (!strcasecmp(argv[0], "on") && (argc >= 2)) {
+        u8 addr_temp[6];
+
+        if (!app_parse_bdaddr(argv[1], addr_temp)) {
+            goto failed;
+        }
+
+        if (argc > 2) {
+            sync_address_type = app_parse_str2n(argv[2]);
+        } else {
+            sync_address_type = PEERATYPE_PUBLIC_DEVICE_ADDRESS;
+        }
+
+        memcpy(sync_address, addr_temp, sizeof(addr_temp));
+        central_pairing_enable = 1;
+    } else if (!strcasecmp(argv[0], "off")) {
+        central_pairing_enable = 0;
+    } else {
+        goto failed;
+    }
+
+    app_parse_printf("pairing %s done\r\n", argv[0]);
+
+    return;
+
+failed:
+    app_parse_printf("pairing <on <addr> [addr_type] | off>\r\n");
+}
+
+static void help_fun(char *argv[], int argc, void *user_data);
+
+static const parse_fun_list_t app_funcs[] = {
+    {"help", help_fun, NULL},
+    {"pairing", pairing_fun, NULL},
+};
+
+static void help_fun(char *argv[], int argc, void *user_data)
+{
+    app_parse_printf("Commands:\r\n");
+
+    foreach_arr(i, app_funcs)
+    {
+        app_parse_printf("\t%s\r\n", app_funcs[i].fun_name);
+    }
+}
+#endif
+
 ///////////////////////////////////////////
 
 /**
@@ -632,7 +744,10 @@ _attribute_no_inline_ void user_init_normal(void)
 
     blc_initMacAddress(flash_sector_mac_address, mac_public, mac_random_static);
 
-
+    #if defined(TLK_ONLY_BLE_HOST)
+    sys_n22_start();
+    delay_ms(300);
+    #endif
     //////////// LinkLayer Initialization  Begin /////////////////////////
     blc_ll_initBasicMCU();
 
@@ -686,7 +801,7 @@ _attribute_no_inline_ void user_init_normal(void)
     u8 error_code = blc_contr_checkControllerInitialization();
     if (error_code != INIT_SUCCESS) {
         /* It's recommended that user set some UI alarm to know the exact error, e.g. LED shine, print log */
-        write_log32(0x88880000 | error_code);
+           
     #if (TLKAPI_DEBUG_ENABLE)
         tlkapi_send_string_data(1, "[APP][INI] Controller INIT ERROR", &error_code, 1);
         while (1) {
@@ -770,6 +885,11 @@ _attribute_no_inline_ void user_init_normal(void)
 
 
     tlkapi_printf(APP_LOG_EN, "[APP][INI] feature_per_adv_sync init");
+
+#if (APP_PARSE_CHAR_ENABLE)
+    app_parse_init(app_funcs, ARRAY_SIZE(app_funcs));
+    app_parse_printf("feature_per_adv_sync init\r\n");
+#endif
     ////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -807,6 +927,9 @@ int main_idle_loop(void)
     proc_keyboard(0, 0, 0);
     #endif
 
+#if (APP_PARSE_CHAR_ENABLE)
+    app_parse_loop();
+#endif
 
     proc_central_role_unpair();
 

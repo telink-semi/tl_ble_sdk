@@ -38,6 +38,8 @@
 #include "reg_include/sc_bb_reg.h"
 #include "compiler.h"
 
+#define  INTERNAL_SIMULATION_DEBUG    0
+
 /**********************************************************************************************************************
  *                                         global constants                                                           *
  *********************************************************************************************************************/
@@ -45,8 +47,8 @@
 /**********************************************************************************************************************
  *                                           global macro                                                             *
  *********************************************************************************************************************/
-/*
- * brief instruction delay
+/**
+ * @brief instruction delay
  */
 
 #define _ASM_NOP_       __asm__ __volatile__("nop")
@@ -138,9 +140,9 @@ typedef enum
 {
     INTERNAL_CAP_XTAL24M = 0, /**<    Use the chip's internal crystal capacitors,
                                  <p>  hardware boards can not have 24M crystal matching capacitors */
-    //    EXTERNAL_CAP_XTAL24M = 1, /**<    Use an external crystal capacitor,
-    //                                 <p>  the hardware board needs to have a matching capacitor for the 24M crystal,
-    //                                 <p>  the program will turn off the chip's internal capacitor */
+    EXTERNAL_CAP_XTAL24M = 1, /**<    Use an external crystal capacitor,
+                                 <p>  the hardware board needs to have a matching capacitor for the 24M crystal,
+                                 <p>  the program will turn off the chip's internal capacitor */
 } cap_typedef_e;
 
 /**
@@ -148,8 +150,8 @@ typedef enum
  */
 typedef enum
 {
-    LDO_1P25_LDO_1P8     = 0x00, /**< 1.25V-LDO  & 1.8V-LDO  mode */
-    DCDC_1P25_LDO_1P8    = 0x01, /**< 1.25V-DCDC & 1.8V-LDO  mode */
+    LDO_1P25_LDO_1P8   = 0x00, /**< 1.25V-LDO  & 1.8V-LDO  mode */
+    DCDC_1P25_LDO_1P8  = 0x01, /**< 1.25V-DCDC & 1.8V-LDO  mode */
 } power_mode_e;
 
 /**
@@ -179,11 +181,6 @@ typedef struct tbl_cmd_set_t
     unsigned char cmd;
 } tbl_cmd_set_t;
 
-
-/**********************************************************************************************************************
- *                                     global variable declaration                                                    *
- *********************************************************************************************************************/
-
 /**
  * @brief   chip version.
  * @note    this value should confirm when chip reversion.
@@ -199,7 +196,6 @@ extern unsigned int g_chip_version;
 /**********************************************************************************************************************
  *                                      global function prototype                                                     *
  *********************************************************************************************************************/
-
 /**
  * @brief      This function reboot mcu.
  * @return     none

@@ -78,8 +78,9 @@ _attribute_ram_code_ int main(void)
     /* detect if MCU is wake_up from deep retention mode */
     int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup(); //MCU deep retention wakeUp
 
-
+    #if !defined(TLK_ONLY_BLE_HOST)
     rf_drv_ble_init();
+    #endif
 
     gpio_init(!deepRetWakeUp);
 

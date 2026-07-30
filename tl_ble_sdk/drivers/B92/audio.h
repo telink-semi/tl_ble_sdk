@@ -51,6 +51,17 @@ typedef enum
     I2S1,
 } audio_i2s_select_e;
 
+/**
+ * @brief I2S line mode.
+ * 
+ */
+typedef enum
+{
+    I2S_5_LINE_MODE,     /**< BCLK, ADC_LR_CLK, DAC_LR_CLK, ADC_DATA, DAC_DATA. */
+    I2S_4_LINE_DAC_MODE, /**< BCLK, DAC_LR_CLK, ADC_DATA, DAC_DATA. */
+    I2S_4_LINE_ADC_MODE, /**< BCLK, ADC_LR_CLK, ADC_DATA, DAC_DATA. */
+} i2s_io_mode_e;
+
 typedef enum
 {
     AUDIO_RX_FIFO0_IRQ = BIT(0),
@@ -1146,6 +1157,15 @@ void audio_set_dac_fifo_output_mode(audio_out_mode_e int_aout_mode);
  * @return    none
  */
 void audio_set_dac_fifo_output_mode_config(audio_fifo_chn_e fifo_chn, audio_dac_output_src_e source, audio_codec_wl_mode_e data_width);
+
+/**
+ * @brief      This function serves to config i2s line mode.
+ *
+ * @param[in]  i2s_sel   - i2s select.
+ * @param[in]  io_mode - line mode.
+ * @return     none
+ */
+void audio_i2s_set_io_mode(audio_i2s_select_e i2s_sel, i2s_io_mode_e io_mode);
 
 /**
  * @brief     This function serves to set i2s data input data bit width mode.

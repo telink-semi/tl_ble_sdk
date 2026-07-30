@@ -62,7 +62,7 @@ void uart_debug_init(void)
 }
 
 
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 void uart_debug_prepare_dma_data(unsigned char * addr, unsigned int len)
 {
     uart_send_dma(DEBUG_UART_CHANNEL, addr, len);

@@ -50,10 +50,8 @@ struct blc_dis_client
     char            firmwareRevision[14];
     u16             softwareRevisionLen;
     char            softwareRevision[14];
-
     dis_system_id_t systemId;
     dis_pnp_t       PnPID;
-
     u16             IEEEDataListLen;
     u8              IEEEDataList[11];
     u16             udiForMedicalDevicesLen;
@@ -61,8 +59,10 @@ struct blc_dis_client
 
 } __attribute__((packed));
 
+
 struct blc_dis_client_ctrl
 {
     blc_prf_proc_t         process;
     struct blc_dis_client *pDisClient[STACK_PRF_ACL_CONN_MAX_NUM];
 } __attribute__((packed));
+

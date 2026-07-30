@@ -809,21 +809,13 @@ void myudb_usb_init(u16 id, void *p_print)
 
     myudb.id = id;
 
-    /*!< usb init */
-    #if (MCU_CORE_TYPE == MCU_CORE_TL751X)
-    //enable USB manual interrupt(in auto interrupt mode,USB device would be USB printer device)
-    usbhw_init();
-    /* set control endpoint size */
-    usbhw_set_ctrl_ep_size(SIZE_64_BYTE);
-    #endif
-
     #if (MCU_CORE_TYPE == MCU_CORE_TL321X || MCU_CORE_TYPE == MCU_CORE_TL721X)
     usbhw_init();
     /* set control endpoint size */
     usbhw_set_ctrl_ep_size(SIZE_64_BYTE);
     #endif
 
-    #if (MCU_CORE_TYPE == MCU_CORE_TL321X || MCU_CORE_TYPE == MCU_CORE_TL751X)
+    #if (MCU_CORE_TYPE == MCU_CORE_TL321X )
     usbhw_enable_hw_feature(FLD_USB_AUTO_HALT_CLR | FLD_USB_AUTO_HALT_STALL);
     #endif
 

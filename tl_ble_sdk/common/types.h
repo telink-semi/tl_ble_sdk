@@ -33,18 +33,38 @@ typedef unsigned int       u32;
 typedef long long          s64;
 typedef unsigned long long u64;
 
-
+#ifndef BLC_ZEPHYR_BLE_INTEGRATION
 typedef unsigned char      uint8_t;
 typedef unsigned short     uint16_t;
+typedef unsigned long      uint32_t;
+typedef unsigned long long uint64_t;
+#endif // BLC_ZEPHYR_BLE_INTEGRATION
 
 typedef unsigned char      uint08;
 typedef unsigned short     uint16;
 typedef unsigned int       uint32;
 typedef unsigned long long uint64;
 
+#ifndef BLC_ZEPHYR_BLE_INTEGRATION
+typedef signed char        int8_t;
+typedef signed short       int16_t;
+typedef signed long        int32_t;
+typedef signed long long   int64_t;
+#endif // BLC_ZEPHYR_BLE_INTEGRATION
+
+typedef unsigned char uchar;
+typedef unsigned int  uint;
+typedef unsigned long ulong;
+
 #ifndef NULL
     #define NULL 0
 #endif
+
+
+#ifndef nullptr
+    #define nullptr 0
+#endif
+
 
 #ifndef __cplusplus
 
@@ -64,8 +84,8 @@ typedef unsigned long long uint64;
 
 // There is no way to directly recognise whether a typedef is defined
 // http://stackoverflow.com/questions/3517174/how-to-check-if-a-datatype-is-defined-with-typedef
-#ifdef __GNUC__
-typedef u16 wchar_t;
+#if defined(__GNUC__) && !defined(BLC_ZEPHYR_BLE_INTEGRATION)
+    typedef u16 wchar_t;
 #endif
 
 #ifndef WIN32

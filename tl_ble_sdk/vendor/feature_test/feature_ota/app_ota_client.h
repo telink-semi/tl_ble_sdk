@@ -28,8 +28,8 @@
 
 
     /**
-* @brief   peer device's new firmware storage address on local device
-*/
+ * @brief   peer device's new firmware storage address on local device
+ */
     #define NEW_FW_ADDR_128K           0x20000
     #define NEW_FW_ADDR_256K           0x40000
     #define NEW_FW_ADDR_512K           0x80000

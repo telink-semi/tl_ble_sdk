@@ -71,6 +71,7 @@ int blc_disc_getFirmwareRevision(u16 connHandle, u8 *firmwareRevision, u16 *firm
 int blc_disc_getSoftwareRevision(u16 connHandle, u8 *softwareRevision, u16 *softwareRevisionLen);
 int blc_disc_getSystemId(u16 connHandle, dis_system_id_t *systemId);
 int blc_disc_getPnPID(u16 connHandle, dis_pnp_t *PnPID);
+
 int blc_disc_getIEEEDataList(u16 connHandle, u8 *IEEEDataList, u16 *IEEEDataListLen);
 int blc_disc_getUdiForMedicalDevices(u16 connHandle, u8 *udiForMedicalDevices, u16 *udiForMedicalDevicesLen);
 

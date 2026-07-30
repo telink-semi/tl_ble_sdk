@@ -39,14 +39,16 @@
 #include "gpio.h"
 #include "reg_include/register.h"
 #include "pem.h"
+#include "lib/include/pm/pm.h"
 
 #ifndef INTERNAL_TEST_FUNC_EN
 #define INTERNAL_TEST_FUNC_EN            0//only for internal test
 #endif
 
-extern unsigned char g_adc_rx_fifo_index[2];
-
 #define ADC_SAR_CNT  2  //SAR0 and SAR1
+
+extern unsigned char g_adc_rx_fifo_index[2];
+extern unsigned char g_adc_res_m_shadow[ADC_SAR_CNT];
 /**
  *  @brief  Define ADC chn
  */
@@ -270,6 +272,21 @@ typedef enum{
     FLD_CLOCK_XTL,
     FLD_CLOCK_PLL,
 }adc_dig_clk_src_e;
+
+typedef enum
+{
+    ADC_EVENT_RX_THRESHOLD = 0,
+    ADC_EVENT_RX_DATA_FIFO_WR,
+    ADC1_EVENT_RX_THRESHOLD,
+    ADC1_EVENT_RX_DATA_FIFO_WR,
+} adc_event_e;
+
+typedef enum
+{
+    ADC_TASK_SINGLE_ADC_TRIG = 0,
+    ADC1_TASK_SINGLE_ADC_TRIG = 2,
+} adc_task_e;
+
 /**********************************************************************************************************************
  *                                         DMA and NDMA common interface                                              *
  **********************************************************************************************************************/
@@ -277,9 +294,6 @@ typedef enum{
  * @brief    This function is used to power on sar_adc.
  * @param[in]  sar_adc_num - SAR0/SAR1.
  * @return   none.
- * @note     -# User need to wait >30us after adc_power_on() for ADC to be stable.
- *           -# If you calling adc_power_off(), because all analog circuits of ADC are turned off after adc_power_off(),
- *            it is necessary to wait >30us after re-adc_power_on() for ADC to be stable.
  */
 void adc_power_on(adc_num_e sar_adc_num);
 /**
@@ -298,7 +312,10 @@ void adc_power_off(adc_num_e sar_adc_num);
  */
 static inline void adc_set_diff_input(adc_num_e sar_adc_num,adc_sample_chn_e chn,adc_input_pch_e p_ain,adc_input_nch_e n_ain)
 {
-    analog_write_reg8(areg_adc_res_m(sar_adc_num) , analog_read_reg8(areg_adc_res_m(sar_adc_num)) | FLD_ADC_EN_DIFF_CHN_M);
+    g_adc_res_m_shadow[sar_adc_num] |= FLD_ADC_EN_DIFF_CHN_M;
+    power_adc_protected_mode(PROTECT_VOLTAGE_PROTECT_MODE);
+    analog_write_reg8(areg_adc_res_m(sar_adc_num) , g_adc_res_m_shadow[sar_adc_num]);
+    power_adc_protected_mode(PROTECT_VOLTAGE_RECOVER_MODE);
     reg_adc_r_mux(sar_adc_num,chn) = ((p_ain>>12) | ((n_ain>>12)<<4)) ;
 
 }
@@ -589,14 +606,16 @@ static inline void adc_trigger_start(adc_num_e sar_adc_num)
  * @param[in]  event_signal - to select the event signal.
  * @return     none.
  */
-void adc_set_pem_event(adc_num_e sar_adc_num,pem_chn_e chn,unsigned char adc_sel);
+void adc_set_pem_event(adc_num_e sar_adc_num, pem_chn_e chn, adc_event_e event_signal);
+
 /**
  * @brief      This function serves to configure the PEM task.
  * @param[in]  sar_adc_num - SAR0/SAR1.
  * @param[in]  chn - to select the PEM channel.
  * @return     none.
  */
-void adc_set_pem_task(adc_num_e sar_adc_num,pem_chn_e chn);
+void adc_set_pem_task(adc_num_e sar_adc_num, pem_chn_e chn, adc_task_e task_signal);
+
 /**
  * @brief      This function sets adc digital clock and analog clock.
  * @param[in]  sar_adc_num - SAR0/SAR1.
@@ -651,3 +670,10 @@ void adc_set_sar0_vbat_calib_vref(unsigned short vref, signed char offset);
  * @return none
  */
 void adc_set_sar1_gpio_calib_vref(unsigned short vref, signed char offset);
+
+/**
+ * @brief      This function is used to reset sar_adc module.
+ * @param[in]  sar_adc_num - SAR0/SAR1.
+ * @return     none
+ */
+void adc_reset(adc_num_e sar_adc_num);

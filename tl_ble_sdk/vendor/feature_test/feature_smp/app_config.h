@@ -42,8 +42,19 @@
 
 
     ///////////////////////// UI Configuration ////////////////////////////////////////////////////
-    #define UI_LED_ENABLE      1
-    #define UI_KEYBOARD_ENABLE 1
+    #define APP_PARSE_CHAR_UART_CLIENT      0
+    #define APP_PARSE_CHAR_ENABLE           0
+    #define UI_LED_ENABLE                   1
+
+    #if (APP_PARSE_CHAR_ENABLE)
+        #define UI_KEYBOARD_ENABLE          0
+        #define PARSE_CHAR_MAX_ARGV_SIZE    40
+        #define APP_PARSE_CHAR_IFACE        APP_PARSE_CHAR_UART
+        #define HCI_UART_EXT_DRIVER_EN      1
+        #define USB_CDC_ENABLE              1
+    #else
+        #define UI_KEYBOARD_ENABLE          1
+    #endif
 
     ///////////////////////// DEBUG  Configuration ////////////////////////////////////////////////
     #define DEBUG_GPIO_ENABLE     0
@@ -59,7 +70,7 @@
     #define APP_PAIR_LOG_EN       1
     #define APP_KEY_LOG_EN        1
 
-    #define JTAG_DEBUG_DISABLE    1 //if use JTAG, change this
+       
 
 
     #include "../../common/default_config.h"
