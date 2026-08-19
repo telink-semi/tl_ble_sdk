@@ -434,7 +434,9 @@ static inline void uart_clr_irq_mask(uart_num_e uart_num, uart_irq_mask_e mask)
  */
 static inline void uart_clr_rx_index(uart_num_e uart_num)
 {
+    unsigned int r = core_interrupt_disable();
     uart_rx_byte_index[uart_num] = 0;
+    core_restore_interrupt(r);
 }
 
 /**
@@ -448,7 +450,9 @@ static inline void uart_clr_rx_index(uart_num_e uart_num)
  */
 static inline void uart_clr_tx_index(uart_num_e uart_num)
 {
+    unsigned int r = core_interrupt_disable();
     uart_tx_byte_index[uart_num] = 0;
+    core_restore_interrupt(r);
 }
 
 /**
@@ -461,6 +465,7 @@ static inline void uart_clr_tx_index(uart_num_e uart_num)
  */
 static inline void uart_hw_fsm_reset(uart_num_e uart_num)
 {
+    unsigned int r = core_interrupt_disable();
     switch (uart_num) {
     case UART0:
         BM_CLR(reg_rst0, FLD_RST0_UART0);
@@ -485,6 +490,8 @@ static inline void uart_hw_fsm_reset(uart_num_e uart_num)
     default:
         break;
     }
+    core_restore_interrupt(r);
+
     uart_clr_tx_index(uart_num);
     uart_clr_rx_index(uart_num);
     g_uart_timeout_error[uart_num].g_uart_error_timeout_code = UART_API_ERROR_TIMEOUT_NONE;

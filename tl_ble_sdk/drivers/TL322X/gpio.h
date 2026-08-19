@@ -25,7 +25,7 @@
  *
  *  Introduction
  *  ===============
- *  B92 contain two six group gpio(A~F), total 44 gpio pin.
+ *  TL322x contain 9 group gpio(A~I), total 70 gpio pin.
  *
  *  API Reference
  *  ===============

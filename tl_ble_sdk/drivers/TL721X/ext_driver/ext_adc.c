@@ -200,16 +200,24 @@ unsigned short adc_get_result(adc_transfer_mode_e transfer_mode, adc_sample_chn_
             int sample_cnt = adc_get_rxfifo_cnt();
             if (sample_cnt > 0) {
 
+#if (MCU_CORE_TYPE == MCU_CORE_TL751X)
+                adc_data =  adc_get_raw_code();
+                channel_buffers[chn][cnt]= adc_data & 0xffff;
+                channel_buffers[chn][cnt+1]= (adc_data & 0xffff0000) >> 16;
+#else
                 channel_buffers[chn][cnt] = adc_get_raw_code();
+#endif
 
                 if (channel_buffers[chn][cnt] & BIT(11)) { //12 bit resolution, BIT(11) is sign bit, 1 means negative voltage in differential_mode
                     channel_buffers[chn][cnt] = 0;
                 } else {
                     channel_buffers[chn][cnt] &= 0x7FF;    //BIT(10..0) is valid adc code
                 }
-
+#if (MCU_CORE_TYPE == MCU_CORE_TL751X)
+                cnt +=2;
+#else
                 cnt++;
-
+#endif
             }
         }
     }

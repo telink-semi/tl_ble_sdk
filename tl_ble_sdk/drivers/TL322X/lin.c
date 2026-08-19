@@ -127,6 +127,7 @@ static unsigned char lin_software_pid(unsigned char id) {
  */
 static void lin_reset(lin_num_e lin_num)
 {
+    unsigned int r = core_interrupt_disable();
     switch (lin_num) {
     case LIN0:
         BM_CLR(reg_clk_en6, FLD_CLK6_LIN0_EN);
@@ -143,6 +144,7 @@ static void lin_reset(lin_num_e lin_num)
     default:
         break;
     }
+    core_restore_interrupt(r);
     reg_lin_uart_ctrl1(lin_num) = 0;
     reg_lin_uart_ctrl2(lin_num) = 0;
 }

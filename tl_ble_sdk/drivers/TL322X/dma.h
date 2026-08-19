@@ -35,7 +35,7 @@
 #define DMA_H_
 #include "compiler.h"
 #include "reg_include/register.h"
-
+#include "lib/include/core.h"
 /**
  * @brief DMA has two physical channels, DMA0: DMA0~DMA7; DMA1: DMA8~DMA15.
  */
@@ -596,8 +596,10 @@ static inline void dma_set_dst_address(dma_chn_e chn, unsigned int dst_addr)
  */
 static inline void dma_reset(void)
 {
+    unsigned int r = core_interrupt_disable();
     reg_rst1 &= ~(FLD_RST1_DMA);
     reg_rst1 |= FLD_RST1_DMA;
+    core_restore_interrupt(r);
 }
 
 /**
@@ -606,8 +608,10 @@ static inline void dma_reset(void)
  */
 static inline void dma1_reset(void)
 {
+    unsigned int r = core_interrupt_disable();
     reg_rst7 &= ~(FLD_RST7_DMA1);
     reg_rst7 |= FLD_RST7_DMA1;
+    core_restore_interrupt(r);
 }
 
 /**

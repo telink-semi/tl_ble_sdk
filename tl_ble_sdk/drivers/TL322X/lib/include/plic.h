@@ -280,8 +280,10 @@ static _always_inline void plic_set_feature(feature_e feature)
  */
 static _always_inline void plic_preempt_feature_en(core_preempt_pri_e preempt_pri)
 {
+    unsigned int r = core_interrupt_disable();
     reg_irq_feature |= FLD_FEATURE_PREEMPT_PRIORITY_INT_EN;
     g_plic_preempt_en = preempt_pri;
+    core_restore_interrupt(r);
 }
 
 /**
@@ -290,8 +292,10 @@ static _always_inline void plic_preempt_feature_en(core_preempt_pri_e preempt_pr
  */
 static _always_inline void plic_preempt_feature_dis(void)
 {
+    unsigned int r = core_interrupt_disable();
     reg_irq_feature &= (~FLD_FEATURE_PREEMPT_PRIORITY_INT_EN);
     g_plic_preempt_en = 0;
+    core_restore_interrupt(r);
 }
 
 /**

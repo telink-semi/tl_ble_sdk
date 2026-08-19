@@ -25,6 +25,7 @@
 #include "string.h"
 #include "dma.h"
 #include "gpio.h"
+#include "lib/include/core.h"
 
 /* TSEG1 corresponds to the sum of xPROPSEG and xPSEG1, TSEG2 corresponds to the xPSEG2 value. */
 #define MIN_TIME_SEGMENT1 (2)
@@ -993,11 +994,15 @@ typedef enum {
  */
 static inline  void can_module_en(can_chn_e chn){
     if(chn == CAN0){
+        unsigned int irq = core_interrupt_disable();
         reg_rst7 |= FLD_RST7_CAN0;
         reg_clk_en7|=FLD_CLK7_CAN0_EN;
+        core_restore_interrupt(irq);
     }else if(chn == CAN1){
+        unsigned int irq1 = core_interrupt_disable();
         reg_rst7 |= FLD_RST7_CAN1;
         reg_clk_en7|=FLD_CLK7_CAN1_EN;
+        core_restore_interrupt(irq1);
     }
     reg_can_mcr3(chn) &= ~FLD_CAN_MDIS;
     while(reg_can_mcr2(chn)&FLD_CAN_LPMACK);
