@@ -6,9 +6,9 @@ tl\_ble\_sdk is a software development platform for Bluetooth® Low Energy (BLE)
 
 The SDK provides a complete software framework, including the BLE protocol stack, hardware drivers, system services, and engineering samples, supporting the full development process from product prototyping to mass production.
 
-tl\_ble\_sdk adopts a multi-role, multi-connection architecture to meet the development needs of typical BLE multi-connection applications such as wireless computer peripherals, smart homes, smart audio, and wearable devices.
+tl\_ble\_sdk adopts a multi-role, multi-connection architecture to meet the development needs of diverse Bluetooth LE multi-connection applications; typcial usage scenarios include gaming, wireless human interface devices, smart homes, positioning and tracking, and electronic shelf label.
 
->- tl\_ble\_sdk supports up to 4 Central and 4 Peripheral connections, but does not support free role switching.
+>- tl\_ble\_sdk by default supports up to 4 Central and 4 Peripheral connections, but does not support free role switching.
 
 **Core Competencies**
 
