@@ -506,7 +506,7 @@ _WAIT_EFUSE_LOAD_AND_FLASH_WAKEUP_FINISH:
     addi    t0, t0, 1
     bgeu    t1, t0, _WAIT_EFUSE_LOAD_AND_FLASH_WAKEUP_FINISH
 
-#if 0
+#if 1
 _MULTI_ADDRESS_BEGIN:
     lui     t0, 0xA3FFF
     addi    t0, t0 , 0x7ff        //t0:A3FFF7FF
