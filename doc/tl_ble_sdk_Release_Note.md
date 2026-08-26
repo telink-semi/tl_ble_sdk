@@ -1989,7 +1989,7 @@
         - Flash bin size: 110.83 KB
         - IRAM size: 55.75 KB
         - DRAM size: 0.77 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 249.14 KB
         - IRAM size: 93.77 KB
         - DRAM size: 24.02 KB
@@ -2006,7 +2006,7 @@
         - Flash bin size: 111.58 KB
         - IRAM size: 56.10 KB
         - DRAM size: 0.87 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 257.20 KB
         - IRAM size: 93.61 KB
         - DRAM size: 24.09 KB
@@ -2024,11 +2024,11 @@
         - Flash bin size: 117.30 KB
         - IRAM size: 59.98 KB
         - DRAM size: 0.91 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 268.51 KB
         - IRAM size: 98.24 KB
         - DRAM size: 21.62 KB
-    - Compiling eslp_esl_dmeo
+    - Compiling eslp_esl_demo
         - Flash bin size: 203.16 KB
         - IRAM size: 69.83 KB
         - DRAM size: 5.36 KB
@@ -2046,11 +2046,11 @@
         - Flash bin size:  119.45 KB
         - IRAM size: 57.11 KB
         - DRAM size: 0.88 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 258.54 KB
         - IRAM size: 90.60 KB
         - DRAM size: 21.60 KB
-    - Compiling eslp_esl_dmeo
+    - Compiling eslp_esl_demo
         - Flash bin size: 204.53 KB
         - IRAM size: 66.45 KB
         - DRAM size: 5.33 KB
@@ -2203,7 +2203,7 @@
         - Flash bin size: 110.83 KB
         - IRAM size: 55.75 KB
         - DRAM size: 0.77 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 249.14 KB
         - IRAM size: 93.77 KB
         - DRAM size: 24.02 KB
@@ -2220,7 +2220,7 @@
         - Flash bin size: 111.58 KB
         - IRAM size: 56.10 KB
         - DRAM size: 0.87 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 257.20 KB
         - IRAM size: 93.61 KB
         - DRAM size: 24.09 KB
@@ -2238,11 +2238,11 @@
         - Flash bin size: 116.53 KB
         - IRAM size: 59.96 KB
         - DRAM size: 0.91 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 268.19 KB
         - IRAM size: 98.24 KB
         - DRAM size: 21.62 KB
-    - Compiling eslp_esl_dmeo
+    - Compiling eslp_esl_demo
         - Flash bin size: 202.61 KB
         - IRAM size: 69.58 KB
         - DRAM size: 5.36 KB
@@ -2260,11 +2260,11 @@
         - Flash bin size:  118.11 KB
         - IRAM size: 56.84 KB
         - DRAM size: 0.88 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 258.20 KB
         - IRAM size: 90.60 KB
         - DRAM size: 21.60 KB
-    - Compiling eslp_esl_dmeo
+    - Compiling eslp_esl_demo
         - Flash bin size: 204.21 KB
         - IRAM size: 66.45 KB
         - DRAM size: 5.33 KB
@@ -2559,7 +2559,7 @@
         - Flash bin size: 110.83 KB
         - IRAM size: 55.75 KB
         - DRAM size: 0.77 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 249.14 KB
         - IRAM size: 93.77 KB
         - DRAM size: 24.02 KB
@@ -2576,7 +2576,7 @@
         - Flash bin size: 111.58 KB
         - IRAM size: 56.10 KB
         - DRAM size: 0.87 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 257.20 KB
         - IRAM size: 93.61 KB
         - DRAM size: 24.09 KB
@@ -2594,11 +2594,11 @@
         - Flash bin size: 116.53 KB
         - IRAM size: 59.96 KB
         - DRAM size: 0.91 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 268.19 KB
         - IRAM size: 98.24 KB
         - DRAM size: 21.62 KB
-    - Compiling eslp_esl_dmeo
+    - Compiling eslp_esl_demo
         - Flash bin size: 202.61 KB
         - IRAM size: 69.58 KB
         - DRAM size: 5.36 KB
@@ -2616,11 +2616,11 @@
         - Flash bin size:  118.11 KB
         - IRAM size: 56.84 KB
         - DRAM size: 0.88 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 258.20 KB
         - IRAM size: 90.60 KB
         - DRAM size: 21.60 KB
-    - Compiling eslp_esl_dmeo
+    - Compiling eslp_esl_demo
         - Flash bin size: 204.21 KB
         - IRAM size: 66.45 KB
         - DRAM size: 5.33 KB
@@ -2776,7 +2776,7 @@
         - Flash bin size: 110.83 KB
         - IRAM size: 55.75 KB
         - DRAM size: 0.77 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 249.14 KB
         - IRAM size: 93.77 KB
         - DRAM size: 24.02 KB
@@ -2793,7 +2793,7 @@
         - Flash bin size: 111.58 KB
         - IRAM size: 56.10 KB
         - DRAM size: 0.87 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 257.20 KB
         - IRAM size: 93.61 KB
         - DRAM size: 24.09 KB
@@ -2811,11 +2811,11 @@
         - Flash bin size: 116.53 KB
         - IRAM size: 59.96 KB
         - DRAM size: 0.91 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 268.19 KB
         - IRAM size: 98.24 KB
         - DRAM size: 21.62 KB
-    - Compiling eslp_esl_dmeo
+    - Compiling eslp_esl_demo
         - Flash bin size: 202.61 KB
         - IRAM size: 69.58 KB
         - DRAM size: 5.36 KB
@@ -2833,11 +2833,11 @@
         - Flash bin size:  118.11 KB
         - IRAM size: 56.84 KB
         - DRAM size: 0.88 KB
-    - Compiling eslp_ap_dmeo
+    - Compiling eslp_ap_demo
         - Flash bin size: 258.20 KB
         - IRAM size: 90.60 KB
         - DRAM size: 21.60 KB
-    - Compiling eslp_esl_dmeo
+    - Compiling eslp_esl_demo
         - Flash bin size: 204.21 KB
         - IRAM size: 66.45 KB
         - DRAM size: 5.33 KB
