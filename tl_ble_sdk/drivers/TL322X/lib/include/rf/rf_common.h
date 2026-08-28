@@ -263,9 +263,8 @@ typedef struct
     rf_ldo_trim_t  ldo_trim;
     rf_dcoc_cal_t  dcoc_cal;
     rf_rccal_cal_t rccal_cal;
-    unsigned char  tx_fcal[8];
-    unsigned char  rx_fcal[8];
-} rf_fast_settle_t;
+    unsigned char  fcal[81];
+} rf_fast_settle_t; 
 
 /**
  * @brief       RF CRC config.
