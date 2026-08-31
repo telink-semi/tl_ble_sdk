@@ -272,8 +272,7 @@ typedef struct
     rf_ldo_trim_t  ldo_trim;
     rf_dcoc_cal_t  dcoc_cal;
     rf_rccal_cal_t rccal_cal;
-    unsigned char  tx_fcal[8];
-    unsigned char  rx_fcal[8];
+    unsigned char  fcal[81];
 } rf_fast_settle_t;
 
 /**
@@ -1586,5 +1585,12 @@ void rf_ldot_ldo_rxtxlf_bypass_dis(void);
   * @return     none.
   */
 void rf_set_rffe_pin(gpio_func_pin_e tx_pin, gpio_func_pin_e rx_pin);
+
+/**
+ * @brief      This function is mainly used to set the fcal value.
+ * @param[in]  fcal_value- variables are used to set the fcal value.
+ * @return     none.
+ */
+void rf_set_fcal_value(unsigned char fcal_value);
 
 #endif
