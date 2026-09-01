@@ -22,7 +22,7 @@
         - Fixing effect: Improve reception sensitivity to normal levels.
         - Update suggestion: must be updated.
     - For (TL322X): Fixed an abnormal waveform occurring on channel 2464 at 15 μs for TX Fast‑Settle.
-        - (TL322X): Fixed an abnormal waveform occurring on channel 2464 at 15 μs for TX Fast‑Settle.
+        - Detailed description: After modification, the 15‑μs fast‑settle function will not cause a spike on the 2464 MHz frequency point.
         - Fixing effect: Improve TX performance.
         - Update suggestion: Must update.
     - For (TL752X/TL751X/TL711X/TL522X/TL521X/TL323X/TL322X/TL321X): Align the number of RF interrupt masks with the register table; fix errors in some interrupt sources for the RF interrupt mask set/clear interfaces.
@@ -34,8 +34,6 @@
 	* **LL**
 		* Fixed PAwR TX irq not trigger issue, add timeout.
 		* Fixed BLE task repeatedly entering PM mechanism under RTOS
-    * **EXT_DRV**
-        * Fixed(tl322x) PM_32k_RC_CALIBRATION_ALGORITHM_EN not enable issue.
 
 
 ### BREAKING CHANGES
@@ -213,8 +211,6 @@
 	* **LL**
 		* 修复 PAwR 发送中断不触发的问题，增加超时机制。
 		* 修复 RTOS 环境下 BLE 任务反复进入功耗管理 (PM) 机制的问题
-    * **EXT_DRV**
-        * 修复(tl322x) PM_32k_RC_CALIBRATION_ALGORITHM_EN 未使能问题。
 
 
 
