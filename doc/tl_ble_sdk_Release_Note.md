@@ -28,11 +28,10 @@
     - For (TL752X/TL751X/TL711X/TL522X/TL521X/TL323X/TL322X/TL321X): Align the number of RF interrupt masks with the register table; fix errors in some interrupt sources for the RF interrupt mask set/clear interfaces.
         - Detailed Description: In the previous version, some interrupt sources were incorrect in the RF interrupt mask set and clear interfaces. This issue has been fixed in this version, and the number of RF interrupt masks is aligned with the register table.
         - Fix Effect: The RF interrupt mask set and clear interfaces can perform correct configuration.
-        - Update suggestion: Some RF interrupts may not be triggered correctly, and an update is required.git
+        - Update suggestion: Some RF interrupts may not be triggered correctly, and an update is required
 
 - **BLE general function** 
 	* **LL**
-		* Fixed PAwR TX irq not trigger issue, add timeout.
 		* Fixed BLE task repeatedly entering PM mechanism under RTOS
 
 
@@ -50,7 +49,7 @@
     * For (TL521X): Add LPD Flash power‑down protection feature to improve system robustness.
     * For (TL521X): Rename the file emi_internal to emi_cert.
     * For (TL521X): Add ADC calibration logic implementation.
-    * For (TL323X) PA5/PA6 add pin re-mapping function.
+    * For (TL323X): PA5/PA6 add pin re-mapping function.
 
 * **Others**
     * N/A
@@ -70,10 +69,7 @@
         - Flash bin size: 108.83 KB
         - IRAM size: 54.75 KB
         - DRAM size: 0.77 KB
-    - Compiling eslp_ap_dmeo
-        - Flash bin size: 249.14 KB
-        - IRAM size: 93.77 KB
-        - DRAM size: 24.02 KB
+  
 * TLSR922X/TLSR952X
     - Compiling acl_central_demo
         - Flash bin size: 105.48 KB
@@ -109,10 +105,6 @@
         - Flash bin size: 268.51 KB
         - IRAM size: 122.05 KB
         - DRAM size: 21.58 KB
-    - Compiling eslp_esl_dmeo
-        - Flash bin size: 203.16 KB
-        - IRAM size: 69.83 KB
-        - DRAM size: 5.36 KB
 
 * TL321X
     - Compiling acl_central_demo
@@ -127,10 +119,6 @@
         - Flash bin size:  122.66 KB
         - IRAM size: 60.21 KB
         - DRAM size: 0.61 KB
-    - Compiling eslp_ap_demo
-        - Flash bin size: 258.54 KB
-        - IRAM size: 90.60 KB
-        - DRAM size: 21.60 KB
     - Compiling eslp_esl_dmeo
         - Flash bin size: 197.77 KB
         - IRAM size: 67.99 KB
@@ -161,6 +149,10 @@
         - Flash bin size:  124.03 KB
         - IRAM size: 62.53 KB
         - DRAM size: 0.66 KB
+    - Compiling eslp_esl_dmeo
+        - Flash bin size: 199.71 KB
+        - IRAM size: 70.61 KB
+        - DRAM size: 2.66 KB
 * TL521X
     - Compiling acl_central_demo
         - Flash bin size: 118.25 KB
@@ -174,6 +166,10 @@
         - Flash bin size:  124.41 KB
         - IRAM size: 63.24 KB
         - DRAM size: 0.65 KB
+    - Compiling ble_remote
+        - Flash bin size:  127.17 KB
+        - IRAM size: 63.64 KB
+        - DRAM size: 2.15 KB
 
 **Note:** The above IRAM usage includes the FIFO buffer required for the debug logging functionality. Disabling the `TLKAPI_DEBUG_ENABLE` macro can save approximately 4.76 KB of IRAM.
 
@@ -209,7 +205,6 @@
   
 - **BLE general function** 
 	* **LL**
-		* 修复 PAwR 发送中断不触发的问题，增加超时机制。
 		* 修复 RTOS 环境下 BLE 任务反复进入功耗管理 (PM) 机制的问题
 
 
@@ -248,10 +243,7 @@
         - Flash bin size: 108.83 KB
         - IRAM size: 54.75 KB
         - DRAM size: 0.77 KB
-    - Compiling eslp_ap_dmeo
-        - Flash bin size: 249.14 KB
-        - IRAM size: 93.77 KB
-        - DRAM size: 24.02 KB
+
 * TLSR922X/TLSR952X
     - Compiling acl_central_demo
         - Flash bin size: 105.48 KB
@@ -287,10 +279,6 @@
         - Flash bin size: 268.51 KB
         - IRAM size: 122.05 KB
         - DRAM size: 21.58 KB
-    - Compiling eslp_esl_dmeo
-        - Flash bin size: 203.16 KB
-        - IRAM size: 69.83 KB
-        - DRAM size: 5.36 KB
 
 * TL321X
     - Compiling acl_central_demo
@@ -305,10 +293,6 @@
         - Flash bin size:  122.66 KB
         - IRAM size: 60.21 KB
         - DRAM size: 0.61 KB
-    - Compiling eslp_ap_demo
-        - Flash bin size: 258.54 KB
-        - IRAM size: 90.60 KB
-        - DRAM size: 21.60 KB
     - Compiling eslp_esl_dmeo
         - Flash bin size: 197.77 KB
         - IRAM size: 67.99 KB
@@ -339,6 +323,10 @@
         - Flash bin size:  124.03 KB
         - IRAM size: 62.53 KB
         - DRAM size: 0.66 KB
+    - Compiling eslp_esl_dmeo
+        - Flash bin size: 199.71 KB
+        - IRAM size: 70.61 KB
+        - DRAM size: 2.66 KB
 * TL521X
     - Compiling acl_central_demo
         - Flash bin size: 118.25 KB
@@ -352,6 +340,10 @@
         - Flash bin size:  124.41 KB
         - IRAM size: 63.24 KB
         - DRAM size: 0.65 KB
+    - Compiling ble_remote
+        - Flash bin size:  127.17 KB
+        - IRAM size: 63.64 KB
+        - DRAM size: 2.15 KB
 
 **Note:** 上述 IRAM 统计包含了打印功能所需的 FIFO，关闭宏 TLKAPI_DEBUG_ENABLE，可以节省约 4.76 KB 的 IRAM。
 
