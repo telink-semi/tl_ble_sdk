@@ -1,6 +1,6 @@
 # tl\_ble\_sdk README
 
-- [English](./readme_en.md)
+- [English](./README.md)
 
 # SDK 介绍
 

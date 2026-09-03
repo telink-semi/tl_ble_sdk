@@ -1,6 +1,6 @@
 # tl\_ble\_sdk README
 
-- [中文版](./readme_cn.md)
+- [中文版](./README_CN.md)
 
 
 # SDK Introduction
