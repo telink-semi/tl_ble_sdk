@@ -43,6 +43,7 @@ For the complete and accurate list of supported chip series, corresponding devel
 
 | Documentation | Description |
 | --- | --- |
+| [Get Started](./doc/tl_ble_sdk_Get_Started.md) | Configuring the development environment, obtaining the SDK, and quick getting started |
 | [Developer Handbook](https://doc.telink-semi.cn/doc/en/software/res/sdk/ble/tl_ble_sdk_multi_connection_en/tl_ble_sdk_multi_connection_en/) | Detailed explanation of software architecture, warehouse structure, and functional modules |
 | [Release Notes](./doc/tl_ble_sdk_Release_Note.md) | Supported platforms, SDK versions, and detailed changes |
 
