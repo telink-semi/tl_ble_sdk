@@ -1,5 +1,8 @@
 # tl\_ble\_sdk README
 
+- [中文版](./readme_cn.md)
+
+
 # SDK Introduction
 
 tl\_ble\_sdk is a software development platform for Bluetooth® Low Energy (BLE) multi-connection IoT applications. Based on Telink's TL721x, TL321x, TL322x, TLSR921x, TLSR922x, TLSR952x series of SoCs, it helps developers quickly build high-performance, low-power BLE products.
