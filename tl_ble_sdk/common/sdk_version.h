@@ -33,7 +33,7 @@
 #define SOFT_STRUCTURE       0
 #define MAJOR_VERSION        4
 #define MINOR_VERSION        8
-#define PATCH_NUM            0
+#define PATCH_NUM            1
 
 #define CUSTOM_MAJOR_VERSION 0
 #define CUSTOM_MINOR_VERSION 0
